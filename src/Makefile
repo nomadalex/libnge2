@@ -3,7 +3,7 @@ PSPDIR=$(shell psp-config --psp-prefix)
 TARGET_LIB = libnge2.a
 OBJS = helper/iniparser.o helper/dictionary.o \
        libnge2.o nge_charsets.o nge_debug_log.o nge_timer.o nge_sys_compatible.o \
-       nge_font_hzk.o nge_image_load.o  nge_font.o nge_gif_animation.o \
+       nge_font_hzk.o nge_font_nfont.o nge_image_load.o  nge_font.o nge_gif_animation.o \
        nge_io_file.o nge_io_dir.o nge_misc.o nge_rle.o nge_main.o nge_gif_show.o \
        nge_graphics_psp.o nge_graphics_ext.o nge_input_proc.o nge_font_freetype.o \
        nge_vram.o audiosystem/libcoolaudio.o audiosystem/play_ogg_psp.o  \
