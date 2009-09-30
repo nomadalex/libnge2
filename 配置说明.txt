@@ -1,3 +1,4 @@
+///////////////////////Windows/////////////////////////////////////////
 VC6 
 1 将include和lib设置成VC6的包含和库目录
 2 将win32depends/include和win32depends/lib设置成VC6的包含和库目录
@@ -20,11 +21,6 @@ extern "C"
 FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]}; 
 上述方法也可以解决，但是每次新建一个文件都要替换这部分代码，还不如换lib
 
-
-
-
-
-
 WINDOWS下默认按键对应
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
@@ -40,11 +36,21 @@ WINDOWS下默认按键对应
 #define PSP_BUTTON_START         SDLK_b
 #define PSP_BUTTON_HOME          SDLK_n
 #define PSP_BUTTON_HOLD          SDLK_m  
+//////////////////////    PSP   ////////////////////////////////////////////////////
+1 下载TOPOC傻瓜包
+2 cd src
+3 make
+4 make install
+5 进入demo0目录make，然后测试即可。
 
+//////////////////////   XCODER   //////////////////////////////////////
+进入xcode目录直接打开编译即可。2.21 iPod测试通过。
 
-Libnge2 遵照LGPL发布源代码
+Libnge2 遵照LGPLv2发布源代码
 联系：
 newcreat newcreat@sina.com
 cooleyes cooleyes@263.com
 yl_ls    yl_ls@yeah.net
  
+更多内容请访问：
+http://www.libnge.org
