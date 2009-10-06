@@ -1,0 +1,17 @@
+TARGET_LIB = libcoolaudio.a
+OBJS =  nge_audio_psp.o audio_codec.o \
+	common/buffered_reader.o common/mem64.o \
+	parsers/pcm_parser.o parsers/mp3_parser.o parsers/oggvorbis_parser.o \
+	codecs/mp3_codec.o libcoolaudio.o
+
+INCDIR = 
+CFLAGS = -G0 -Wall -O2 -DCOOLAUDIO_PSP
+CXXFLAGS = $(CFLAGS) -fno-rtti -fno-exceptions 
+ASFLAGS = $(CFLAGS)
+
+PSPSDK=$(shell psp-config --pspsdk-path)
+PSPBIN = $(PSPSDK)/../bin
+include $(PSPSDK)/lib/build.mak
+install:
+	cp $(TARGET_LIB) ../../lib/
+	cp audio_interface.h ../../include/

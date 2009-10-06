@@ -1,6 +1,11 @@
 #include "nge_font.h"
 #include "nge_image_load.h"
 
+typedef struct{
+	char*       data;
+	int         datalen;
+}workbuf;
+
 typedef struct {
 	void*	    procs;	/* font-specific rendering routines*/
 	int		    size;	/* font height in pixels*/
@@ -16,6 +21,7 @@ typedef struct {
 	int 			cfont_width;
 	int 			font_height;
 	int             flags;
+	workbuf			bitbuf;
 }FontHzk,*PFontHzk;
 
 //inner use
@@ -102,6 +108,11 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
 	pf->size = height;
 	pf->rotation = 0;
 	pf->flags = FONT_TYPE_GBK;
+
+	pf->bitbuf.datalen = 2048;
+	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	
 	switch(disp)
 	{
 		case DISPLAY_PIXEL_FORMAT_4444:
@@ -226,18 +237,8 @@ int getnextchar(char* s, unsigned char* cc)
 	cc[0] = (unsigned char)(*s);
 	cc[1] = (unsigned char)(*(s + 1));
 	
-	if (use_big5)
-	{
-		if( IsBig5( (int) ( (cc[0] << 8) + cc[1]) ) )
+	if( ((unsigned char)cc[0]>0x80) )
 			return 1;
-	}
-	else
-	{
-		if( ((unsigned char)cc[0] > 0xa0) &&
-			((unsigned char)cc[1] > 0xa0) )
-			return 1;
-	}
-	
 	cc[1] = '\0';
 	
 	return 1;
@@ -295,6 +296,7 @@ void hzk_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidt
 void hzk_destroyfont(PFont pfont)
 {
 	PFontHzk pf = (PFontHzk)pfont;
+	SAFE_FREE(pf->bitbuf.data);
 	SAFE_FREE(pf->afont_raw);
 	SAFE_FREE(pf->cfont_raw);
 	SAFE_FREE(pf);
@@ -393,8 +395,16 @@ void hzk_drawtext_16(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 	
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint16);
-	bitmap = (uint16 *)malloc(size);
+	//bitmap = (uint16 *)malloc(size);
+	if( size > pf->bitbuf.datalen){
+		pf->bitbuf.datalen = size * 2;
+		free(pf->bitbuf.data);
+		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	}
+	bitmap = (uint16*)pf->bitbuf.data;
 	memset(bitmap,0,size);
+
 	while( getnextchar(s, c) )
 	{
 		if( c[1] != '\0'){
@@ -415,7 +425,7 @@ void hzk_drawtext_16(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 		if(s>=sbegin+cc) break;
 	}
 	
-	SAFE_FREE(bitmap);
+	//SAFE_FREE(bitmap);
 }
 void expandcchar_32(PFontHzk pf, int bg, int fg, unsigned char* c, uint32* bitmap)
 {
@@ -508,7 +518,15 @@ void hzk_drawtext_32(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 	
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint32);
-	bitmap = (uint32*)malloc(size);
+	//bitmap = (uint32*)malloc(size);
+	//memset(bitmap,0,size);
+	if( size > pf->bitbuf.datalen){
+		pf->bitbuf.datalen = size * 2;
+		free(pf->bitbuf.data);
+		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	}
+	bitmap = (uint32*)pf->bitbuf.data;
 	memset(bitmap,0,size);
 	while( getnextchar(s, c) )
 	{
@@ -530,7 +548,7 @@ void hzk_drawtext_32(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 		if(s>=sbegin+cc) break;
 	}
 	
-	SAFE_FREE(bitmap);
+	//SAFE_FREE(bitmap);
 }
 
 void hzk_drawtext(PFont pfont, image_p pimage, int ax, int ay,const void *text, int cc, int flags)
@@ -602,7 +620,15 @@ void hzk_drawtext_shadow_16(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 	
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint16);
-	bitmap = (uint16 *)malloc(size);
+	//bitmap = (uint16 *)malloc(size);
+	//memset(bitmap,0,size);
+	if( size > pf->bitbuf.datalen){
+		pf->bitbuf.datalen = size * 2;
+		free(pf->bitbuf.data);
+		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	}
+	bitmap = (uint16*)pf->bitbuf.data;
 	memset(bitmap,0,size);
 	while( getnextchar(s, c) )
 	{
@@ -621,7 +647,7 @@ void hzk_drawtext_shadow_16(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 		
 		if(s>=sbegin+cc) break;
 	}
-	SAFE_FREE(bitmap);
+	//SAFE_FREE(bitmap);
 }
 
 static void copy_rawdata_image_custom_32(void* data,const image_p des,int x,int y,uint32 w,uint32 h,uint32 color_bg,uint32 color_fg,uint32 color_sh)
@@ -674,7 +700,15 @@ void hzk_drawtext_shadow_32(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 	}
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint32);
-	bitmap = (uint32 *)malloc(size);
+	//bitmap = (uint32 *)malloc(size);
+	//memset(bitmap,0,size);
+	if( size > pf->bitbuf.datalen){
+		pf->bitbuf.datalen = size * 2;
+		free(pf->bitbuf.data);
+		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	}
+	bitmap = (uint32*)pf->bitbuf.data;
 	memset(bitmap,0,size);
 	while( getnextchar(s, c) )
 	{
@@ -693,7 +727,7 @@ void hzk_drawtext_shadow_32(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 		
 		if(s>=sbegin+cc) break;
 	}
-	SAFE_FREE(bitmap);
+	//SAFE_FREE(bitmap);
 }
 
 

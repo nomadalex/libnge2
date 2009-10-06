@@ -6,6 +6,13 @@
 #include FT_SYNTHESIS_H   
 #include "nge_font.h"
 #include "nge_image_load.h"
+
+
+typedef struct{
+	char*       data;
+	int         datalen;
+}workbuf;
+
 typedef struct 
 {
 	void*	    procs;	/* font-specific rendering routines*/
@@ -23,6 +30,7 @@ typedef struct
 	FT_Matrix matrix;
 	FT_Library library;
 	int flags;
+	workbuf			bitbuf;
 }FontFreetype,*PFontFreetype;
 
 static BOOL freetype2_getfontinfo(PFont pfont, PFontInfo pfontinfo);
@@ -75,6 +83,10 @@ PFont create_font_freetype(const char* fname, int height,int disp)
 	pf->r = 0;
 	pf->g = 0;
 	pf->a = 0;
+
+	pf->bitbuf.datalen = 2048;
+	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
 	return (PFont)pf;
 }
 
@@ -98,6 +110,10 @@ PFont create_font_freetype_buf(const char* buf,int bsize, int height,int disp)
 	pf->r = 0;
 	pf->g = 0;
 	pf->a = 0;
+
+	pf->bitbuf.datalen = 2048;
+	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
 	return (PFont)pf;
 }
 
@@ -175,9 +191,16 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	PFontFreetype pf = (PFontFreetype) pfont;
 	if(((PFontProcs)(pf->procs))->encoding== ENCODING_GBK){
 		len = strlen((char*)text);
-		value = (uint16*)malloc(len);
+	
+		if( len > pf->bitbuf.datalen){
+			pf->bitbuf.datalen = len*2;
+			free(pf->bitbuf.data);
+			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+			memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+		}
+		value = (uint16*)pf->bitbuf.data;
+		memset(value,0,len);
 		cc = gbk_to_unicode(value,(char*)text,len);
-		need_free = 1;
 	}
 	else{
 		value = (uint16*)text;
@@ -210,15 +233,14 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	*pwidth = total_advance;
 	*pheight = max_ascent + max_descent;
 	*pbase = max_ascent;
-	if(need_free){
-		SAFE_FREE(value);
-	}
+
 }
 static void freetype2_destroyfont(PFont pfont)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
 	FT_Done_Face(pf->face);
 	FT_Done_FreeType( pf->library );
+	SAFE_FREE(pf->bitbuf.data);
 	SAFE_FREE(pf);
 }
 
@@ -243,7 +265,6 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				dgree = bitmap->buffer[i + bitmap->width*j];
 				a = dgree;
-				//pimage->data[(i+(height-j-1)*width)]=MAKE_RGBA_5551(r,g,b,a);
 				cpbegin32[i]=MAKE_RGBA_8888(pf->r,pf->g,pf->b,a);
 			}
 			cpbegin32 += pimage->texw;
@@ -260,7 +281,6 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				dgree = bitmap->buffer[i + bitmap->width*j];
 				a = dgree;
-				//pimage->data[(i+(height-j-1)*width)]=MAKE_RGBA_5551(r,g,b,a);
 				if(pimage->dtype = DISPLAY_PIXEL_FORMAT_4444)
 					cpbegin16[i]=MAKE_RGBA_4444(pf->r,pf->g,pf->b,a);
 				else if(pimage->dtype = DISPLAY_PIXEL_FORMAT_5551){
@@ -275,7 +295,6 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 	}
 }
 
-//FT_Load_Glyph( pf->face, FT_Get_Char_Index( pf->face, value[0] ), FT_LOAD_RENDER | FT_LOAD_MONOCHROME );
 
 static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 							   const void *text, int cc, int flags)
@@ -292,10 +311,18 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 
 	if(((PFontProcs)(pf->procs))->encoding== ENCODING_GBK){
 		len = strlen((char*)text);
-		value = (uint16*)malloc(len*sizeof(uint16));
-		memset(value,0,len*sizeof(uint16));
+		//value = (uint16*)malloc(len*sizeof(uint16));
+		//memset(value,0,len*sizeof(uint16));
+		if( len > pf->bitbuf.datalen){
+			pf->bitbuf.datalen = len*2;
+			free(pf->bitbuf.data);
+			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+			memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+		}
+		value = (uint16*)pf->bitbuf.data;
+		memset(value,0,len);
 		cc = gbk_to_unicode(value,(char*)text,len);
-		need_free = 1;
+		//need_free = 1;
 	}
 	else{
 		value = (uint16*)text;
@@ -319,9 +346,9 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 		FT_Done_Glyph( glyph );
 	}
 	//if (buffer[j * pitch + i / 8] & (0x80 >> (i % 8))) 
-	if(need_free){
-		SAFE_FREE(value);
-	}
+	//if(need_free){
+	//	SAFE_FREE(value);
+	//}
 }
 
 

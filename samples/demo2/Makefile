@@ -4,11 +4,11 @@ BUILD_PRX = 1
 PSP_FW_VERSION=371  
 INCDIR = ../../include
 LIBDIR = ../../lib
-CFLAGS = -G0 -w -O2 -D_DEBUG_LOG
+CFLAGS = -G0 -w -O2 
 CXXFLAGS = $(CFLAGS) -fno-rtti
 ASFLAGS = $(CFLAGS)
 LDFLAGS =
-LIBS +=  -lnge2 -lfreetype -lpng -lz -ljpeg -lg -lstdc++  -lpsppower -lpspmpeg -lpspaudiocodec -lpspaudio -lpspgum -lpspgu -lpsprtc -lm   
+LIBS +=  -lnge2 -lvorbisfile -lvorbis -logg -lfreetype -lpng -lz -ljpeg -lg -lstdc++  -lpsppower -lpspmpeg -lpspaudiocodec -lpspaudio -lpspgum -lpspgu -lpsprtc -lm   
 
 EXTRA_TARGETS = EBOOT.PBP
 PSP_EBOOT_TITLE = PLAYMP3

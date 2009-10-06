@@ -1,18 +1,18 @@
 #include "libnge2.h"
-
+#include "audio_interface.h"
 /**
  * nge_test:测试nge2的按键输入字体
  * 所需资源文件:拷贝到相应目录下
  * fonts/GBK14，fonts/ASC14，fonts/simfang.ttf，images/demo1_bg.png，images/demo1_box.jpg
  * images/demo1_icon.jpg
+ * 采用最新的音频接口~
  */
 
 int game_quit = 0;
 image_p pimage_text,pimage_bg,pimage_box;
 image_p pimage_icon[2];
 //音乐播放
-music_ops mp3_play;
-music_ops wav_play;
+
 //初始音量为128音量范围为【0-128】
 int volume = 128;
 
@@ -21,6 +21,9 @@ int mask4444 = MAKE_RGBA_4444(255,255,255,255);
 //半透明的box
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 int wav_ret;
+
+audio_play_p wavs[2];
+
 void btn_down(int keycode)
 {
 	switch(keycode)
@@ -36,19 +39,18 @@ void btn_down(int keycode)
 	case PSP_BUTTON_TRIANGLE:
 		break;
 	case PSP_BUTTON_CIRCLE:
-		//O键恢复
-		mp3_play.resume();
+		//O键恢复到开头
+		if(wavs[1]->iseof(wavs[1])==1)
+			wavs[1]->rewind(wavs[1]);
+		wavs[1]->play(wavs[1],1,0);
 		break;
 	case PSP_BUTTON_CROSS:
-		//叉键暂停
-		mp3_play.pause();
+		//play另外一个
+		wavs[0]->play(wavs[0],1,0);
 		break;
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//选择键换首歌,播放完就stop
-		wav_ret = wav_play.load("music/simple3.wav");
-		wav_play.playstop();
 		break;
 	case PSP_BUTTON_START:
 		//开始键退出
@@ -106,6 +108,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	NGE_Init(INIT_ALL);
+	audio_play_p mp3 = CreateMp3Player();
 	InitInput(btn_down,btn_up,1);
 	PFont pf[2] ;
 	int i;
@@ -138,20 +141,19 @@ int main(int argc, char* argv[])
 	if(pimage_box == NULL)
 		printf("can not open file\n");
 	pimage_icon[0] = image_load_colorkey("images/demo2_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
-    pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
+    	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 
-	//初始化Mp3播放结构
-	MP3PlayInit(&mp3_play);
-	PCMPlayInit(&wav_play);
-	//设置音量
-	mp3_play.volume(volume);
-	//加载 music/demo2.mp3
-	int res = mp3_play.load("music/simple1.mp3");
-	//开始播放用play需要调用stop释放资源
-	mp3_play.play();
+	//循环播放MP3.
+	mp3->load(mp3,"music/simple1.mp3");
+	mp3->play(mp3,0,0);
+	//载入2声音一会播放
+	wavs[0] = CreateWavPlayer();
+	wavs[0]->load(wavs[0], "music/simple3.wav");
+	wavs[1] = CreateWavPlayer();
+	wavs[1]->load(wavs[1], "music/simple3.wav");
 	while ( !game_quit )
 	{
-		ShowFps();
+		//ShowFps();
 		InputProc();
 		DrawScene();
 	}
@@ -160,9 +162,11 @@ int main(int argc, char* argv[])
 	image_free(pimage_bg);
 	image_free(pimage_text);
 	image_free(pimage_box);
-	//退出mp3系统
-	MP3PlayFini();
-	PCMPlayFini();
+	//释放声音资源
+	mp3->destroy(mp3);
+	wavs[0]->destroy(wavs[0]);
+	wavs[1]->destroy(wavs[1]);
+
 	NGE_Quit();
 	return 0;
 }
