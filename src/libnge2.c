@@ -62,8 +62,9 @@ void NGE_Init(int flags)
 			printf("Could not create renderer\n");
 		    }		
 		#endif
-		#ifndef IPHONEOS
-			//not support yet
+		#if defined WIN32 || defined IPHONEOS
+			// empty
+		#else
 			if(flags&INIT_AUDIO)
 				CoolAudioDefaultInit();
 		#endif		
@@ -76,15 +77,19 @@ void NGE_Quit()
 	if(inited){
 		FiniGrahics();
 		FiniInput();
-		#ifndef IPHONEOS
+		
+		#if defined WIN32 || defined IPHONEOS
+			// empty
+		#else
 			CoolAudioDefaultFini();
 		#endif
+			
 		#ifdef WIN32
 			SDL_Quit();
 			#ifdef MMGR
 				m_dumpMemoryReport();
 			#endif
-		#elif defined WIN32 || defined IPHONEOS
+		#elif defined IPHONEOS
 			SDL_Quit();
 		#endif
 	}

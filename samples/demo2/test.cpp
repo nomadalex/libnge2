@@ -1,5 +1,5 @@
 #include "libnge2.h"
-#include "audio_interface.h"
+//#include "audio_interface.h"
 /**
  * nge_test:测试nge2的按键输入字体
  * 所需资源文件:拷贝到相应目录下
@@ -46,6 +46,8 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_CROSS:
 		//play另外一个
+		if(wavs[0]->iseof(wavs[0])==1)
+			wavs[0]->rewind(wavs[0]);
 		wavs[0]->play(wavs[0],1,0);
 		break;
     case PSP_BUTTON_SQUARE:
@@ -108,7 +110,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	NGE_Init(INIT_ALL);
-	audio_play_p mp3 = CreateMp3Player();
+	//audio_play_p mp3 = CreateMp3Player();
 	InitInput(btn_down,btn_up,1);
 	PFont pf[2] ;
 	int i;
@@ -142,10 +144,10 @@ int main(int argc, char* argv[])
 		printf("can not open file\n");
 	pimage_icon[0] = image_load_colorkey("images/demo2_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
     	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
-
+	
 	//循环播放MP3.
-	mp3->load(mp3,"music/simple1.mp3");
-	mp3->play(mp3,0,0);
+	//mp3->load(mp3,"music/simple1.mp3");
+	//mp3->play(mp3,0,0);
 	//载入2声音一会播放
 	wavs[0] = CreateWavPlayer();
 	wavs[0]->load(wavs[0], "music/simple3.wav");
@@ -156,6 +158,7 @@ int main(int argc, char* argv[])
 		//ShowFps();
 		InputProc();
 		DrawScene();
+		LimitFps(60);
 	}
 	font_destory(pf[0]);
 	font_destory(pf[1]);
@@ -163,7 +166,7 @@ int main(int argc, char* argv[])
 	image_free(pimage_text);
 	image_free(pimage_box);
 	//释放声音资源
-	mp3->destroy(mp3);
+	//mp3->destroy(mp3);
 	wavs[0]->destroy(wavs[0]);
 	wavs[1]->destroy(wavs[1]);
 
