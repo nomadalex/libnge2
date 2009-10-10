@@ -145,7 +145,7 @@ uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 	screen_a = a/255.0;
 	return u_lastcolor;
 }
-
+/*
 void BeginAccum()
 {
 	glClear(GL_ACCUM_BUFFER_BIT);
@@ -165,7 +165,7 @@ void AccumOp()
 //		glAccum(GL_LOAD,1.0f);
 //	}
 }
-
+*/
 void EndScene()
 {
 	SDL_GL_SwapBuffers();
@@ -212,11 +212,11 @@ void LimitFps(uint32 limit)
 {
 	if(limit == 0)
 		limit = 60;
-	timer->start(timer);
 	if( timer->get_ticks(timer) < 1000 /limit )
     {
             nge_sleep( ( 1000 / limit) - timer->get_ticks(timer) );
     }
+	timer->start(timer);
 }
 
 void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
@@ -323,7 +323,7 @@ void PutPix(float x,float y ,int color,int dtype)
 	glPushAttrib(GL_CURRENT_BIT);
 	GetRGBA(color,dtype,&r,&g,&b,&a);
 	glColor4ub(r, g, b, a);
-	glBegin(GL_POINT);   
+	glBegin(GL_POINTS);   
 		glVertex2f(x,y);   
 	glEnd();		
 	glPopAttrib();

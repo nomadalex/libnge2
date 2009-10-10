@@ -108,11 +108,12 @@ void LimitFps(uint32 limit)
 	if(limit!=60){
 		if(limit == 0)
 			limit = 60;
-		timer->start(timer);
+		
 		if( timer->get_ticks(timer) < 1000 / limit )
 		{
 				nge_sleep( ( 1000 / limit) - timer->get_ticks(timer) );
 		}
+		timer->start(timer);
 	}
 	else{
 		sceDisplayWaitVblankStart();
