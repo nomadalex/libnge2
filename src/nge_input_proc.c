@@ -26,8 +26,11 @@ static AnalogProc analog_proc = NULL;
 static MouseMoveProc mouse_move_proc = NULL;
 static MouseButtonProc mouse_btn_proc = NULL;
 
-static int game_quit = 0;
+static TouchMoveProc touch_move_proc = NULL;
+static TouchButtonProc touch_button_proc = NULL;
 
+static int game_quit = 0;
+static int need_swapxy = 0;
 
 void btn_down_default(int keycode)
 {
@@ -56,6 +59,14 @@ void btn_down_default(int keycode)
 	case PSP_BUTTON_HOME:
 		break;
     }
+}
+
+void SetSwapXY(int flag)
+{
+#ifdef IPHONEOS
+	if(flag)
+		need_swapxy = 1;
+#endif
 }
 
 void btn_up_default(int keycode)
@@ -137,7 +148,16 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 		mouse_move_proc = mouse_move;
 	if(mouse_btn != NULL)
 		mouse_btn_proc = mouse_btn;
+	
 		
+}
+
+void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
+{
+	if(touch_button != NULL)
+		touch_button_proc = touch_button;
+	if(touch_move != NULL)
+		touch_move_proc = touch_move;
 }
 
 void InitAnalog(AnalogProc analogproc)
@@ -163,8 +183,9 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 
 void InputProc()
 {
-	int ret = 0;
+	int ret = 0,x,y,dx,dy,state,tmp;
 	int mouse_btn_type = 0;
+	
 	while( SDL_PollEvent( &event ) )
     {
 		switch(event.type)
@@ -187,8 +208,28 @@ void InputProc()
 			btn_up(event.jbutton.button);
 			break;
 		case SDL_MOUSEMOTION:
-			if(mouse_move_proc)
-				mouse_move_proc(event.button.x,event.button.y);
+			if(touch_move_proc){
+				SDL_SelectMouse(event.motion.which);        /* select 'mouse' (touch) that moved */
+				ret = SDL_GetMouseState(event.motion.which,&x, &y);  /* get its location */
+				SDL_GetRelativeMouseState(event.motion.which,&dx, &dy);        /* find how much the mouse moved */
+				if(need_swapxy){
+					
+					tmp = dx;
+					dx = dy;
+					dy = 320-tmp;
+				}
+				touch_move_proc(event.motion.which,x,y,dx,dy);
+			}
+			if(mouse_move_proc){
+				x = event.button.x;
+				y = event.button.y;
+				if(need_swapxy){
+					tmp = x;
+					x = y;
+					y = 320-tmp;
+				}
+				mouse_move_proc(x,y);
+			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			if(event.button.button == SDL_BUTTON_LEFT)
@@ -197,8 +238,29 @@ void InputProc()
 				mouse_btn_type = MOUSE_RBUTTON_DOWN;
 			else
 				mouse_btn_type = MOUSE_MBUTTON_DOWN;
-			if(mouse_btn_proc)
-				mouse_btn_proc(mouse_btn_type,event.button.x,event.button.y);
+			if(mouse_btn_proc){
+				x = event.button.x;
+				y = event.button.y;
+				if(need_swapxy){
+					tmp = x;
+					x = y;
+					y = 320-tmp;
+				}				
+				mouse_btn_proc(mouse_btn_type,x,y);
+			}
+			if(touch_button_proc){
+				SDL_SelectMouse(event.button.which);        /* select 'mouse' (touch) that moved */
+				state = SDL_GetMouseState(event.button.which,&x, &y);  /* get its location */
+				if(need_swapxy){
+					tmp = x;
+					x = y;
+					y = 320-tmp;
+				}	
+				if (state & SDL_BUTTON_LMASK) {
+					touch_button_proc(event.button.which,MOUSE_LBUTTON_DOWN,x,y);
+				}
+				//SDL_GetRelativeMouseState(event.motion.which,&dx, &dy);        /* find how much the mouse moved */
+			 }
 			break;
 		case SDL_MOUSEBUTTONUP:
 			if(event.button.button == SDL_BUTTON_LEFT)
@@ -207,8 +269,30 @@ void InputProc()
 				mouse_btn_type = MOUSE_RBUTTON_UP;
 			else
 				mouse_btn_type = MOUSE_MBUTTON_UP;
-			if(mouse_btn_proc)
-				mouse_btn_proc(mouse_btn_type,event.button.x,event.button.y);
+			if(mouse_btn_proc){
+				x = event.button.x;
+				y = event.button.y;
+				if(need_swapxy){
+					tmp = x;
+					x = y;
+					y = 320-tmp;
+				}				
+				mouse_btn_proc(mouse_btn_type,x,y);
+			}
+				
+			if(touch_button_proc){
+				SDL_SelectMouse(event.button.which);        /* select 'mouse' (touch) that moved */
+				state = SDL_GetMouseState(event.button.which,&x, &y);  /* get its location */
+				if(need_swapxy){
+					tmp = x;
+					x = y;
+					y = 320-tmp;
+				}	
+				if (state & SDL_BUTTON_LMASK) {
+					touch_button_proc(event.button.which,MOUSE_LBUTTON_UP,x,y);
+				}
+					//SDL_GetRelativeMouseState(event.motion.which,&dx, &dy);        /* find how much the mouse moved */
+			}
 			break;
 		}
 		
@@ -270,6 +354,10 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 
 }
 
+void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
+{
+	
+}
 
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {

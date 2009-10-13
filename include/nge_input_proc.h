@@ -8,6 +8,9 @@ typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 typedef void (*MouseMoveProc)(int x,int y);
 typedef void (*MouseButtonProc)(int type,int x,int y);
 
+typedef void (*TouchMoveProc)(int which,int x,int y,int rx,int ry);
+typedef void (*TouchButtonProc)(int which,int type,int x,int y);
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -37,6 +40,10 @@ void InputProc();
 void FiniInput();
 
 void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
+	
+void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
+
+void SetSwapXY(int flag);	
 
 #ifdef __cplusplus
 }

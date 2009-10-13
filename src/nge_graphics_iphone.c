@@ -15,6 +15,8 @@ static uint32 m_tex_in_ram = -1;
 //static uint32 m_tex_id = 0;
 static nge_timer* timer = NULL;
 
+
+
 static float screen_r =0.0;
 static float screen_g =0.0;
 static float screen_b =0.0;
@@ -139,7 +141,7 @@ void InitGrahics()
 	}
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrthof(0,nge_screen.width,nge_screen.height-20,-20,-1,1);
+	glOrthof(0,nge_screen.width,nge_screen.height,0,-1,1);
 	//glOrthof(0,SCREEN_HEIGHT,SCREEN_WIDTH,0,-1,1);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -153,6 +155,25 @@ void FiniGrahics()
 	SAFE_FREE(VecticesArray);
 }
 
+void SetScreenType(int type)
+{
+	if(type == 2){
+		//flip trans
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslatef(nge_screen.width/2,nge_screen.height/2,0);
+		glRotatef(90.0f,0.0f,0.0f,1.0f);
+		glTranslatef(-(nge_screen.height/2),-(nge_screen.width/2),0);		
+	}
+	else{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
+	
+}
+
+
+
 void BeginScene(uint8 clear)
 {
 	if(clear == 1){
@@ -161,6 +182,7 @@ void BeginScene(uint8 clear)
 		glClear( GL_COLOR_BUFFER_BIT );
 		glEnable(GL_SCISSOR_TEST);
 	}
+
 }
 
 uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
@@ -666,7 +688,7 @@ int TexImage2D(image_p pimg)
 			  format = GL_RGB;
 	}
 	glEnable(GL_TEXTURE_2D);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA, pimg->texw, pimg->texh, 0,format,pimg->dtype, pimg->data);
+	glTexImage2D(GL_TEXTURE_2D, 0,format, pimg->texw, pimg->texh, 0,format,pimg->dtype, pimg->data);
 	return 1;
 }
 
@@ -676,6 +698,7 @@ static void DrawImageRot(image_p texture,float sx,float sy,float sw,float sh,flo
 	static int cacheid = 0;
 	static int ret = 0;
 	Vectice2D* vectices = (Vectice2D*)NgeGetMemoryVectice(4*sizeof(Vectice2D));
+	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(dx+texture->rcentrex,dy+texture->rcentrey,0);
 	glRotatef(angle,0,0,1);
@@ -744,8 +767,9 @@ static void DrawImageRot(image_p texture,float sx,float sy,float sw,float sh,flo
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glDisable(GL_TEXTURE_2D);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 }
 
 void DrawImageMask(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask)
@@ -768,6 +792,7 @@ void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,flo
 	Vectice2D* vectices = (Vectice2D*)NgeGetMemoryVectice(4*sizeof(Vectice2D));
 	if(dy == 0.0f)
 		dy = 0.1f;
+	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glTranslatef(dx+texture->rcentrex*xscale,dy+texture->rcentrey*yscale,0);
 	glRotatef(angle,0.0f,0.0f,1.0f);
@@ -870,8 +895,9 @@ void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,flo
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glDisable(GL_TEXTURE_2D);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 }
 
 void ImageToScreen(image_p texture,float dx,float dy)

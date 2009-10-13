@@ -327,13 +327,12 @@ void FillPolygon(float* x, float* y, int count, int color,int dtype);
  *@return
  */ 
 void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
-
-
-void BeginAccum();
-void EndAccum();
-void AccumOp();
-
-  
+/**
+ *设置屏幕类型0通常1全屏,2翻转横屏(ip)
+ */	
+void SetScreenType(int type);
+	
+	
 #ifdef __cplusplus
 }
 #endif

@@ -65,6 +65,11 @@ screen_context_p GetScreenContext()
 	return &nge_screen;
 }
 
+
+void SetScreenType(int type)
+{
+}
+
 void GetVersion()
 {
 	int main_version, sub_version, release_version;

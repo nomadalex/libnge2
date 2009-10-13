@@ -93,6 +93,10 @@ screen_context_p GetScreenContext()
 	return &nge_screen;
 }
 
+void SetScreenType(int type)
+{
+}
+
 void ShowFps()
 {
 	static int init_fps = 0;
