@@ -209,9 +209,11 @@ void InputProc()
 			break;
 		case SDL_MOUSEMOTION:
 			if(touch_move_proc){
+				#ifdef IPHONEOS
 				SDL_SelectMouse(event.motion.which);        /* select 'mouse' (touch) that moved */
 				ret = SDL_GetMouseState(event.motion.which,&x, &y);  /* get its location */
 				SDL_GetRelativeMouseState(event.motion.which,&dx, &dy);        /* find how much the mouse moved */
+				#endif
 				if(need_swapxy){
 					
 					tmp = dx;
@@ -249,8 +251,10 @@ void InputProc()
 				mouse_btn_proc(mouse_btn_type,x,y);
 			}
 			if(touch_button_proc){
+				#ifdef IPHONEOS
 				SDL_SelectMouse(event.button.which);        /* select 'mouse' (touch) that moved */
 				state = SDL_GetMouseState(event.button.which,&x, &y);  /* get its location */
+				#endif
 				if(need_swapxy){
 					tmp = x;
 					x = y;
@@ -281,8 +285,10 @@ void InputProc()
 			}
 				
 			if(touch_button_proc){
+				#ifdef IPHONEOS
 				SDL_SelectMouse(event.button.which);        /* select 'mouse' (touch) that moved */
 				state = SDL_GetMouseState(event.button.which,&x, &y);  /* get its location */
+				#endif
 				if(need_swapxy){
 					tmp = x;
 					x = y;
