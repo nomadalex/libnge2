@@ -377,9 +377,9 @@ void Sirens2Resume(struct audio_play* This) {
 }
 
 int Sirens2Volume(struct audio_play* This,int volume) {
-	int old_volume = private_data->volume;
 	sirens2_play_p p = (sirens2_play_p)This;
 	volatile sirens2_private_t* private_data = (volatile sirens2_private_t*)(p->private_data);
+	int old_volume = private_data->volume;
 	if(volume < 0)
 		volume = 0;
 	if(volume > 255)
