@@ -2401,17 +2401,17 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 	
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data;
-		for(i = sy;i<sh+sy;i++){
-			for(j = sx;j<sw+sx;j++){
+		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
 					continue;
-				GET_RGBA_4444(bmp16[i*src->texw+j],sr,sg,sb,sa);
+				GET_RGBA_4444(bmp16[j],sr,sg,sb,sa);
 				if(alpha == 0){
 					continue;
 				}
 				else if(alpha == 255){
-					cpbegin16[j] = bmp16[i*src->texw+j];
+					cpbegin16[j] = bmp16[j];
 				}
 				else{
 					GET_RGBA_4444(cpbegin16[j],dr,dg,db,da);
@@ -2419,22 +2419,23 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
+			bmp16+=i*src->texw;
 		}
 	
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data;
-		for(i = sy;i<sh+sy;i++){
-			for(j = sx;j<sw+sx;j++){
+		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
 					continue;
-				GET_RGBA_5551(bmp16[i*src->texw+j],sr,sg,sb,sa);
+				GET_RGBA_5551(bmp16[j],sr,sg,sb,sa);
 				if(alpha == 0||sa == 0){
 					continue;
 				}
 				else if(alpha == 255){
-					cpbegin16[j] = bmp16[i*src->texw+j];
+					cpbegin16[j] = bmp16[j];
 				}
 				else{
 					GET_RGBA_5551(cpbegin16[j],dr,dg,db,da);
@@ -2442,22 +2443,23 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
+			bmp16+=i*src->texw;
 		}
 	
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data;
-		for(i = sy;i<sh+sy;i++){
-			for(j = sx;j<sw+sx;j++){
+		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
 					continue;
-				GET_RGBA_565(bmp16[i*src->texw+j],sr,sg,sb,sa);
+				GET_RGBA_565(bmp16[j],sr,sg,sb,sa);
 				if(alpha == 0){
 					continue;
 				}
 				else if(alpha == 255){
-					cpbegin16[j] = bmp16[i*src->texw+j];
+					cpbegin16[j] = bmp16[j];
 				}
 				else{
 					GET_RGBA_565(cpbegin16[j],dr,dg,db,da);
@@ -2465,22 +2467,23 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
+			bmp16+=i*src->texw;
 		}
 	
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
-		bmp32 = (uint32*)src->data;
-		for(i = sy;i<sh+sy;i++){
-			for(j = sx;j<sw+sx;j++){
+		bmp32 = (uint32*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
 					continue;
-				GET_RGBA_8888(bmp32[i*src->texw+j],sr,sg,sb,sa);
+				GET_RGBA_8888(bmp32[j],sr,sg,sb,sa);
 				if(alpha == 0||sa == 0){
 					continue;
 				}
 				else if(alpha == 255){
-					cpbegin32[j] = bmp32[i*src->texw+j];
+					cpbegin32[j] = bmp32[j];
 				}
 				else{
 					GET_RGBA_8888(cpbegin32[j],dr,dg,db,da);
@@ -2488,6 +2491,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin32 += des->texw;
+			bmp32     += i*src->texw;
 		}
 	}
 
@@ -2620,27 +2624,28 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 	des->modified = 1;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data;
-		for(i =sy;i<sh+sy;i++){
-			for(j =sx;j<sw+sx;j++){
+		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
 					continue;
-				cpbegin16[j] = bmp16[i*src->texw+j];
+				cpbegin16[j] = bmp16[j];
 			}
 			cpbegin16 += des->texw;
-		}
-		
+			bmp16     += i*src->texw;
+		}		
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
-		bmp32 = (uint32*)src->data;
-		for(i =sy;i<sh+sy;i++){
-			for(j =sx;j<sw+sx;j++){
+		bmp32 = (uint32*)src->data+sy*src->texw+sx;
+		for(i = 0;i<sh;i++){
+			for(j = 0;j<sw;j++){
 				if((j+dx>=des->texw)||(i+dy>=des->texh))
 					continue;
-				cpbegin32[j] = bmp32[i*src->texw+j];
+				cpbegin32[j] = bmp32[j];
 			}
 			cpbegin32 += des->texw;
+			bmp32     += i*src->texw;
 		}
 	}
 }
