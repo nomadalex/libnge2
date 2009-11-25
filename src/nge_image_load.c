@@ -2419,7 +2419,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
-			bmp16+=i*src->texw;
+			bmp16     += src->texw;
 		}
 	
 	}
@@ -2443,7 +2443,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
-			bmp16+=i*src->texw;
+			bmp16     += src->texw;
 		}
 	
 	}
@@ -2467,7 +2467,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin16 += des->texw;
-			bmp16+=i*src->texw;
+			bmp16     += src->texw;
 		}
 	
 	}
@@ -2491,7 +2491,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 				}
 			}
 			cpbegin32 += des->texw;
-			bmp32     += i*src->texw;
+			bmp32     += src->texw;
 		}
 	}
 
@@ -2632,7 +2632,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 				cpbegin16[j] = bmp16[j];
 			}
 			cpbegin16 += des->texw;
-			bmp16     += i*src->texw;
+			bmp16     += src->texw;
 		}		
 	}
 	else{
@@ -2645,7 +2645,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 				cpbegin32[j] = bmp32[j];
 			}
 			cpbegin32 += des->texw;
-			bmp32     += i*src->texw;
+			bmp32     += src->texw;
 		}
 	}
 }
