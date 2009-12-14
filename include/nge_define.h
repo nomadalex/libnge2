@@ -351,7 +351,12 @@ typedef struct _fontproc{
 #define FLAGS_FREETYPE_BOLDER 1
 #define FLAGS_FREETYPE_NORMAL 0
 
-
+enum{
+	SET_ATTR_FIXWIDTH = 0,
+	SET_ATTR_BOLD,
+	SET_ATTR_MARGIN,
+	SET_ATTR_SIZE
+};
 
 #define SAFE_FREE(ptr) do{ \
 	if(ptr){           \
@@ -371,12 +376,6 @@ typedef struct _fontproc{
 #define SCREEN_BPP    32
 #define TEXTRUE_MAX_WIDTH 512
 #define TEXTRUE_MAX_HEIGHT 512
-
-#define SCREEN_TYPE_NORMAL     0
-#define SCREEN_TYPE_FULLSCREEN 1
-#define SCREEN_TYPE_FLIP       2
-
-
 
 typedef struct {
 	char name[256];

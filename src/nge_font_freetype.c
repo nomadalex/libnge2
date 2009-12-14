@@ -362,11 +362,29 @@ static void freetype2_setfontrotation(PFont pfont, int rot)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
 }
+
 static void freetype2_setfontattr(PFont pfont, int attr, int setflags)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	pf->fix_width = attr;
+	switch(setflags) 
+	{
+	case SET_ATTR_FIXWIDTH:
+		pf->fix_width = attr;
+		break;
+	case SET_ATTR_BOLD:
+		pf->flags = FLAGS_FREETYPE_BOLDER;
+		break;
+	case SET_ATTR_MARGIN:
+		break;
+	case SET_ATTR_SIZE:
+		freetype2_setfontsize(pfont,attr);
+		break;
+	default:
+		break;
+	}
 }
+
+
 static PFont freetype2_duplicate(PFont pfont, int fontsize)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
