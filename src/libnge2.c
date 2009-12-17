@@ -62,7 +62,7 @@ void NGE_Init(int flags)
 			printf("Could not create renderer\n");
 		    }		
 		#endif
-		#if defined WIN32 || defined IPHONEOS
+		#if defined IPHONEOS
 			// empty
 		#else
 			if(flags&INIT_AUDIO)

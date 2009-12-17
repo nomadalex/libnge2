@@ -22,7 +22,7 @@ int mask4444 = MAKE_RGBA_4444(255,255,255,255);
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 int wav_ret;
 
-audio_play_p wavs[2];
+audio_play_p audio[2];
 
 void btn_down(int keycode)
 {
@@ -40,15 +40,11 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_CIRCLE:
 		//O键恢复到开头
-		if(wavs[1]->iseof(wavs[1])==1)
-			wavs[1]->rewind(wavs[1]);
-		wavs[1]->play(wavs[1],1,0);
+		if(audio[1]->iseof(audio[1])==1)
+			audio[1]->rewind(audio[1]);
+		audio[1]->play(audio[1],1,0);
 		break;
 	case PSP_BUTTON_CROSS:
-		//play另外一个
-		if(wavs[0]->iseof(wavs[0])==1)
-			wavs[0]->rewind(wavs[0]);
-		wavs[0]->play(wavs[0],1,0);
 		break;
     case PSP_BUTTON_SQUARE:
 		break;
@@ -145,14 +141,15 @@ int main(int argc, char* argv[])
 	pimage_icon[0] = image_load_colorkey("images/demo2_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
     	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	
-	//循环播放MP3.
-	//mp3->load(mp3,"music/simple1.mp3");
-	//mp3->play(mp3,0,0);
+
 	//载入2声音一会播放
-	wavs[0] = CreateWavPlayer();
-	wavs[0]->load(wavs[0], "music/simple3.wav");
-	wavs[1] = CreateWavPlayer();
-	wavs[1]->load(wavs[1], "music/simple3.wav");
+	audio[0] = CreateMp3Player();
+	audio[0]->load(audio[0], "music/simple1.mp3");
+	audio[1] = CreateWavPlayer();
+	audio[1]->load(audio[1], "music/simple3.wav");
+	audio[0]->play(audio[0],1,0);
+	audio[1]->play(audio[1],1,0);
+
 	while ( !game_quit )
 	{
 		//ShowFps();
@@ -166,9 +163,8 @@ int main(int argc, char* argv[])
 	image_free(pimage_text);
 	image_free(pimage_box);
 	//释放声音资源
-	//mp3->destroy(mp3);
-	wavs[0]->destroy(wavs[0]);
-	wavs[1]->destroy(wavs[1]);
+	audio[0]->destroy(audio[0]);
+	audio[1]->destroy(audio[1]);
 
 	NGE_Quit();
 	return 0;
