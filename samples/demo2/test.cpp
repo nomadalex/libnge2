@@ -22,7 +22,7 @@ int mask4444 = MAKE_RGBA_4444(255,255,255,255);
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 int wav_ret;
 
-audio_play_p audio[2];
+audio_play_p audio[3];
 
 void btn_down(int keycode)
 {
@@ -142,12 +142,24 @@ int main(int argc, char* argv[])
     	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	
 
-	//载入2声音一会播放
+	//载入3声音一会播放
+	//0-mp3
 	audio[0] = CreateMp3Player();
 	audio[0]->load(audio[0], "music/simple1.mp3");
+	//1-wav
 	audio[1] = CreateWavPlayer();
 	audio[1]->load(audio[1], "music/simple3.wav");
+	//2-ogg
+	audio[2] = CreateOggPlayer();
+	audio[2]->load(audio[2], "music/test.ogg");
+	//ogg comes~
+	audio[2]->play(audio[2],1,0);
+	printf("ogg comes~ \n");
+	//mp3 comes mix with ogg;
 	audio[0]->play(audio[0],1,0);
+	printf("mp3 comes mix with ogg ~\n");
+	//wav comes mix all
+	printf("wav comes mix all~ \n");
 	audio[1]->play(audio[1],1,0);
 
 	while ( !game_quit )
