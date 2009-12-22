@@ -39,6 +39,8 @@ extern "C"{
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
 #endif
 
+
+
 #define NGE_VERSION "2.0.0"
 
 
@@ -66,6 +68,14 @@ void NGE_Quit();
  *@return 
  */
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
+
+/**
+ * 设置home退出的回调函数
+ *@param exitproc proc ,回调函数
+ *@param void* args,参数指针
+ *@return 
+ */
+void NGE_ExitCallBack(exitproc proc,void* args);
 
 #ifdef __cplusplus
 }

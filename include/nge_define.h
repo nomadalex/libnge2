@@ -439,4 +439,11 @@ typedef struct{
 #define MOUSE_MBUTTON_DOWN 5
 #define MOUSE_MBUTTON_UP   6
 
+typedef void* (*exitproc)(void* args);
+typedef struct {
+	exitproc proc;
+	void*		 args;
+	int			 once;
+}NGE2ExitCall;
+
 #endif

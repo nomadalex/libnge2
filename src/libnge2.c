@@ -3,6 +3,19 @@
 
 static int inited = 0;
 
+NGE2ExitCall nge2_exit_struct = {NULL,NULL,1};
+
+
+static void win32exit(void)
+{
+	if(nge2_exit_struct.proc != NULL&&nge2_exit_struct.once != 1){
+		nge2_exit_struct.proc(nge2_exit_struct.args);
+		nge2_exit_struct.once = 1;
+	}
+}
+
+
+
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full)
 {
 	screen_context_p screen = GetScreenContext();
@@ -16,13 +29,13 @@ void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height
 
 
 
-
 void NGE_Init(int flags)
 {
 	screen_context_p screen = NULL;
 	int screen_flag = 0;
 	if(inited==0){	
 		#ifdef WIN32
+		atexit(win32exit);
 		screen = GetScreenContext();
 		screen_flag = SDL_OPENGL;
 		flags |= SDL_INIT_JOYSTICK;
@@ -95,5 +108,12 @@ void NGE_Quit()
 	}
 }
 
-
+void NGE_ExitCallBack(exitproc proc,void* args)
+{
+	if(proc!=NULL){
+		nge2_exit_struct.proc = proc;
+		nge2_exit_struct.args = args;
+		nge2_exit_struct.once = 0;
+	}
+}
 
