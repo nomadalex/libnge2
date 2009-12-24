@@ -57,20 +57,11 @@ void DrawScene()
 	EndScene();
 }
 
-void* myexit(void* arg)
-{
-	printf("my exit here!\n");
-	return NULL;
-}
-
 extern "C"
 int main(int argc, char* argv[])
 {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL
 	NGE_Init(INIT_VIDEO);
-	//注册一个myexit,windows将在按x时调用,psp再按home确认时调用
-	NGE_ExitCallBack(myexit,NULL);
-
 	//初始化按键处理btn_down是按下响应,后面是弹起时的响应，0是让nge处理home消息(直接退出),填1就是让PSP系统处理
 	//home消息,通常填1正常退出（1.50版的自制程序需要填0）
 	InitInput(btn_down,NULL,1);
@@ -85,7 +76,7 @@ int main(int argc, char* argv[])
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
 	//随便创建一个图片遮罩color
 	logomask2 = CreateColor(100,100,100,255,p_logo->dtype);
-
+	
 	while ( !game_quit )
 	{
 		ShowFps();
