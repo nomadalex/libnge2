@@ -20,13 +20,13 @@ PSP_HEAP_SIZE_KB(18*1024);
 
 int nge_psp_exit_callback(int arg1, int arg2, void *common)
 {
-	if(nge2_exit_struct.proc != NULL&&nge2_exit_struct.once != 1){
+	/*if(nge2_exit_struct.proc != NULL&&nge2_exit_struct.once != 1){
 		nge2_exit_struct.proc(nge2_exit_struct.args);
 		sceKernelDelayThread(100000);
 		nge2_exit_struct.once = 1;
 	}
-	else
-		sceKernelDelayThread(500000);
+	else*/
+	sceKernelDelayThread(500000);
 	sceKernelExitGame();
 	return 0;
 }
@@ -55,13 +55,13 @@ int main(int argc, char *argv[])
 	nge_psp_setup_callbacks();
 	(void)NGE_main(argc, argv);
 	/* Delay 0.5 seconds before returning to the OS. */
-	if(nge2_exit_struct.proc != NULL&& nge2_exit_struct.once != 1){
+	/*if(nge2_exit_struct.proc != NULL&& nge2_exit_struct.once != 1){
 		nge2_exit_struct.proc(nge2_exit_struct.args);
 		sceKernelDelayThread(100000);
 		nge2_exit_struct.once = 1;
 	}
-	else
-		sceKernelDelayThread(500000);
+	else*/
+	sceKernelDelayThread(500000);
 	sceKernelExitGame();
 	return 0;
 }
