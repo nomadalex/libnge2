@@ -663,7 +663,7 @@ void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,flo
 
 void ImageToScreen(image_p texture,float dx,float dy)
 {
-	DrawImage(texture,0,0,texture->w,texture->h,dx,dy,nge_screen.width,nge_screen.height);
+	DrawImage(texture,0,0,texture->w,texture->h,dx,dy,0,0);
 }
 
 
