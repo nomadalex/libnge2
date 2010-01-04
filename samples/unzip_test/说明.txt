@@ -1,0 +1,1 @@
+需要的资源文件data.zip GBK12 ASC12放在和PBP同一目录
