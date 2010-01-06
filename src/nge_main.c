@@ -9,6 +9,7 @@
 #include "nge_define.h"
 
 extern int NGE_main(int argc, char *argv[]);
+int cbid = 0;
 
 PSP_MODULE_INFO("NGE APP", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(0);
@@ -25,7 +26,7 @@ int nge_psp_exit_callback(int arg1, int arg2, void *common)
 
 int nge_psp_callback_thread(SceSize args, void *argp)
 {
-	int cbid;
+	//int cbid;
 	cbid = sceKernelCreateCallback("Exit Callback",nge_psp_exit_callback, NULL);
 	sceKernelRegisterExitCallback(cbid);
 	sceKernelSleepThreadCB();

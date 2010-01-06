@@ -15,6 +15,10 @@ static char btn_analog[4] = {0};
 #include <pspdebug.h>
 #include <pspctrl.h>
 #define printf pspDebugScreenPrintf
+
+//define in nge_main.c
+extern int cbid;
+
 #endif
 
 static void btn_down_default(int keycode);
@@ -383,6 +387,7 @@ void InputProc()
 {
 	uint32 Buttons;
 	int i;
+	static int suspended = 0;
 
 	sceCtrlPeekBufferPositive(&pad, 1);
 	Buttons = pad.Buttons;
@@ -390,9 +395,17 @@ void InputProc()
 		analog_proc(pad.Lx,pad.Ly);
 	}
 	if(Buttons != 0){
-		if((PSP_CTRL_HOME&Buttons)&&!game_quit){
-			sceKernelExitGame();
-			exit(0);
+		if((PSP_CTRL_HOME&Buttons)&&(!game_quit||game_quit==2)){
+			if(!game_quit){
+				sceKernelExitGame();
+				exit(0);
+			}
+			else{
+				if(!suspended){
+					sceKernelSuspendThread(cbid);
+					suspended = 1;
+				}
+			}
 		}
 		for(i = 0;i<key_num;i++){
 			if((nge_keymap[i].pspcode&Buttons)==0){
