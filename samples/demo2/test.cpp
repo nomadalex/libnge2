@@ -149,13 +149,13 @@ int main(int argc, char* argv[])
 	//1-wav
 	audio[1] = CreateWavPlayer();
 	//
-	int handle = io_fopen("music/simple3.wav",IO_RDONLY);
+	/**int handle = io_fopen("music/simple3.wav",IO_RDONLY);
 	int size = io_fsize(handle);
 	char* buffer = (char*)malloc(size);
 	io_fread(buffer,1,size,handle);
 	io_fclose(handle);
-	audio[1]->load_buf(audio[1], buffer,size);
-	//audio[1]->load(audio[1], "music/simple3.wav");
+	audio[1]->load_buf(audio[1], buffer,size);*/
+	audio[1]->load(audio[1], "music/simple3.wav");
 	//2-ogg
 	audio[2] = CreateOggPlayer();
 	audio[2]->load(audio[2], "music/test.ogg");
