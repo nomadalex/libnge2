@@ -175,6 +175,69 @@ char* MusepackParser::open(const char* filename) {
 	return 0;
 };
 
+char* MusepackParser::open_cb(audio_callbacks cb,int handle) {
+	
+	close();
+	
+	char* result;
+	
+	reader = buffered_reader_open_cb(cb,handle, 16384, 1);
+	if ( !reader ) {
+		finalize();
+		return "MusepackParser : open buffered_reader fail";
+	}
+	
+	musepack_reader = malloc_64(sizeof(mpc_reader));
+	if ( !musepack_reader ) {
+		finalize();
+		return "MusepackParser : malloc mpc_reader fail";
+	}
+	
+	mpc_reader* p_reader = (mpc_reader*)musepack_reader;
+	p_reader->read = musepack_read;
+	p_reader->seek = musepack_seek;
+	p_reader->tell = musepack_tell;
+	p_reader->get_size = musepack_get_size;
+	p_reader->canseek = musepack_canseek;
+	p_reader->data = (void*)reader;
+	
+	mpc_demux* p_demux = mpc_demux_init(p_reader);
+	if ( !p_demux ) {
+		finalize();
+		return "MusepackParser : mpc_demux_init fail";
+	}
+	musepack_demux = (void*)p_demux;
+	
+	mpc_streaminfo info ;
+	
+	mpc_demux_get_info(p_demux, &info);
+	
+	init_data.channels = info.channels;
+	init_data.samplerate = info.sample_freq;
+	init_data.sample_bits = 16;
+	
+	total_samples = info.samples;
+	
+	if ( init_data.channels < 1 || init_data.channels > 2 || init_data.sample_bits != 16 ) {
+		finalize();
+		return "MusepackParser : channels != 1 && channels != 2 || sample_bits != 16";
+	}
+	
+	init_data.samples_per_frame = MPC_FRAME_LENGTH;
+	init_data.samples_per_decoded = MPC_FRAME_LENGTH;
+	init_data.frame_align = init_data.samples_per_frame * (16 >> 3) * 2;
+	
+	output_buffer = malloc_64(init_data.frame_align);
+	if ( output_buffer == 0 ) {
+		finalize();
+		return "MusepackParser : malloc output_buffer fail";
+	}
+	
+	is_open = true;
+	return 0;
+};
+
+
 void MusepackParser::close() {
 	if ( is_open ) {
 		finalize();

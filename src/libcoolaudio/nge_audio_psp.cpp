@@ -14,6 +14,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
+#include "nge_io_mem.h"
 
 #define COOLAUDIO_SIRENS2_PCM 0
 #define COOLAUDIO_SIRENS2_MP3 1
@@ -316,6 +317,117 @@ int Sirens2Load(struct audio_play* This,const char* filename) {
 	
 	return 1;
 }
+//callbacks
+int io_myread(void * ptr, int count, int size, void * source)
+{
+	return io_mread(ptr,count,size,(int)source);
+}
+
+int io_myseek(void * source, int offset, int whence)
+{
+	return io_mseek((int)source,(int)offset,whence);
+}
+
+
+long io_mytell(void * source)
+{
+	return io_mtell((int)source);
+}
+
+int io_myclose(void* source)
+{
+	return io_mclose((int)source);
+}
+
+static audio_callbacks CALLBACKS_MY = {
+  (int (*)(void *, int, int, int))		io_myread,
+  (int (*)(int, int, int))           io_myseek,
+  (int (*)(int))                             io_myclose,
+  (long (*)(int))                            io_mytell
+};
+
+
+
+int Sirens2LoadBuf(struct audio_play* This,const char* buf,int size) {
+	sirens2_play_p p = (sirens2_play_p)This;
+	
+	if ( p->private_data->player_open )
+		return -1;
+	
+	switch(p->audio_type) {
+		case COOLAUDIO_SIRENS2_PCM: {
+			p->private_data->parser = new PcmParser();
+			if ( !p->private_data->parser ) {
+				Sirens2FinalizeResource(p->private_data);
+				return -2;
+			}
+		}
+		break;
+		case COOLAUDIO_SIRENS2_MP3: {
+			p->private_data->parser = new Mp3Parser();
+			if ( !p->private_data->parser ) {
+				Sirens2FinalizeResource(p->private_data);
+				return -2;
+			}
+		}
+		break;
+		case COOLAUDIO_SIRENS2_OGG: {
+			p->private_data->parser = new OggVorbisParser();
+			if ( !p->private_data->parser ) {
+				Sirens2FinalizeResource(p->private_data);
+				return -2;
+			}
+		}
+		break;
+		default: {
+			Sirens2FinalizeResource(p->private_data);
+			return -2;
+		}
+		break;
+	}
+	
+	char* result = 0;
+	int handle = io_mopen(buf,size,IO_RDONLY);
+	result = p->private_data->parser->open_cb(CALLBACKS_MY,handle);
+	if ( result ) {
+		Sirens2FinalizeResource(p->private_data);
+		return -3;
+	}
+	
+	p->private_data->parser_open = true;
+	
+	p->private_data->start_time = 0LL;
+	p->private_data->end_time = p->private_data->parser->get_duration();
+	
+	p->private_data->duration = (p->private_data->end_time - p->private_data->start_time);
+	
+	p->private_data->pcm_samples = p->private_data->parser->get_samples_per_frame();
+	
+	p->private_data->pcm_buffer[0] = malloc_64( p->private_data->pcm_samples<<2 );
+	if ( p->private_data->pcm_buffer[0] == 0 ) {
+		Sirens2FinalizeResource(p->private_data);
+		return -4;
+	}
+	
+	p->private_data->pcm_buffer[1] = malloc_64( p->private_data->pcm_samples<<2 );
+	if ( p->private_data->pcm_buffer[1] == 0 ) {
+		Sirens2FinalizeResource(p->private_data);
+		return -4;
+	}
+	
+	p->private_data->cached_pcm_buffer = malloc_64( (p->private_data->pcm_samples+p->private_data->parser->get_max_samples_per_frame())<<2 );
+	if ( p->private_data->cached_pcm_buffer == 0 ) {
+		Sirens2FinalizeResource(p->private_data);
+		return -5;
+	}
+	
+	sceAudioSetChannelDataLen(p->private_data->play_channel, p->private_data->pcm_samples);
+	
+	p->private_data->player_open = true;
+	
+	return 1;
+}
+
 
 int Sirens2Destroy(struct audio_play* This) {
 	sirens2_play_p p = (sirens2_play_p)This;
@@ -465,6 +577,7 @@ static sirens2_play_p CreateSirens2Player() {
 		p->private_data->play_thread_started = true;
 		
 		p->load = Sirens2Load;
+		p->load_buf = Sirens2LoadBuf;
 		p->play = Sirens2Play;
 		p->playstop = Sirens2PlayStop;
 		p->pause = Sirens2Pause;

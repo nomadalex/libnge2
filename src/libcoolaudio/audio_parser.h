@@ -31,6 +31,7 @@
 #define __SIRENS2_AUDIO_PARSER_H__
 
 #include <stdint.h>
+#include "common/buffered_reader.h"
 #include "audio_codec.h"
 
 typedef struct AudioFrameIndex {
@@ -42,6 +43,7 @@ class AudioParser {
 public:
 	virtual ~AudioParser() {};
 	virtual char* open(const char* filename) = 0;
+	virtual char* open_cb(audio_callbacks cb,int handle)=0;
 	virtual void close() = 0;
 	
 	virtual uint32_t get_samplerate() = 0;

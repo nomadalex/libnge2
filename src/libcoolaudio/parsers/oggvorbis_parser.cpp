@@ -157,6 +157,58 @@ char* OggVorbisParser::open(const char* filename) {
 	return 0;
 };
 
+char* OggVorbisParser::open_cb(audio_callbacks cb,int handle) {
+	
+	close();
+	
+	reader = buffered_reader_open_cb(cb,handle, 262144, 1);
+	if ( !reader ) {
+		finalize();
+		return "OggVorbisParser : open buffered_reader fail";
+	}
+	buffered_reader_seek(reader, 0);	
+	
+	ogg_vorbis_file = malloc_64( sizeof(OggVorbis_File) );
+	if ( ogg_vorbis_file == 0 ) {
+		finalize();
+		return "OggVorbisParser : malloc OggVorbis_File fail";
+	}
+	
+	OggVorbis_File* vf = (OggVorbis_File*)ogg_vorbis_file;
+	memset(vf, 0, sizeof(OggVorbis_File));
+	if (ov_open_callbacks((void*)reader, vf, NULL, 0, vorbis_callbacks) < 0) {
+		free_64(ogg_vorbis_file);
+		ogg_vorbis_file = 0;
+		finalize();
+		return "OggVorbisParser : ov_open_callbacks fail";
+	}
+	
+	vorbis_info *vi;
+	vi = ov_info(vf, -1);
+	
+	if (vi->channels > 2 || vi->channels <= 0) {
+		finalize();
+		return "OggVorbisParser : channels != 1 && channels != 2";
+	}
+	
+	init_data.channels = vi->channels;
+	init_data.samplerate = vi->rate;
+	init_data.sample_bits = 16;
+	init_data.samples_per_frame = SIRENS2_OGGVORBIS_SAMPLES_PER_FRAME;
+	init_data.samples_per_decoded = init_data.samples_per_frame;
+	init_data.frame_align = init_data.samples_per_frame * (16 >> 3) * 2;
+	
+	total_samples = ov_pcm_total(vf, -1);
+	output_buffer = malloc_64(init_data.frame_align);
+	if ( output_buffer == 0 ) {
+		finalize();
+		return "OggVorbisParser : malloc output_buffer fail";
+	}
+	
+	is_open = true;
+	return 0;
+};
+
 void OggVorbisParser::close() {
 	if ( is_open ) {
 		finalize();

@@ -51,6 +51,7 @@ public:
 	OggVorbisParser();
 	~OggVorbisParser();
 	char* open(const char* filename);
+	char* open_cb(audio_callbacks cb,int handle);
 	void close();
 	
 	uint32_t get_samplerate();

@@ -18,44 +18,59 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+//2010-01-30 modify by newcreat add callbacks
 
 #include <pspiofilemgr.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "mem64.h"
-
+#include "buffered_reader.h"
 #define BUFFERED_READER_BUFFER_SIZE 262144//131072//65536 //262144
 
-typedef struct {
-	SceUID handle;
-	int32_t length;
-	int32_t buffer_size;
-	int32_t seek_mode;
-	uint8_t* buffer_0;//[BUFFERED_READER_BUFFER_SIZE];
-	uint8_t* buffer_1;//[BUFFERED_READER_BUFFER_SIZE];
-	uint8_t* buffer_2;//[BUFFERED_READER_BUFFER_SIZE];
-	uint8_t* first_buffer;
-	uint8_t* second_buffer;
-	uint8_t* third_buffer;
-	int32_t position_0;
-	int32_t position_1;
-	int32_t position_2;
-	int32_t position_3;
-	int32_t current_position;
-	
-} buffered_reader_t;
+//callbacks add by newcreat
+#define IO_SEEK_CUR SEEK_CUR
+#define IO_SEEK_END SEEK_END
+#define IO_SEEK_SET SEEK_SET
+
+
+/*
+typedef  size_t (*read_func)  (void *ptr, int count, int size, int);
+typedef  int    (*seek_func)  (int, int offset, int whence);
+typedef  int    (*close_func) (int);
+typedef  long   (*tell_func)  (int);*/
+
+
 
 void buffered_reader_close(buffered_reader_t* reader) {
-	if (reader) {
-		if ( !( reader->handle < 0 ) )
-			sceIoClose(reader->handle); 
-		if ( reader->buffer_0 != 0 )
-			free_64(reader->buffer_0);
-		if ( reader->buffer_1 != 0 )
-			free_64(reader->buffer_1);
-		if ( reader->buffer_2 != 0 )
-			free_64(reader->buffer_2);
-		free(reader);
+	if(reader&&reader->use_callbacks){
+		//add by newcreat
+		if (reader) {
+			if ( !( reader->handle < 0 ) ){
+				if(reader->callbacks.close_func!=NULL)
+					reader->callbacks.close_func((int)reader->handle);
+			}
+			if ( reader->buffer_0 != 0 )
+				free_64(reader->buffer_0);
+			if ( reader->buffer_1 != 0 )
+				free_64(reader->buffer_1);
+			if ( reader->buffer_2 != 0 )
+				free_64(reader->buffer_2);
+			free(reader);
+		}
+	}
+	else{
+		if (reader) {
+			if ( !( reader->handle < 0 ) )
+				sceIoClose(reader->handle); 
+			if ( reader->buffer_0 != 0 )
+				free_64(reader->buffer_0);
+			if ( reader->buffer_1 != 0 )
+				free_64(reader->buffer_1);
+			if ( reader->buffer_2 != 0 )
+				free_64(reader->buffer_2);
+			free(reader);
+		}
 	}
 }
 
@@ -67,7 +82,7 @@ buffered_reader_t* buffered_reader_open(const char* path, int32_t buffer_size, i
 	reader->handle = -1;
 	reader->buffer_size = buffer_size;
 	reader->seek_mode = seek_mode;
-	
+	reader->use_callbacks = 0;
 	reader->buffer_0 = malloc_64(reader->buffer_size);
 	if ( reader->buffer_0 == 0 ) {
 		buffered_reader_close(reader);
@@ -115,6 +130,75 @@ buffered_reader_t* buffered_reader_open(const char* path, int32_t buffer_size, i
 	return reader;
 }
 
+
+
+buffered_reader_t* buffered_reader_open_cb(audio_callbacks cb, int handle,int32_t buffer_size, int32_t seek_mode) {
+	buffered_reader_t *reader = malloc(sizeof(buffered_reader_t));
+	if ( reader == 0 )
+		return 0;
+	memset(reader, 0, sizeof(buffered_reader_t));
+	reader->handle = (SceUID)handle;
+	reader->buffer_size = buffer_size;
+	reader->seek_mode = seek_mode;
+	
+	reader->buffer_0 = malloc_64(reader->buffer_size);
+	reader->callbacks = cb;
+	reader->use_callbacks = 1;
+	
+	if ( reader->buffer_0 == 0 ) {
+		buffered_reader_close(reader);
+		return 0;
+	}
+	
+	reader->buffer_1 = malloc_64(reader->buffer_size);
+	if ( reader->buffer_1 == 0 ) {
+		buffered_reader_close(reader);
+		return 0;
+	}
+	
+	reader->buffer_2 = malloc_64(reader->buffer_size);
+	if ( reader->buffer_2 == 0 ) {
+		buffered_reader_close(reader);
+		return 0;
+	}
+	
+	if (reader->handle < 0) {
+		buffered_reader_close(reader);
+		return 0;
+	}
+/*	if (sceIoChangeAsyncPriority(reader->handle, 0x10) < 0) {
+		buffered_reader_close(reader);
+		return 0;
+	}*/
+	
+	//reader->length = sceIoLseek32(reader->handle, 0, PSP_SEEK_END);
+	cb.seek_func(handle,0,IO_SEEK_END);
+	reader->length = cb.tell_func(handle);
+	reader->first_buffer = reader->buffer_0;
+	reader->second_buffer = reader->buffer_1;
+	reader->third_buffer = reader->buffer_2;
+	
+	/*long long result;
+	sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
+	sceIoReadAsync(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
+	sceIoWaitAsync(reader->handle, &result);
+	sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
+	sceIoReadAsync(reader->handle, reader->second_buffer, reader->position_2 - reader->position_1);
+	sceIoWaitAsync(reader->handle, &result);
+	sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+	sceIoReadAsync(reader->handle, reader->third_buffer, reader->position_3 - reader->position_2);*/
+
+	cb.seek_func(reader->handle, reader->position_0, IO_SEEK_SET);
+	cb.read_func(reader->first_buffer,1,reader->position_1 - reader->position_0,handle);
+	cb.seek_func(reader->handle, reader->position_1, IO_SEEK_SET);
+	cb.read_func(reader->second_buffer,1,reader->position_2 - reader->position_1,handle);
+	cb.seek_func(reader->handle, reader->position_2, IO_SEEK_SET);
+	cb.read_func(reader->third_buffer,1,reader->position_3 - reader->position_2,handle);
+
+	return reader;
+}
+
+
 int32_t buffered_reader_length(buffered_reader_t* reader) {
 	return reader->length;
 }
@@ -127,7 +211,8 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 	}
 	else {
 		long long result;
-		sceIoWaitAsync(reader->handle, &result);
+		if(reader->use_callbacks == 0)
+			sceIoWaitAsync(reader->handle, &result);
 		if ( position >= reader->position_2 && position < reader->position_3 ) {
 			uint8_t* temp = reader->first_buffer;
 			reader->first_buffer = reader->second_buffer;
@@ -140,8 +225,14 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 			reader->position_3 = reader->position_2 + reader->buffer_size;
 			if ( reader->position_3 >= reader->length )
 				reader->position_3 = reader->length;
-			sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
-			sceIoReadAsync(reader->handle, reader->third_buffer, reader->position_3 - reader->position_2);
+			if(reader->use_callbacks!=0){
+				reader->callbacks.seek_func((int)reader->handle, reader->position_2, IO_SEEK_SET);
+				reader->callbacks.read_func(reader->third_buffer,1,reader->position_3 - reader->position_2,(int)reader->handle);
+			}
+			else{
+				sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+				sceIoReadAsync(reader->handle, reader->third_buffer, reader->position_3 - reader->position_2);
+			}
 			return position;
 		}
 		else {
@@ -170,12 +261,23 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 				reader->current_position = reader->position_0;
 				
 				if ( seek > 0 || (reader->position_3 <= old_position_0) ) {
-					sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
-					sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
-					sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
-					sceIoRead(reader->handle, reader->second_buffer, reader->position_2 - reader->position_1);
-					sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
-					sceIoReadAsync(reader->handle, reader->third_buffer, reader->position_3 - reader->position_2);
+					
+					if(reader->use_callbacks!=0){
+						reader->callbacks.seek_func((int)reader->handle, reader->position_0, IO_SEEK_SET);
+						reader->callbacks.read_func(reader->first_buffer,1,reader->position_1 - reader->position_0,(int)reader->handle);
+						reader->callbacks.seek_func((int)reader->handle, reader->position_1, IO_SEEK_SET);
+						reader->callbacks.read_func(reader->second_buffer, 1,reader->position_2 - reader->position_1,(int)reader->handle);
+						reader->callbacks.seek_func((int)reader->handle, reader->position_2, IO_SEEK_SET);
+						reader->callbacks.read_func(reader->third_buffer,1, reader->position_3 - reader->position_2,(int)reader->handle);
+					}
+					else{
+						sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
+						sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
+						sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
+						sceIoRead(reader->handle, reader->second_buffer, reader->position_2 - reader->position_1);
+						sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+						sceIoReadAsync(reader->handle, reader->third_buffer, reader->position_3 - reader->position_2);
+					}
 				}
 				else {
 					int32_t copy;
@@ -186,13 +288,22 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 						dest = reader->third_buffer+(old_position_0-reader->position_2);
 						src = reader->first_buffer;
 						memcpy(dest, src, copy);
-						
-						sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
-						sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->second_buffer, reader->position_2 - reader->position_1);
-						sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
-						sceIoReadAsync(reader->handle, reader->third_buffer, old_position_0 - reader->position_2);
+						if(reader->use_callbacks!=0){
+							reader->callbacks.seek_func((int)reader->handle, reader->position_0, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->first_buffer,1,reader->position_1 - reader->position_0,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_1, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->second_buffer, 1,reader->position_2 - reader->position_1,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_2, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->third_buffer,1, old_position_0 - reader->position_2,(int)reader->handle);
+						}
+						else{
+							sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
+							sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->second_buffer, reader->position_2 - reader->position_1);
+							sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+							sceIoReadAsync(reader->handle, reader->third_buffer, old_position_0 - reader->position_2);
+						}
 					}
 					else if ( old_position_0 >= reader->position_1 ) {
 						
@@ -210,13 +321,22 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 						dest = reader->second_buffer+(old_position_0-reader->position_1);
 						src = reader->first_buffer;
 						memcpy(dest, src, copy);
-						
-						sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
-						sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->second_buffer, old_position_0 - reader->position_1);
-						sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
-						sceIoReadAsync(reader->handle, reader->third_buffer, 0);
+						if(reader->use_callbacks!=0){
+							reader->callbacks.seek_func((int)reader->handle, reader->position_0, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->first_buffer,1,reader->position_1 - reader->position_0,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_1, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->second_buffer, 1,old_position_0 - reader->position_1,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_2, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->third_buffer,1, 0,(int)reader->handle);
+						}
+						else{
+							sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->first_buffer, reader->position_1 - reader->position_0);
+							sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->second_buffer, old_position_0 - reader->position_1);
+							sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+							sceIoReadAsync(reader->handle, reader->third_buffer, 0);
+						}
 					}
 					else {
 						copy = reader->position_3-old_position_2;
@@ -244,13 +364,22 @@ int32_t buffered_reader_seek(buffered_reader_t* reader, const int32_t position) 
 						src = reader->first_buffer;
 						memmove(dest, src, copy);
 						
-						
-						sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->first_buffer, old_position_0 - reader->position_0);
-						sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
-						sceIoRead(reader->handle, reader->second_buffer, 0);
-						sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
-						sceIoReadAsync(reader->handle, reader->third_buffer, 0);
+						if(reader->use_callbacks!=0){
+							reader->callbacks.seek_func((int)reader->handle, reader->position_0, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->first_buffer,1,old_position_0 - reader->position_0,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_1, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->second_buffer, 1,0,(int)reader->handle);
+							reader->callbacks.seek_func((int)reader->handle, reader->position_2, IO_SEEK_SET);
+							reader->callbacks.read_func(reader->third_buffer,1, 0,(int)reader->handle);
+						}
+						else{
+							sceIoLseek32(reader->handle, reader->position_0, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->first_buffer, old_position_0 - reader->position_0);
+							sceIoLseek32(reader->handle, reader->position_1, PSP_SEEK_SET);
+							sceIoRead(reader->handle, reader->second_buffer, 0);
+							sceIoLseek32(reader->handle, reader->position_2, PSP_SEEK_SET);
+							sceIoReadAsync(reader->handle, reader->third_buffer, 0);
+						}
 					}
 				}
 				return position;
