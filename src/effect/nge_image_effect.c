@@ -499,7 +499,7 @@ static void effect_draw_shake(image_effect_p effector,image_p pimg,float dx,floa
 	case EFFECT_STOP:
 		break;
 	}
-	RenderQuad(pimg,0,0,0,0,pshake->m_dfx,pshake->m_dfx,1.0,1.0,0,pimg->mask);
+	RenderQuad(pimg,0,0,0,0,pshake->m_dfx,pshake->m_dfy,1.0,1.0,0,pimg->mask);
 }
 
 static void effect_destroy_shake(image_effect_p effector)
