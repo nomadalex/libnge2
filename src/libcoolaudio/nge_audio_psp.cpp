@@ -104,7 +104,7 @@ void Sirens2InitializeResource(volatile sirens2_private_t* p) {
 		
 		p->play_times = 1;
 		p->played_times = 0;
-		p->volume = PSP_AUDIO_VOLUME_MAX;
+		p->volume = 0;//PSP_AUDIO_VOLUME_MAX;
 		p->current = 0LL;
 		p->duration = 0LL;
 		p->seek_to = 0LL;
@@ -444,7 +444,8 @@ int Sirens2Play(struct audio_play* This, int times, int free_when_stop) {
 		return -1;
 	if ( private_data->play_start )
 		return 1;
-	
+	if(private_data->volume==0)
+		private_data->volume = PSP_AUDIO_VOLUME_MAX;
 	private_data->played_times = 0;
 	private_data->play_times = times;
 	private_data->play_stop = free_when_stop;
@@ -494,9 +495,16 @@ int Sirens2Volume(struct audio_play* This,int volume) {
 	int old_volume = private_data->volume;
 	if(volume < 0)
 		volume = 0;
-	if(volume > 255)
-		volume = 255;
-	private_data->volume = volume*256;
+	if(volume > 128)
+		volume = 128;
+	if(volume==0){
+		private_data->volume=1;
+		return 0;
+	}
+	else if(volume==128)
+		private_data->volume=PSP_AUDIO_VOLUME_MAX;
+	else
+		private_data->volume = volume*256;
 	return old_volume/256;
 }
 
