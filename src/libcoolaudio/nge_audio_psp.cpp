@@ -449,10 +449,10 @@ int Sirens2Play(struct audio_play* This, int times, int free_when_stop) {
 	private_data->play_times = times;
 	private_data->play_stop = free_when_stop;
 	private_data->play_start = true;
-
+	sceKernelDelayThread(2000);
 	if(private_data->volume==0)
 		private_data->volume = PSP_AUDIO_VOLUME_MAX;
-	sceKernelDelayThread(1000);
+	
 
 	return 1;
 }
