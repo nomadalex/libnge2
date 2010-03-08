@@ -12,7 +12,8 @@ OBJS = helper/iniparser.o helper/dictionary.o \
        libcoolaudio/nge_audio_psp.o libcoolaudio/audio_codec.o \
        libcoolaudio/common/buffered_reader.o libcoolaudio/common/mem64.o \
        libcoolaudio/parsers/pcm_parser.o libcoolaudio/parsers/mp3_parser.o libcoolaudio/parsers/oggvorbis_parser.o \
-       libcoolaudio/codecs/mp3_codec.o libcoolaudio/libcoolaudio.o libcoolaudio/nge_io_mem.o
+       libcoolaudio/codecs/mp3_codec.o libcoolaudio/libcoolaudio.o libcoolaudio/nge_io_mem.o \
+       directory/directory.o directory/fat.o directory/miniconv.o nge_ch_io_dir.o
 INCDIR = psp/include psp/include/freetype2 ../include libcoolaudio
 LIBDIR = psp/lib 
 CFLAGS = -G0 -O2 -w -DCOOLAUDIO_PSP -DNGE2_NET -D_DEBUG_LOG -D_DEBUG_STDOUT

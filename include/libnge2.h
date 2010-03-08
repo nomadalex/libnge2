@@ -24,6 +24,7 @@ extern "C"{
 #include "nge_sys_compatible.h"
 #include "nge_io_dir.h"
 #include "nge_graphics_ext.h"
+
 #ifdef __cplusplus
 }
 #endif
