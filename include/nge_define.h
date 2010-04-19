@@ -376,6 +376,14 @@ enum{
 #define SCREEN_BPP    32
 #define TEXTRUE_MAX_WIDTH 512
 #define TEXTRUE_MAX_HEIGHT 512
+//NGE_TRANS_x
+enum{
+	NGE_TRANS_NONE = 0,
+	NGE_TRANS_V,
+	NGE_TRANS_H,
+	NGE_TRANS_HV
+};
+
 
 typedef struct {
 	char name[256];

@@ -529,11 +529,6 @@ static void DrawImageRot(image_p texture,float sx,float sy,float sw,float sh,flo
 		TexImage2D(texture);
 		texture->modified = 0;
 	}
-	/*
- 	if((texture->modified==1)||texture->texid != m_tex_in_ram){
-		TexImage2D(texture);
-		texture->modified = 0;
-	}*/
 	if(sw==0&&sh==0){
 		sw = texture->w;
 		sh = texture->h;
@@ -554,39 +549,77 @@ static void DrawImageRot(image_p texture,float sx,float sy,float sw,float sh,flo
 	glPopAttrib();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	/*if(sw==0&&sh==0){
-		if(dw == 0 && dh == 0){
-				dw = texture->texw;
-				dh = texture->texh;
-		}
-		glPushAttrib(GL_CURRENT_BIT);
-		GetRGBA(mask,texture->dtype,&r,&g,&b,&a);
-		glColor4ub(r, g, b, a);
-		glBegin(GL_QUADS);
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(dx,dy+dh,0);	// Top Left Of The Texture and Quad
-		glEnd();
-		glPopAttrib();
-	}
-	else{
-		if(dw == 0 && dh == 0){
-				dw = sw;
-				dh = sh;
-		}
-		glPushAttrib(GL_CURRENT_BIT);
-		GetRGBA(mask,texture->dtype,&r,&g,&b,&a);
-		glColor4ub(r, g, b, a);
-		glBegin(GL_QUADS);
-			glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
-			glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
-			glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+dh,0);	// Top Left Of The Texture and Quad
-		glEnd();
-		glPopAttrib();
-	}*/
 }
+
+static void DrawImageRotTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,float angle,int mask,int trans)
+{
+	static uint8 r,g,b,a;
+	static int cacheid = 0;
+	static int ret = 0;
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(dx+texture->rcentrex,dy+texture->rcentrey,0);
+	glRotatef(angle,0,0,1);
+	glTranslatef(-(dx+texture->rcentrex),-(dy+texture->rcentrey),0);
+	
+	ret = tex_cache_getid(texture->texid,&cacheid);
+	glBindTexture(GL_TEXTURE_2D, cacheid);
+	if(ret == 0 ||texture->modified==1){
+		TexImage2D(texture);
+		texture->modified = 0;
+	}
+	if(sw==0&&sh==0){
+		sw = texture->w;
+		sh = texture->h;
+	}
+	if(dw==0&&dh==0){
+		dw = sw;//texture->w;
+		dh = sh;//texture->h;
+	}
+	glPushAttrib(GL_CURRENT_BIT);
+	GetRGBA(mask,texture->dtype,&r,&g,&b,&a);
+	glColor4ub(r, g, b, a);
+	glBegin(GL_QUADS);
+	switch(trans) 
+	{
+	case NGE_TRANS_NONE:
+		glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+dh,0);	// Top Left Of The Texture and Quad
+		break;
+	case NGE_TRANS_V:
+		glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy+dh, 0);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy,0);	// Top Left Of The Texture and Quad
+		break;
+	case NGE_TRANS_H:
+		glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy, 0);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy+dh,0);	// Top Left Of The Texture and Quad
+		break;
+	case NGE_TRANS_HV:
+		glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy+dh, 0);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy,0);	// Top Left Of The Texture and Quad
+		break;
+	default:
+		glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+dh,0);	// Top Left Of The Texture and Quad
+		break;
+	}
+	glEnd();
+	glPopAttrib();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+
 /*
 fix me
 void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
@@ -612,7 +645,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 }
 
 
-void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float xscale ,float yscale,float angle,int mask )
+void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float xscale ,float yscale,float angle,int mask)
 {	
 	static uint8 r,g,b,a;
 	static int ret = 0,cacheid= 0;
@@ -621,11 +654,7 @@ void RenderQuad(image_p texture,float sx,float sy,float sw,float sh,float dx,flo
 	glTranslatef(dx+texture->rcentrex*xscale,dy+texture->rcentrey*yscale,0);
 	glRotatef(angle,0,0,1);
 	glTranslatef(-(dx+texture->rcentrex*xscale),-(dy+texture->rcentrey*yscale),0);	
- 	
-	/*if((texture->modified==1)||texture->texid != m_tex_in_ram){
-		TexImage2D(texture);
-		texture->modified = 0;
-	}*/
+ 
 	ret = tex_cache_getid(texture->texid,&cacheid);
 	glBindTexture(GL_TEXTURE_2D, cacheid);
 	if(ret == 0 ||texture->modified==1){
@@ -665,6 +694,92 @@ void ImageToScreen(image_p texture,float dx,float dy)
 {
 	DrawImage(texture,0,0,texture->w,texture->h,dx,dy,0,0);
 }
+
+
+void DrawImageMaskTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask,int trans)
+{
+	DrawImageRotTrans(tex,sx,sy,sw,sh,dx,dy,dw,dh,0,mask,trans);
+}
+
+
+void DrawImageTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans)
+{
+	DrawImageRotTrans(tex,sx,sy,sw,sh,dx,dy,dw,dh,0,tex->mask,trans);
+}
+
+
+void RenderQuadTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float xscale ,float yscale,float angle,int mask,int trans )
+{	
+	static uint8 r,g,b,a;
+	static int ret = 0,cacheid= 0;
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(dx+texture->rcentrex*xscale,dy+texture->rcentrey*yscale,0);
+	glRotatef(angle,0,0,1);
+	glTranslatef(-(dx+texture->rcentrex*xscale),-(dy+texture->rcentrey*yscale),0);	
+ 	
+	ret = tex_cache_getid(texture->texid,&cacheid);
+	glBindTexture(GL_TEXTURE_2D, cacheid);
+	if(ret == 0 ||texture->modified==1){
+		TexImage2D(texture);
+		texture->modified = 0;
+	}
+	
+	if(sw==0&&sh==0){
+		sw = texture->w;
+		sh = texture->h;
+	}
+
+	glPushAttrib(GL_CURRENT_BIT);
+	GetRGBA(mask,texture->dtype,&r,&g,&b,&a);
+	glColor4ub(r, g, b, a);
+	glBegin(GL_QUADS);
+	
+		switch(trans) 
+		{
+		case NGE_TRANS_NONE:
+			glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+sh*yscale,0);	// Top Left Of The Texture and Quad
+			break;
+		case NGE_TRANS_V:
+			glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy+sh*yscale, 0);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy,0);	// Top Left Of The Texture and Quad
+			break;
+		case NGE_TRANS_H:
+			glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy, 0);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy+sh*yscale,0);	// Top Left Of The Texture and Quad
+			break;
+		case NGE_TRANS_HV:
+			glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy+sh*yscale, 0);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy,0);	// Top Left Of The Texture and Quad
+			break;
+		default:
+			glTexCoord2f(sx/texture->texw, sy/texture->texh); glVertex3f(dx, dy, 0);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, sy/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+sh*yscale,0);	// Top Left Of The Texture and Quad
+			break;
+		}
+	glEnd();
+	glPopAttrib();
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void ImageToScreenTrans(image_p texture,float dx,float dy,int trans)
+{
+	DrawImageTrans(texture,0,0,texture->w,texture->h,dx,dy,0,0,trans);
+}
+
 
 
 static int roundpower2(int width)

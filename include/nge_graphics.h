@@ -203,6 +203,66 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
  */
 void ImageToScreen(image_p texture,float dx,float dy);
 
+/**
+ * 同RenderQuad,增加一个trans参数
+ *@param image_p texture,图片指针
+ *@param float sx,图片x坐标
+ *@param float sy,图片y坐标
+ *@param float sw,图片宽
+ *@param float sh,图片高,
+ *@param float dx,屏幕x坐标
+ *@param float dy,屏幕y坐标
+ *@param float xscale,图片x方向放大缩小因子
+ *@param float yscale,图片y方向放大缩小因子
+ *@param float angle,旋转角度
+ *@param int mask,颜色遮罩
+ *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return 无
+ */
+void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans);
+/**
+ *同DrawImage,增加一个trans参数
+ *@param image_p texture,图片指针
+ *@param float sx,图片x坐标
+ *@param float sy,图片y坐标
+ *@param float sw,图片宽
+ *@param float sh,图片高
+ *@param float dx,屏幕x坐标
+ *@param float dy,屏幕y坐标
+ *@param float dw,屏幕宽
+ *@param float dh,屏幕高
+ *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return 无
+ */
+void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans);
+/**
+ *同DrawImageMask,增加一个trans参数
+ *@param image_p texture,图片指针
+ *@param float sx,图片x坐标
+ *@param float sy,图片y坐标
+ *@param float sw,图片宽
+ *@param float sh,图片高
+ *@param float dx,屏幕x坐标
+ *@param float dy,屏幕y坐标
+ *@param float dw,屏幕宽
+ *@param float dh,屏幕高
+ *@param int mask,颜色遮罩
+ *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return 无
+ */
+void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans);
+/**
+ *同ImageToScreen,增加一个trans参数
+ *@param image_p texture,图片指针
+ *@param float dx,屏幕x坐标
+ *@param float dy,屏幕y坐标
+ *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return 无
+ */
+void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
+
+
+
 
 /**
  *将屏幕内容保存在image_p中
