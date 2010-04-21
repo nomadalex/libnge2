@@ -602,8 +602,8 @@ static void DrawImageRotTrans(image_p texture,float sx,float sy,float sw,float s
 		break;
 	case NGE_TRANS_HV:
 		glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy+dh, 0);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+dw,dy,0);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Top Right Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+dw,dy+dh,0);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+dw,dy,0);	// Top Right Of The Texture and Quad
 		glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy,0);	// Top Left Of The Texture and Quad
 		break;
 	default:
@@ -757,8 +757,8 @@ void RenderQuadTrans(image_p texture,float sx,float sy,float sw,float sh,float d
 			break;
 		case NGE_TRANS_HV:
 			glTexCoord2f((sx)/texture->w, sy/texture->texh); glVertex3f(dx-(texture->texw-texture->w), dy+sh*yscale, 0);	// Bottom Left Of The Texture and Quad
-			glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w,sy/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f((-1)*(sx+sw)/texture->w, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy,0);	// Top Right Of The Texture and Quad
 			glTexCoord2f((sx)/texture->w, (sy+sh)/texture->texh); glVertex3f(dx-(texture->texw-texture->w),dy,0);	// Top Left Of The Texture and Quad
 			break;
 		default:
@@ -767,6 +767,9 @@ void RenderQuadTrans(image_p texture,float sx,float sy,float sw,float sh,float d
 			glTexCoord2f((sx+sw)/texture->texw, (sy+sh)/texture->texh); glVertex3f( dx+sw*xscale,dy+sh*yscale,0);	// Top Right Of The Texture and Quad
 			glTexCoord2f(sx/texture->texw, (sy+sh)/texture->texh); glVertex3f(dx,dy+sh*yscale,0);	// Top Left Of The Texture and Quad
 			break;
+
+		
+
 		}
 	glEnd();
 	glPopAttrib();
