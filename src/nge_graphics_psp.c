@@ -56,7 +56,7 @@ static void* m_displaybuf;
 static void* m_zbuf;
 static ScePspFVector3 m_transmatrix;
 static float ProjectionMatrix[2][16];
-
+static int use_vblank = 0;;
 //fps count
 /**debug show fps*/
 u64 m_lasttick;
@@ -118,9 +118,11 @@ void LimitFps(uint32 limit)
 				nge_sleep( ( 1000 / limit) - timer->get_ticks(timer) );
 		}
 		timer->start(timer);
+		use_vblank = 0;
 	}
 	else{
-		sceDisplayWaitVblankStart();
+		use_vblank = 1;
+		//sceDisplayWaitVblankStart();
 	}
 }
 
@@ -338,6 +340,8 @@ uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 
 void EndScene()
 {
+	if(use_vblank == 1)
+		sceDisplayWaitVblankStart();
 	sceGuFinish();
 	sceGuSync(0,0);
 	if(show_fps == 1){
