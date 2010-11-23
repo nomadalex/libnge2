@@ -76,6 +76,12 @@ PFont create_font_freetype(const char* fname, int height,int disp)
 	}
 	FT_Init_FreeType( &pf->library );
 	FT_New_Face( pf->library, fname, 0, &pf->face );
+	if(pf->face == NULL){
+		FT_Done_FreeType( pf->library );
+		free(pf);
+		return NULL;
+	}
+		
 	FT_Set_Char_Size( pf->face,height<< 6, height << 6, 96, 96); 
 	pf->procs = &freetype2_procs;
 	pf->size = height;
