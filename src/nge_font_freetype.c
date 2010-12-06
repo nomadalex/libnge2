@@ -270,7 +270,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 					a = 0;
 				}
 				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = dgree;
+				a = (int)(dgree*pf->a*1.0f/255);
 				cpbegin32[i]=MAKE_RGBA_8888(pf->r,pf->g,pf->b,a);
 			}
 			cpbegin32 += pimage->texw;
@@ -286,7 +286,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 					a = 0;
 				}
 				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = dgree;
+				a = (int)(dgree*pf->a*1.0f/255);
 				if(pimage->dtype = DISPLAY_PIXEL_FORMAT_4444)
 					cpbegin16[i]=MAKE_RGBA_4444(pf->r,pf->g,pf->b,a);
 				else if(pimage->dtype = DISPLAY_PIXEL_FORMAT_5551){
