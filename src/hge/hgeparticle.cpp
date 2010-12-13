@@ -205,7 +205,8 @@ void hgeParticleSystem::MoveTo(float x, float y, BOOL bMoveParticles)
 {
 	int i;
 	float dx,dy;
-	
+	x=x-info.sprite->sprite_center.x;
+	y=y-info.sprite->sprite_center.y;
 	if(bMoveParticles)
 	{
 		dx=x-vecLocation.x;
@@ -266,7 +267,7 @@ void hgeParticleSystem::Render()
 	for(i=0; i<nParticlesAlive; i++)
 	{
 		RenderQuad(info.sprite->sprite_image,
-			       (float)prectf->left,(float)prectf->top,(float)prectf->right,(float)prectf->bottom,//子图4元组
+			       (float)prectf->left,(float)prectf->top,(float)prectf->right-(float)prectf->left,(float)prectf->bottom-(float)prectf->top,//子图4元组
 			       (float)(par->vecLocation.x+fTx), (float)(par->vecLocation.y+fTy), //屏幕坐标dx,dy
 				   (float)par->fSize, (float)par->fSize,//size scale
 				   (float)(par->fSpin*par->fAge*360),//angel rot
