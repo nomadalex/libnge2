@@ -35,6 +35,7 @@ static TouchButtonProc touch_button_proc = NULL;
 
 static int game_quit = 0;
 static int need_swapxy = 0;
+static int touched = 0;
 
 void btn_down_default(int keycode)
 {
@@ -152,8 +153,7 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 		mouse_move_proc = mouse_move;
 	if(mouse_btn != NULL)
 		mouse_btn_proc = mouse_btn;
-	
-		
+	touched = 0;	
 }
 
 void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
@@ -234,12 +234,15 @@ void InputProc()
 					x = y;
 					y = 320-tmp;
 				}
-				mouse_move_proc(x,y);
+				if(touched)
+					mouse_move_proc(x,y);
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			if(event.button.button == SDL_BUTTON_LEFT)
+			if(event.button.button == SDL_BUTTON_LEFT){
 				mouse_btn_type = MOUSE_LBUTTON_DOWN;
+				touched = 1;
+			}
 			else if(event.button.button == SDL_BUTTON_RIGHT)
 				mouse_btn_type = MOUSE_RBUTTON_DOWN;
 			else
@@ -271,8 +274,10 @@ void InputProc()
 			 }
 			break;
 		case SDL_MOUSEBUTTONUP:
-			if(event.button.button == SDL_BUTTON_LEFT)
+			if(event.button.button == SDL_BUTTON_LEFT){
 				mouse_btn_type = MOUSE_LBUTTON_UP;
+				touched = 0;
+			}
 			else if(event.button.button == SDL_BUTTON_RIGHT)
 				mouse_btn_type = MOUSE_RBUTTON_UP;
 			else
