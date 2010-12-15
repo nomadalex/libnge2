@@ -36,6 +36,16 @@ static TouchButtonProc touch_button_proc = NULL;
 static int game_quit = 0;
 static int need_swapxy = 0;
 static int touched = 0;
+static int touch_mode = 0;
+
+
+void EmulateTouchMove(int flag)
+{
+	if(flag == 1)
+		touch_mode  = 1;
+	else
+		touch_mode  = 0;
+}
 
 void btn_down_default(int keycode)
 {
@@ -234,7 +244,7 @@ void InputProc()
 					x = y;
 					y = 320-tmp;
 				}
-				if(touched)
+				if(touched&&touch_mode)
 					mouse_move_proc(x,y);
 			}
 			break;

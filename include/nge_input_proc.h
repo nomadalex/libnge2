@@ -45,6 +45,8 @@ void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
 
 void SetSwapXY(int flag);	
 
+void EmulateTouchMove(int flag);
+
 #ifdef __cplusplus
 }
 #endif
