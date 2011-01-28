@@ -12,10 +12,12 @@ int io_fopen(const char* fname,int flag)
 	fp = fopen(fname,io_array[flag]);
 	return (int)fp;
 #else
+	int fd = 0;
 	if(flag == IO_RDONLY)
-		return sceIoOpen(fname, PSP_O_RDONLY, 0777);
+		fd = sceIoOpen(fname, PSP_O_RDONLY, 0777);
 	else
-		return sceIoOpen(fname, PSP_O_RDWR|PSP_O_CREAT, 0777);
+		fd = sceIoOpen(fname, PSP_O_RDWR|PSP_O_CREAT, 0777);
+	return fd <=0 ? 0: fd;
 #endif
 }
 
