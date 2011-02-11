@@ -2766,7 +2766,7 @@ int image_flipv(image_p pimage)
 	pimage->modified = 1;
 	// swap the buffer
 	pitch  = pimage->texw*pimage->bpb;
-	height = pimage->texh;
+	height = pimage->h;
 	// copy between aligned memories
 	mid = (uint8*)malloc(pitch * sizeof(char));
 	if (!mid) return 0;
