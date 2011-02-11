@@ -1893,7 +1893,9 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	tfh.Depth = (alpha?32:24);
 	if (rle)
 		tfh.ImageTypeCode |= 8;
-	tfh.ImageDescrip = TGA_DESC_VERTICAL;
+	tfh.ImageDescrip = TGA_DESC_HORIZONTAL;
+	if (alpha)
+		tfh.ImageDescrip |= TGA_DESC_ABITS;
 	tfh.Width[1] = pimage->w/256;
 	tfh.Width[0] = pimage->w%256;
 	tfh.Height[1] = pimage->h/256;
@@ -2061,7 +2063,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(flags[2]==(char)0x02||flags[2]==(char)0x10){
+	else if(flags[0]==(char)0x0){
 		pimage = image_load_tga(filename,displaymode);
 		if(pimage == NULL){
 			nge_print("tga file error!\n");
@@ -2116,7 +2118,7 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(mbuf[2]==(char)0x02||mbuf[2]==(char)0x10){
+	else if(mbuf[0]==(char)0x0){
 		pimage =  image_load_tga_buf(mbuf,bsize,displaymode);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -2193,7 +2195,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 		}
 		return pimage;
 	}
-	else if(flags[2]==(char)0x02||flags[2]==(char)0x10){
+	else if(flags[0]==(char)0x00){
 		pimage =  image_load_tga_colorkey(filename,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -2251,7 +2253,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		}
 		return pimage;
 	}
-	else if(mbuf[2]==(char)0x02||mbuf[2]==(char)0x10){
+	else if(mbuf[0]==(char)0x00){
 		//printf("tga\n");
 		pimage =  image_load_tga_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
