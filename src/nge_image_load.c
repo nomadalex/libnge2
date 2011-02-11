@@ -575,7 +575,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	int x = 0,y = 0,size;
 	sint32 ddelta,hdelta,vdelta;
 	uint16 color16;
-	static uint8 r,g,b,a,alpha;
+	static uint8 r,g,b,a;
 	TGAFILEHEADER tfh;
 	
 	offset = 0;
@@ -846,7 +846,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	int x = 0,y = 0,size;
 	sint32 ddelta,hdelta,vdelta;
 	uint16 color16;
-	static uint8 r,g,b,a,alpha;
+	static uint8 r,g,b,a;
 	TGAFILEHEADER tfh;
 	
 	if (mbuf==NULL){ 
@@ -2063,7 +2063,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(flags[0]==(char)0x0){
+	else if(flags[2]==(char)0x02||flags[2]==(char)0x0a){
 		pimage = image_load_tga(filename,displaymode);
 		if(pimage == NULL){
 			nge_print("tga file error!\n");
@@ -2118,7 +2118,7 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(mbuf[0]==(char)0x0){
+	else if(mbuf[2]==(char)0x02||mbuf[2]==(char)0x0a){
 		pimage =  image_load_tga_buf(mbuf,bsize,displaymode);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -2195,7 +2195,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 		}
 		return pimage;
 	}
-	else if(flags[0]==(char)0x00){
+	else if(flags[2]==(char)0x02||flags[2]==(char)0x0a){
 		pimage =  image_load_tga_colorkey(filename,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -2253,7 +2253,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		}
 		return pimage;
 	}
-	else if(mbuf[0]==(char)0x00){
+	else if(mbuf[2]==(char)0x02||mbuf[2]==(char)0x0a){
 		//printf("tga\n");
 		pimage =  image_load_tga_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
