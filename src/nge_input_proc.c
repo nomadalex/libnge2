@@ -244,7 +244,7 @@ void InputProc()
 					x = y;
 					y = 320-tmp;
 				}
-				if(touched&&touch_mode)
+				if((touched&&touch_mode == 1)||(touch_mode == 0))
 					mouse_move_proc(x,y);
 			}
 			break;
