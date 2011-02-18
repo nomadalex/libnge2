@@ -1875,12 +1875,14 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	int fd;
 	uint8 *line,*rleline;
 	TGAFILEHEADER tfh;
-    uint32 x,y;
+        uint32 x,y;
 	static uint8 b,g,r,a;
 	long pos;
 	uint8 *src;
 	uint16 col16;
 	
+	uint8* save_buf = NULL;
+	int   save_pos = 0;
 	if (pimage == 0) 
 		return 0;
 	if (pimage->data==0 || pimage->w==0 || pimage->h==0) 
@@ -1900,28 +1902,22 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	tfh.Width[0] = pimage->w%256;
 	tfh.Height[1] = pimage->h/256;
 	tfh.Height[0] = pimage->h%256;
-	
-    io_fwrite( &tfh, 1, sizeof(tfh), fd );
+	//io_fwrite( &tfh, 1, sizeof(tfh), fd );
     
 	line = (uint8*) malloc(pimage->w * 4);
 	if (line == 0){
 		io_fclose(fd);
 		return 0;
 	}
+	save_buf = (char*)malloc(pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
+	memset(save_buf,0,pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
+	memcpy(save_buf+save_pos,&tfh,sizeof(TGAFILEHEADER));
+	save_pos += sizeof(TGAFILEHEADER);
 	memset( line, 0, pimage->w*4 );
 	
 	rleline = 0;
 	if (rle){
 		rleline = (uint8*) malloc(pimage->w * 6);
-		// NO RLE if FAIL
-		if (rleline == 0){
-			rle = 0;
-			tfh.ImageTypeCode &= ~8;
-			pos = io_fseek( fd, 0, IO_SEEK_CUR );
-			io_fseek( fd, 0, IO_SEEK_SET );
-			io_fwrite( &tfh, 1, sizeof(tfh), fd);
-			io_fseek( fd, pos, IO_SEEK_SET );
-		}
 	}
 	
 	src = (uint8*)pimage->data;
@@ -2006,15 +2002,22 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 		if (rle)
 		{
 			long sz = encodeRLE( line, pimage->w*tfh.Depth>>3, 0, rleline, pimage->w*6, tfh.Depth );
-			io_fwrite( rleline, 1, sz, fd );
+			//io_fwrite( rleline, 1, sz, fd );
+			memcpy(save_buf+save_pos,rleline,sz);
+			save_pos += sz;
 		}
-		else
+		else{
 			io_fwrite( line, 1, pimage->w*tfh.Depth>>3, fd );
+			memcpy(save_buf+save_pos,line,pimage->w*tfh.Depth>>3);
+			save_pos += pimage->w*tfh.Depth>>3;
+		}
 		src += pimage->texw*pimage->bpb;
 	}
 	if (rle)
 		SAFE_FREE(rleline);
 	SAFE_FREE(line);
+	io_fwrite(save_buf,1,save_pos,fd);
+	free(save_buf);
 	io_fclose(fd);
 	return 1;
 }
