@@ -2,6 +2,24 @@
 extern "C"{
 #endif
 #include "png.h"
+#ifndef png_infopp_NULL // deprecated in libpng1.4.4, so
+#define int_p_NULL                NULL
+#define png_bytep_NULL            NULL
+#define png_bytepp_NULL           NULL
+#define png_doublep_NULL          NULL
+#define png_error_ptr_NULL        NULL
+#define png_flush_ptr_NULL        NULL
+#define png_free_ptr_NULL         NULL
+#define png_infopp_NULL           NULL
+#define png_malloc_ptr_NULL       NULL
+#define png_read_status_ptr_NULL  NULL
+#define png_rw_ptr_NULL           NULL
+#define png_structp_NULL          NULL
+#define png_uint_16p_NULL         NULL
+#define png_voidp_NULL            NULL
+#define png_write_status_ptr_NULL NULL
+#endif
+
 #include "jpeglib.h"
 #include "nge_tga.h"
 #include "nge_bmp.h"
@@ -28,17 +46,17 @@ static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsign
 {
 	unsigned int blockx, blocky;
 	unsigned int j;
-	
+
 	unsigned int width_blocks = (width / 16);
 	unsigned int height_blocks = (height / 8);
-	
+
 	unsigned int src_pitch = (width-16)/4;
 	unsigned int src_row = width * 8;
 	const uint8 *xsrc;
 	const uint32 *src;
 	const uint8 *ysrc = in;
 	uint32 *dst = (uint32*)out;
-	
+
 	for (blocky = 0; blocky < height_blocks; ++blocky)
 	{
 		xsrc = ysrc;
@@ -59,18 +77,18 @@ static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsign
 	}
 }
 
-//Thanks to Raphael 
+//Thanks to Raphael
 static void unswizzle_fast(const uint8* out, const uint8* in, const int width, const int height)
 {
 	int blockx, blocky;
 	int j;
-	
+
 	int width_blocks = (width / 16);
 	int height_blocks = (height / 8);
-	
+
 	int dst_pitch = (width-16)/4;
 	int dst_row = width * 8;
-	
+
 	uint32* src = (uint32*)in;
 	uint8* ydst = (uint8*)out;
 	sceKernelDcacheWritebackAll();
@@ -127,7 +145,7 @@ void unswizzle_swap(image_p pimage)
 int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype)
 {
 	int color = 0;
-	switch(dtype) 
+	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_565:
 			color = MAKE_RGBA_565(r,g,b,a);
@@ -152,7 +170,7 @@ int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype)
 int GET_PSM_COLOR_MODE(int dtype)
 {
 	int psm = 0;
-	switch(dtype) 
+	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_565:
 			psm = PSM_565;
@@ -188,13 +206,13 @@ static int roundpower2(int width)
 //////////////////////////////////////////////////////////////////////////
 static void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg)
 {
-        // ignore PNG warnings
+	// ignore PNG warnings
 }
 static int offset = 0;
 
 static void png_custom_mread_fn(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-  
+
 	uint8* handle = (uint8*)png_ptr->io_ptr;
 	uint8* workptr = handle + offset;
 	uint32 i;
@@ -231,10 +249,10 @@ image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode)
 {
 	image_p pimage = NULL;
 	char* mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -272,8 +290,8 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
     png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
     info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL) {
-            png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-            return 0;
+	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+	    return 0;
     }
     png_init_io(png_ptr, NULL);
 	png_set_read_fn(png_ptr, (png_voidp)mbuf, png_custom_mread_fn);
@@ -289,10 +307,10 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
     png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
     line = (uint32*) malloc(width * 4);
     if (!line) {
-            png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-            return 0;
+	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+	    return 0;
     }
-    
+
 	texw = roundpower2(width);
 	texh = roundpower2(height);
 	bpb = 4;
@@ -303,45 +321,45 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 	buffer = (uint8*) malloc(size);
 	memset(buffer,0,size);
     if (buffer){
-	        p32 = (uint32*) buffer;
-	        p16 = (uint16*) p32;
-	        for (y = 0; y < (int)height; y++){
-                png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
-                for (x = 0; x < (int)width; x++)  {
-                    color32 = line[x];
-                    color16;
+		p32 = (uint32*) buffer;
+		p16 = (uint16*) p32;
+		for (y = 0; y < (int)height; y++){
+		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
+		for (x = 0; x < (int)width; x++)  {
+		    color32 = line[x];
+		    color16;
 					a = (color32 >> 24) & 0xff;
-                    r = color32 & 0xff;
-                    g = (color32 >> 8) & 0xff;
-                    b = (color32 >> 16) & 0xff;
-                    switch (displaymode){
-                            case DISPLAY_PIXEL_FORMAT_565:
-                                    color16 = MAKE_RGBA_565(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_5551:
-                                    color16 = MAKE_RGBA_5551(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_4444:
-                                    color16 = MAKE_RGBA_4444(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_8888:
-                                    color32 = MAKE_RGBA_8888(r,g,b,a);
-                                    *(p32+x) = color32;
-                                    break;
-                   }
-                }
-	            p32 += texw;
-	            p16 += texw;
+		    r = color32 & 0xff;
+		    g = (color32 >> 8) & 0xff;
+		    b = (color32 >> 16) & 0xff;
+		    switch (displaymode){
+			    case DISPLAY_PIXEL_FORMAT_565:
+				    color16 = MAKE_RGBA_565(r,g,b,a);
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_5551:
+				    color16 = MAKE_RGBA_5551(r,g,b,a);
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_4444:
+				    color16 = MAKE_RGBA_4444(r,g,b,a);
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_8888:
+				    color32 = MAKE_RGBA_8888(r,g,b,a);
+				    *(p32+x) = color32;
+				    break;
+		   }
+		}
+		    p32 += texw;
+		    p16 += texw;
 	       }
 		   done = 1;
 	 }
     SAFE_FREE (line);
     png_read_end(png_ptr, info_ptr);
     png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-    
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -386,10 +404,10 @@ image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displ
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -401,7 +419,7 @@ image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displ
 
 image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode,int colorkey)
 {
-	
+
 	uint32* p32;
     uint16* p16;
 	uint8* buffer;
@@ -418,7 +436,7 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	uint32 color32;
     uint16 color16;
 	static uint8 r,g,b,a,alpha;
-	
+
 	offset = 0;/*global*/
 
 	if (mbuf == 0) return 0;
@@ -429,8 +447,8 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
     png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
     info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL) {
-            png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-            return 0;
+	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+	    return 0;
     }
     png_init_io(png_ptr, NULL);
 	png_set_read_fn(png_ptr, (png_voidp)mbuf, png_custom_mread_fn);
@@ -446,10 +464,10 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
     png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
     line = (uint32*) malloc(width * 4);
     if (!line) {
-            png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-            return 0;
+	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+	    return 0;
     }
-    
+
 	texw = roundpower2(width);
 	texh = roundpower2(height);
 	bpb = 4;
@@ -460,63 +478,63 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	buffer = (uint8*) malloc(size);
 	memset(buffer,0,size);
 	alpha = 0xff;
-	
+
     if (buffer){
-	        p32 = (uint32*) buffer;
-	        p16 = (uint16*) p32;
-	        for (y = 0; y < (int)height; y++){
-                png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
-                for (x = 0; x < (int)width; x++)  {
-                    color32 = line[x];
+		p32 = (uint32*) buffer;
+		p16 = (uint16*) p32;
+		for (y = 0; y < (int)height; y++){
+		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
+		for (x = 0; x < (int)width; x++)  {
+		    color32 = line[x];
      				a = (color32 >> 24) & 0xff;
-                    r = color32 & 0xff;
-                    g = (color32 >> 8) & 0xff;
-                    b = (color32 >> 16) & 0xff;
+		    r = color32 & 0xff;
+		    g = (color32 >> 8) & 0xff;
+		    b = (color32 >> 16) & 0xff;
 					pixcolor = MAKE_RGB(r,g,b);
 					alpha = 0xff;
 					if(colorkey == pixcolor){
 						alpha = 0x00;
 					}
-                    switch (displaymode){
-                            case DISPLAY_PIXEL_FORMAT_565:
+		    switch (displaymode){
+			    case DISPLAY_PIXEL_FORMAT_565:
 									if(alpha==0x00)
 										color16 = MAKE_RGBA_565(r,g,b,alpha);
-									else   
+									else
 										color16 = MAKE_RGBA_565(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_5551:
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_5551:
 									if(alpha==0x00)
 										color16 = MAKE_RGBA_5551(r,g,b,alpha);
-									else   
+									else
 										color16 = MAKE_RGBA_5551(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_4444:
-                                    if(alpha==0x00)
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_4444:
+				    if(alpha==0x00)
 										color16 = MAKE_RGBA_4444(r,g,b,alpha);
-									else   
+									else
 										color16 = MAKE_RGBA_4444(r,g,b,a);
-                                    *(p16+x) = color16;
-                                    break;
-                            case DISPLAY_PIXEL_FORMAT_8888:
-                                    if(alpha==0x00)
+				    *(p16+x) = color16;
+				    break;
+			    case DISPLAY_PIXEL_FORMAT_8888:
+				    if(alpha==0x00)
 										color32 = MAKE_RGBA_8888(r,g,b,alpha);
-									else   
+									else
 										color32 = MAKE_RGBA_8888(r,g,b,a);
-                                    *(p32+x) = color32;
-                                    break;
-                   }
-                }
-	            p32 += texw;
-	            p16 += texw;
+				    *(p32+x) = color32;
+				    break;
+		   }
+		}
+		    p32 += texw;
+		    p16 += texw;
 	       }
 		   done = 1;
 	 }
     SAFE_FREE (line);
     png_read_end(png_ptr, info_ptr);
     png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
-    
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -577,20 +595,20 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	uint16 color16;
 	static uint8 r,g,b,a;
 	TGAFILEHEADER tfh;
-	
+
 	offset = 0;
-	if (mbuf==NULL){ 
+	if (mbuf==NULL){
 		return 0;
 	}
     memset( &tfh, 0, sizeof(TGAFILEHEADER) );
     fpos = 0;
 	workptr = (char*)mbuf;
-	
+
 	memcpy(&tfh,workptr,sizeof(TGAFILEHEADER));
     fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
-   
+
 	workptr += fpos;
-	
+
     if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
 		tfh.ImageTypeCode!=9 && tfh.ImageTypeCode!=10 && tfh.ImageTypeCode!=11)
 	{
@@ -602,7 +620,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 		nge_print("Unknown Bit Depth.\n");
 		return 0;
 	}
-	
+
 	width = RD16(tfh.Width);// - RD16(tfh.OriginX);
 	height = RD16(tfh.Height);// - RD16(tfh.OriginY);
 	texw = roundpower2(width);
@@ -619,7 +637,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 
 	if ( (tfh.ImageTypeCode&8) == 8 && (tfh.ImageTypeCode&3) > 0 )
 	{
-		// READ RLE ENCODED 
+		// READ RLE ENCODED
 		rlesize = bsize-fpos;
 		rle = (uint8*) malloc( rlesize );
 		if (rle==0)
@@ -627,7 +645,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 			free( tdata );
 			return 0 ;
 		}
-		
+
 		memcpy(rle,workptr,rlesize);
 		workptr += rlesize;
 
@@ -665,7 +683,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 		return 0;
 	}
 
-	
+
 	if((tfh.Depth==24)||(tfh.Depth==32)){
 		bpb = 4;
 		if(displaymode !=DISPLAY_PIXEL_FORMAT_8888){
@@ -686,9 +704,9 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 			src += bytesperline-(tfh.Depth >> 3);
 			vdelta = -(tfh.Depth >> 3);
 		}
-	
+
 		// convert the crappy image and do flipping if neccessary
-	
+
 		switch (tfh.Depth)
 		{
 			case 8:
@@ -701,7 +719,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
-						
+
 						col32 = (uint32)(((uint32)xsrc[2]<<16) | ((uint32)xsrc[1]<<8) | (uint32)xsrc[0] | (0xFF<<24));
 						//BGRA
 						a = (col32 >> 24) & 0xff;
@@ -772,7 +790,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 			}//end switch
 		done = 1;
 	}//end if
-	
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -798,10 +816,10 @@ image_p image_load_tga_fp(int handle,int fsize, int autoclose,int displaymode)
 {
 	image_p pimage = NULL;
 	char* mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -848,8 +866,8 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	uint16 color16;
 	static uint8 r,g,b,a;
 	TGAFILEHEADER tfh;
-	
-	if (mbuf==NULL){ 
+
+	if (mbuf==NULL){
 		return 0;
 	}
 
@@ -857,12 +875,12 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
     memset( &tfh, 0, sizeof(TGAFILEHEADER) );
     fpos  = 0;
 	workptr = (char*)mbuf;
-	
+
 	memcpy(&tfh,workptr,sizeof(TGAFILEHEADER));
     fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
-   
+
 	workptr += fpos;
-	
+
     if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
 		tfh.ImageTypeCode!=9 && tfh.ImageTypeCode!=10 && tfh.ImageTypeCode!=11)
 	{
@@ -874,7 +892,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		nge_print("Unknown Bit Depth.\n");
 		return 0;
 	}
-	
+
 	width = RD16(tfh.Width);// - RD16(tfh.OriginX);
 	height = RD16(tfh.Height);// - RD16(tfh.OriginY);
 	texw = roundpower2(width);
@@ -891,7 +909,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 
 	if ( (tfh.ImageTypeCode&8) == 8 && (tfh.ImageTypeCode&3) > 0 )
 	{
-		// READ RLE ENCODED 
+		// READ RLE ENCODED
 		rlesize = bsize-fpos;
 		rle = (uint8*) malloc( rlesize );
 		if (rle==0)
@@ -899,7 +917,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 			free( tdata );
 			return 0 ;
 		}
-		
+
 		memcpy(rle,workptr,rlesize);
 		workptr += rlesize;
 
@@ -937,7 +955,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		return 0;
 	}
 
-	
+
 	if((tfh.Depth==24)||(tfh.Depth==32)){
 		bpb = 4;
 		if(displaymode !=DISPLAY_PIXEL_FORMAT_8888){
@@ -947,21 +965,21 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		dst = (uint8*)malloc(size);
 		memset(dst,0,size);
 		src = (uint8*)tdata;
-	
+
 		ddelta = (texw-width)*bpb;
-	
+
 		hdelta = bytesperline;
 		if ((tfh.ImageDescrip & TGA_DESC_HORIZONTAL) == 0){
 			src += (height-1) * bytesperline;
 			hdelta = -bytesperline;
 		}
-	
+
 		vdelta = (tfh.Depth >> 3);
 		if ((tfh.ImageDescrip & TGA_DESC_VERTICAL) != 0){
 			src += bytesperline-(tfh.Depth >> 3);
 			vdelta = -(tfh.Depth >> 3);
 		}
-	
+
 		// convert the crappy image and do flipping if neccessary
 		switch (tfh.Depth)
 		{
@@ -975,7 +993,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
-						
+
 						col32 = (uint32)(((uint32)xsrc[2]<<16) | ((uint32)xsrc[1]<<8) | (uint32)xsrc[0] | (0xFF<<24));
 						//BGRA
 						a = (col32 >> 24) & 0xff;
@@ -1054,7 +1072,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 			}//end switch
 		done = 1;
 	}//end if
-	
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -1080,10 +1098,10 @@ image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displ
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -1155,19 +1173,19 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	uint16* p16;
 	uint16 color16;
 	uint32 color32;
-	
+
 	if(mbuf == NULL||bsize==0)
 		return 0;
 	memset(&cinfo,0,sizeof(struct jpeg_decompress_struct));
 	memset(&jerr,0,sizeof(struct jpeg_error_mgr));
-	
+
 	rawsize = bsize;
 	rawdata = (uint8*)mbuf;
 
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F') 
-	{ 
-		return 0; 
-	} 
+	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
+	{
+		return 0;
+	}
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
@@ -1207,7 +1225,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 		jpeg_read_scanlines(&cinfo, &scanline, 1);
 		p = (uint8*)scanline;
 		for(x=0; x<(int)cinfo.output_width; x++){
-		
+
 			r = p[0];
 			g = p[1];
 			b = p[2];
@@ -1258,10 +1276,10 @@ image_p image_load_jpg_fp(int handle,int fsize, int autoclose,int displaymode)
 {
 	image_p pimage = NULL;
 	char* mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -1277,7 +1295,7 @@ image_p image_load_jpg_colorkey(const char* filename, int displaymode,int colork
 	int size;
 	char *mbuf;
 	int handle = io_fopen(filename,IO_RDONLY);
-	
+
 	if(handle == 0)
 		return 0;
 	size = io_fsize(handle);
@@ -1302,17 +1320,17 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	uint16 color16;
 	uint32 color32;
 	uint8 alpha;
-	
+
 	if(mbuf == NULL||bsize==0)
 		return 0;
 
 	rawsize = bsize;
 	rawdata = (uint8*)mbuf;
 
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F') 
-	{ 
-		return 0; 
-	} 
+	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
+	{
+		return 0;
+	}
 
 
 	cinfo.err = jpeg_std_error(&jerr);
@@ -1334,14 +1352,14 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	texh = roundpower2(cinfo.output_height);
 	width = cinfo.output_width;
 	height = cinfo.output_height;
-	
+
 	if(displaymode == DISPLAY_PIXEL_FORMAT_8888){
 		bpb = 4;
 	}
 	size = texw * texh * bpb;
 	data = (uint8*)malloc(size);
 	memset(data,0,size);
-		
+
 	scanline = (uint8*)malloc(cinfo.output_width * 3);
 	if(!scanline){
 		jpeg_destroy_decompress(&cinfo);
@@ -1354,7 +1372,7 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		jpeg_read_scanlines(&cinfo, &scanline, 1);
 		p = (uint8*)scanline;
 		for(x=0; x<(int)cinfo.output_width; x++){
-		
+
 			r = p[0];
 			g = p[1];
 			b = p[2];
@@ -1410,10 +1428,10 @@ image_p image_load_jpg_colorkey_fp(int handle,int fsize, int autoclose,int displ
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -1437,7 +1455,7 @@ image_p image_load_bmp(const char* filename, int displaymode)
 	if(fd == 0)
 		return 0;
 	size = io_fsize(fd);
-	pbuf = (uint8*)malloc(size); 
+	pbuf = (uint8*)malloc(size);
 	io_fread(pbuf,1,size,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_buf((const char*)pbuf,size,displaymode);
@@ -1472,7 +1490,7 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 	if(displaymode != DISPLAY_PIXEL_FORMAT_8888){
 		bpb = 2;
 	}
-	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight; 
+	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight;
 	size = texw * texh * bpb;
 	data = (uint8*)malloc(size);
 	memset(data,0,size);
@@ -1541,7 +1559,7 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 		}
 		done = 1;
 	}
-	
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -1565,10 +1583,10 @@ image_p image_load_bmp_fp(int handle,int fsize, int autoclose,int displaymode)
 {
 	image_p pimage = NULL;
 	char* mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -1586,11 +1604,11 @@ image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colork
 	int size;
 	uint8* pbuf;
 	int fd = io_fopen(filename,IO_RDONLY);
-	
+
 	if(fd == 0)
 		return 0;
 	size = io_fsize(fd);
-	pbuf = (uint8*)malloc(size); 
+	pbuf = (uint8*)malloc(size);
 	io_fread(pbuf,1,size,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_colorkey_buf((const char*)pbuf,size,displaymode,colorkey);
@@ -1610,12 +1628,12 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	PBITMAPFILEHEADER pbfh = (PBITMAPFILEHEADER)mbuf;
 	PBITMAPINFOHEADER pbih;
 	uint8 alpha;
-	
+
 	if(pbfh->bfType !=0x4d42){
 		nge_print("not bmp file\n");
 		return 0;
 	}
-	
+
 	pbih = (PBITMAPINFOHEADER)(mbuf+sizeof(BITMAPFILEHEADER));
 	dsize = sizeof(BITMAPFILEHEADER)+pbih->biSize;
 	pdata =  (uint8*)mbuf+dsize;
@@ -1627,7 +1645,7 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	if(displaymode != DISPLAY_PIXEL_FORMAT_8888){
 		bpb = 2;
 	}
-	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight; 
+	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight;
 	size = texw * texh * bpb;
 	data = (uint8*)malloc(size);
 	memset(data,0,size);
@@ -1705,7 +1723,7 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		}
 		done = 1;
 	}
-	
+
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
@@ -1729,10 +1747,10 @@ image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displ
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -1753,9 +1771,9 @@ image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displ
 static void png_custom_fwrite_fn(png_structp png_ptr, png_bytep data, png_size_t length)
 {
 	png_size_t check;
-	
+
 	int handle = (int)(png_ptr->io_ptr);
-	
+
 	check = io_fwrite(data,1,length,handle);
 	if (check != length)
 	{
@@ -1778,40 +1796,40 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 	uint8 r = 0, g = 0, b = 0, a = 0;
 	uint16 col16;
 	uint32 col32;
-		
-	
-	if (pimage==0) 
+
+
+	if (pimage==0)
 		return 0;
-	if (pimage->data==0 || pimage->w==0 || pimage->h==0) 
+	if (pimage->data==0 || pimage->w==0 || pimage->h==0)
 		return 0;
 
 
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (!png_ptr)
 		return 0;
-	
+
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
 		png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
 		return 0;
 	}
-	
+
 	col_type = PNG_COLOR_TYPE_RGB;
 	if (alpha!=0)
 		col_type = PNG_COLOR_TYPE_RGBA;
 
 	handle = io_fopen(filename, IO_WRONLY);
-	if (handle == 0) 
+	if (handle == 0)
 		return 0 ;
-	
+
 	png_init_io(png_ptr, NULL);
 	png_set_write_fn(png_ptr, (png_voidp)handle, png_custom_fwrite_fn,NULL);
 	png_set_IHDR(png_ptr, info_ptr, pimage->w, pimage->h,
 		8, col_type, PNG_INTERLACE_NONE,
 		PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	png_write_info(png_ptr, info_ptr);
-	
+
 	line = (uint8*) malloc(pimage->w * 4);
 	if (line==0)
 	{
@@ -1819,7 +1837,7 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 		io_fclose(handle);
 		return 0;
 	}
-	
+
 	src = (uint8*)pimage->data;
 	src8 = (uint8*)src;
 	src16 = (uint16*)src;
@@ -1875,20 +1893,20 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	int fd;
 	uint8 *line,*rleline;
 	TGAFILEHEADER tfh;
-        uint32 x,y;
+	uint32 x,y;
 	static uint8 b,g,r,a;
 	long pos;
 	uint8 *src;
 	uint16 col16;
-	
+
 	uint8* save_buf = NULL;
 	int   save_pos = 0;
-	if (pimage == 0) 
+	if (pimage == 0)
 		return 0;
-	if (pimage->data==0 || pimage->w==0 || pimage->h==0) 
+	if (pimage->data==0 || pimage->w==0 || pimage->h==0)
 		return 0;
 	fd = io_fopen(filename, IO_WRONLY);
-	if (!fd) 
+	if (!fd)
 		return 0;
     memset( &tfh, 0, sizeof(TGAFILEHEADER) );
 	tfh.ImageTypeCode = 2;
@@ -1903,7 +1921,7 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	tfh.Height[1] = pimage->h/256;
 	tfh.Height[0] = pimage->h%256;
 	//io_fwrite( &tfh, 1, sizeof(tfh), fd );
-    
+
 	line = (uint8*) malloc(pimage->w * 4);
 	if (line == 0){
 		io_fclose(fd);
@@ -1914,12 +1932,12 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	memcpy(save_buf+save_pos,&tfh,sizeof(TGAFILEHEADER));
 	save_pos += sizeof(TGAFILEHEADER);
 	memset( line, 0, pimage->w*4 );
-	
+
 	rleline = 0;
 	if (rle){
 		rleline = (uint8*) malloc(pimage->w * 6);
 	}
-	
+
 	src = (uint8*)pimage->data;
 
 	for (y = 0;y<pimage->h;y++)
@@ -2142,10 +2160,10 @@ image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int sw
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -2221,7 +2239,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 	if(bsize < 12||mbuf == 0)
 		return 0;
 	if(mbuf[0]==(char)0x89&&mbuf[1]=='P'&&mbuf[2]=='N'&&mbuf[3]=='G'){
-		
+
 		pimage =  image_load_png_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -2275,10 +2293,10 @@ image_p image_load_colorkey_fp(int handle,int fsize, int autoclose,int displaymo
 {
 	image_p pimage = NULL;
 	char *mbuf;
-	
+
 	if(handle == 0 || fsize == 0)
 		return 0;
-	
+
 	mbuf = (char*) malloc(fsize);
 	io_fread(mbuf,1,fsize,handle);
 	if(autoclose)
@@ -2392,7 +2410,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 	uint32 i,j;
 	uint16 *cpbegin16;
 	uint16 *bmp16;
-	
+
 	uint32 *cpbegin32,*bmp32;
 	if(src->swizzle ==1)
 		unswizzle_swap(src);
@@ -2403,7 +2421,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 		sw = src->w;
 		sh = src->h;
 	}
-	
+
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
 		bmp16 = (uint16*)src->data+sy*src->texw+sx;
@@ -2426,7 +2444,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 			cpbegin16 += des->texw;
 			bmp16     += src->texw;
 		}
-	
+
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
@@ -2450,7 +2468,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 			cpbegin16 += des->texw;
 			bmp16     += src->texw;
 		}
-	
+
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
@@ -2474,7 +2492,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 			cpbegin16 += des->texw;
 			bmp16     += src->texw;
 		}
-	
+
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
@@ -2512,7 +2530,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 	uint32 w = src->w;
 	uint32 h = src->h;
 	uint32 *cpbegin32,*bmp32;
-	
+
 	if(src->swizzle ==1)
 		unswizzle_swap(src);
 	if(des->swizzle ==1)
@@ -2539,7 +2557,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 			}
 			cpbegin16 += des->texw;
 		}
-	
+
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -2562,7 +2580,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 			}
 			cpbegin16 += des->texw;
 		}
-	
+
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -2585,7 +2603,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 			}
 			cpbegin16 += des->texw;
 		}
-	
+
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+y*des->texw+x;
@@ -2638,7 +2656,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 			}
 			cpbegin16 += des->texw;
 			bmp16     += src->texw;
-		}		
+		}
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
@@ -2679,7 +2697,7 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 			}
 			cpbegin16 += des->texw;
 		}
-	
+
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+y*des->texw+x;
@@ -2714,7 +2732,7 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 			}
 			cpbegin16 += des->texw;
 		}
-	
+
 	}
 	else{
 		cpbegin32 = (uint32*)des->data+y*des->texw+x;
@@ -2730,7 +2748,7 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 	}
 }
 
-int image_fliph(image_p pimage) 
+int image_fliph(image_p pimage)
 {
 	uint32 line,width,height;
 	uint8 *new_bits,*bits;
@@ -2750,7 +2768,7 @@ int image_fliph(image_p pimage)
 		bits = pimage->data+y*line;
 		memcpy(new_bits, bits, width);
 		for(c = 0; c < width; c += pimage->bpb) {
-					memcpy(bits + c, new_bits + width - c - pimage->bpb, pimage->bpb);						
+					memcpy(bits + c, new_bits + width - c - pimage->bpb, pimage->bpb);
 		}
 	}
 	free(new_bits);
@@ -2762,7 +2780,7 @@ int image_flipv(image_p pimage)
 	uint8 *from, *mid;
 	uint32 pitch,height,line_s,line_t;
 	uint32 y;
-	
+
 	if (!pimage) return 0;
 	if(pimage->swizzle ==1)
 		unswizzle_swap(pimage);
@@ -2784,9 +2802,6 @@ int image_flipv(image_p pimage)
 		line_t -= pitch;
 	}
 	free(mid);
-	
+
 	return 1;
 }
-
-
-
