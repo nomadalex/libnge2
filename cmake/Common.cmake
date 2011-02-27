@@ -3,7 +3,7 @@
 # Build options
 #
 
-option(SHARED "Build shared library for main Allegro library" on)
+option(SHARED "Build shared library." on)
 set(BUILD_SHARED_LIBS ${SHARED})    # actual CMake variable
 
 # On some 64-bit platforms, libraries should be installed into `lib64'
@@ -271,6 +271,7 @@ endfunction(set_our_framework_properties)
 
 function(install_our_library target)
   install(TARGETS ${target}
+    PERMISSIONS WORLD_READ OWNER_WRITE GROUP_WRITE
     LIBRARY DESTINATION "lib${LIB_SUFFIX}"
     ARCHIVE DESTINATION "lib${LIB_SUFFIX}"
     FRAMEWORK DESTINATION "${FRAMEWORK_INSTALL_PREFIX}"
