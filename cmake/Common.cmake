@@ -194,10 +194,8 @@ endif()
 
 if(PSP)
   set(PLAT_PSP 1)
-  include_directories(SYSTEM ${PSPSDK_PATH}/include)
-  link_directories(${PSPSDK_PATH}/lib)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -G0")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -G0 -fno-exceptions -fno-rtti")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -G0 -D_PSP_FW_VERSION=371")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -G0 -fno-exceptions -fno-rtti -D_PSP_FW_VERSION=371")
 endif(PSP)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WFLAGS} ${WFLAGS_C_ONLY}")
@@ -252,6 +250,14 @@ function(add_our_library target)
     PROFILE_POSTFIX -profile
     )
 endfunction(add_our_library)
+
+function(add_our_executable nm)
+    add_executable(${nm} ${ARGN})
+    # target_link_libraries(${nm} nge2)
+    if(PSP)
+	fix_psp_executable(${nm})
+    endif(PSP)
+endfunction()
 
 function(set_our_framework_properties target nm)
   if(WANT_FRAMEWORKS)

@@ -57,24 +57,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-# After building the ELF binary build the PSP executable.
-function(fix_psp_executable nm)
-    get_target_property(PSP_EXECUTABLE_OUTPUT_NAME ${nm} OUTPUT_NAME)
-    if (NOT PSP_EXECUTABLE_OUTPUT_NAME)
-	set(PSP_EXECUTABLE_OUTPUT_NAME ${nm})
-    endif(NOT PSP_EXECUTABLE_OUTPUT_NAME)
-    set_target_properties(
-	${nm}
-	PROPERTIES LINK_FLAGS "-specs=${PSPSDK_PATH}/lib/prxspecs -Wl,-q,-T${PSPSDK_PATH}/lib/linkfile.prx ${PSPSDK_PATH}/lib/prxexports.o -L${PSPSDK_PATH}/lib"
-	)
-    add_custom_command(
-	TARGET ${nm}
-	POST_BUILD
-	COMMAND psp-fixup-imports ${PSP_EXECUTABLE_OUTPUT_NAME}
-	COMMAND mksfo '${PSP_EXECUTABLE_OUTPUT_NAME}' PARAM.SFO
-	COMMAND psp-prxgen ${PSP_EXECUTABLE_OUTPUT_NAME} ${PSP_EXECUTABLE_OUTPUT_NAME}.prx
-	COMMAND pack-pbp EBOOT.PBP PARAM.SFO NULL NULL NULL NULL NULL ${PSP_EXECUTABLE_OUTPUT_NAME}.prx NULL
-    )
-endfunction()
-
 set(PSP 1)
+
+# message("In psptoolchain.cmake")
