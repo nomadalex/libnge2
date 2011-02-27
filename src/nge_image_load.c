@@ -1114,36 +1114,6 @@ image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displ
 //////////////////////////////////////////////////////////////////////////
 //for jpeg load
 //////////////////////////////////////////////////////////////////////////
-static void jpg_null(j_decompress_ptr cinfo)
-{
-}
-
-static boolean jpg_fill_input_buffer(j_decompress_ptr cinfo)
-{
-	return 1;
-}
-
-static void jpg_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
-{
-
-	cinfo->src->next_input_byte += (size_t) num_bytes;
-	cinfo->src->bytes_in_buffer -= (size_t) num_bytes;
-
-}
-
-static void jpeg_mem_src(j_decompress_ptr cinfo, uint8 *mem, int len)
-{
-	cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
-	cinfo->src->init_source = jpg_null;
-	cinfo->src->fill_input_buffer = jpg_fill_input_buffer;
-	cinfo->src->skip_input_data = jpg_skip_input_data;
-	cinfo->src->resync_to_restart = jpeg_resync_to_restart;
-	cinfo->src->term_source = jpg_null;
-	cinfo->src->bytes_in_buffer = len;
-	cinfo->src->next_input_byte = mem;
-}
-
-
 image_p image_load_jpg(const char* filename, int displaymode)
 {
 	image_p pimage = NULL;
