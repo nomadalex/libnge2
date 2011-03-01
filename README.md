@@ -23,7 +23,7 @@ http://www.iacger.com/product/official/nge2.php
 安装
 -----
 
-请看 INSTALL.md 文件。
+请看 INSTALL.md 文件。(目前只测试了psp端的构建)
 
 如果需要开发psp端的软件则需要安装 minpspw(pspsdk) 。
 
