@@ -318,15 +318,33 @@ function(copy_files target)
   if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
     return()
   endif()
-  foreach(file ${ARGN})
-    # The "./" is NOT redundant as CMAKE_CFG_INTDIR may be "/".
-    add_custom_command(
-      OUTPUT  "./${CMAKE_CFG_INTDIR}/${file}"
-      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${file}"
-      COMMAND "${CMAKE_COMMAND}" -E copy
-      "${CMAKE_CURRENT_SOURCE_DIR}/${file}"
-      "./${CMAKE_CFG_INTDIR}/${file}"
-      )
+  foreach(arg ${ARGN})
+    if(NOT DoDetail)
+      if(arg STREQUAL "DETAIL")
+	set(DoDetail 1)
+      else()
+	list(APPEND files "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
+	add_custom_command(
+	  OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}"
+	  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	  COMMAND "${CMAKE_COMMAND}" -E copy
+	  "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
+      endif()
+    else()
+      if(from)
+	list(APPEND files "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
+	add_custom_command(
+	  OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}"
+	  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	  COMMAND "${CMAKE_COMMAND}" -E copy
+	  "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
+	set(from)
+      else()
+	set(from ${arg})
+      endif()
+    endif()
   endforeach()
-  add_custom_target(${target} ALL DEPENDS ${ARGN})
+  add_custom_target(${target} ALL DEPENDS ${files})
 endfunction()
