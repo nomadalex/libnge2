@@ -2,7 +2,24 @@
 extern "C"{
 #endif
 #include "png.h"
-#ifndef png_infopp_NULL // deprecated in libpng1.4.4, so
+#if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 8
+#define USE_HIGH_LIBPNG
+#endif
+#include "jpeglib.h"
+#if JPEG_LIB_VERSION > 62
+#define USE_HIGH_JPEGLIB
+#endif
+#include "nge_tga.h"
+#include "nge_bmp.h"
+#include "nge_rle.h"
+#include "nge_image_load.h"
+#include "nge_debug_log.h"
+#include "nge_io_file.h"
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef USE_HIGH_LIBPNG // these macro deprecated in libpng1.4.4, so
 #define int_p_NULL                NULL
 #define png_bytep_NULL            NULL
 #define png_bytepp_NULL           NULL
@@ -20,15 +37,8 @@ extern "C"{
 #define png_write_status_ptr_NULL NULL
 #endif
 
-#include "jpeglib.h"
-#include "nge_tga.h"
-#include "nge_bmp.h"
-#include "nge_rle.h"
-#include "nge_image_load.h"
-#include "nge_debug_log.h"
-#include "nge_io_file.h"
-#ifdef __cplusplus
-}
+#ifdef USE_HIGH_JPEGLIB //this function deprecated
+#define png_set_gray_1_2_4_to_8 png_set_expand_gray_1_2_4_to_8
 #endif
 
 uint32 image_tid = 0;
@@ -302,7 +312,7 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
     png_set_strip_16(png_ptr);
     png_set_packing(png_ptr);
     if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_expand_gray_1_2_4_to_8(png_ptr);
+    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
     png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
     line = (uint32*) malloc(width * 4);
@@ -459,7 +469,7 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
     png_set_strip_16(png_ptr);
     png_set_packing(png_ptr);
     if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_expand_gray_1_2_4_to_8(png_ptr);
+    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
     png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
     line = (uint32*) malloc(width * 4);
@@ -1114,6 +1124,37 @@ image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displ
 //////////////////////////////////////////////////////////////////////////
 //for jpeg load
 //////////////////////////////////////////////////////////////////////////
+#ifndef USE_HIGH_JPEGLIB
+static void jpg_null(j_decompress_ptr cinfo)
+{
+}
+
+static boolean jpg_fill_input_buffer(j_decompress_ptr cinfo)
+{
+	return 1;
+}
+
+static void jpg_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
+{
+
+	cinfo->src->next_input_byte += (size_t) num_bytes;
+	cinfo->src->bytes_in_buffer -= (size_t) num_bytes;
+
+}
+
+static void jpeg_mem_src(j_decompress_ptr cinfo, uint8 *mem, int len)
+{
+	cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
+	cinfo->src->init_source = jpg_null;
+	cinfo->src->fill_input_buffer = jpg_fill_input_buffer;
+	cinfo->src->skip_input_data = jpg_skip_input_data;
+	cinfo->src->resync_to_restart = jpeg_resync_to_restart;
+	cinfo->src->term_source = jpg_null;
+	cinfo->src->bytes_in_buffer = len;
+	cinfo->src->next_input_byte = mem;
+}
+#endif
+
 image_p image_load_jpg(const char* filename, int displaymode)
 {
 	image_p pimage = NULL;
