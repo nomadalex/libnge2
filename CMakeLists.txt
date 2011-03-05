@@ -19,8 +19,6 @@ set(NGE2_VERSION 2.1)
 string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
 set(NGE2_DLL_SHORTVER 21)
 
-set(CMAKE_INSTALL_PREFIX ${PSPSDK_PATH})
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
       "Choose the type of build, options are:
