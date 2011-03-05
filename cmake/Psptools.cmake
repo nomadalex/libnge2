@@ -43,7 +43,7 @@ if(PSP)
   if(PSP_KERNEL)
     list(APPEND PSPSDK_LIBS -lpspctrl_driver)
   else()
-    list(APPEND PSPSDK_LIBS -lpspge -lpspctrl -lpspnet -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpsputility -lpspuser)
+    list(APPEND PSPSDK_LIBS -lpspge -lpspctrl -lpspnet -lc -lpspnet_inet -lpspnet_apctl -lpspnet_resolver -lpsputility -lpspuser)
     if(NOT PSP_USER)
       list(APPEND PSPSDK_LIBS -lpspkernel)
     endif()
@@ -58,7 +58,7 @@ if(PSP)
       ${nm}
       PROPERTIES LINK_FLAGS "-specs=${PSPSDK_PATH}/lib/prxspecs -Wl,-q,-T${PSPSDK_PATH}/lib/linkfile.prx ${PSPSDK_PATH}/lib/prxexports.o -L${PSPSDK_PATH}/lib"
       )
-    target_link_libraries(${nm} ${PSPSDK_LIBS} c)
+    target_link_libraries(${nm} c ${PSPSDK_LIBS})
 
     if(NOT PSP_SFO)
       set(PSP_SFO PARAM.SFO)
