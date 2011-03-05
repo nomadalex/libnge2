@@ -20,6 +20,7 @@ set(SRCS_PSP
   parsers/mp3_parser.cpp
   parsers/oggvorbis_parser.cpp
   parsers/pcm_parser.cpp
+  nge_io_mem.c
 )
 
 # Search for C header files in these directories.
