@@ -5,7 +5,6 @@ endif(COMMAND cmake_policy)
 
 # Search in the `cmake' directory for additional CMake modules.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-include(Psptools)
 
 #-----------------------------------------------------------------------------#
 #
