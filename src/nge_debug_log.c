@@ -1,90 +1,53 @@
 #include "nge_debug_log.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef _DEBUG_LOG
 
-#if defined WIN32 || defined IPHONEOS
-//win32
-#else
+#if defined(_PSP)
 #define printf pspDebugScreenPrintf
-#define _vsnprintf  vsnprintf
 #endif
-static int first_run = 0;
+#define _vsnprintf  vsnprintf // linux need it
+
+FILE *g_logfile = NULL, *g_errorfile = NULL;
+
 /**
- *  nge_print
+ *  nge_printf
  */
-void nge_log (const char* pMessage, ...)
+void nge_printf (FILE** pFile, const char* filename, const char* pMessage, ...)
 {
-	char	Message[1024] = {0};
-	char  FileInfo[256] = {0};
 	va_list	ArgPtr;
-	FILE*	pFile;
-	static char FirstLog[128]={"-------------------------=NGE LOG=-------------------------\n"};
-	
-	if(first_run == 0){
-		pFile = fopen ("nge_log.txt", "a+b");
-		fwrite (FirstLog, strlen (FirstLog), 1, pFile);
-		fclose (pFile);
-		first_run = 1;
+	char	Message[1024] = {0};
+	char*   FirstLog = "-------------------------=NGE LOG=-------------------------\n";
+
+	if(!(*pFile)){
+		*pFile = fopen (filename, "a+b");
+		fwrite (FirstLog, strlen (FirstLog), 1, *pFile);
 	}
 	va_start (ArgPtr, pMessage);
 	_vsnprintf (Message, sizeof (Message), pMessage, ArgPtr);
 	va_end (ArgPtr);
-	
+
 #ifdef _DEBUG_STDOUT
 	printf (Message);
 #endif
-	pFile = fopen ("nge_log.txt", "a+b");
-
-	fwrite (Message, strlen (Message), 1, pFile);
-
-	fclose (pFile);
-}
-
-/**
- *  nge_error
- */
-void nge_error (const char* pMessage, ...)
-{
-	char	Message[1024] = {0};
-	char  FileInfo[256] = {0};
-	va_list	ArgPtr;
-	FILE*	pFile;
-	static char FirstLog[128]={"-------------------------=NGE LOG=-------------------------\n"};
-	if(first_run == 0){
-		pFile = fopen ("nge_error.txt", "a+b");
-		fwrite (FirstLog, strlen (FirstLog), 1, pFile);
-		fclose (pFile);
-		first_run = 1;
-	}
-	va_start (ArgPtr, pMessage);
-	_vsnprintf (Message, sizeof (Message), pMessage, ArgPtr);
-	va_end (ArgPtr);
-#ifdef _DEBUG_STDOUT
-	printf (Message);
-#endif
-	pFile = fopen ("nge_error.txt", "a+b");
-
-	fwrite (Message, strlen (Message), 1, pFile);
-
-	fclose (pFile);
+	fwrite (Message, strlen (Message), 1, *pFile);
+//	fclose (*pFile); -- notice: I don't close it, because system will close it when quit.
 }
 
 void nge_mem_log()
 {
-#if defined WIN32 || defined IPHONEOS
-	#ifdef MMGR
-		m_dumpMemoryReport();
-	#endif
+#ifdef MMGR
+	m_dumpMemoryReport();
 #endif
 }
 
 void nge_debug_quitgame()
 {
-#if defined WIN32 || defined IPHONEOS
-	exit(-1);
-#else	
+#if defined(_PSP)
 	sceKernelExitGame();
+#endif
 	exit(-1);
-#endif			
 }
 #endif

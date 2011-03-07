@@ -4,14 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#ifdef WIN32
-	#ifdef MMGR
-		//for win32 debug
-		#include "debug/mmgr.h"
-	#endif
+
+#ifdef MMGR
+//for win32 debug -- mmgr can use in ANSI C ...
+#include "debug/mmgr.h"
 #endif
-
-
 
 #ifndef uint32
 #define uint32 unsigned int
@@ -42,7 +39,7 @@
 #endif
 
 /* color define */
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 //blend method hack to fuck with <windows.h>,this is copy from <gl/gl.h>
 #define GL_UNSIGNED_SHORT_5_6_5   0x8363
 #define GL_UNSIGNED_SHORT_4_4_4_4 0x8033
@@ -69,7 +66,7 @@
 #define PSM_565  1
 #define PSM_4444 2
 #define PSM_8888 3
-#else
+#elif defined _PSP
 #include <pspgu.h>
 #define DISPLAY_PIXEL_FORMAT_565  GU_COLOR_5650
 #define DISPLAY_PIXEL_FORMAT_5551 GU_COLOR_5551
@@ -77,7 +74,7 @@
 #define DISPLAY_PIXEL_FORMAT_8888 GU_COLOR_8888
 //blend methord
 #define BLEND_ZERO					0x1000
-#define BLEND_ONE					0x1002 
+#define BLEND_ONE					0x1002
 #define BLEND_SRC_COLOR				GU_SRC_COLOR
 #define BLEND_ONE_MINUS_SRC_COLOR	GU_ONE_MINUS_SRC_COLOR
 #define BLEND_SRC_ALPHA				GU_SRC_ALPHA
@@ -110,7 +107,7 @@
 #define GET_RGBA_B(col)	((col>>16)&0xFF)
 #define GET_RGBA_A(col)	((col>>24)&0xFF)
 
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 //注意PSP是ABGR(高->低)其他是RGBA(高->低)正好反序
 #define MAKE_RGBA_5551(r,g,b,a)  (((r >> 3)<<11) | ((g >> 3) << 6) | ((b >> 3) << 1) | (a >> 7))
 #define MAKE_RGBA_4444(r,g,b,a)  (((r >> 4)<<12) | ((g >> 4) <<8) | ((b >> 4) << 4) | (a >> 4))
@@ -136,7 +133,7 @@
 }
 
 
-#else
+#elif defined _PSP
 
 #define MAKE_RGBA_5551(r,g,b,a)  ((r >> 3) | ((g >> 3) << 5) | ((b >> 3) << 10) | ((a >> 7) << 15))
 #define MAKE_RGBA_4444(r,g,b,a)  ((r >> 4) | ((g >> 4) << 4) | ((b >> 4) << 8) | ((a >> 4) << 12))
@@ -240,8 +237,8 @@ typedef struct{
 
 
 typedef struct {
-    /**
-    * Maximum advance width of any character.
+	/**
+	* Maximum advance width of any character.
 	*/
 	int maxwidth;
 	/**
@@ -307,15 +304,15 @@ typedef struct {
 
 struct _fontproc;
 typedef struct _pfont{		/* common hdr for all font structures*/
-	struct _fontproc*	    procs;	/* font-specific rendering routines*/
-	int		        size;	/* font height in pixels*/
-	int		        rotation;	/* font rotation*/
-	uint32		    disp;	/* font attributes: kerning/antialias*/
+	struct _fontproc*		procs;	/* font-specific rendering routines*/
+	int			size;	/* font height in pixels*/
+	int			rotation;	/* font rotation*/
+	uint32			disp;	/* font attributes: kerning/antialias*/
 	/* font-specific rendering data here*/
 }TFont,*PFont;
 
 typedef struct _fontproc{
-	int	    encoding;	/* routines expect this encoding*/
+	int		encoding;	/* routines expect this encoding*/
 	BOOL	(*GetFontInfo)(PFont pfont, PFontInfo pfontinfo);
 	void 	(*GetTextSize)(PFont pfont, const void *text, int cc,int flags, int *pwidth, int *pheight,int *pbase);
 	void	(*GetTextBits)(PFont pfont, int ch, const uint8 **retmap,int *pwidth, int *pheight,int *pbase);
@@ -335,7 +332,7 @@ typedef struct _fontproc{
 #define MAX_PATH 256
 #endif
 //encoding flags
-#define ENCODING_ASCII   0 
+#define ENCODING_ASCII   0
 #define ENCODING_UNICODE 1
 #define ENCODING_GBK     2
 //type flags
@@ -407,7 +404,7 @@ typedef struct{
 
 
 //input proc define
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 #include <SDL.h>
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
@@ -422,8 +419,8 @@ typedef struct{
 #define PSP_BUTTON_SELECT        SDLK_v
 #define PSP_BUTTON_START         SDLK_b
 #define PSP_BUTTON_HOME          SDLK_n
-#define PSP_BUTTON_HOLD          SDLK_m  
-#else
+#define PSP_BUTTON_HOLD          SDLK_m
+#elif defined _PSP
 #define PSP_BUTTON_UP            8
 #define PSP_BUTTON_DOWN          6
 #define PSP_BUTTON_LEFT          7
@@ -437,7 +434,7 @@ typedef struct{
 #define PSP_BUTTON_SELECT        10
 #define PSP_BUTTON_START         11
 #define PSP_BUTTON_HOME          12
-#define PSP_BUTTON_HOLD          13  
+#define PSP_BUTTON_HOLD          13
 #endif
 
 #define MOUSE_LBUTTON_DOWN 1

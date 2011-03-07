@@ -43,15 +43,7 @@ extern "C"{
 
 uint32 image_tid = 0;
 
-
-#if defined WIN32 || defined IPHONEOS
-//win32 and iphone
-void swizzle_swap(image_p pimage)
-{};
-void unswizzle_swap(image_p pimage)
-{};
-#else
-//psp
+#if defined(_PSP)
 static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsigned int height)
 {
 	unsigned int blockx, blocky;
@@ -148,7 +140,12 @@ void unswizzle_swap(image_p pimage)
 	pimage->data = buffer;
 	pimage->swizzle = 0;
 }
-
+#else
+//win32 and iphone and linux
+void swizzle_swap(image_p pimage)
+{};
+void unswizzle_swap(image_p pimage)
+{};
 #endif
 
 

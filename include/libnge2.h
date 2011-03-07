@@ -1,6 +1,6 @@
 #ifndef LIBNGE2_H_
 #define LIBNGE2_H_
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 #include <SDL.h>
 #endif
 
@@ -30,7 +30,7 @@ extern "C"{
 #endif
 
 
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 #define INIT_VIDEO SDL_INIT_VIDEO
 #define INIT_AUDIO SDL_INIT_AUDIO
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
@@ -64,7 +64,7 @@ void NGE_Quit();
  *@param int screen_height,窗口高
  *@param int screen_bpp,窗口bpp,通常填32
  *@param int screen_full,是否全屏0-窗口,1-全屏
- *@return 
+ *@return
  */
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 

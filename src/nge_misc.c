@@ -1,6 +1,5 @@
 #include "nge_misc.h"
 #include "nge_charsets.h"
-#include "nge_debug_log.h"
 
 int gbk_to_unicode(uint16* out,const char* in,int n)
 {
@@ -26,7 +25,7 @@ int gbk_to_unicode(uint16* out,const char* in,int n)
 			i++;
 			j++;
 		}
-		
+
 	}
 	return j;
 }

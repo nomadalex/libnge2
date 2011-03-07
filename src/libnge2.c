@@ -1,7 +1,6 @@
 #include "libnge2.h"
 
-
-static int inited = 0;
+static int initFlags = 0;
 
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full)
 {
@@ -14,19 +13,17 @@ void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height
 	screen->fullscreen = screen_full;
 }
 
-
-
-
 void NGE_Init(int flags)
 {
 	screen_context_p screen = NULL;
 	int screen_flag = 0;
-	if(inited==0){	
-		#ifdef WIN32
+	if(initFlags==0){
 		screen = GetScreenContext();
+#if defined(WIN32) || defined(__linux__)
+	    /* screen_flag = SDL_OPENGL|SDL_HWSURFACE|SDL_DOUBLEBUF; */
 		screen_flag = SDL_OPENGL;
 		flags |= SDL_INIT_JOYSTICK;
-			if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) 
+			if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
    				exit(1);
 			SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8);
 			SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
@@ -37,10 +34,7 @@ void NGE_Init(int flags)
 			if(screen->fullscreen != 0)
 				screen_flag |= SDL_FULLSCREEN;
 			SDL_SetVideoMode( screen->width, screen->height, screen->bpp,screen_flag);
-		#elif defined IPHONEOS
-			// iphone
-		// iphone
-		screen = GetScreenContext();
+#elif defined IPHONEOS
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			printf("Could not initialize SDL\n");
 		}
@@ -53,47 +47,44 @@ void NGE_Init(int flags)
 		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1);
 		int windowID =
 		SDL_CreateWindow(NULL, 0, 0, screen->width, screen->height,
-                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-		
+			 SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
 		if (windowID == 0) {
 			printf("Could not initialize Window\n");
 		}
 		if (SDL_CreateRenderer(windowID, -1, 0) != 0) {
 			printf("Could not create renderer\n");
-		    }		
-		#endif
-		#if defined IPHONEOS
-			// empty
-		#else
-			if(flags&INIT_AUDIO)
-				CoolAudioDefaultInit();
-		#endif		
-		InitGrahics();
-		inited = 1;
+		    }
+#endif
+#if defined IPHONEOS
+		// empty
+#else
+		if(flags&INIT_AUDIO)
+		  CoolAudioDefaultInit();
+#endif
+		if(flags&INIT_VIDEO)
+			InitGrahics();
+		initFlags = flags;
 	}
 }
+
 void NGE_Quit()
-{
-	if(inited){
-		FiniGrahics();
+	{
+	if(initFlags){
+		if(initFlags&INIT_VIDEO)
+			FiniGrahics();
 		FiniInput();
-		
-		#if defined WIN32 || defined IPHONEOS
-			// empty
-		#else
+
+#if defined IPHONEOS
+		// empty
+#else // psp and linux and win32
+		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
-		#endif
-			
-		#ifdef WIN32
-			SDL_Quit();
-			#ifdef MMGR
-				m_dumpMemoryReport();
-			#endif
-		#elif defined IPHONEOS
-			SDL_Quit();
-		#endif
+#endif
+
+		SDL_Quit();
+#ifdef MMGR
+		m_dumpMemoryReport();
+#endif
+		}
 	}
-}
-
-
-

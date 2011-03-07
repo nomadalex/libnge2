@@ -55,7 +55,7 @@
 #include "log.h"
 #ifdef NGE2_NET
 #include <sys/select.h>
-typedef unsigned long   fd_mask;
+#define fd_mask unsigned long
 #define NBBY    8               /* number of bits in a byte */
 #define NFDBITS (sizeof(fd_mask) * NBBY)        /* bits per mask */
 #endif
@@ -167,12 +167,12 @@ select_dispatch(struct event_base *base, void *arg, struct timeval *tv)
 
 	check_selectop(sop);
 	memcpy(sop->event_readset_out, sop->event_readset_in,
-	       sop->event_fdsz);
+		   sop->event_fdsz);
 	memcpy(sop->event_writeset_out, sop->event_writeset_in,
-	       sop->event_fdsz);
+		   sop->event_fdsz);
 
 	res = select(sop->event_fds + 1, sop->event_readset_out,
-	    sop->event_writeset_out, NULL, tv);
+		sop->event_writeset_out, NULL, tv);
 
 	check_selectop(sop);
 
@@ -182,7 +182,7 @@ select_dispatch(struct event_base *base, void *arg, struct timeval *tv)
 			return (-1);
 		}
 		return (0);
-	} 
+	}
 
 	event_debug(("%s: select reports %d", __func__, res));
 
@@ -255,13 +255,13 @@ select_resize(struct selectop *sop, int fdsz)
 	sop->event_w_by_fd = w_by_fd;
 
 	memset((char *)sop->event_readset_in + sop->event_fdsz, 0,
-	    fdsz - sop->event_fdsz);
+		fdsz - sop->event_fdsz);
 	memset((char *)sop->event_writeset_in + sop->event_fdsz, 0,
-	    fdsz - sop->event_fdsz);
+		fdsz - sop->event_fdsz);
 	memset(sop->event_r_by_fd + n_events_old, 0,
-	    (n_events-n_events_old) * sizeof(struct event*));
+		(n_events-n_events_old) * sizeof(struct event*));
 	memset(sop->event_w_by_fd + n_events_old, 0,
-	    (n_events-n_events_old) * sizeof(struct event*));
+		(n_events-n_events_old) * sizeof(struct event*));
 
 	sop->event_fdsz = fdsz;
 	check_selectop(sop);
@@ -291,7 +291,7 @@ select_add(void *arg, struct event *ev)
 			fdsz = sizeof(fd_mask);
 
 		while (fdsz <
-		    (howmany(ev->ev_fd + 1, NFDBITS) * sizeof(fd_mask)))
+			(howmany(ev->ev_fd + 1, NFDBITS) * sizeof(fd_mask)))
 			fdsz *= 2;
 
 		if (fdsz != sop->event_fdsz) {

@@ -1,0 +1,12 @@
+function(add_nge_executable nm)
+  add_executable(${nm} WIN32 ${ARGN})
+  target_link_libraries(${nm} nge2 coolaudio sqlite3 unzip g stdc++ m c)
+  if(PSP)
+	target_link_libraries(${nm} vorbisfile vorbis ogg pspmpeg pspaudiocodec pspaudio psppower pspgum pspgu psprtc)
+	pack_psp_eboot(${nm})
+  endif()
+endfunction()
+#demo 3 need pmp mod library.
+foreach(i 0 1 2 4 5 6 7 8 9)
+  add_subdirectory(demo${i})
+endforeach()

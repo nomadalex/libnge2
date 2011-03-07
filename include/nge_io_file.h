@@ -4,7 +4,7 @@
 
 //PSP与win32文件读写统一接口
 
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined(__linux__)
 #define IO_RDONLY 0
 #define IO_WRONLY 1
 #define IO_APPEND 2
