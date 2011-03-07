@@ -5,13 +5,13 @@ set(coolaudio_VERSION 2.1)
 string(REGEX MATCH "^[0-9]+[.][0-9]+" coolaudio_SOVERSION ${coolaudio_VERSION})
 set(coolaudio_DLL_SHORTVER 21)
 
-set(SRCS
+set(${CMAKE_PROJECT_NAME}_SRCS
   libcoolaudio.c
   nge_audio.cpp
 )
-set(LIBS)              # always link with these libraries
+set(${CMAKE_PROJECT_NAME}_LIBS)              # always link with these libraries
 
-set(SRCS_PSP
+set(${CMAKE_PROJECT_NAME}_SRCS_PSP
   audio_codec.cpp
   codecs/mp3_codec.cpp
   common/buffered_reader.c
@@ -36,12 +36,12 @@ include_directories(${PROJECT_SOURCE_DIR})
 if(PLAT_LINUX OR PLAT_WIN)
   find_package(SDL_mixer)
   include_directories(${SDLMIXER_INCLUDE_DIR})
-  list(APPEND LIBS ${SDLMIXER_LIBRARY})
+  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS ${SDLMIXER_LIBRARY})
 elseif(PLAT_PSP)
   add_definitions(-DCOOLAUDIO_PSP)
-  list(APPEND SRCS ${SRCS_PSP})
+  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_PSP})
 endif()
 
 add_our_library(coolaudio STATIC
-  ${SRCS})
-target_link_libraries(coolaudio ${LIBS})
+  ${${CMAKE_PROJECT_NAME}_SRCS})
+target_link_libraries(coolaudio ${${CMAKE_PROJECT_NAME}_LIBS})

@@ -37,7 +37,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 include(Common)
 
-set(SRCS_PSP
+set(${CMAKE_PROJECT_NAME}_SRCS_PSP
   src/psp/directory/directory.c
   src/psp/directory/fat.c
   src/psp/directory/miniconv.c
@@ -46,7 +46,7 @@ set(SRCS_PSP
   src/psp/vram.c
   )
 
-set(SRCS
+set(${CMAKE_PROJECT_NAME}_SRCS
   src/hge/hgecolor.cpp
   src/hge/hgeparticle.cpp
   src/hge/hgepmanager.cpp
@@ -92,11 +92,11 @@ set(SRCS
   src/nge_timer.c
   src/utils.c
   )
-set(LIBS)              # always link with these libraries
+set(${CMAKE_PROJECT_NAME}_LIBS)              # always link with these libraries
 
 option(USE_MMGR "Useful for debug." off)
 if(USE_MMGR)
-  list(APPEND SRCS
+  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS
     src/debug/mmgr.cpp
     src/debug/mmgr.h
     src/debug/nommgr.h
@@ -110,12 +110,12 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR}/coolaudio)
 add_subdirectory(coolaudio)
-list(APPEND LIBS coolaudio)
+list(APPEND ${CMAKE_PROJECT_NAME}_LIBS coolaudio)
 
 macro(add_package name include libraries)
   find_package(${name})
   include_directories(${${include}})
-  list(APPEND LIBS ${${libraries}})
+  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS ${${libraries}})
 endmacro()
 
 add_package(ZLIB ZLIB_INCLUDE_DIR ZLIB_LIBRARIES)
@@ -141,29 +141,29 @@ if(PLAT_UNIX)
     message(FATAL_ERROR "Unix port requires pthreads support.")
   endif()
   set(_HAVE_LIBPTHREAD 1)
-  list(APPEND LIBS m ${CMAKE_THREAD_LIBS_INIT})
-  # list(APPEND SRCS ${SRCS_UNIX})
+  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS m ${CMAKE_THREAD_LIBS_INIT})
+  # list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_UNIX})
 
   # -- Windows --
 elseif(PLAT_WIN)
-  list(APPEND SRCS ${SRCS_WIN})
+  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_WIN})
 
   # fixme: I don't have it, so I don't know what it need.
   # -- Mac OS X --
   # elseif(PLAT_MAC)
-  #   list(APPEND SRCS ${SRCS_MAC})
+  #   list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_MAC})
 
   # -- PSP --
 elseif(PLAT_PSP)
-  list(APPEND SRCS ${SRCS_PSP})
+  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_PSP})
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 add_definitions(-DNGE2_NET -D_DEBUG_LOG -D_DEBUG_STDOUT)
 add_library(nge2 STATIC
-  ${SRCS}
+  ${${CMAKE_PROJECT_NAME}_SRCS}
   )
-target_link_libraries(nge2 ${LIBS})
+target_link_libraries(nge2 ${${CMAKE_PROJECT_NAME}_LIBS})
 
 install_our_library(nge2)
 
