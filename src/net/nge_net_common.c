@@ -54,16 +54,16 @@ int socket_recv(int fd,const char *buf,int len)
 	int rlen = 0;
 #ifdef WIN32
 	rlen = recv(fd,(char *)buf,len,0);
-#else        
+#else
 	rlen = read(fd, buf, len);
 #endif
-	return rlen;	
+	return rlen;
 }
 
 int socket_send(int fd,const char *buf,int len)
 {
 	int wlen;
-#ifdef WIN32	
+#ifdef WIN32
 	wlen = send(fd,(const char *)buf,len,0);
 #else
 	wlen = write(fd, buf, len);
@@ -73,13 +73,9 @@ int socket_send(int fd,const char *buf,int len)
 
 int socket_close(int fd)
 {
-#ifdef WIN32	
+#ifdef WIN32
 	return closesocket(fd);
 #else
 	return close(fd);
 #endif
 }
-
-
-
-

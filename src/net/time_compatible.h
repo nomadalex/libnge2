@@ -45,6 +45,7 @@ struct timespec {
 };
 #else
 
+#ifdef _PSP
 #ifdef NGE2_NET
 /*
  * Structure returned by gettimeofday(2) system call,
@@ -55,7 +56,7 @@ struct timeval {
 	long	tv_usec;	/* and microseconds */
 };
 #endif
-
+#endif
 
 #define	timercmp(tvp, uvp, cmp)						\
 	(((tvp)->tv_sec == (uvp)->tv_sec) ?				\

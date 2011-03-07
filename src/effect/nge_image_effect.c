@@ -1,51 +1,22 @@
 #include "nge_image_effect.h"
 #include "nge_image_load.h"
 #include "nge_graphics.h"
+#include "nge/utils.h"
 
-#ifdef WIN32
-
+#if defined(WIN32)  || defined(__linux__)
 #include <GL/glut.h>
 #include <GL/gl.h>
 
 #elif  IPHONEOS
 #include <SDL_opengles.h>
-#else
 
+#else // psp
 #include <pspgu.h>
 #include <pspgum.h>
 
 #endif
 
 #define ___Max(x, y) (x>y?x:y)
-
-//一些有用的公共函数
-//生成一个min---max的浮点数
-#include <time.h>
-float rand_float(float min, float max)
-{
-	static int g_seed ;
-	static int inited = 0;
-	if(inited == 0){
-		g_seed = time(NULL);
-		inited = 1;
-	}
-	g_seed=214013*g_seed+2531011;
-	return min+(g_seed>>16)*(1.0f/65535.0f)*(max-min);
-}
-//生成一个(min,max)的整数
-int rand_int(int min, int max)
-{
-	static int g_seed ;
-	static int inited = 0;
-	if(inited == 0){
-		g_seed = time(NULL);
-		inited = 1;
-	}
-	g_seed=214013*g_seed+2531011;
-	return min+(g_seed ^ g_seed>>15)%(max-min+1);
-}
-
-
 
 //////////////////////////////////////////////////////////////////////////
 //渐入开始
@@ -137,7 +108,7 @@ static void effect_draw_fadein(image_effect_p effector,image_p pimg,float dx,flo
 	image_effect_fade_p pfadein = (image_effect_fade_p)effector;
 	if(pimg == NULL || pfadein == NULL )
 		return;
-	
+
 	switch(pfadein->m_status)
 	{
 	case EFFECT_INIT:
@@ -154,7 +125,7 @@ static void effect_draw_fadein(image_effect_p effector,image_p pimg,float dx,flo
 			if(pfadein->m_delta < pfadein->m_des_alpha){
 				pfadein->m_color = CreateColor(255,255,255,(uint8)pfadein->m_delta,pimg->dtype);
 			}
-			else{ 
+			else{
 				pfadein->m_color = CreateColor(255,255,255,(uint8)pfadein->m_des_alpha,pimg->dtype);
 				pfadein->m_status = EFFECT_STOP;
 			}
@@ -208,7 +179,7 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks)
 	pfadein->m_type = IMAGE_EFFECT_FADEIN;
 	pfadein->m_effect_fps = DEFAULT_FPS;
 	pfadein->m_ptimer = timer_create();
-	
+
 	//计算一些参数
 	pfadein->m_mins = (float)((pfadein->m_des_alpha - pfadein->m_src_alpha)*1000.0/(pfadein->m_timeticks*pfadein->m_effect_fps));
 
@@ -250,7 +221,7 @@ static float effect_setparam_fadeout(image_effect_p effector,float param,int fla
 		if(param>=0&&param<=255){
 			ret = (float)pfadeout->m_des_alpha;
 			pfadeout->m_des_alpha = (int)param;
-			
+
 		}
 		break;
 	default:
@@ -288,7 +259,7 @@ static void effect_draw_fadeout(image_effect_p effector,image_p pimg,float dx,fl
 	image_effect_fade_p pfadeout = (image_effect_fade_p)effector;
 	if(pimg == NULL || pfadeout == NULL )
 		return;
-	
+
 	switch(pfadeout->m_status)
 	{
 	case EFFECT_INIT:
@@ -306,7 +277,7 @@ static void effect_draw_fadeout(image_effect_p effector,image_p pimg,float dx,fl
 			if(pfadeout->m_delta > pfadeout->m_des_alpha){
 				pfadeout->m_color = CreateColor(255,255,255,(uint8)pfadeout->m_delta,pimg->dtype);
 			}
-			else{ 
+			else{
 				pfadeout->m_color = CreateColor(255,255,255,(uint8)pfadeout->m_des_alpha,pimg->dtype);
 				pfadeout->m_status = EFFECT_STOP;
 			}
@@ -468,7 +439,7 @@ static void effect_draw_shake(image_effect_p effector,image_p pimg,float dx,floa
 	image_effect_shake_p pshake = (image_effect_shake_p)effector;
 	if(pimg == NULL || pshake == NULL )
 		return;
-	
+
 	switch(pshake->m_status)
 	{
 	case EFFECT_INIT:
@@ -489,7 +460,7 @@ static void effect_draw_shake(image_effect_p effector,image_p pimg,float dx,floa
 				pshake->m_dfx = dx + rand_float(0, pshake->m_shake_x)*flag;
 				pshake->m_dfy = dy + rand_float(0, pshake->m_shake_y)*flag;
 			}
-			else{ 
+			else{
 				pshake->m_dfx = dx;
 				pshake->m_dfy = dy;
 				pshake->m_status = EFFECT_STOP;
@@ -523,7 +494,7 @@ image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks)
 	//int tmp = 0;
 	image_effect_shake_p pshake = (image_effect_shake_p)malloc(sizeof(image_effect_shake_t));
 	memset(pshake,0,sizeof(image_effect_shake_t));
-	
+
 	if(shake_x>=0)
 		pshake->m_shake_x = shake_x;
 	if(shake_y>=0)
@@ -642,7 +613,7 @@ static float effect_getparam_blur(image_effect_p effector,int flags)
 void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8 a)
 {
 	static uint16* p16 = 0;
-        static uint32* p32 = 0;
+	static uint32* p32 = 0;
        if(x<(int)image->texw && y<(int)image->texh && x >= 0 && y >= 0)
 	{
 		switch(image->dtype)
@@ -682,7 +653,7 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,int* pdes32,ui
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
 			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
@@ -690,7 +661,7 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,int* pdes32,ui
 			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		for(x=0;x<pimg->w;x++)
-		{		
+		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
@@ -794,7 +765,7 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
 			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
@@ -803,7 +774,7 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 		}
 		//pfblur->m_image->texid = image_tid++;
 		for(x=0;x<pimg->w;x++)
-		{		
+		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
@@ -967,15 +938,15 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
 			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
 			p16 = ((uint16*)pimg->data) + pimg->texw * y;
-			pdes16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		for(x=0;x<pimg->w;x+=s)
-		{		
+		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
@@ -993,7 +964,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 						for(by=0;by<s;by++)
 						{
 							*(pdes32 - (s-by)*pimg->texw + x - (s - bx)) = //collt;
-								effect_draw_blur_op2_transition(pimg->dtype, 
+								effect_draw_blur_op2_transition(pimg->dtype,
 									effect_draw_blur_op2_transition(pimg->dtype,collt,colt,bx*255/s),
 									effect_draw_blur_op2_transition(pimg->dtype, coll, col,bx*255/s),
 								by*255/s);
@@ -1018,7 +989,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 						for(by=0;by<s;by++)
 						{
 							*(pdes16 - (s-by)*pimg->texw + x - (s - bx)) = //collt;
-								effect_draw_blur_op2_transition(pimg->dtype, 
+								effect_draw_blur_op2_transition(pimg->dtype,
 									effect_draw_blur_op2_transition(pimg->dtype,collt,colt,bx*255/s),
 									effect_draw_blur_op2_transition(pimg->dtype, coll, col,bx*255/s),
 								by*255/s);
@@ -1057,14 +1028,14 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 	}
 	// 绘制超出的 y
 	if(pimg->dtype==DISPLAY_PIXEL_FORMAT_8888)
-		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1); 
+		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	else
-		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1); 
+		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	for(y-=s;y<pimg->h;y++)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
@@ -1096,7 +1067,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
 			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
@@ -1104,7 +1075,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		for(x=0;x<pimg->w;x+=s)
-		{		
+		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
@@ -1168,14 +1139,14 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 	}
 	// 绘制超出的 y
 	if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
-		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s); 
+		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
 	else
-		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s); 
+		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
 	for(y-=s;y<pimg->h;y++)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			pdes32 = ((uint32*)pfblur->m_image->data) + pimg->texw * y; 
+			pdes32 = ((uint32*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		else
 		{
@@ -1208,7 +1179,7 @@ static void effect_draw_blur(image_effect_p effector,image_p pimg,float dx,float
 	image_effect_blur_p pfblur = (image_effect_blur_p)effector;
 	if(pimg == NULL || pfblur == NULL )
 		return;
-	
+
 	switch(pfblur->m_status)
 	{
 	case EFFECT_INIT:
@@ -1257,8 +1228,8 @@ static void effect_draw_blur(image_effect_p effector,image_p pimg,float dx,float
 		}
 		else
 		{
-			
-			
+
+
 			if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 			{
 				p32 = (uint32*)pimg->data;
@@ -1317,7 +1288,7 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks,int op
 	//int tmp = 0;
 	image_effect_blur_p pfblur = (image_effect_blur_p)malloc(sizeof(image_effect_blur_t));
 	memset(pfblur,0,sizeof(image_effect_blur_p));
-	
+
 	if(src_blur>=0)
 		pfblur->m_src_blur = src_blur;
 	if(des_blur>=0)
@@ -1330,7 +1301,7 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks,int op
 	pfblur->destroy   = effect_destroy_blur;
 	if(optimization<0 || optimization>3)
 		pfblur->m_optimization = 1;
-	else		
+	else
 		pfblur->m_optimization = optimization;
 	pfblur->status  = effect_status_blur;
 	pfblur->m_status = EFFECT_INIT;
@@ -1406,10 +1377,10 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 		if(pftran->m_src_img)
 			DrawImage(pftran->m_src_img, 0, 0, 0, 0, dx, dy, 0, 0);
 
-#if defined WIN32 ||defined IPHONEOS
+#if defined WIN32 ||defined IPHONEOS || defined(__linux__)
 
 		//printf("GF:%d / %d\n", pftran->m_ptimer->get_ticks(pftran->m_ptimer), pftran->m_timeticks);
-	
+
 		glEnable(GL_ALPHA_TEST);		// 启用透明度测试
 		if(pftran->m_reversed)
 			glAlphaFunc(GL_GEQUAL, gf);		// 设定透明度测试方法
@@ -1426,12 +1397,12 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 		glDepthMask(GL_FALSE);			// 停用深度缓冲
 		if(pftran->m_effect_img)
 			DrawImage(pftran->m_effect_img, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
-		
-		glDisable(GL_ALPHA_TEST);		// 停用透明度测试	
+
+		glDisable(GL_ALPHA_TEST);		// 停用透明度测试
 
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);	// 启用输出
 		glDepthMask(GL_TRUE);			// 启用深度缓冲
-		
+
 		glStencilFunc(GL_EQUAL, 1, 1);	// 设定模版测试方法
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// 设定模版写入方法
 
@@ -1441,7 +1412,7 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 		glDisable(GL_STENCIL_TEST);		// 停用模版测试
 
 #else
-	
+
 		sceGuEnable(GU_ALPHA_TEST);		// 启用透明度测试
 		if(pftran->m_reversed)
 			sceGuAlphaFunc(GU_GEQUAL, gf * 255, 0xff);		// 设定透明度测试方法
@@ -1462,12 +1433,12 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 			//nge_print("\nDraw Effect Image");
 			DrawImage(pftran->m_effect_img, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
 		}
-		
-		sceGuDisable(GU_ALPHA_TEST);		// 停用透明度测试	
+
+		sceGuDisable(GU_ALPHA_TEST);		// 停用透明度测试
 
 		//sceGuEnable(GU_COLOR_BUFFER_BIT);	// 启用输出
 		sceGuDepthMask(GU_TRUE);			// 启用深度缓冲
-		
+
 		sceGuStencilFunc(GU_EQUAL, 1, 1);	// 设定模版测试方法
 		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);	// 设定模版写入方法
 
@@ -1475,9 +1446,9 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 
 		sceGuDisable(GU_STENCIL_TEST);		// 停用模版测试
 
-		
+
 #endif
-		
+
 		break;
 	case EFFECT_STOP:
 		if(pimg)

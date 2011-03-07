@@ -6,17 +6,15 @@
 #define CPU_TYPE_222MHZ 222
 #define CPU_TYPE_111MHZ 111
 
-
-
-#if defined WIN32 || defined IPHONEOS
+#if defined WIN32 || defined IPHONEOS || defined __linux__
 typedef struct st_tm{
 	uint16  year;
-	uint16  month; 
-	uint16  day; 
-	uint16  hour; 
-	uint16  minutes; 
-	uint16  seconds; 
-	uint32  microseconds; 
+	uint16  month;
+	uint16  day;
+	uint16  hour;
+	uint16  minutes;
+	uint16  seconds;
+	uint32  microseconds;
 }sys_time_t,*sys_time_p;
 #else
 //psp

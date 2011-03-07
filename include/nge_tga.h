@@ -20,18 +20,11 @@
 #define TGA_DESC_ABITS		0x0f			// Alpha Bits
 #define TGA_DESC_HORIZONTAL	0x10			// Left-Right Ordering: 0 = left to right, 1 = right to left
 #define TGA_DESC_VERTICAL	0x20			// Top-Bottom Ordering: 0 = bottom to top, 1 = top to bottom
-#ifndef uchar 
+#ifndef uchar
 #define uchar unsigned char
 #endif
 
-#ifdef _WIN32
 #pragma pack(push, 1)
-#elif  IPHONEOS
-#pragma pack(1)
-#else
-#pragma pack(1)
-#endif
-
 typedef struct {
     uchar	ImageIDSize;
     uchar	ColorMapType;
@@ -46,13 +39,6 @@ typedef struct {
     uchar	Depth;                                  // Bits per Pixel of Image
     uchar	ImageDescrip;
 } TGAFILEHEADER;
-
-#ifdef _WIN32
 #pragma pack(pop)
-#elif defined IPHONEOS
-#pragma pack()
-#else
-#pragma pack()
-#endif
 
 #endif

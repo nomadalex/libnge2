@@ -1,10 +1,10 @@
-#ifndef WIN32
+#ifdef _PSP
 
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspsdk.h>
 #include <pspthreadman.h>
-#include <pspaudiocodec.h> 
+#include <pspaudiocodec.h>
 #include <pspmpeg.h>
 #include "nge_define.h"
 

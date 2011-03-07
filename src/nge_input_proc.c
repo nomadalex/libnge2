@@ -1,16 +1,6 @@
 #include "nge_input_proc.h"
 #include "nge_debug_log.h"
-#if defined WIN32 || defined IPHONEOS
-SDL_Joystick* joystick;
-SDL_Event event; 
-//win32Ä£ÄâÒ¡¸Ë
-#define WIN_ANALOG_LEFT  0
-#define WIN_ANALOG_RIGHT 1
-#define WIN_ANALOG_UP    2
-#define WIN_ANALOG_DOWN  3
-static char btn_analog[4] = {0};
-#else
-//psp
+#if defined(_PSP)
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
@@ -18,6 +8,16 @@ static char btn_analog[4] = {0};
 
 //define in nge_main.c
 extern int cbid;
+
+#else // win32 and iphone and linux
+SDL_Joystick* joystick;
+SDL_Event event;
+//win32Ä£ÄâÒ¡¸Ë
+#define WIN_ANALOG_LEFT  0
+#define WIN_ANALOG_RIGHT 1
+#define WIN_ANALOG_UP    2
+#define WIN_ANALOG_DOWN  3
+static char btn_analog[4] = {0};
 
 #endif
 
@@ -51,21 +51,21 @@ void btn_down_default(int keycode)
 {
 	switch(keycode)
     {
-	case PSP_BUTTON_UP: 
+	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
-	case PSP_BUTTON_TRIANGLE:	
+	case PSP_BUTTON_TRIANGLE:
 		break;
 	case PSP_BUTTON_CIRCLE:
 		break;
 	case PSP_BUTTON_CROSS:
 		break;
-    case PSP_BUTTON_SQUARE:		
+    case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
 		break;
@@ -90,13 +90,13 @@ void btn_up_default(int keycode)
     {
 	case PSP_BUTTON_UP:
 		break;
-	case PSP_BUTTON_DOWN: 
+	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
 	case PSP_BUTTON_RIGHT:
 		break;
-	case PSP_BUTTON_TRIANGLE:	
+	case PSP_BUTTON_TRIANGLE:
 		break;
 	case PSP_BUTTON_CIRCLE:
 		break;
@@ -113,12 +113,12 @@ void btn_up_default(int keycode)
     }
 }
 
-#if defined WIN32 ||  defined IPHONEOS
+#if defined WIN32 ||  defined IPHONEOS || defined __linux__
 uint8 GetAnalogX()
 {
 	if (btn_analog[WIN_ANALOG_LEFT]) return 0;
 	if (btn_analog[WIN_ANALOG_RIGHT]) return 0xff;
-	
+
 	return 0x80;
 }
 
@@ -127,13 +127,13 @@ uint8 GetAnalogY()
 {
 	if (btn_analog[WIN_ANALOG_UP]) return 0;
 	if (btn_analog[WIN_ANALOG_DOWN]) return 0xff;
-	
+
 	return 0x80;
 }
 static int SetAnalog(int key,char flag)
 {
 	int ret = 0;
-	switch(key) 
+	switch(key)
 	{
 		case SDLK_UP:
 			btn_analog[WIN_ANALOG_UP] = flag;
@@ -163,7 +163,7 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 		mouse_move_proc = mouse_move;
 	if(mouse_btn != NULL)
 		mouse_btn_proc = mouse_btn;
-	touched = 0;	
+	touched = 0;
 }
 
 void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
@@ -199,7 +199,7 @@ void InputProc()
 {
 	int ret = 0,x,y,dx,dy,state,tmp;
 	int mouse_btn_type = 0;
-	
+
 	while( SDL_PollEvent( &event ) )
     {
 		switch(event.type)
@@ -229,7 +229,7 @@ void InputProc()
 				SDL_GetRelativeMouseState(event.motion.which,&dx, &dy);        /* find how much the mouse moved */
 				#endif
 				if(need_swapxy){
-					
+
 					tmp = dx;
 					dx = dy;
 					dy = 320-tmp;
@@ -264,7 +264,7 @@ void InputProc()
 					tmp = x;
 					x = y;
 					y = 320-tmp;
-				}				
+				}
 				mouse_btn_proc(mouse_btn_type,x,y);
 			}
 			if(touch_button_proc){
@@ -276,7 +276,7 @@ void InputProc()
 					tmp = x;
 					x = y;
 					y = 320-tmp;
-				}	
+				}
 				if (state & SDL_BUTTON_LMASK) {
 					touch_button_proc(event.button.which,MOUSE_LBUTTON_DOWN,x,y);
 				}
@@ -299,10 +299,10 @@ void InputProc()
 					tmp = x;
 					x = y;
 					y = 320-tmp;
-				}				
+				}
 				mouse_btn_proc(mouse_btn_type,x,y);
 			}
-				
+
 			if(touch_button_proc){
 				#ifdef IPHONEOS
 				SDL_SelectMouse(event.button.which);        /* select 'mouse' (touch) that moved */
@@ -312,7 +312,7 @@ void InputProc()
 					tmp = x;
 					x = y;
 					y = 320-tmp;
-				}	
+				}
 				if (state & SDL_BUTTON_LMASK) {
 					touch_button_proc(event.button.which,MOUSE_LBUTTON_UP,x,y);
 				}
@@ -320,7 +320,7 @@ void InputProc()
 			}
 			break;
 		}
-		
+
 	}
 	if(analog_proc!=NULL&&ret){
 		analog_proc(GetAnalogX(),GetAnalogY());
@@ -381,7 +381,7 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 
 void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
 {
-	
+
 }
 
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
@@ -426,7 +426,7 @@ void InputProc()
 			if((nge_keymap[i].pspcode&Buttons)==0){
 				if(nge_keymap[i].held == 1){
 						btn_up(nge_keymap[i].mapcode);
-				}	
+				}
 				nge_keymap[i].press = 0;
 				nge_keymap[i].held  = 0;;
 			}
@@ -461,4 +461,3 @@ void FiniInput()
 	analog_proc = NULL;
 }
 #endif
-

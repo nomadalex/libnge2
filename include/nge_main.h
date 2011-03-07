@@ -1,15 +1,11 @@
 #ifndef NGE_MAIN_H_
 #define NGE_MAIN_H_
 
-#ifdef WIN32
+#if defined WIN32 || defined IPHONEOS || defined __linux__
 #include <SDL.h>
-#elif  defined IPHONEOS
-//iphone
-#include <SDL.h>
-#else
+#elif defined _PSP
 #define main	NGE_main
 #define printf pspDebugScreenPrintf
 #endif
-
 
 #endif
