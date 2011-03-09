@@ -56,9 +56,8 @@ void NGE_Init(int flags)
 			printf("Could not create renderer\n");
 		    }
 #endif
-#if defined IPHONEOS
-		// empty
-#else
+
+#ifndef IPHONEOS // psp and linux and win32
 		if(flags&INIT_AUDIO)
 		  CoolAudioDefaultInit();
 #endif
@@ -75,14 +74,15 @@ void NGE_Quit()
 			FiniGrahics();
 		FiniInput();
 
-#if defined IPHONEOS
-		// empty
-#else // psp and linux and win32
+#ifndef IPHONEOS // psp and linux and win32
 		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
 #endif
 
+#ifndef _PSP // psp and linux and win32
 		SDL_Quit();
+#endif
+
 #ifdef MMGR
 		m_dumpMemoryReport();
 #endif

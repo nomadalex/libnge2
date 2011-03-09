@@ -116,21 +116,17 @@ macro(add_package name include libraries)
   find_package(${name})
   include_directories(${${include}})
   list(APPEND ${CMAKE_PROJECT_NAME}_LIBS ${${libraries}})
+  # message("${name} : ${${include}} -- ${${libraries}}")
 endmacro()
 
 add_package(ZLIB ZLIB_INCLUDE_DIR ZLIB_LIBRARIES)
-
 add_package(JPEG JPEG_INCLUDE_DIR JPEG_LIBRARIES)
-
 add_package(PNG PNG_INCLUDE_DIR PNG_LIBRARIES)
-
-add_package(SDL SDL_INCLUDE_DIR SDL_LIBRARIES)
-
 add_package(Freetype FREETYPE_INCLUDE_DIRS FREETYPE_LIBRARIES)
-
 add_package(GIF GIF_INCLUDE_DIR GIF_LIBRARIES)
 
 if(PLAT_UNIX OR PLAT_WIN)
+  add_package(SDL SDL_INCLUDE_DIR SDL_LIBRARY)
   add_package(OpenGL OPENGL_INCLUDE_DIR OPENGL_LIBRARIES)
 endif()
 
