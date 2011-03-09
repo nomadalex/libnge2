@@ -1,0 +1,4 @@
+build*/
+temp/
+samples/res/
+samples/res*
