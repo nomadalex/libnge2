@@ -314,37 +314,22 @@ function(sanitize_cmake_link_flags return)
   set(${return} ${acc_libs} PARENT_SCOPE)
 endfunction(sanitize_cmake_link_flags)
 
-function(copy_files target)
+function(add_copy_file outputs from to)
   if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
     return()
   endif()
-  foreach(arg ${ARGN})
-    if(NOT DoDetail)
-      if(arg STREQUAL "DETAIL")
-	set(DoDetail 1)
-      else()
-	list(APPEND files "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
-	add_custom_command(
-	  OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}"
-	  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-	  COMMAND "${CMAKE_COMMAND}" -E copy
-	  "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-	  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
-      endif()
-    else()
-      if(from)
-	list(APPEND files "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
-	add_custom_command(
-	  OUTPUT  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}"
-	  DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-	  COMMAND "${CMAKE_COMMAND}" -E copy
-	  "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-	  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${arg}")
-	set(from)
-      else()
-	set(from ${arg})
-      endif()
-    endif()
-  endforeach()
-  add_custom_target(${target} ALL DEPENDS ${files})
+
+  if(NOT to)
+    set(to ${from})
+  endif()
+
+  add_custom_command(
+    OUTPUT  "${to}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+    COMMAND "${CMAKE_COMMAND}" -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${to}")
+  list(APPEND ${outputs} ${to})
+  set(${outputs} ${${outputs}} PARENT_SCOPE)
+  # message("${outputs} ${${outputs}} ${from} ${to}")
 endfunction()
