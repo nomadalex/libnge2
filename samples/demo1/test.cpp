@@ -2,9 +2,6 @@
 
 /**
  * nge_test:测试nge2的按键输入字体
- * 所需资源文件:拷贝到相应目录下
- * fonts/GBK14，fonts/ASC14，fonts/simfang.ttf，images/demo1_bg.png，images/demo1_box.jpg
- * images/demo1_icon.jpg
  */
 
 int game_quit = 0;
@@ -20,13 +17,13 @@ void btn_down(int keycode)
 {
 	switch(keycode)
     {
-	case PSP_BUTTON_UP: 
+	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		break;
@@ -51,7 +48,7 @@ void btn_up(int keycode)
     {
 	case PSP_BUTTON_UP:
 		break;
-	case PSP_BUTTON_DOWN: 
+	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
@@ -79,13 +76,13 @@ void DrawScene()
 
 	BeginScene(1);
 	ImageToScreen(pimage_bg,0,0);
-	
+
 	RenderQuad(pimage_box,0,0,0,0,70,185,1,1,0,maskbox);
 	RenderQuad(pimage_box,0,0,0,0,70,5,1,1,0,maskbox);
 	DrawImage(pimage_icon[0],0,0,0,0,-20,-37,128,128);
 	DrawImage(pimage_icon[1],0,0,0,0,-20,143,128,128);
 	ImageToScreen(pimage_text,0,0);
-	
+
 	EndScene();
 }
 
@@ -94,10 +91,10 @@ int main(int argc, char* argv[])
 {
 	PFont pf[2] ;
 	int i;
-	
+
 	NGE_Init(INIT_VIDEO);
 	InitInput(btn_down,btn_up,1);
-	
+
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
 	//创建字体
@@ -140,6 +137,3 @@ int main(int argc, char* argv[])
 	NGE_Quit();
 	return 0;
 }
-
-
-

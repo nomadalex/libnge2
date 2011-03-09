@@ -2,7 +2,7 @@
 #include "libnge2.h"
 
 /**
- * nge_test:nge程序:显示例子
+ * nge_test:nge程序:显示粒子
  */
 //退出标识
 int game_quit = 0;
@@ -13,7 +13,7 @@ hgeParticleSystem*	mParticleSys;
 sprite_p mParticle = NULL;
 
 nge_timer* timer;
-//last tick;	
+//last tick;
 int mlast = 0;
 //dt秒为单位
 float dt = 0;
@@ -29,7 +29,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		break;
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 	mParticle->sprite_clip.top= 0.0f;
 	mParticle->sprite_clip.right= 32.0f;
 	mParticle->sprite_clip.bottom = 32.0f;
-	mParticle->sprite_center.x = 16.0f; 
+	mParticle->sprite_center.x = 16.0f;
 	mParticle->sprite_center.y = 16.0f;
 
 	mParticleSys = new hgeParticleSystem("par/particle1.psi", mParticle);
@@ -112,6 +112,3 @@ int main(int argc, char* argv[])
 	NGE_Quit();
 	return 0;
 }
-
-
-

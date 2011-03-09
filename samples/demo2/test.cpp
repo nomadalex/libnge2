@@ -1,10 +1,6 @@
 #include "libnge2.h"
-//#include "audio_interface.h"
 /**
  * nge_test:测试nge2的按键输入字体
- * 所需资源文件:拷贝到相应目录下
- * fonts/GBK14，fonts/ASC14，fonts/simfang.ttf，images/demo1_bg.png，images/demo1_box.jpg
- * images/demo1_icon.jpg
  * 采用最新的音频接口~
  */
 
@@ -28,13 +24,13 @@ void btn_down(int keycode)
 {
 	switch(keycode)
     {
-	case PSP_BUTTON_UP: 
+	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		break;
@@ -63,7 +59,7 @@ void btn_up(int keycode)
     {
 	case PSP_BUTTON_UP:
 		break;
-	case PSP_BUTTON_DOWN: 
+	case PSP_BUTTON_DOWN:
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
@@ -89,13 +85,13 @@ void DrawScene()
 
 	BeginScene(1);
 	ImageToScreen(pimage_bg,0,0);
-	
+
 	RenderQuad(pimage_box,0,0,0,0,70,185,1,1,0,maskbox);
 	RenderQuad(pimage_box,0,0,0,0,70,5,1,1,0,maskbox);
 	DrawImage(pimage_icon[0],0,0,0,0,-20,-37,128,128);
 	DrawImage(pimage_icon[1],0,0,0,0,-20,143,128,128);
 	ImageToScreen(pimage_text,0,0);
-	
+
 	//上面2句等价与下面2句
 	//RenderQuad(bg,0,0,0,0,0,0,1,1,0,mask8888);
 	//RenderQuad(pimage_text,0,0,0,0,0,0,1,1,0,mask4444);
@@ -131,7 +127,7 @@ int main(int argc, char* argv[])
 		font_drawtext(pf[1],str1[i],strlen(str1[i]),pimage_text,120,35+i*20,FONT_SHOW_NORMAL);
 		font_setcolor(pf[1],MAKE_RGBA_4444(255,0,0,255));
 	}
-	
+
 	pimage_bg = image_load("images/demo2_bg.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(pimage_bg == NULL)
 		printf("can not open file\n");
@@ -140,7 +136,7 @@ int main(int argc, char* argv[])
 		printf("can not open file\n");
 	pimage_icon[0] = image_load_colorkey("images/demo2_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
     	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
-	
+
 
 	//载入3声音一会播放
 	//0-mp3
@@ -188,6 +184,3 @@ int main(int argc, char* argv[])
 	NGE_Quit();
 	return 0;
 }
-
-
-
