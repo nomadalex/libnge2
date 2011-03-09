@@ -6,6 +6,27 @@ function(add_nge_executable nm)
     pack_psp_eboot(${nm})
   endif()
 endfunction()
+
+function(add_resource all_res dir)
+  set(res)
+  foreach(arg ${ARGN})
+    list(APPEND res ${dir}/${arg})
+  endforeach()
+  list(APPEND ${all_res} ${res})
+  set(${all_res} ${${all_res}} PARENT_SCOPE)
+endfunction()
+
+function(copy_res_files target)
+  set(files)
+
+  foreach(arg ${ARGN})
+    add_copy_file(files ../res/${arg} ${arg})
+  endforeach()
+  # message("files : ${files}")
+  add_custom_target(${target}_res DEPENDS ${files})
+  add_dependencies(${target} ${target}_res)
+endfunction()
+
 #demo 3 need pmp mod library.
 foreach(i 0 1 2 4 5 6 7 8 9)
   add_subdirectory(demo${i})
