@@ -155,7 +155,16 @@ elseif(PLAT_PSP)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
-add_definitions(-DNGE2_NET -D_DEBUG_LOG -D_DEBUG_STDOUT)
+
+option(USE_STDOUT_DEBUG "debug logs use stdout." on)
+if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
+  if(USE_STDOUT_DEBUG)
+    add_definitions(-D_DEBUG_STDOUT)
+  endif()
+endif()
+
+add_definitions(-DNGE2_NET)
+
 add_library(nge2 STATIC
   ${${CMAKE_PROJECT_NAME}_SRCS}
   )

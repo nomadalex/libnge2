@@ -5,7 +5,7 @@
 /**
  * debug log function
  */
-#ifdef _DEBUG_LOG
+#ifndef NDEBUG
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -20,8 +20,7 @@ extern "C"{
 #ifdef __cplusplus
 }
 #endif
-
-#else // _DEBUG_LOG
+#else // defined NDEBUG
 #ifdef WIN32
 #pragma warning(disable :4002)
 #endif

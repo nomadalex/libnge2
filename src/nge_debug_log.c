@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#ifdef _DEBUG_LOG
+#ifndef NDEBUG
 
 #if defined(_PSP)
 #define printf pspDebugScreenPrintf
