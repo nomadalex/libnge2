@@ -23,8 +23,36 @@ http://www.iacger.com/product/official/nge2.php
 安装
 -----
 
-请看 INSTALL.md 文件。(目前只测试了psp端的构建)
+nge2使用 CMake 进行构建，请使用 out-of-source 方式进行构建。 建议：
+    $ mkdir Build
+    $ cd Build
 
+    $ cmake ..
+    or
+    $ cmake -G "MinGW Makefiles" ..
+如果是为 psp 编译 NGE2， 请先下载 [cmaketoolchain4psp](https://github.com/ifreedom/cmaketoolchain4psp)。然后输入 ：
+    $ psp-cmake ..
+
+在 Unix/Mac 平台上，你可以使用 `ccmake` 来设定你需要的选项。在 windows 上，
+你可以使用 `cmake-gui`。
+
+如果你缺失了任何依赖，CMake 会将其指出。你可以在安装完依赖后继续构建，当然，
+你需要先删除 `CMakeCache.txt` 文件。
+
+使用生成的 makefiles 或项目文件来构建 NGE2. 如果使用 makefiles, 键入 `make` 或
+`mingw32-make`. 如果使用项目文件，用你的 IDE 打开它。如果使用 Xcode, 你可以使用
+IDE 或从命令行里键入 `xcodebuild`.
+
+如果你需要，你可以安装库文件和头文件。
+
+	$ make install
+	or
+	$ make install DESTDIR=/path/to/destination
+
+目前已通过 psp 端以及 linux 端的编译以及 demos 。
+
+依赖
+----
 如果需要开发psp端的软件则需要安装 minpspw(pspsdk) 。
 
 下载地址：
