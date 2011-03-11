@@ -1,47 +1,40 @@
-# Set the project name.
 project(coolaudio C CXX)
 
-set(coolaudio_VERSION 2.1)
-string(REGEX MATCH "^[0-9]+[.][0-9]+" coolaudio_SOVERSION ${coolaudio_VERSION})
-set(coolaudio_DLL_SHORTVER 21)
+set(COOLAUDIO_VERSION 1.1)
+string(REGEX MATCH "^[0-9]+[.][0-9]+" COOLAUDIO_SOVERSION ${COOLAUDIO_VERSION})
+set(COOLAUDIO_DLL_SHORTVER 11)
 
-set(${CMAKE_PROJECT_NAME}_SRCS
+set(COOLAUDIO_SRCS
   libcoolaudio.c
   nge_audio.cpp
 )
-set(${CMAKE_PROJECT_NAME}_LIBS)              # always link with these libraries
+set(COOLAUDIO_LIBS)
 
-set(${CMAKE_PROJECT_NAME}_SRCS_PSP
-  audio_codec.cpp
-  codecs/mp3_codec.cpp
-  common/buffered_reader.c
-  common/mem64.c
-  nge_audio_psp.cpp
-  parsers/mp3_parser.cpp
-  parsers/oggvorbis_parser.cpp
-  parsers/pcm_parser.cpp
-  nge_io_mem.c
-)
-
-# Search for C header files in these directories.
-include_directories(${PROJECT_SOURCE_DIR})
-# include_directories(${PROJECT_BINARY_DIR}/include)
-
-# message("S is ${PROJECT_SOURCE_DIR}")
-# message("B is ${PROJECT_BINARY_DIR}")
-
-# Put libraries into `lib'.
-# set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-
-if(PLAT_LINUX OR PLAT_WIN)
-  find_package(SDL_mixer)
-  include_directories(${SDLMIXER_INCLUDE_DIR})
-  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS ${SDLMIXER_LIBRARY})
-elseif(PLAT_PSP)
-  add_definitions(-DCOOLAUDIO_PSP)
-  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_PSP})
+if(PLAT_PSP)
+  list(APPEND COOLAUDIO_SRCS
+    audio_codec.cpp
+    codecs/mp3_codec.cpp
+    common/buffered_reader.c
+    common/mem64.c
+    nge_audio_psp.cpp
+    parsers/mp3_parser.cpp
+    parsers/oggvorbis_parser.cpp
+    parsers/pcm_parser.cpp
+    nge_io_mem.c
+    )
 endif()
 
-add_our_library(coolaudio STATIC
-  ${${CMAKE_PROJECT_NAME}_SRCS})
-target_link_libraries(coolaudio ${${CMAKE_PROJECT_NAME}_LIBS})
+# Search for C header files in these directories.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+if(PLAT_UNIX OR PLAT_WIN)
+  find_package(SDL_mixer)
+  include_directories(${SDLMIXER_INCLUDE_DIR})
+  list(APPEND COOLAUDIO_LIBS ${SDLMIXER_LIBRARY})
+endif()
+
+add_our_library(coolaudio STATIC ${COOLAUDIO_SRCS})
+target_link_libraries(coolaudio ${COOLAUDIO_LIBS})
+
+install(TARGETS coolaudio EXPORT nge2 DESTINATION lib)
+install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

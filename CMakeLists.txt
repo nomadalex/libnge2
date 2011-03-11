@@ -11,13 +11,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 # Build options
 #
 
-# Set the project name.
-project(NGE2 C CXX)
-
-set(NGE2_VERSION 2.1)
-string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
-set(NGE2_DLL_SHORTVER 21)
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
     "Choose the type of build, options are:
@@ -28,25 +21,23 @@ endif()
 # Note: This needs to be done before the project command
 set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" CACHE INTERNAL "internal")
 
-# Search for C header files in these directories.
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_BINARY_DIR}/include)
-
 # Put libraries into `lib'.
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 include(Common)
 
-set(${CMAKE_PROJECT_NAME}_SRCS_PSP
-  src/psp/directory/directory.c
-  src/psp/directory/fat.c
-  src/psp/directory/miniconv.c
+# Set the project name.
+project(NGE2 C CXX)
 
-  src/psp/nge_graphics.c
-  src/psp/vram.c
-  )
+set(NGE2_VERSION 2.1)
+string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
+set(NGE2_DLL_SHORTVER 21)
 
-set(${CMAKE_PROJECT_NAME}_SRCS
+# Search for C header files in these directories.
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
+
+set(NGE2_SRCS
   src/hge/hgecolor.cpp
   src/hge/hgeparticle.cpp
   src/hge/hgepmanager.cpp
@@ -92,32 +83,42 @@ set(${CMAKE_PROJECT_NAME}_SRCS
   src/nge_timer.c
   src/utils.c
   )
-set(${CMAKE_PROJECT_NAME}_LIBS)              # always link with these libraries
+set(NGE2_LIBS)              # always link with these libraries
+
+if(PLAT_PSP)
+  list(APPEND NGE2_SRCS
+    src/psp/directory/directory.c
+    src/psp/directory/fat.c
+    src/psp/directory/miniconv.c
+
+    src/psp/nge_graphics.c
+    src/psp/vram.c
+    )
+endif()
 
 option(USE_MMGR "Useful for debug." off)
 if(USE_MMGR)
-  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS
+  add_definitions(-DMMGR)
+  list(APPEND NGE2_SRCS
     src/debug/mmgr.cpp
-    src/debug/mmgr.h
-    src/debug/nommgr.h
     )
 endif()
+
+add_subdirectory(coolaudio)
+include_directories(coolaudio)
+list(APPEND NGE2_LIBS coolaudio)
+
+macro(add_package name include libraries)
+  find_package(${name})
+  include_directories(${${include}})
+  list(APPEND NGE2_LIBS ${${libraries}})
+  # message("${name} : ${${include}} -- ${${libraries}}")
+endmacro()
 
 #-----------------------------------------------------------------------------#
 #
 # Platform drivers
 #
-
-include_directories(${CMAKE_SOURCE_DIR}/coolaudio)
-add_subdirectory(coolaudio)
-list(APPEND ${CMAKE_PROJECT_NAME}_LIBS coolaudio)
-
-macro(add_package name include libraries)
-  find_package(${name})
-  include_directories(${${include}})
-  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS ${${libraries}})
-  # message("${name} : ${${include}} -- ${${libraries}}")
-endmacro()
 
 add_package(ZLIB ZLIB_INCLUDE_DIR ZLIB_LIBRARIES)
 add_package(JPEG JPEG_INCLUDE_DIR JPEG_LIBRARIES)
@@ -137,21 +138,7 @@ if(PLAT_UNIX)
     message(FATAL_ERROR "Unix port requires pthreads support.")
   endif()
   set(_HAVE_LIBPTHREAD 1)
-  list(APPEND ${CMAKE_PROJECT_NAME}_LIBS m ${CMAKE_THREAD_LIBS_INIT})
-  # list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_UNIX})
-
-  # -- Windows --
-elseif(PLAT_WIN)
-  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_WIN})
-
-  # fixme: I don't have it, so I don't know what it need.
-  # -- Mac OS X --
-  # elseif(PLAT_MAC)
-  #   list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_MAC})
-
-  # -- PSP --
-elseif(PLAT_PSP)
-  list(APPEND ${CMAKE_PROJECT_NAME}_SRCS ${${CMAKE_PROJECT_NAME}_SRCS_PSP})
+  list(APPEND NGE2_LIBS m ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -165,11 +152,11 @@ endif()
 
 add_definitions(-DNGE2_NET)
 
-add_library(nge2 STATIC
-  ${${CMAKE_PROJECT_NAME}_SRCS}
-  )
-target_link_libraries(nge2 ${${CMAKE_PROJECT_NAME}_LIBS})
+add_library(nge2 STATIC ${NGE2_SRCS})
+target_link_libraries(nge2 ${NGE2_LIBS})
 
-install_our_library(nge2)
+install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
+install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(EXPORT nge2 DESTINATION share/cmake/Modules)
 
 add_subdirectory(samples)
