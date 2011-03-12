@@ -21,21 +21,23 @@ endif()
 # Note: This needs to be done before the project command
 set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" CACHE INTERNAL "internal")
 
+# Search for C header files in these directories.
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 # Put libraries into `lib'.
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
-include(Common)
-
 # Set the project name.
 project(NGE2 C CXX)
+
+include(Common)
 
 set(NGE2_VERSION 2.1)
 string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
 set(NGE2_DLL_SHORTVER 21)
 
-# Search for C header files in these directories.
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_BINARY_DIR}/include)
+# for some internal headers
+include_directories(include/internal)
 
 set(NGE2_SRCS
   src/hge/hgecolor.cpp
@@ -85,7 +87,7 @@ set(NGE2_SRCS
   )
 set(NGE2_LIBS)              # always link with these libraries
 
-if(PLAT_PSP)
+if(PSP)
   list(APPEND NGE2_SRCS
     src/psp/directory/directory.c
     src/psp/directory/fat.c
@@ -126,13 +128,13 @@ add_package(PNG PNG_INCLUDE_DIR PNG_LIBRARIES)
 add_package(Freetype FREETYPE_INCLUDE_DIRS FREETYPE_LIBRARIES)
 add_package(GIF GIF_INCLUDE_DIR GIF_LIBRARIES)
 
-if(PLAT_UNIX OR PLAT_WIN)
+if(UNIX OR WIN32)
   add_package(SDL SDL_INCLUDE_DIR SDL_LIBRARY)
   add_package(OpenGL OPENGL_INCLUDE_DIR OPENGL_LIBRARIES)
 endif()
 
 # -- Unix --
-if(PLAT_UNIX)
+if(UNIX)
   find_package(Threads)
   if(NOT CMAKE_USE_PTHREADS_INIT)
     message(FATAL_ERROR "Unix port requires pthreads support.")
