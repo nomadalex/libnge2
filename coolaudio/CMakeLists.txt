@@ -25,9 +25,9 @@ if(PLAT_PSP)
 endif()
 
 # Search for C header files in these directories.
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-if(PLAT_UNIX OR PLAT_WIN)
+if(UNIX OR WIN32)
   find_package(SDL_mixer)
   include_directories(${SDLMIXER_INCLUDE_DIR})
   list(APPEND COOLAUDIO_LIBS ${SDLMIXER_LIBRARY})

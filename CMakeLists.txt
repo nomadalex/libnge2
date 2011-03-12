@@ -98,16 +98,16 @@ if(PSP)
     )
 endif()
 
+include_directories(mmgr)
+add_subdirectory(mmgr)
 option(USE_MMGR "Useful for debug." off)
 if(USE_MMGR)
   add_definitions(-DMMGR)
-  list(APPEND NGE2_SRCS
-    src/debug/mmgr.cpp
-    )
+  list(APPEND NGE2_LIBS mmgr)
 endif()
 
-add_subdirectory(coolaudio)
 include_directories(coolaudio)
+add_subdirectory(coolaudio)
 list(APPEND NGE2_LIBS coolaudio)
 
 macro(add_package name include libraries)
