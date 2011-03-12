@@ -142,11 +142,11 @@ void FillRectGradEx(rectf rect,int* colors,int dtype);
  * 如果放大一倍，都填2，缩小1倍填0.5。mask是颜色遮罩，用于对图片进行混色，
  * 例如半透明效果等，默认是显示原色，这里用texture->mask即可
  * 例子1:将200*200的图片tex显示在屏幕100，0处，并放大一倍显示
- * RenderQuad(tex,0,0,0,0,100,0,2,2,0,tex->mask); 
+ * RenderQuad(tex,0,0,0,0,100,0,2,2,0,tex->mask);
  * 例子2:将图片tex的32，32开始的64宽,64高的部分显示在40，80处并旋转90度
- * RenderQuad(tex,32,32,64,64,40,80,1,1,90,tex->mask); 
+ * RenderQuad(tex,32,32,64,64,40,80,1,1,90,tex->mask);
  * 例子3:将图片tex(tex显示模式是8888)的80，80开始的64宽,64高的部分显示在100，100处并半透明显示
- * RenderQuad(tex,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128)); 
+ * RenderQuad(tex,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));
  *@param image_p texture,图片指针
  *@param float sx,图片x坐标
  *@param float sy,图片y坐标
@@ -203,6 +203,7 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
  */
 void ImageToScreen(image_p texture,float dx,float dy);
 
+#ifndef IPHONEOS // nge2i上没有这几个函数... 先这样解决，有时间再看是否添加
 /**
  * 同RenderQuad,增加一个trans参数
  *@param image_p texture,图片指针
@@ -260,9 +261,7 @@ void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, flo
  *@return 无
  */
 void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
-
-
-
+#endif // notice it.
 
 /**
  *将屏幕内容保存在image_p中
@@ -352,7 +351,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@param int color,颜色
  *@param int dtype,颜色类型
  *@return
- */ 
+ */
 void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
 /**
  * 画任意多边形线框函数
@@ -363,7 +362,7 @@ void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@param int color,颜色
  *@param int dtype,颜色类型
  *@return
- */ 
+ */
 void DrawPolygon(float* x, float* y, int count, int color,int dtype);
 /**
  * 画任意实心多边形函数
@@ -374,7 +373,7 @@ void DrawPolygon(float* x, float* y, int count, int color,int dtype);
  *@param int color,颜色
  *@param int dtype,颜色类型
  *@return
- */ 
+ */
 void FillPolygon(float* x, float* y, int count, int color,int dtype);
 /**
  * 画渐进颜色任意实心多边形函数
@@ -385,14 +384,14 @@ void FillPolygon(float* x, float* y, int count, int color,int dtype);
  *@param int* colors,颜色数组注意与顶点个数相同
  *@param int dtype,颜色类型
  *@return
- */ 
+ */
 void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
 /**
  *设置屏幕类型0通常1全屏,2翻转横屏(ip)
- */	
+ */
 void SetScreenType(int type);
-	
-	
+
+
 #ifdef __cplusplus
 }
 #endif

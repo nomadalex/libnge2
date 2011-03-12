@@ -1,9 +1,6 @@
 #ifndef AUDIO_INTERFACE_H_
 #define AUDIO_INTERFACE_H_
 
-
-// lib = libLSAudio.a
-
 #define AUDIO_SEEK_SET	0
 #define AUDIO_SEEK_CUR	1
 #define	AUDIO_SEEK_END	2
@@ -106,8 +103,4 @@ audio_play_p CreateOggPlayer();
 #ifdef __cplusplus
 }
 #endif
-
-
-
 #endif
-

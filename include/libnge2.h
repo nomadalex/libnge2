@@ -1,6 +1,6 @@
 #ifndef LIBNGE2_H_
 #define LIBNGE2_H_
-#if defined WIN32 || defined IPHONEOS || defined(__linux__)
+#if defined WIN32 || defined(__linux__)
 #include <SDL.h>
 #endif
 
@@ -30,7 +30,7 @@ extern "C"{
 #endif
 
 
-#if defined WIN32 || defined IPHONEOS || defined(__linux__)
+#if defined WIN32 || defined(__linux__)
 #define INIT_VIDEO SDL_INIT_VIDEO
 #define INIT_AUDIO SDL_INIT_AUDIO
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO

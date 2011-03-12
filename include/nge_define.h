@@ -5,9 +5,11 @@
 #include <string.h>
 #include <stdarg.h>
 
+#ifndef NDEBUG
 #ifdef MMGR
-//for win32 debug -- mmgr can use in ANSI C ...
-#include "debug/mmgr.h"
+//for debug -- mmgr can use in ANSI C ...
+#include "mmgr.h"
+#endif
 #endif
 
 #ifndef uint32
@@ -404,7 +406,7 @@ typedef struct{
 
 
 //input proc define
-#if defined WIN32 || defined IPHONEOS || defined(__linux__)
+#if defined WIN32 || defined(__linux__)
 #include <SDL.h>
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
@@ -420,7 +422,7 @@ typedef struct{
 #define PSP_BUTTON_START         SDLK_b
 #define PSP_BUTTON_HOME          SDLK_n
 #define PSP_BUTTON_HOLD          SDLK_m
-#elif defined _PSP
+#elif defined _PSP || defined IPHONEOS
 #define PSP_BUTTON_UP            8
 #define PSP_BUTTON_DOWN          6
 #define PSP_BUTTON_LEFT          7

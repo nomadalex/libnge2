@@ -1,6 +1,7 @@
 #ifndef NGE_DIR_IO_H
 #define NGE_DIR_IO_H
 
+#ifndef IPHONEOS
 #define MAX_NAME 256
 
 enum FileFlags{
@@ -30,6 +31,6 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 
 #ifdef __cplusplus
 }
-#endif
-
+#endif // __cplusplus
+#endif // IPHONEOS
 #endif

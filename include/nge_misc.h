@@ -2,15 +2,19 @@
 #define NGE_MISC_H_
 
 
-#if defined WIN32 || defined IPHONEOS || defined(__linux__)
-#include <SDL.h>
 //休眠毫秒数
+#if defined WIN32 || defined(__linux__)
+#include <SDL.h>
 #define nge_sleep(tick) SDL_Delay(tick)
-#else
+
+#elif defined _PSP
 #include <pspdebug.h>
 #include <pspthreadman.h>
-//休眠毫秒数
-#define nge_sleep(tick) sceKernelDelayThread((tick)*1000) // SDL_Delay 支持 PSP 啊，为什么？
+#define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
+
+#elif defined IPHONEOS
+#include <stdlib.h>
+#define nge_sleep(tick) usleep(tick)
 #endif
 
 #ifdef __cplusplus

@@ -39,11 +39,16 @@ void InputProc();
  */
 void FiniInput();
 
+/**
+ *≥ı ºªØmouse-touch
+ */
 void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
-	
+
 void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
 
-void SetSwapXY(int flag);	
+#ifndef IPHONEOS
+void SetSwapXY(int flag);
+#endif
 
 void EmulateTouchMove(int flag);
 
