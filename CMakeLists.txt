@@ -46,7 +46,7 @@ set(NGE2_SRCS
   src/hge/hgerect.cpp
   src/hge/hgevector.cpp
 
-  src/effect/nge_image_effect.c
+  src/nge_image_effect.c
 
   src/helper/CppSQLite3.cpp
   src/helper/dictionary.c
