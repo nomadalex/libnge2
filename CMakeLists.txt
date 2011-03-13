@@ -101,9 +101,11 @@ endif()
 include_directories(mmgr)
 add_subdirectory(mmgr)
 option(USE_MMGR "Useful for debug." off)
-if(USE_MMGR)
-  add_definitions(-DMMGR)
-  list(APPEND NGE2_LIBS mmgr)
+if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
+  if(USE_MMGR)
+    add_definitions(-DMMGR)
+    list(APPEND NGE2_LIBS mmgr)
+  endif()
 endif()
 
 include_directories(coolaudio)
@@ -131,6 +133,12 @@ add_package(GIF GIF_INCLUDE_DIR GIF_LIBRARIES)
 if(UNIX OR WIN32)
   add_package(SDL SDL_INCLUDE_DIR SDL_LIBRARY)
   add_package(OpenGL OPENGL_INCLUDE_DIR OPENGL_LIBRARIES)
+endif()
+
+list(APPEND NGE2_LIBS g c stdc++)
+
+if(PSP)
+  list(APPEND NGE2_LIBS vorbisfile vorbis ogg pspmpeg pspaudiocodec pspaudio psppower pspgum pspgu psprtc)
 endif()
 
 # -- Unix --
