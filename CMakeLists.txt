@@ -40,12 +40,6 @@ set(NGE2_DLL_SHORTVER 21)
 include_directories(include/internal)
 
 set(NGE2_SRCS
-  src/hge/hgecolor.cpp
-  src/hge/hgeparticle.cpp
-  src/hge/hgepmanager.cpp
-  src/hge/hgerect.cpp
-  src/hge/hgevector.cpp
-
   src/nge_image_effect.c
 
   src/helper/CppSQLite3.cpp
@@ -169,4 +163,6 @@ install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(EXPORT nge2 DESTINATION share/cmake/Modules)
 
+include_directories(hge)
+add_subdirectory(hge)
 add_subdirectory(samples)

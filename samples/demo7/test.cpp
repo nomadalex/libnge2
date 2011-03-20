@@ -1,4 +1,4 @@
-#include "hge/hgeparticle.h"
+#include "hgeparticle.h"
 #include "libnge2.h"
 
 /**
