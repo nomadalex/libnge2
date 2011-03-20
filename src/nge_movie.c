@@ -1,12 +1,10 @@
+//Modified by Kun Wang <ifreedom.cn@gmail.com> 2011-03-20 22:06
 #include "nge_movie.h"
-
 
 static int  PMP_Load (const char *);
 static int  PMP_Play (void);
 static int  PMP_Stop (void);
 static int  PMP_Eos  (void);
-
-
 
 // Call once on startup to initialize pmp playback (loads the codecs)
 char* pmp_init();
@@ -26,50 +24,18 @@ void pmp_stop();
 // Check if playback is still running
 int pmp_isplaying();
 
-static void CleanUp()
-{
-
-}
-
 void MoviePlayInit(movie_ops* ops)
 {
-	
-    ops->load  =  PMP_Load;
-    ops->play  =  PMP_Play;
-    ops->stop  =  PMP_Stop;
-    ops->eos   =  PMP_Eos;
+
+	ops->load  =  PMP_Load;
+	ops->play  =  PMP_Play;
+	ops->stop  =  PMP_Stop;
+	ops->eos   =  PMP_Eos;
 }
 
-void MoviePlayFini(void)
-{
-	CleanUp();
+void MoviePlayFini(void) {} //cleanup
 
-}
-
-#ifdef WIN32
-#include <stdio.h>
-#include <SDL.h>
-int  PMP_Load (const char *name)
-{
-	return 1;
-}
-int  PMP_Play (void)
-{
-	printf("NOW Play The Movie X:D\n");
-	SDL_Delay(1000);
-	return 1;
-}
-int  PMP_Stop (void)
-{
-	return 1;
-}
-
-int  PMP_Eos  (void)
-{
-	return 1;
-}
-
-#else
+#if defined _PSP
 /*
 #define SCE_MPEG_AVC_FORMAT_DEFAULT -1
 #define SCE_MPEG_AVC_FORMAT_5650 0
@@ -81,7 +47,7 @@ int  PMP_Eos  (void)
 #include "nge_io_file.h"
 
 int flags = 1;
-static char filename[256]; 
+static char filename[256];
 
 int  PMP_Load (const char *name)
 {
@@ -97,7 +63,7 @@ int  PMP_Load (const char *name)
 		strncpy(filename,name,256);
 		return 1;
 	}
-   	
+
 }
 int  PMP_Play (void)
 {
@@ -116,5 +82,24 @@ int  PMP_Eos  (void)
 	return pmp_isplaying()==1?0:1;
 }
 
+#else //win32, linux, iphone
+#include <stdio.h>
+int  PMP_Load (const char *name)
+{
+	return 1;
+}
+int  PMP_Play (void)
+{
+	printf("NOW Play The Movie X:D\n");
+	return 1;
+}
+int  PMP_Stop (void)
+{
+	return 1;
+}
 
+int  PMP_Eos  (void)
+{
+	return 1;
+}
 #endif

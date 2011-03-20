@@ -18,7 +18,7 @@ extern "C"{
 #include "nge_misc.h"
 #include "nge_timer.h"
 #include "audio_interface.h"
-#include "movieplay/nge_movie.h"
+#include "nge_movie.h"
 #include "nge_gif_animation.h"
 #include "nge_gif_show.h"
 #include "nge_sys_compatible.h"
