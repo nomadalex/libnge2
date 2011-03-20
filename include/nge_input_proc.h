@@ -47,7 +47,11 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
 
 #ifndef IPHONEOS
+MouseMoveProc GetMouseMoveProc();
+MouseButtonProc GetMouseButtonProc();
+
 void SetSwapXY(int flag);
+int  GetSwapXY();
 #endif
 
 void EmulateTouchMove(int flag);
