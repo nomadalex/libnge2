@@ -8,7 +8,8 @@
 #include <GL/gl.h>
 
 #elif  IPHONEOS
-#include <SDL_opengles.h>
+#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES1/glext.h>
 
 #else // psp
 #include <pspgu.h>
