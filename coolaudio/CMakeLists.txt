@@ -6,11 +6,15 @@ set(COOLAUDIO_DLL_SHORTVER 11)
 
 set(COOLAUDIO_SRCS
   libcoolaudio.c
-  nge_audio.cpp
 )
 set(COOLAUDIO_LIBS)
 
-if(PLAT_PSP)
+if(WIN32 OR UNIX)
+  list(APPEND COOLAUDIO_SRCS
+    nge_audio.cpp)
+endif()
+
+if(PSP)
   list(APPEND COOLAUDIO_SRCS
     audio_codec.cpp
     codecs/mp3_codec.cpp
@@ -21,6 +25,13 @@ if(PLAT_PSP)
     parsers/oggvorbis_parser.cpp
     parsers/pcm_parser.cpp
     nge_io_mem.c
+    )
+endif()
+
+if(APPLE) # IPHONESO?
+  list(APPEND COOLAUDIO_SRCS
+    LSAudioDeleCall.m
+    libLSAudio.m
     )
 endif()
 

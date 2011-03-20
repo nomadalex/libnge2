@@ -45,7 +45,11 @@ void CoolAudioDefaultFini()
   Mix_Quit();
 }
 
-#else
+#elif defined IPHONEOS
+void CoolAudioDefaultInit() {}
+void CoolAudioDefaultFini() {}
+
+#elif defined _PSP
 #include <pspsdk.h>
 #include <pspkernel.h>
 #include <pspaudiocodec.h>

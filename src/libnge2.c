@@ -57,10 +57,10 @@ void NGE_Init(int flags)
 		    }
 #endif
 
-#ifndef IPHONEOS // psp and linux and win32
+//#ifndef IPHONEOS // psp and linux and win32 and iphone(on iphone, it is a void function.)
 		if(flags&INIT_AUDIO)
 		  CoolAudioDefaultInit();
-#endif
+//#endif
 		if(flags&INIT_VIDEO)
 			InitGrahics();
 		initFlags = flags;
@@ -74,12 +74,10 @@ void NGE_Quit()
 			FiniGrahics();
 		FiniInput();
 
-#ifndef IPHONEOS // psp and linux and win32
 		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
-#endif
 
-#ifndef _PSP // psp and linux and win32
+#if defined WIN32 || defined __linux__// linux and win32
 		SDL_Quit();
 #endif
 
