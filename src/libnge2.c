@@ -34,46 +34,28 @@ void NGE_Init(int flags)
 			if(screen->fullscreen != 0)
 				screen_flag |= SDL_FULLSCREEN;
 			SDL_SetVideoMode( screen->width, screen->height, screen->bpp,screen_flag);
-#elif defined IPHONEOS
-		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-			printf("Could not initialize SDL\n");
-		}
-		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
-		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
-		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1);
-		int windowID =
-		SDL_CreateWindow(NULL, 0, 0, screen->width, screen->height,
-			 SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-
-		if (windowID == 0) {
-			printf("Could not initialize Window\n");
-		}
-		if (SDL_CreateRenderer(windowID, -1, 0) != 0) {
-			printf("Could not create renderer\n");
-		    }
 #endif
 
 //#ifndef IPHONEOS // psp and linux and win32 and iphone(on iphone, it is a void function.)
 		if(flags&INIT_AUDIO)
 		  CoolAudioDefaultInit();
 //#endif
+#ifndef IPHONEOS
 		if(flags&INIT_VIDEO)
 			InitGrahics();
+#endif
 		initFlags = flags;
 	}
 }
 
 void NGE_Quit()
-	{
+{
 	if(initFlags){
+#ifndef IPHONEOS
+		FiniInput();
 		if(initFlags&INIT_VIDEO)
 			FiniGrahics();
-		FiniInput();
-
+#endif
 		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
 
@@ -84,5 +66,5 @@ void NGE_Quit()
 #ifdef MMGR
 		m_dumpMemoryReport();
 #endif
-		}
 	}
+}
