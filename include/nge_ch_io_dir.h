@@ -1,5 +1,8 @@
 #ifndef NGE_CH_IO_DIR_H
 #define NGE_CH_IO_DIR_H
+#if defined __linux__ || defined IPHONEOS
+#error Don't support linux and iphone
+#endif
 #include <vector>
 #include <stack>
 #include <string>
@@ -45,10 +48,10 @@ public:
 
 	DIR()
 	{
-		
+
 
 	}
-	
+
 	DIR(string n,string p,int s,file_type t,file_time ct,file_time mt)
 	{
 		name=n;
@@ -58,7 +61,7 @@ public:
 
 		ctime=ct;
 		mtime=mt;
-	}	
+	}
 
 	string getPath()
 	{
@@ -68,7 +71,7 @@ public:
 	string getName() const
 	{
 		return name;
-	}	
+	}
 
 	int getSize() const
 	{
@@ -94,16 +97,16 @@ public:
 class DIRComparatorByName
 {
 public:
-	bool operator()(const DIR& d1,const DIR& d2) const	
+	bool operator()(const DIR& d1,const DIR& d2) const
 	{
-		return d1.getName() < d2.getName();		
+		return d1.getName() < d2.getName();
 	}
 };
 
 class DIRComparatorByType
 {
 public:
-	bool operator()(const DIR& d1,const DIR& d2) const	
+	bool operator()(const DIR& d1,const DIR& d2) const
 	{
 		return d1.getType()<d2.getType();
 	}
@@ -112,7 +115,7 @@ public:
 class DIRComparatorBySize
 {
 public:
-	bool operator()(const DIR& d1,const DIR& d2) const	
+	bool operator()(const DIR& d1,const DIR& d2) const
 	{
 		return d1.getSize()<d2.getSize();
 	}
@@ -121,8 +124,8 @@ public:
 class DIRComparatorByCreatTime
 {
 public:
-	bool operator()(const DIR& d1,const DIR& d2) const	
-	{		
+	bool operator()(const DIR& d1,const DIR& d2) const
+	{
 		int year =d1.getCreatTime().year-d2.getCreatTime().year;
 		int month=d1.getCreatTime().month-d2.getCreatTime().month;
 		int day  =d1.getCreatTime().day-d2.getCreatTime().day;
@@ -166,11 +169,11 @@ public:
 class DIRComparatorByModityTime
 {
 public:
-	bool operator()(const DIR& d1,const DIR& d2) const	
-	{		
+	bool operator()(const DIR& d1,const DIR& d2) const
+	{
 		int year =d1.getModityTime().year-d2.getModityTime().year;
 		int month=d1.getModityTime().month-d2.getModityTime().month;
-		int day  =d1.getModityTime().day-d2.getModityTime().day;		
+		int day  =d1.getModityTime().day-d2.getModityTime().day;
 
 		if(year<0)
 		{
@@ -239,7 +242,7 @@ public:
 	int openDirent(string directory);
 
 	//直接返回目录结构
-	int openDirent(string directory,vector<DIR> &dirVec);	
+	int openDirent(string directory,vector<DIR> &dirVec);
 
 	//[中文深层遍历]--构建多层目录索引,得到目录文件总大小
 	int openDeepDirent(string directory);
@@ -247,7 +250,7 @@ public:
 
 	//关闭目录
 	void closeDirent();
-	
+
 	//获取目录
 	vector<DIR> getDirent()
 	{
@@ -263,8 +266,8 @@ public:
 	/*综合排序
 	* 排序 总排序规则--文件夹优先
 	* 先按 文件类型排序[文件夹>文件]
-	* 后按 文件名排序 
-	* 	  
+	* 后按 文件名排序
+	*
 	* [DIR0]
 	* [DIR1]
 	* [FILE0]
@@ -286,13 +289,13 @@ public:
 
 	//按修改时间排序
 	void sortDirentByModityTime();
-	
 
-private:	
+
+private:
 
 	vector<DIR> vec;
 
-	string currentPath;	
+	string currentPath;
 };
 
 
