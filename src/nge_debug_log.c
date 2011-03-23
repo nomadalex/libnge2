@@ -8,7 +8,10 @@
 #if defined(_PSP)
 #define printf pspDebugScreenPrintf
 #endif
+
+#ifdef __linux__
 #define _vsnprintf  vsnprintf // linux need it
+#endif
 
 FILE *g_logfile = NULL, *g_errorfile = NULL;
 
