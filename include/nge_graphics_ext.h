@@ -27,6 +27,13 @@ image_p create_gray_image(image_p src, int gray);
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness);
 
+/**
+ * 建立 src 图像的其他颜色模式图片
+ * @param src 源图像
+ * @param dtype 颜色模式,DISPLAY_PIXEL_FORMAT_XXXX的一种
+ * @return image_p 生成的图片
+ */
+image_p image_conv(image_p src, int dtype);
 #ifdef __cplusplus
 }
 #endif

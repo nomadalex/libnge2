@@ -275,3 +275,95 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 	return pimg;
 }
+
+//image conv
+image_p image_conv(image_p src, int dtype)
+{
+	image_p dst;
+	uint8 recover = 0;
+	uint32 i,j;
+	uint32 *src32, *dst32;
+	uint16 *src16, *dst16;
+	uint8 r,g,b,a;
+
+	if(src->dtype == dtype)
+		return image_clone(src);
+
+	if(src->swizzle ==1){
+		unswizzle_swap(src);
+		recover = 1;
+	}
+	dst = image_create(src->w, src->h, dtype);
+
+	src32 = (uint32*)src->data;
+	dst32 = (uint32*)dst->data;
+	src16 = (uint16*)src->data;
+	dst16 = (uint16*)dst->data;
+	
+	for(i = 0; i < src->h; i++)
+	{
+		for (j = 0; j<src->w; j++)
+		{
+			if(dtype == DISPLAY_PIXEL_FORMAT_8888){
+				if(src->dtype == DISPLAY_PIXEL_FORMAT_4444){
+					GET_RGBA_4444(src16[i*src->texw+j],r,g,b,a);
+					dst32[i*dst->texw+j] = MAKE_RGBA_8888(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_5551){
+					GET_RGBA_5551(src16[i*src->texw+j],r,g,b,a);
+					dst32[i*dst->texw+j] = MAKE_RGBA_8888(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_565){
+					GET_RGBA_565(src16[i*src->texw+j],r,g,b,a);
+					dst32[i*dst->texw+j] = MAKE_RGBA_8888(r,g,b,a);
+				}
+			}
+			else if(dtype == DISPLAY_PIXEL_FORMAT_4444){
+				if(src->dtype == DISPLAY_PIXEL_FORMAT_8888){
+					GET_RGBA_8888(src32[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_4444(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_5551){
+					GET_RGBA_5551(src16[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_4444(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_565){
+					GET_RGBA_565(src16[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_4444(r,g,b,a);
+				}
+			}
+			else if(dtype == DISPLAY_PIXEL_FORMAT_5551){
+				if(src->dtype == DISPLAY_PIXEL_FORMAT_8888){
+					GET_RGBA_8888(src32[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_5551(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_4444){
+					GET_RGBA_4444(src16[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_5551(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_565){
+					GET_RGBA_565(src16[i*src->texw+j],r,g,b,a);
+					dst16[i*dst->texw+j] = MAKE_RGBA_5551(r,g,b,a);
+				}
+			}
+			else if(dtype == DISPLAY_PIXEL_FORMAT_565){
+				if(src->dtype == DISPLAY_PIXEL_FORMAT_8888){
+					GET_RGBA_8888(src32[i*src->texh+j],r,g,b,a);
+					dst16[i*dst->texh+j] = MAKE_RGBA_565(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_4444){
+					GET_RGBA_4444(src16[i*src->texh+j],r,g,b,a);
+					dst16[i*dst->texh+j] = MAKE_RGBA_565(r,g,b,a);
+				}
+				else if(src->dtype == DISPLAY_PIXEL_FORMAT_5551){
+					GET_RGBA_5551(src16[i*src->texh+j],r,g,b,a);
+					dst16[i*dst->texh+j] = MAKE_RGBA_565(r,g,b,a);
+				}
+			}
+		}
+	}
+	swizzle_swap(dst);
+	if(recover)
+		swizzle_swap(src);
+	return dst;
+}
