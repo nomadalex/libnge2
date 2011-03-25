@@ -23,6 +23,7 @@
 #ifndef _NGE_BMP_H
 #define _NGE_BMP_H
 
+#include "nge_common.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

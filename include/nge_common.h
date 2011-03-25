@@ -27,14 +27,13 @@
 extern "C" {
 #endif
 
+#ifndef NDEBUG
+#ifdef MMGR
+//for debug -- mmgr can use in ANSI C ...
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
-#ifndef NDEBUG
-#ifdef MMGR
-//for debug -- mmgr can use in ANSI C ...
 #include "mmgr.h"
 #endif
 #endif

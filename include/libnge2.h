@@ -6,15 +6,11 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.0.0"
 
-#if defined WIN32 || defined(__linux__)
-#include <SDL.h>
-#endif
-
 #ifdef __cplusplus
 extern "C"{
 #endif
 
-#include "nge_image_load.h"
+#include "nge_image.h"
 #include "nge_io_file.h"
 #include "nge_debug_log.h"
 #include "nge_font.h"
@@ -37,6 +33,7 @@ extern "C"{
 
 
 #if defined WIN32 || defined(__linux__)
+#include "SDL.h"
 #define INIT_VIDEO SDL_INIT_VIDEO
 #define INIT_AUDIO SDL_INIT_AUDIO
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
@@ -49,17 +46,20 @@ extern "C"{
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /**
  *NGE初始化函数
  *@param int flags,初始化标志位,INIT_VIDEO(视频),INIT_AUDIO(音频)或者INIT_ALL
  *@return 无
  */
 void NGE_Init(int flags);
+
 /**
  *NGE退出函数
  *@return 无
  */
 void NGE_Quit();
+
 /**
  *设置屏幕窗口
  *@param const char* winname,窗口名字
