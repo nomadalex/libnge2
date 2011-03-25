@@ -48,11 +48,6 @@ set(NGE2_SRCS
 
   src/nge_image_effect.c
 
-  src/helper/CppSQLite3.cpp
-  src/helper/dictionary.c
-  src/helper/iniparser.c
-  src/helper/package.cpp
-
   src/libnge2.c
   src/movieplay/nge_movie.c
 
