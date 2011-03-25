@@ -1,8 +1,8 @@
 set(NET_SRCS
-  src/net/event.c
-  src/net/log.c
-  src/net/nge_net_common.c
-  src/net/select.c
+  event.c
+  log.c
+  nge_net_common.c
+  select.c
   )
 
 add_definitions(-DNGE2_NET)
