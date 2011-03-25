@@ -95,13 +95,7 @@ if(PSP)
 
 	src/psp/nge_graphics.c
 	src/psp/vram.c
-
-	src/net/event.c
-	src/net/log.c
-	src/net/nge_net_common.c
-	src/net/select.c
 	)
-  add_definitions(-DNGE2_NET)
 endif()
 
 include_directories(mmgr)
