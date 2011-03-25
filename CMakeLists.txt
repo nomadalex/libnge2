@@ -77,22 +77,12 @@ set(NGE2_SRCS
   src/nge_sys_compatible.c
   src/nge_tex_cache.c
   src/nge_timer.c
-  src/utils.c
+  src/nge_utils.c
   )
 set(NGE2_LIBS)              # always link with these libraries
 
-if(WIN32 OR PSP)
-  list(APPEND NGE2_SRCS
-	src/nge_ch_io_dir.cpp
-)
-endif()
-
 if(PSP)
   list(APPEND NGE2_SRCS
-	src/psp/directory/directory.c
-	src/psp/directory/fat.c
-	src/psp/directory/miniconv.c
-
 	src/psp/nge_graphics.c
 	src/psp/vram.c
 	)
