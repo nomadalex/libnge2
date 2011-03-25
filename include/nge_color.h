@@ -23,6 +23,8 @@
 #ifndef _NGE_COLOR_H
 #define _NGE_COLOR_H
 
+#include "nge_common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
