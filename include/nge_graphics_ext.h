@@ -1,9 +1,6 @@
 #ifndef NGE_GRAPHICS_EXT_H
 #define NGE_GRAPHICS_EXT_H
-
-#include "nge_define.h"
-
-#include "nge_debug_log.h"
+#include "nge_graphics.h"
 
 #ifdef __cplusplus
 extern "C"{

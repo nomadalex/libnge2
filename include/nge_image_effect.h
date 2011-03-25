@@ -1,8 +1,7 @@
 #ifndef NGE_IMAGE_EFFECT_H_
 #define NGE_IMAGE_EFFECT_H_
-#include "nge_define.h"
+#include "nge_image.h"
 #include "nge_timer.h"
-
 
 //Ä¬ÈÏfpsÎª60
 #define DEFAULT_FPS 60
@@ -69,7 +68,6 @@ typedef struct tag_image_effect{
 	effect_destroy  destroy;
 	effect_getstatus status;
 }image_effect_t,*image_effect_p;
-
 
 #ifdef __cplusplus
 extern "C"{

@@ -1,5 +1,11 @@
 #ifndef LIBNGE2_H_
 #define LIBNGE2_H_
+
+#define NGE_MAJOR_VERSION	2
+#define NGE_MINOR_VERSION	0
+#define NGE_PATCHLEVEL		0
+#define NGE_VERSION "2.0.0"
+
 #if defined WIN32 || defined(__linux__)
 #include <SDL.h>
 #endif
@@ -39,9 +45,6 @@ extern "C"{
 #define INIT_AUDIO 2
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
 #endif
-
-#define NGE_VERSION "2.0.0"
-
 
 #ifdef __cplusplus
 extern "C"{

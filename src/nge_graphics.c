@@ -5,20 +5,29 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <SDL.h>
+#endif
+
+#if defined WIN32 || defined __linux__ || defined IPHONEOS
 #include <math.h>
 #include "nge_graphics.h"
 #include "nge_image_load.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
 #include "nge_tex_cache.h"
+#endif
 
+#if defined IPHONEOS
+#include "nge_input_proc.h"
+#endif
+
+#if defined WIN32 || defined __linux__ || defined IPHONEOS
 //fps count
 static uint32 m_frame = 0;
 static uint32 m_t0 = 0;
 
 static uint32 m_tex_in_ram = -1;
-static uint32 m_tex_id = 0;
-static nge_timer* timer = NULL;
+#define MAX_TEX_CACHE_SIZE 32
+int     m_texcache[MAX_TEX_CACHE_SIZE];
 
 static float m_sintable[360];
 static float m_costable[360];
@@ -27,21 +36,24 @@ static float m_costable[360];
 #define SINF(a)  (m_sintable[a%360])
 #define COSF(a)  (m_costable[a%360])
 
-#define MAX_TEX_CACHE_SIZE 32
-int     m_texcache[MAX_TEX_CACHE_SIZE];
-
-#ifndef NDEBUG
-static void GetVersion()
-{
-	int main_version, sub_version, release_version;
-	const char* version = (const char*)glGetString(GL_VERSION);
-	sscanf(version, "%d.%d.%d", &main_version, &sub_version, &release_version);
-	printf("OpenGL Version: %s\n", version);
-	printf("Main Version: %d\n", main_version);
-	printf("Sub Version: %d\n", sub_version);
-	printf("Release Version: %d\n", release_version);
-}
+#ifdef IPHONEOS
+#define	SCREEN_WIDTH_AUTO SCREEN_WIDTH_IPHONE
+#define	SCREEN_HEIGHT_AUTO 	SCREEN_HEIGHT_IPHONE
+#else
+#define	SCREEN_WIDTH_AUTO SCREEN_WIDTH_PSP
+#define	SCREEN_HEIGHT_AUTO 	SCREEN_HEIGHT_PSP
 #endif
+
+// nge_screen *************************
+static screen_context_t nge_screen = {
+	"NGE2",
+	SCREEN_WIDTH_AUTO,
+	SCREEN_HEIGHT_AUTO,
+	SCREEN_BPP,
+	0
+};
+
+static float screen_r =0.0, screen_g =0.0, screen_b =0.0, screen_a =1.0;
 
 static void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8* a)
 {
@@ -62,8 +74,6 @@ static void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8* a)
 	}
 }
 
-static float screen_r =0.0, screen_g =0.0, screen_b =0.0, screen_a =1.0;
-
 uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 {
 	uint32 u_lastcolor;
@@ -75,15 +85,6 @@ uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 	return u_lastcolor;
 }
 
-// nge_screen *************************
-static screen_context_t nge_screen = {
-	"NGE2",
-	SCREEN_WIDTH_PSP,
-	SCREEN_HEIGHT_PSP,
-	SCREEN_BPP,
-	0
-};
-
 screen_context_p GetScreenContext()
 {
 	return &nge_screen;
@@ -93,6 +94,14 @@ screen_context_p GetScreenContext()
 void SetScreenType(int type)
 {
 }
+#endif
+
+#if defined WIN32 || defined __linux__
+static uint32 m_tex_id = 0;
+static nge_timer* timer = NULL;
+
+
+>>>>>>> Stashed changes
 // ******************************
 
 void SetTexBlend(int src_blend, int des_blend)
@@ -133,9 +142,6 @@ void InitGrahics()
 		m_sintable[i] = sin(i*DEG2RAD);
 		m_costable[i] = cos(i*DEG2RAD);
 	}
-#ifndef NDEBUG
-	GetVersion();
-#endif
 }
 
 void FiniGrahics()
@@ -210,6 +216,7 @@ void LimitFps(uint32 limit)
 	}
 	timer->start(timer);
 }
+
 void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 {
 	static uint8 r,g,b,a;

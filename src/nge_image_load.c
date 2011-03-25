@@ -148,31 +148,28 @@ void unswizzle_swap(image_p pimage)
 {};
 #endif
 
-
 int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype)
 {
 	int color = 0;
 	switch(dtype)
 	{
-		case DISPLAY_PIXEL_FORMAT_565:
-			color = MAKE_RGBA_565(r,g,b,a);
-			break;
-		case DISPLAY_PIXEL_FORMAT_5551:
-			color = MAKE_RGBA_5551(r,g,b,a);
-			break;
-		case DISPLAY_PIXEL_FORMAT_4444:
-			color = MAKE_RGBA_4444(r,g,b,a);
-			break;
-		case DISPLAY_PIXEL_FORMAT_8888:
-			color = MAKE_RGBA_8888(r,g,b,a);
-			break;
-		default:
-			color = MAKE_RGBA_8888(r,g,b,a);
+	case DISPLAY_PIXEL_FORMAT_565:
+		color = MAKE_RGBA_565(r,g,b,a);
+		break;
+	case DISPLAY_PIXEL_FORMAT_5551:
+		color = MAKE_RGBA_5551(r,g,b,a);
+		break;
+	case DISPLAY_PIXEL_FORMAT_4444:
+		color = MAKE_RGBA_4444(r,g,b,a);
+		break;
+	case DISPLAY_PIXEL_FORMAT_8888:
+		color = MAKE_RGBA_8888(r,g,b,a);
+		break;
+	default:
+		color = MAKE_RGBA_8888(r,g,b,a);
 	}
 	return color;
 }
-
-
 
 int GET_PSM_COLOR_MODE(int dtype)
 {
@@ -196,7 +193,6 @@ int GET_PSM_COLOR_MODE(int dtype)
 	}
 	return psm;
 }
-
 
 static int roundpower2(int width)
 {
@@ -1603,8 +1599,6 @@ image_p image_load_bmp_fp(int handle,int fsize, int autoclose,int displaymode)
 	SAFE_FREE(mbuf);
 	return pimage;
 }
-
-
 
 image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colorkey)
 {
