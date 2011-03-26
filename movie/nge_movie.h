@@ -2,7 +2,6 @@
 #define NGE_MOVIE_PLAY_H
 //use libpmp to play movie
 
-
 // load file and do file init
 typedef int (*md_load) (const char *);
 // play movie

@@ -1,11 +1,8 @@
 #ifndef NGE_IMAGE_EFFECT_H_
 #define NGE_IMAGE_EFFECT_H_
-#include "nge_define.h"
+
+#include "nge_image.h"
 #include "nge_timer.h"
-
-
-//默认fps为60
-#define DEFAULT_FPS 60
 
 //支持的效果器
 enum{
@@ -41,7 +38,6 @@ enum{
 	SET_EFFECT_BLUR_OPTIMIZATION
 };
 
-
 struct tag_image_effect;
 
 //公共函数draw用于显示
@@ -70,10 +66,10 @@ typedef struct tag_image_effect{
 	effect_getstatus status;
 }image_effect_t,*image_effect_p;
 
-
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /**
  *创建一个渐入的效果器,渐入是alpha从一个小值变化到一个大值
  *@param int src_alpha,开始的alpha值0-255
@@ -82,6 +78,7 @@ extern "C"{
  *@return image_effect_p,返回效果器的指针
  */
 image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
+
 /**
  *创建一个渐出的效果器,渐入是alpha从一个大值变化到一个小值
  *@param int src_alpha,开始的alpha值0-255
@@ -90,6 +87,7 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
  *@return image_effect_p,返回效果器的指针
  */
 image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
+
 /**
  *创建一个抖动的效果器
  *@param float shake_x,x方向上的抖动范围
@@ -98,6 +96,7 @@ image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
  *@return image_effect_p,返回效果器的指针
  */
 image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
+
 /**
  *创建一个模糊的效果器
  *@param float src_blur,开始时的模糊度 0 为不模糊
@@ -118,7 +117,6 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int o
  *@return image_effect_p,返回效果器的指针
  */
 image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, int reversed, int timeticks);
-
 
 #ifdef __cplusplus
 }

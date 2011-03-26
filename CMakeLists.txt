@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-    "Choose the type of build, options are:
+	"Choose the type of build, options are:
 	None Debug Release RelWithDebInfo MinSizeRel Profile."
 	FORCE)
 endif()
@@ -42,21 +42,10 @@ include_directories(include/internal)
 set(NGE2_SRCS
   src/nge_image_effect.c
 
-  src/helper/CppSQLite3.cpp
-  src/helper/dictionary.c
-  src/helper/iniparser.c
-  src/helper/package.cpp
-
   src/libnge2.c
   src/movieplay/nge_movie.c
 
-  src/net/event.c
-  src/net/log.c
-  src/net/nge_net_common.c
-  src/net/select.c
-
   src/nge_charsets.c
-  src/nge_ch_io_dir.cpp
   src/nge_debug_log.c
   src/nge_font.c
   src/nge_font_freetype.c
@@ -77,19 +66,15 @@ set(NGE2_SRCS
   src/nge_sys_compatible.c
   src/nge_tex_cache.c
   src/nge_timer.c
-  src/utils.c
+  src/nge_utils.c
   )
 set(NGE2_LIBS)              # always link with these libraries
 
 if(PSP)
   list(APPEND NGE2_SRCS
-    src/psp/directory/directory.c
-    src/psp/directory/fat.c
-    src/psp/directory/miniconv.c
-
-    src/psp/nge_graphics.c
-    src/psp/vram.c
-    )
+	src/psp/nge_graphics.c
+	src/psp/vram.c
+	)
 endif()
 
 include_directories(mmgr)
@@ -97,8 +82,8 @@ add_subdirectory(mmgr)
 option(USE_MMGR "Useful for debug." off)
 if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
   if(USE_MMGR)
-    add_definitions(-DMMGR)
-    list(APPEND NGE2_LIBS mmgr)
+	add_definitions(-DMMGR)
+	list(APPEND NGE2_LIBS mmgr)
   endif()
 endif()
 
@@ -139,7 +124,7 @@ endif()
 if(UNIX)
   find_package(Threads)
   if(NOT CMAKE_USE_PTHREADS_INIT)
-    message(FATAL_ERROR "Unix port requires pthreads support.")
+	message(FATAL_ERROR "Unix port requires pthreads support.")
   endif()
   set(_HAVE_LIBPTHREAD 1)
   list(APPEND NGE2_LIBS m ${CMAKE_THREAD_LIBS_INIT})
@@ -150,11 +135,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 option(USE_STDOUT_DEBUG "debug logs use stdout." on)
 if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
   if(USE_STDOUT_DEBUG)
-    add_definitions(-D_DEBUG_STDOUT)
+	add_definitions(-D_DEBUG_STDOUT)
   endif()
 endif()
-
-add_definitions(-DNGE2_NET)
 
 add_library(nge2 STATIC ${NGE2_SRCS})
 target_link_libraries(nge2 ${NGE2_LIBS})

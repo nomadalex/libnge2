@@ -2,13 +2,12 @@
 #define NGE_DIR_IO_H
 
 #ifndef IPHONEOS
-#define MAX_NAME 256
-
 enum FileFlags{
 	FIO_F_DIR,//dir
 	FIO_F_FILE//file
 };
 
+#define MAX_NAME 256
 typedef struct  {
 	int    flag;// FileFlags
 	char   name[MAX_NAME];// name
@@ -19,6 +18,7 @@ typedef void (*file_travel_cb)(dir_desc_p dir_desc,void* data);
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /**
  * 目录遍历访问函数,只支持英文路径和文件名.
  * 注意在PSP上全小写的文件名会以全部大写显示.

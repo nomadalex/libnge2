@@ -1,14 +1,15 @@
 #include "nge_image_effect.h"
 #include "nge_image_load.h"
 #include "nge_graphics.h"
-#include "nge/utils.h"
+#include "nge_misc.h"
 
 #if defined(WIN32)  || defined(__linux__)
 #include <GL/glut.h>
 #include <GL/gl.h>
 
 #elif  IPHONEOS
-#include <SDL_opengles.h>
+#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES1/glext.h>
 
 #else // psp
 #include <pspgu.h>

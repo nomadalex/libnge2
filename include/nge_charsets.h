@@ -1,7 +1,7 @@
 #ifndef __NGE_CHARSET__H
 #define __NGE_CHARSET__H
 
-#include "nge_define.h"
+#include "nge_common.h"
 #ifdef __cplusplus
 extern "C"{
 #endif

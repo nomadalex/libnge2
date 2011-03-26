@@ -1,8 +1,54 @@
 #ifndef NGE_GRAPHICS_H_
 #define NGE_GRAPHICS_H_
-#include "nge_define.h"
 
+#include "nge_common.h"
+#include "nge_image.h"
 
+#define SCREEN_WIDTH_PSP  480
+#define SCREEN_HEIGHT_PSP 272
+
+#define SCREEN_WIDTH_IPHONE  320
+#define SCREEN_HEIGHT_IPHONE 480
+
+#ifdef IPHONEOS
+#define	SCREEN_WIDTH  SCREEN_WIDTH_IPHONE
+#define	SCREEN_HEIGHT SCREEN_HEIGHT_IPHONE
+#else
+#define	SCREEN_WIDTH  SCREEN_WIDTH_PSP
+#define	SCREEN_HEIGHT SCREEN_HEIGHT_PSP
+#endif
+#define SCREEN_BPP    32
+#define TEXTRUE_MAX_WIDTH 512
+#define TEXTRUE_MAX_HEIGHT 512
+#define DEFAULT_FPS 60
+
+//NGE_TRANS_x
+enum{
+	NGE_TRANS_NONE = 0,
+	NGE_TRANS_V,
+	NGE_TRANS_H,
+	NGE_TRANS_HV
+};
+
+typedef struct {
+	char name[256];
+	int width;
+	int height;
+	int bpp;
+	int fullscreen;
+} *screen_context_p;
+
+typedef struct{
+	float x;
+	float y;
+} pointf;
+
+typedef struct{
+	float top;
+	float left;
+	float right;
+	float bottom;
+}rectf;
 
 #ifdef __cplusplus
 extern "C"{
