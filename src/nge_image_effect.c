@@ -1,7 +1,7 @@
 #include "nge_image_effect.h"
 #include "nge_image_load.h"
 #include "nge_graphics.h"
-#include "nge_utils.h"
+#include "nge_misc.h"
 
 #if defined(WIN32)  || defined(__linux__)
 #include <GL/glut.h>

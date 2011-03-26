@@ -1,6 +1,7 @@
 #ifndef NGE_TIMER_H_
 #define NGE_TIMER_H_
-#include "nge_define.h"
+
+#include "nge_common.h"
 
 struct tagTimer;
 
@@ -22,15 +23,16 @@ typedef struct tagTimer{
     uint8  started;
 }nge_timer;
 
-
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /**
  *创建一个timer
  *@return nge_timer*,返回timer的指针
  */	
 nge_timer* timer_create();
+
 /**
  *释放一个timer
  *@param nge_timer* timer,待释放的timer指针

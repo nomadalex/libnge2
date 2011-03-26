@@ -23,6 +23,7 @@
 #ifndef _NGE_TGA_H
 #define _NGE_TGA_H
 
+#include "nge_common.h"
 #include "nge_image.h"
 
 #ifdef __cplusplus
@@ -48,24 +49,21 @@ extern "C" {
 #define TGA_DESC_ABITS		0x0f			// Alpha Bits
 #define TGA_DESC_HORIZONTAL	0x10			// Left-Right Ordering: 0 = left to right, 1 = right to left
 #define TGA_DESC_VERTICAL	0x20			// Top-Bottom Ordering: 0 = bottom to top, 1 = top to bottom
-#ifndef uchar
-#define uchar unsigned char
-#endif
 
 #pragma pack(push, 1)
 typedef struct {
-    uchar	ImageIDSize;
-    uchar	ColorMapType;
-    uchar	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
-    uchar	ColorMapOrigin[2];
-    uchar	ColorMapLength[2];                      // Palette Size
-    uchar	ColorMapESize;							// Size in bits of one Palette entry
-    uchar	OriginX[2];
-    uchar	OriginY[2];
-    uchar	Width[2];                               // Width of Image
-    uchar	Height[2];                              // Height of Image
-    uchar	Depth;                                  // Bits per Pixel of Image
-    uchar	ImageDescrip;
+    uint8	ImageIDSize;
+    uint8	ColorMapType;
+    uint8	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
+    uint8	ColorMapOrigin[2];
+    uint8	ColorMapLength[2];                      // Palette Size
+    uint8	ColorMapESize;							// Size in bits of one Palette entry
+    uint8	OriginX[2];
+    uint8	OriginY[2];
+    uint8	Width[2];                               // Width of Image
+    uint8	Height[2];                              // Height of Image
+    uint8	Depth;                                  // Bits per Pixel of Image
+    uint8	ImageDescrip;
 } TGAFILEHEADER;
 #pragma pack(pop)
 

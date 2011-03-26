@@ -29,31 +29,31 @@
 #define NGE_VERSION "2.0.0"
 
 #ifndef uint32
-#define uint32 unsigned int
+typedef unsigned int uint32;
 #endif
 
 #ifndef sint32
-#define sint32 int
+typedef int sint32;
 #endif
 
 #ifndef uint16
-#define uint16 unsigned short
+typedef unsigned short uint16;
 #endif
 
 #ifndef sint16
-#define sint16 short
+typedef short sint16;
 #endif
 
 #ifndef uint8
-#define uint8  unsigned char
+typedef  unsigned char uint8;
 #endif
 
 #ifndef sint8
-#define sint8  char
+typedef  char sint8;
 #endif
 
 #ifndef BOOL
-#define BOOL uint8
+typedef uint8 BOOL;
 #endif
 
 #define SAFE_FREE(ptr) free(ptr)
