@@ -1,6 +1,7 @@
 #ifndef NGE_GRAPHICS_EXT_H
 #define NGE_GRAPHICS_EXT_H
-#include "nge_graphics.h"
+
+#include "nge_image.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -13,7 +14,6 @@ extern "C"{
  * @param gray 灰度 0 到 100, 0 为源图像, 100 为纯灰色图像
  */
 image_p create_gray_image(image_p src, int gray);
-
 
 /**
  * 建立 src 图像的亮度，饱和度版本

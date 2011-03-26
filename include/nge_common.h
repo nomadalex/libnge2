@@ -23,20 +23,10 @@
 #ifndef _NGE_COMMON_H
 #define _NGE_COMMON_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifndef NDEBUG
-#ifdef MMGR
-//for debug -- mmgr can use in ANSI C ...
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include "mmgr.h"
-#endif
-#endif
+#define NGE_MAJOR_VERSION	2
+#define NGE_MINOR_VERSION	0
+#define NGE_PATCHLEVEL		0
+#define NGE_VERSION "2.0.0"
 
 #ifndef uint32
 #define uint32 unsigned int
@@ -67,6 +57,10 @@ extern "C" {
 #endif
 
 #define SAFE_FREE(ptr) free(ptr)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef __cplusplus
 }

@@ -1,18 +1,16 @@
 #ifndef NGE_MISC_H_
 #define NGE_MISC_H_
 
-
 //休眠毫秒数
-#if defined WIN32 || defined(__linux__)
-#include <SDL.h>
+#if defined WIN32
+#include "SDL.h"
 #define nge_sleep(tick) SDL_Delay(tick)
 
 #elif defined _PSP
-#include <pspdebug.h>
 #include <pspthreadman.h>
 #define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
 
-#elif defined IPHONEOS
+#elif defined IPHONEOS || defined(__linux__)
 #include <stdlib.h>
 #define nge_sleep(tick) usleep(tick)
 #endif
@@ -20,6 +18,7 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /**
  *将GBK编码的字符转化为unicode字符
  *注意outbuffer需要预先分配足够大小.

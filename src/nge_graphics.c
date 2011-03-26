@@ -36,19 +36,11 @@ static float m_costable[360];
 #define SINF(a)  (m_sintable[a%360])
 #define COSF(a)  (m_costable[a%360])
 
-#ifdef IPHONEOS
-#define	SCREEN_WIDTH_AUTO SCREEN_WIDTH_IPHONE
-#define	SCREEN_HEIGHT_AUTO 	SCREEN_HEIGHT_IPHONE
-#else
-#define	SCREEN_WIDTH_AUTO SCREEN_WIDTH_PSP
-#define	SCREEN_HEIGHT_AUTO 	SCREEN_HEIGHT_PSP
-#endif
-
 // nge_screen *************************
 static screen_context_t nge_screen = {
 	"NGE2",
-	SCREEN_WIDTH_AUTO,
-	SCREEN_HEIGHT_AUTO,
+	SCREEN_WIDTH,
+	SCREEN_HEIGHT,
 	SCREEN_BPP,
 	0
 };

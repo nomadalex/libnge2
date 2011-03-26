@@ -23,6 +23,7 @@
 #ifndef _NGE_IMAGE_H
 #define _NGE_IMAGE_H
 
+#include "nge_common.h"
 #include "nge_color.h"
 
 #ifdef __cplusplus
@@ -57,6 +58,7 @@ extern uint32 image_tid;
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 image_p image_load(const char* filename, int displaymode,int swizzle);
+
 /**
  *加载图片,从内存加载
  *@param const char* mbuf,内存地址
@@ -66,6 +68,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle);
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
+
 /**
  *加载图片,从文件指针加载
  *@param int handle,文件指针
@@ -76,10 +79,12 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int swizzle);
+
 /**
  * 同image_load函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
 image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,int swizzle);
+
 /**
  * 同image_load_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
@@ -93,6 +98,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
  *@return image_p pimage,返回image指针
  */
 image_p image_create(int w,int h,int displaymode);
+
 /**
  *创建一个image结构,显示模式是displaymode
  *@param int w,image的宽
@@ -102,24 +108,28 @@ image_p image_create(int w,int h,int displaymode);
  *@return image_p pimage,返回image指针
  */
 image_p image_create_ex(int w,int h,int color,int displaymode);
+
 /**
  *释放一个image
  *@param image_p pimage,待释放的image指针
  *@return void,无返回
  */
 void image_free(image_p pimage);
+
 /**
  *clone一个image,并把image_p返回一个pimage的深拷贝
  *@param image_p pimage,待clone的image指针
  *@return image_p,pimage的深拷贝
  */
 image_p image_clone(image_p pimage);
+
 /**
  *将数据清空,图像变为无色透明
  *@param image_p pimage,待清除的image指针
  *@return void,无返回
  */
 void image_clear(image_p pimage);
+
 /**
  *将源image_p src拷贝到image_p des.注意此函数通常只用作兼容其他使用
  *通常直接用DrawImage到screen是硬件加速.
@@ -130,6 +140,7 @@ void image_clear(image_p pimage);
  *@return
  */
 void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
+
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.注意此函数通常只用作兼容其他使用
  *通常直接用DrawImage到screen是硬件加速.
@@ -144,6 +155,7 @@ void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
  *@return
  */
 void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy);
+
 /**
  *将源image_p src拷贝到image_p des 的alpha混合.注意此函数通常只用作兼容其他使用
  *通常直接用DrawImage到screen是硬件加速.
@@ -155,6 +167,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
  *@return
  */
 void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 dy,int alpha);
+
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.注意此函数通常只用作兼容其他使用
  *通常直接用DrawImage到screen是硬件加速.
@@ -190,7 +203,6 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
  *@return int,成功1,失败0
  */
 int image_fliph(image_p pimage);
-
 
 /**
  * 将图像做垂直翻转，翻转后x轴对称

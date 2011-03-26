@@ -133,6 +133,7 @@ typedef struct _fontproc{
  *@return PFont pfont,返回font指针
  */
 PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
+
 /**
  *从一个内存buf上创建一个GBK(hzk)font,默认为GBK的点阵
  *@param const char *cfbuf,中文字库buf通常是GBKxx
@@ -144,6 +145,7 @@ PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
  *@return PFont pfont,返回font指针
  */
 PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asize, int height,int disp);
+
 /**
  *创建一个ttf(freetype)font
  *@param const char* cname,freetype文件名
@@ -152,6 +154,7 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
  *@return PFont pfont,返回font指针
  */
 PFont create_font_freetype(const char* ttfname, int height,int disp);
+
 /**
  *从一个内存buf上创建一个ttf(freetype)font
  *@param const char *cfbuf,freetype的内存buf
@@ -212,7 +215,7 @@ void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color
  *@param int *pwidth  宽
  *@param int *pheight 高
  *@param int *pbase   基线
- *@return 
+ *@return
  */
 void font_textsize(PFont pfont, const void *text, int cc,int *pwidth, int *pheight,int *pbase);
 
