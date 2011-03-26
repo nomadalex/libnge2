@@ -27,6 +27,10 @@ void nge_mem_log();
 }
 #endif
 #else // defined NDEBUG
+#ifndef NGE_NEED_PRINTF
+#define printf(...)
+#endif
+
 #ifdef WIN32
 #pragma warning(disable :4002)
 #endif

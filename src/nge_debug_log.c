@@ -1,13 +1,14 @@
 #include "nge_debug_log.h"
+#ifdef MMGR
+#include "nge_mmgr.h"
+#endif
+#ifdef _PSP
+#include <psploadexec.h>
+#endif
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdarg.h>
 
 #ifndef NDEBUG
-
-#if defined(_PSP)
-#define printf pspDebugScreenPrintf
-#endif
 
 #ifdef __linux__
 #define _vsnprintf  vsnprintf // linux need it
