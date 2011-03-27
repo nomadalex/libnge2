@@ -1,5 +1,4 @@
 #include "nge_input.h"
-#include "nge_debug_log.h"
 
 #if defined(_PSP)
 #include <pspkernel.h>
@@ -325,19 +324,7 @@ void InputProc()
 		analog_proc(GetAnalogX(),GetAnalogY());
 	}
 }
-
-
-
-
-void FiniInput()
-{
-	btn_down = btn_down_default;
-	btn_up   = btn_up_default;
-	analog_proc = NULL;
-	mouse_move_proc = NULL;
-}
 #else
-
 //for psp
 
 typedef struct {
@@ -452,11 +439,5 @@ void InputProc()
 					nge_keymap[i].held  = 0;
 			}
 	}
-}
-void FiniInput()
-{
-	btn_down = btn_down_default;
-	btn_up   = btn_up_default;
-	analog_proc = NULL;
 }
 #endif

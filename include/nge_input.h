@@ -85,22 +85,25 @@ typedef void (*TouchButtonProc)(int which,int type,int x,int y);
  *@return 无
  */
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
+
 /**
  *初始化摇杆
  *@param AnalogProc,摇杆的回调函数
  *@return
  */
 void InitAnalog(AnalogProc analogproc);
+
 /**
  *输入响应,具体使用请看例子test/input_test.cpp
  *@return 无
  */
 void InputProc();
+
 /**
  *退出输入系统
  *@return 无
  */
-void FiniInput();
+#define FiniInput(...) // we do not need it at all!!
 
 /**
  *初始化mouse-touch
