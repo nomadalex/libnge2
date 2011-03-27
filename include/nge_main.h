@@ -23,16 +23,9 @@
 #ifndef _NGE_MAIN_H
 #define _NGE_MAIN_H
 
-#if defined WIN32 || defined(__linux__)
-#include "SDL.h"
-#define INIT_VIDEO SDL_INIT_VIDEO
-#define INIT_AUDIO SDL_INIT_AUDIO
-#define INIT_ALL   INIT_VIDEO|INIT_AUDIO
-#else
 #define INIT_VIDEO 1
 #define INIT_AUDIO 2
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
-#endif
 
 #if defined _PSP
 #define main	NGE_main

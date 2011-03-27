@@ -112,6 +112,23 @@ void ResetTexBlend()
 void InitGrahics()
 {
 	int i = 0;
+	int screen_flag = 0;
+#if defined(WIN32) || defined(__linux__)
+	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
+		exit(1);
+	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1);
+	SDL_WM_SetCaption(nge_screen->name,NULL);
+
+	screen_flag = SDL_OPENGL|SDL_HWSURFACE|SDL_DOUBLEBUF;
+	if(nge_screen->fullscreen != 0)
+		screen_flag |= SDL_FULLSCREEN;
+	SDL_SetVideoMode( nge_screen->width, nge_screen->height, nge_screen->bpp,screen_flag);
+#endif
+
 	timer = timer_create();
 	tex_cache_init(MAX_TEX_CACHE_SIZE);
 
