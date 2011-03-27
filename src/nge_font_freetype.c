@@ -5,8 +5,6 @@
 #include FT_STROKER_H
 #include FT_SYNTHESIS_H
 #include "nge_font.h"
-#include "nge_image_load.h"
-
 
 typedef struct{
 	char*       data;
@@ -61,7 +59,6 @@ static FontProcs freetype2_procs = {
 	freetype2_duplicate,
 	NULL
 };
-
 
 PFont create_font_freetype(const char* fname, int height,int disp)
 {

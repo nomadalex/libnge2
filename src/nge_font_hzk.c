@@ -1,5 +1,4 @@
 #include "nge_font.h"
-#include "nge_image_load.h"
 
 typedef struct{
 	char*       data;
