@@ -26,10 +26,6 @@
 #include "nge_common.h"
 #include "nge_color.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct tagImage{
 	uint32  w;        /**< 图片原宽 */
 	uint32  h;        /**< 图片原高 */
@@ -49,6 +45,10 @@ typedef struct tagImage{
 }image_t,*image_p;
 
 extern uint32 image_tid;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  *加载图片,从文件加载
@@ -213,8 +213,15 @@ int image_flipv(image_p pimage);
 
 //以下函数为内部使用
 int GET_PSM_COLOR_MODE(int dtype);
+int roundpower2(int width);
+
+#ifdef _PSP
 void swizzle_swap(image_p pimage);
 void unswizzle_swap(image_p pimage);
+#else
+#define swizzle_swap(...)
+#define unswizzle_swap(...)
+#endif
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,4 @@
-#include "nge_graphics_ext.h"
-#include "nge_image_load.h"
+#include "nge_image_ext.h"
 
 int get_gray_color(int dtype, int scol, int gray)
 {
@@ -368,6 +367,7 @@ image_p image_conv(image_p src, int dtype)
 	return dst;
 }
 
+// for image_scale
 #define FILTER_PI  (3.1415926535897932384626433832795)
 #define FILTER_2PI (2.0 * 3.1415926535897932384626433832795)
 #define FILTER_4PI (4.0 * 3.1415926535897932384626433832795)
