@@ -98,9 +98,9 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 }
 
 //////////////////////////////////////////////////////////////////////////
-//for psp
+//for psp and linux
 //////////////////////////////////////////////////////////////////////////
-#else
+#elif defined _PSP || defined __linux__
 #include <dirent.h>
 #include <sys/stat.h> 
 
@@ -175,6 +175,5 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
         chdir(backdir);
         return 1;
 }
-
 
 #endif

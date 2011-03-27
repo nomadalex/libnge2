@@ -1,7 +1,7 @@
 #ifndef NGE_DIR_IO_H
 #define NGE_DIR_IO_H
 
-#ifndef IPHONEOS
+#if defined _PSP || defined WIN32 || defined __linux__
 enum FileFlags{
 	FIO_F_DIR,//dir
 	FIO_F_FILE//file
@@ -32,5 +32,5 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-#endif // IPHONEOS
+#endif // PSP || WIN32 || linux
 #endif
