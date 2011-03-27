@@ -1,5 +1,4 @@
-#include "nge_gif_show.h"
-
+#include "nge_gif.h"
 
 void GifAnimationToScreen(gif_desc_p pgif,float x,float y)
 {

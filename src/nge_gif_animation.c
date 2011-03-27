@@ -1,4 +1,4 @@
-#include "nge_gif_animation.h"
+#include "nge_gif.h"
 #include "gif_lib.h"
 
 //#define gif_color32(c) MAKE_RGBA_8888(palette->Colors[c].Red,palette->Colors[c].Green,  palette->Colors[c].Blue,255)
@@ -32,8 +32,6 @@ const sint32 InterlacedJumps[] = { 8, 8, 4, 2 };    /* be read - offsets and jum
 
 static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32 width,sint32 transparent);
 static void gif_fill_frame_line(GifPixelType* pDst, const sint32 rgb, sint32 width);
-
-
 
 static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32 width,sint32 transparent)
 {
