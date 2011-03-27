@@ -109,6 +109,7 @@ uint32 nge_get_tick()
 	return tick32;
 }
 #else
+#include "SDL.h"
 uint32 nge_get_tick()
 {
 	return SDL_GetTicks();
