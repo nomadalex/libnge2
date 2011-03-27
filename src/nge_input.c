@@ -1,10 +1,10 @@
-#include "nge_input_proc.h"
+#include "nge_input.h"
 #include "nge_debug_log.h"
+
 #if defined(_PSP)
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
-#define printf pspDebugScreenPrintf
 
 //define in nge_main.c
 extern int cbid;
@@ -37,7 +37,6 @@ static int game_quit = 0;
 static int need_swapxy = 0;
 static int touched = 0;
 static int touch_mode = 0;
-
 
 void EmulateTouchMove(int flag)
 {
