@@ -1,7 +1,10 @@
+//Modified by Kun Wang <ifreedom.cn@gmail.com> 2011-04-06 20:01
+//   Add macro CAL_AND_SET_BLUR
 #include "nge_image_effect.h"
 #include "nge_image.h"
 #include "nge_graphics.h"
 #include "nge_misc.h"
+#include <string.h>
 
 #if defined(WIN32)  || defined(__linux__)
 #include <GL/glut.h>
@@ -639,7 +642,26 @@ void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8
 	}
 }
 
-static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,int* pdes32,uint16* pdes16,int* p32,uint16* p16, image_p pimg)
+#define CAL_AND_SET_BLUR(type, bit, has_alpha, step)                    \
+				for(bx=((ss+x)<0 ? 0 :ss);bx<=se &&                     \
+                        (bx + x) < pimg->w;bx+=step)                    \
+				{                                                       \
+					for(by=((ss+y)<0 ? 0 :ss);by<=se &&                 \
+                            (by + y) < pimg->h;by+=step)                \
+					{                                                   \
+						GET_RGBA_##type ((*(p##bit + by * pimg->texw + bx)),sr,sb,sg,sa); \
+						tn ++;                                          \
+						a += sa;                                        \
+						b += sb;                                        \
+						r += sr;                                        \
+						g += sg;                                        \
+                    }                                                   \
+                }                                                       \
+				if(tn==0)                                               \
+					break;                                              \
+				*(pdes##bit + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), has_alpha ? (uint8)(a/tn) :(uint8)(0xff/tn), pfblur->m_image->dtype)
+
+static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
 	// 不优化速度方式绘制模糊效果
 	int tn,a,b,r,g,bx,by,ss,se;
@@ -661,79 +683,26 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,int* pdes32,ui
 			p16 = ((uint16*)pimg->data) + pimg->texw * y;
 			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
 		}
+        
 		for(x=0;x<pimg->w;x++)
 		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
-				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx++)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by++)
-					{
-						tn ++;
-						a += GET_RGBA_A(*(p32 + by * pimg->texw + bx));
-						b += GET_RGBA_B(*(p32 + by * pimg->texw + bx));
-						r += GET_RGBA_R(*(p32 + by * pimg->texw + bx));
-						g += GET_RGBA_G(*(p32 + by * pimg->texw + bx));
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes32 + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), (uint8)(a/tn), pfblur->m_image->dtype);
+                a = 0;b = 0;r = 0;g = 0; tn = 0;
+                CAL_AND_SET_BLUR(8888, 32, 1, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_4444:
-				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx++)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by++)
-					{
-						tn ++;
-						GET_RGBA_4444((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						a += sa;
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), (uint8)(a/tn), pfblur->m_image->dtype);
+                a = 0;b = 0;r = 0;g = 0; tn = 0;
+                CAL_AND_SET_BLUR(4444, 16, 1, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_5551:
 				a = 1;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx++)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by++)
-					{
-						tn ++;
-						GET_RGBA_5551((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						a += sa;
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), 0xff, pfblur->m_image->dtype);
+                CAL_AND_SET_BLUR(5551, 16, 0, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_565:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx++)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by++)
-					{
-						tn ++;
-						GET_RGBA_565((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), 0xff, pfblur->m_image->dtype);
+                CAL_AND_SET_BLUR(565, 16, 0, 1);
 				break;
 			default:
 				printf("pixel no supper\n");
@@ -780,74 +749,19 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx+=step)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by+=step)
-					{
-						tn ++;
-						a += GET_RGBA_A(*(p32 + by * pimg->texw + bx));
-						b += GET_RGBA_B(*(p32 + by * pimg->texw + bx));
-						r += GET_RGBA_R(*(p32 + by * pimg->texw + bx));
-						g += GET_RGBA_G(*(p32 + by * pimg->texw + bx));
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes32 + x) = CreateColor((uint8)(r/tn),(uint8)(g/tn), (uint8)(b/tn), (uint8)(a/tn), pfblur->m_image->dtype);
+                CAL_AND_SET_BLUR(8888, 32, 1, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_4444:
-				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx+=step)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by+=step)
-					{
-						tn ++;
-						GET_RGBA_4444((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						a += sa;
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn),(uint8)(g/tn), (uint8)(b/tn), (uint8)(a/tn), pfblur->m_image->dtype);
+                a = 0;b = 0;r = 0;g = 0; tn = 0;
+                CAL_AND_SET_BLUR(4444, 16, 1, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_5551:
 				a = 1;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx+=step)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by+=step)
-					{
-						tn ++;
-						GET_RGBA_5551((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						a += sa;
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn),(uint8)(g/tn), (uint8)(b/tn), (uint8)(0xff/tn), pfblur->m_image->dtype);
+                CAL_AND_SET_BLUR(5551, 16, 0, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_565:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-				for(bx=(ss+x<0 ? 0 :ss);bx<=se && bx + x < pimg->w;bx+=step)
-				{
-					for(by=(ss+y<0 ? 0 :ss);by<=se && by + y < pimg->h;by+=step)
-					{
-						tn ++;
-						GET_RGBA_5551((*(p16 + by * pimg->texw + bx)),sr,sb,sg,sa);
-						a += sa;
-						b += sb;
-						r += sr;
-						g += sg;
-					}
-				}
-				if(tn==0)
-					break;
-				*(pdes16 + x) = CreateColor((uint8)(r/tn),(uint8)(g/tn), (uint8)(b/tn), (uint8)(0xff/tn), pfblur->m_image->dtype);
+                CAL_AND_SET_BLUR(565, 16, 0, step);
 				break;
 			default:
 				printf("pixel no supper\n");
