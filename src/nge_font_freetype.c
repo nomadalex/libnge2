@@ -5,6 +5,7 @@
 #include FT_STROKER_H
 #include FT_SYNTHESIS_H
 #include "nge_font.h"
+#include "nge_misc.h"
 
 typedef struct{
 	char*       data;
@@ -57,6 +58,7 @@ static FontProcs freetype2_procs = {
 	freetype2_setfontrotation,
 	freetype2_setfontattr,
 	freetype2_duplicate,
+	NULL,
 	NULL
 };
 
@@ -280,9 +282,9 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				dgree = bitmap->buffer[i + bitmap->width*j];
 				a = (int)(dgree*pf->a*1.0f/255);
-				if(pimage->dtype = DISPLAY_PIXEL_FORMAT_4444)
+				if(pimage->dtype == DISPLAY_PIXEL_FORMAT_4444)
 					cpbegin16[i]=MAKE_RGBA_4444(pf->r,pf->g,pf->b,a);
-				else if(pimage->dtype = DISPLAY_PIXEL_FORMAT_5551){
+				else if(pimage->dtype == DISPLAY_PIXEL_FORMAT_5551){
 					cpbegin16[i]=MAKE_RGBA_5551(pf->r,pf->g,pf->b,a);
 				}
 				else{
@@ -399,7 +401,8 @@ uint32  freetype2_setfontcolor(PFont pfont, uint32 color)
 			last_color = MAKE_RGBA_565(pf->r,pf->g,pf->b,pf->a);
 			GET_RGBA_565(color,pf->r,pf->g,pf->b,pf->a);
 			break;
-		case DISPLAY_PIXEL_FORMAT_8888:
+//		case DISPLAY_PIXEL_FORMAT_8888:
+	default:
 			last_color = MAKE_RGBA_8888(pf->r,pf->g,pf->b,pf->a);
 			GET_RGBA_8888(color,pf->r,pf->g,pf->b,pf->a);
 			break;
