@@ -1,4 +1,5 @@
 #include "nge_io_dir.h"
+#include "nge_debug_log.h"
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +19,7 @@ static BOOL st_FindNextFile(dir_desc_p dir_entry, HANDLE handle )
 {
 	WIN32_FIND_DATA FindFileData;
 	const int error_code = FindNextFile(handle,&FindFileData);
-	
+
 	if ( error_code != 0 )
 	{
 		if(FindFileData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY){
@@ -29,7 +30,7 @@ static BOOL st_FindNextFile(dir_desc_p dir_entry, HANDLE handle )
 			memcpy(dir_entry->name,FindFileData.cFileName,MAX_NAME);
 			dir_entry->flag = FIO_F_FILE;
 		}
-		
+
 		return 1;
 	}
 	return 0;
@@ -37,7 +38,7 @@ static BOOL st_FindNextFile(dir_desc_p dir_entry, HANDLE handle )
 
 static BOOL st_FindCloseFile(HANDLE handle )
 {
-	return (FindClose(handle)!=0);	
+	return (FindClose(handle)!=0);
 }
 
 //fix path
@@ -73,14 +74,14 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 				continue;
 			if ( strcmp(dir_entry->name, ".")!=0 && strcmp(dir_entry->name ,"..")!=0 )
 			{
-				
+
 				strncpy(buf,dir_full,strlen(dir_full)-2);
 				memset(work_buf,0,MAX_NAME);
 				strcat(work_buf,buf);
 				strcat(work_buf,"/");
 				strcat(work_buf,dir_entry->name);
 				strncpy(dir_entry->name,work_buf,MAX_NAME);
-				
+
 				if ( dir_entry->flag ==  FIO_F_DIR)
 				{
 					ret_code = io_dir_travel(dir_entry->name,callback,user_data);
@@ -91,7 +92,7 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 					dir_entry = NULL;
 				}
 			}
-		}		
+		}
 		st_FindCloseFile(handle);
 	}
 	return ret_code;
@@ -101,79 +102,82 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 //for psp and linux
 //////////////////////////////////////////////////////////////////////////
 #elif defined _PSP || defined __linux__
+#ifdef __linux__
+#include <unistd.h>
+#endif
 #include <dirent.h>
-#include <sys/stat.h> 
+#include <sys/stat.h>
 
-static void   dir_scan(const char* path,const char* file,file_travel_cb callback,void* user_data)   
-{   
-       struct   stat   s;   
-       DIR           *dir;   
-       struct   dirent   *dt;   
-       char   dirname[256];
-       dir_desc_t  dir_entry;
-       memset(dirname,   0,   256);
-      strncpy(dirname,path,256);   
-       
-      if(stat(file,   &s)   <   0){   
-               printf("stat   error!\n");
-               return;   
-      }   
-     if(S_ISDIR(s.st_mode)){   
-            strcpy(dirname+strlen(dirname),   file);   
-            strcpy(dirname+strlen(dirname),   "/");   
-            if((dir   =   opendir(file))   ==   NULL){   
-                   printf("opendir   %s   error!\n",file);   
-                   return;   
-            }   
-            if(chdir(file)   <   0)   {   
-                   printf("chdir   error!\n");   
-                   return;   
-            }   
-            while((dt   =   readdir(dir))   !=   NULL){   
-                   if(dt->d_name[0]   ==   '.'){   
-                               continue;   
-                   }   
-                  dir_scan(dirname,dt->d_name, callback,user_data);   
-           }   
-          if(chdir("..")   <   0){   
-                   printf("chdir   error!\n");   
-                   return;   
-          } 
-          closedir(dir);
-          memset(&dir_entry,0,sizeof(dir_desc_t));
+static void   dir_scan(const char* path,const char* file,file_travel_cb callback,void* user_data)
+{
+	   struct   stat   s;
+	   DIR           *dir;
+	   struct   dirent   *dt;
+	   char   dirname[256];
+	   dir_desc_t  dir_entry;
+	   memset(dirname,   0,   256);
+	  strncpy(dirname,path,256);
+
+	  if(stat(file,   &s)   <   0){
+			   printf("stat   error!\n");
+			   return;
+	  }
+	 if(S_ISDIR(s.st_mode)){
+			strcpy(dirname+strlen(dirname),   file);
+			strcpy(dirname+strlen(dirname),   "/");
+			if((dir   =   opendir(file))   ==   NULL){
+				   printf("opendir   %s   error!\n",file);
+				   return;
+			}
+			if(chdir(file)   <   0)   {
+				   printf("chdir   error!\n");
+				   return;
+			}
+			while((dt   =   readdir(dir))   !=   NULL){
+				   if(dt->d_name[0]   ==   '.'){
+							   continue;
+				   }
+				  dir_scan(dirname,dt->d_name, callback,user_data);
+		   }
+		  if(chdir("..")   <   0){
+				   printf("chdir   error!\n");
+				   return;
+		  }
+		  closedir(dir);
+		  memset(&dir_entry,0,sizeof(dir_desc_t));
 	  sprintf(dir_entry.name,"%s",dirname);
 	  if(dir_entry.name[strlen(dir_entry.name)-1]=='/'){
 	  	dir_entry.name[strlen(dir_entry.name)-1]= 0;
-		     if((strcmp(dir_entry.name,file)==0)&&(strlen(dir_entry.name)==strlen(file))){
-		     	//current dir ommited
-		     	return;
-	  	     }
-		     dir_entry.flag = FIO_F_DIR;
-	             callback(&dir_entry,user_data);   
-        
+			 if((strcmp(dir_entry.name,file)==0)&&(strlen(dir_entry.name)==strlen(file))){
+				//current dir ommited
+				return;
+	  		 }
+			 dir_entry.flag = FIO_F_DIR;
+				 callback(&dir_entry,user_data);
+
 	}
-	       
-   }else{   
-          memset(&dir_entry,0,sizeof(dir_desc_t));
+
+   }else{
+		  memset(&dir_entry,0,sizeof(dir_desc_t));
 	  sprintf(dir_entry.name,"%s%s",dirname,file);
 	  dir_entry.flag = FIO_F_FILE;
-          callback(&dir_entry,user_data);        
-    } 
+		  callback(&dir_entry,user_data);
+	}
 }
 
 int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data)
 {
-        char workdir[MAX_NAME]={0};
-        char backdir[MAX_NAME]={0};
-        getcwd(backdir,MAX_NAME);
-        if(directory==NULL)
-                return 0;
-        strncpy(workdir,directory,MAX_NAME);
-        if(workdir[strlen(workdir)-1] == '/')
-                workdir[strlen(workdir)-1] = 0;
-        dir_scan("",workdir,callback,user_data);
-        chdir(backdir);
-        return 1;
+		char workdir[MAX_NAME]={0};
+		char backdir[MAX_NAME]={0};
+		getcwd(backdir,MAX_NAME);
+		if(directory==NULL)
+				return 0;
+		strncpy(workdir,directory,MAX_NAME);
+		if(workdir[strlen(workdir)-1] == '/')
+				workdir[strlen(workdir)-1] = 0;
+		dir_scan("",workdir,callback,user_data);
+		chdir(backdir);
+		return 1;
 }
 
 #endif
