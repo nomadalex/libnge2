@@ -1,4 +1,5 @@
 #include "nge_input.h"
+#include "nge_common.h"
 
 #if defined(_PSP)
 #include <pspkernel.h>
