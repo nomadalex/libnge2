@@ -19,10 +19,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include "nge_debug_log.h"
 #include "nge_common.h"
 #include "nge_bmp.h"
-#include "nge_debug_log.h"
 #include "nge_io_file.h"
+#include <stdlib.h>
+#include <string.h>
 
 #define BI_RGB          0
 #define BI_RLE8         1
@@ -116,8 +118,6 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 	memset(data,0,size);
 	p32 = (uint32*)data;
 	p16 = (uint16*) p32;
-	color16;
-	color32;
 	line = NULL;
 	if(pbih->biBitCount == 24){
 		for (y = h;y>0;y--){
@@ -377,4 +377,3 @@ image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displ
 	SAFE_FREE(mbuf);
 	return pimage;
 }
-
