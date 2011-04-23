@@ -1,9 +1,9 @@
+#include "nge_debug_log.h"
 #include "nge_tga.h"
 #include "nge_bmp.h"
 #include "nge_png.h"
 #include "nge_jpg.h"
 #include "nge_rle.h"
-#include "nge_debug_log.h"
 #include "nge_io_file.h"
 
 uint32 image_tid = 0;
@@ -178,7 +178,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 {
 	image_p pimage = NULL;
 	char flags[12]={0};
- 	int fd = io_fopen(filename,IO_RDONLY);
+	int fd = io_fopen(filename,IO_RDONLY);
 
 	if(fd ==0 )
 		return 0;
