@@ -1,12 +1,11 @@
 #include "nge_debug_log.h"
-#ifdef MMGR
-#include "nge_mmgr.h"
-#endif
 #ifdef _PSP
 #include <psploadexec.h>
 #endif
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef NDEBUG
 
