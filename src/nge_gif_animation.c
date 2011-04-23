@@ -1,5 +1,7 @@
 #include "nge_gif.h"
 #include "gif_lib.h"
+#include "stdlib.h"
+#include "string.h"
 
 //#define gif_color32(c) MAKE_RGBA_8888(palette->Colors[c].Red,palette->Colors[c].Green,  palette->Colors[c].Blue,255)
 
@@ -58,16 +60,6 @@ static void gif_fill_frame_line(GifPixelType* pDst, const sint32 rgb, sint32 wid
 	}
 }
 
-static int roundpower2(int width)
-{
-	int b = width;
-	int n;
-	for (n = 0; b != 0; n++) b >>= 1;
-	b = 1 << n;
-	if (b == 2 * width) b >>= 1;
-	return b;
-}
- 
 gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
  {
      uint32 cxScreen,cyScreen,dwRowBytes,dwScreen,m,n;
