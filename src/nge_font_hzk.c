@@ -1,4 +1,7 @@
 #include "nge_font.h"
+#include "nge_io_file.h"
+#include "stdlib.h"
+#include "string.h"
 
 typedef struct{
 	char*       data;
@@ -6,16 +9,16 @@ typedef struct{
 }workbuf;
 
 typedef struct {
-	void*	    procs;	/* font-specific rendering routines*/
-	int		    size;	/* font height in pixels*/
-	int		    rotation;	/* font rotation*/
+	void*		procs;	/* font-specific rendering routines*/
+	int			size;	/* font height in pixels*/
+	int			rotation;	/* font rotation*/
 	uint32		disp;	/* diplaymode*/
 //hzk special
 	uint32      color_fg;
 	uint32      color_bg;
 	uint32      color_sh;
 	uint8*          cfont_raw;		/* hzkfont stuff */
-	uint8* 	        afont_raw;
+	uint8* 			afont_raw;
 	int 			afont_width;
 	int 			cfont_width;
 	int 			font_height;
@@ -34,7 +37,7 @@ static void hzk_setcolorex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 
 static uint32  hzk_setfontcolor(PFont pfont, uint32 color);
 /* handling routines for HZKFONT*/
 static  FontProcs hzk_procs = {
-	    ENCODING_ASCII,			/* routines expect ASCII*/
+		ENCODING_ASCII,			/* routines expect ASCII*/
 		hzk_getfontinfo,
 		hzk_gettextsize,
 		NULL,				/* hzk_gettextbits */
@@ -111,7 +114,7 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
 	pf->bitbuf.datalen = 2048;
 	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
 	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
-	
+
 	switch(disp)
 	{
 		case DISPLAY_PIXEL_FORMAT_4444:
@@ -145,12 +148,12 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
 			pf->color_sh = FONT_SH_5551;
 			break;
 	}
-	if(height==12){		
+	if(height==12){
 		pf->afont_width = 6;
 		pf->cfont_width = 12;
 		pf->font_height = 12;
 	}
-	else if(height==16){		
+	else if(height==16){
 		pf->afont_width = 8;
 		pf->cfont_width = 16;
 		pf->font_height = 16;
@@ -208,11 +211,11 @@ BOOL hzk_getfontinfo(PFont pfont, PFontInfo pfontinfo)
 	pfontinfo->descent = pfontinfo->height - pfontinfo->baseline;
 	pfontinfo->maxascent = pfontinfo->baseline;
 	pfontinfo->maxdescent = pfontinfo->descent;
-	
+
 	pfontinfo->firstchar = 0;
 	pfontinfo->lastchar = 0;
 	pfontinfo->fixed = 1;
-	
+
 	for(i=0; i<=256; i++)
 		pfontinfo->widths[i] = pf->afont_width;
 
@@ -232,14 +235,14 @@ static int IsBig5(int i)
 int getnextchar(char* s, unsigned char* cc)
 {
 	if( s[0] == '\0') return 0;
-	
+
 	cc[0] = (unsigned char)(*s);
 	cc[1] = (unsigned char)(*(s + 1));
-	
+
 	if( ((unsigned char)cc[0]>0x80) )
 			return 1;
 	cc[1] = '\0';
-	
+
 	return 1;
 }
 
@@ -249,7 +252,7 @@ void hzk_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidt
    	unsigned char c[2];
 	char *s,*sbegin;
 	unsigned char s1[3];
-	
+
 	int ax=0;
 	s=(char *)text;
 	if(cc==0)
@@ -257,7 +260,7 @@ void hzk_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidt
 		*pwidth = 0;
 		*pheight = pf->font_height;
 		*pbase = pf->font_height-2;
-		
+
 	}
 	if(cc==1)
 	{
@@ -269,12 +272,12 @@ void hzk_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidt
 	sbegin=s;
 	while( getnextchar(s, c) )
 	{
-		if( c[1] != '\0') 
+		if( c[1] != '\0')
 		{
 			s += 2;
 			ax += pf->cfont_width;
 		}
-		else 
+		else
 		{
 			s += 1;
 			ax += pf->afont_width;
@@ -283,7 +286,7 @@ void hzk_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidt
 			/*printf("s=%x,sbegin=%x,cc=%x\n",s,sbegin,cc);*/
 			break;
 		}
-		
+
 	}
 	/*printf("ax=%d,\n",ax);*/
 	*pwidth = ax;
@@ -308,25 +311,25 @@ void expandcchar_16(PFontHzk pf, int bg, int fg, unsigned char* c, uint16* bitma
 	int x,y;
 	unsigned char *font;
 	int b = 0;		/* keep gcc happy with b = 0 - MW */
-	
+
 	int pixelsize;
 	pixelsize=sizeof(uint16);
-	
+
    	c1 = c[0];
 	c2 = c[1];
 	if (use_big5)
 	{
 		seq=0;
 		/* ladd=loby-(if(loby<127)?64:98)*/
-		c2-=(c2<127?64:98);   
-		
+		c2-=(c2<127?64:98);
+
 		/* hadd=(hiby-164)*157*/
 		if (c1>=0xa4)	/* standard font*/
 		{
 			seq=(((c1-164)*157)+c2);
 			if (seq>=5809) seq-=408;
 		}
-		
+
 		/* hadd=(hiby-161)*157*/
 		if (c1<=0xa3)	/* special font*/
 			seq=(((c1-161)*157)+c2)+13094;
@@ -339,14 +342,14 @@ void expandcchar_16(PFontHzk pf, int bg, int fg, unsigned char* c, uint16* bitma
 	}
 	font = pf->cfont_raw + ((seq) *
 		(pf->font_height * ((pf->cfont_width + 7) / 8)));
-	
+
 	for (y = 0; y < pf->font_height; y++){
-		for (x = 0; x < pf->cfont_width; x++) 
+		for (x = 0; x < pf->cfont_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
-			
-			if (b & (128 >> (x % 8)))  
+
+			if (b & (128 >> (x % 8)))
 				bitmap[i++]=(uint16)fg;
 			else
 				bitmap[i++]=(uint16)bg;
@@ -359,10 +362,10 @@ void expandchar_16(PFontHzk pf, int bg, int fg, int c, uint16* bitmap)
 	int i=0;
 	int x,y;
 	unsigned char *font;
-	int b = 0;		
+	int b = 0;
 	font = pf->afont_raw + c * (pf->font_height * ((pf->afont_width + 7) / 8));
 	for (y = 0; y < pf->font_height; y++){
-		for (x = 0; x < pf->afont_width; x++) 
+		for (x = 0; x < pf->afont_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
@@ -391,7 +394,7 @@ void hzk_drawtext_16(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 		s1[2]=0x0;
 		s=(char*)s1;
 	}
-	
+
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint16);
 	//bitmap = (uint16 *)malloc(size);
@@ -420,10 +423,10 @@ void hzk_drawtext_16(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 			s += 1;
 			ax += pf->afont_width;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
-	
+
 	//SAFE_FREE(bitmap);
 }
 void expandcchar_32(PFontHzk pf, int bg, int fg, unsigned char* c, uint32* bitmap)
@@ -433,25 +436,25 @@ void expandcchar_32(PFontHzk pf, int bg, int fg, unsigned char* c, uint32* bitma
 	int x,y;
 	unsigned char *font;
 	int b = 0;		/* keep gcc happy with b = 0 - MW */
-	
+
 	int pixelsize;
 	pixelsize=sizeof(uint32);
-	
+
    	c1 = c[0];
 	c2 = c[1];
 	if (use_big5)
 	{
 		seq=0;
 		/* ladd=loby-(if(loby<127)?64:98)*/
-		c2-=(c2<127?64:98);   
-		
+		c2-=(c2<127?64:98);
+
 		/* hadd=(hiby-164)*157*/
 		if (c1>=0xa4)	/* standard font*/
 		{
 			seq=(((c1-164)*157)+c2);
 			if (seq>=5809) seq-=408;
 		}
-		
+
 		/* hadd=(hiby-161)*157*/
 		if (c1<=0xa3)	/* special font*/
 			seq=(((c1-161)*157)+c2)+13094;
@@ -464,14 +467,14 @@ void expandcchar_32(PFontHzk pf, int bg, int fg, unsigned char* c, uint32* bitma
 	}
 	font = pf->cfont_raw + ((seq) *
 		(pf->font_height * ((pf->cfont_width + 7) / 8)));
-	
+
 	for (y = 0; y < pf->font_height; y++){
-		for (x = 0; x < pf->cfont_width; x++) 
+		for (x = 0; x < pf->cfont_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
-			
-			if (b & (128 >> (x % 8)))  
+
+			if (b & (128 >> (x % 8)))
 				bitmap[i++]=(uint32)fg;
 			else
 				bitmap[i++]=(uint32)bg;
@@ -484,10 +487,10 @@ void expandchar_32(PFontHzk pf, int bg, int fg, int c, uint32* bitmap)
 	int i=0;
 	int x,y;
 	unsigned char *font;
-	int b = 0;		
+	int b = 0;
 	font = pf->afont_raw + c * (pf->font_height * ((pf->afont_width + 7) / 8));
 	for (y = 0; y < pf->font_height; y++){
-		for (x = 0; x < pf->afont_width; x++) 
+		for (x = 0; x < pf->afont_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
@@ -514,7 +517,7 @@ void hzk_drawtext_32(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 		s1[2]=0x0;
 		s=(char*)s1;
 	}
-	
+
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint32);
 	//bitmap = (uint32*)malloc(size);
@@ -543,10 +546,10 @@ void hzk_drawtext_32(PFontHzk pf, image_p pimage, int ax, int ay,const void *tex
 			s += 1;
 			ax += pf->afont_width;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
-	
+
 	//SAFE_FREE(bitmap);
 }
 
@@ -566,7 +569,7 @@ void hzk_drawtext(PFont pfont, image_p pimage, int ax, int ay,const void *text, 
 			hzk_drawtext_16(pf,pimage,ax,ay,text,cc, flags);
 		}
 	}
-	
+
 }
 
 static void copy_rawdata_image_custom_16(void* data,const image_p des,int x,int y,uint32 w,uint32 h,uint16 color_bg,uint16 color_fg,uint16 color_sh)
@@ -582,7 +585,7 @@ static void copy_rawdata_image_custom_16(void* data,const image_p des,int x,int 
 				if(j+x>des->texw||i+y>des->texh)
 					continue;
 				cpbegin16[j] = bmp16[i*h+j];
-				
+
 		}
 		cpbegin16 += des->texw;
 	}
@@ -616,7 +619,7 @@ void hzk_drawtext_shadow_16(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 		s1[2]=0x0;
 		s=(char*)s1;
 	}
-	
+
 	sbegin=s;
 	size = pf->cfont_width * pf->font_height *sizeof(uint16);
 	//bitmap = (uint16 *)malloc(size);
@@ -643,7 +646,7 @@ void hzk_drawtext_shadow_16(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 			s += 1;
 			ax += pf->afont_width;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
 	//SAFE_FREE(bitmap);
@@ -723,7 +726,7 @@ void hzk_drawtext_shadow_32(PFontHzk pf, image_p pimage, int ax, int ay,const vo
 			s += 1;
 			ax += pf->afont_width;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
 	//SAFE_FREE(bitmap);

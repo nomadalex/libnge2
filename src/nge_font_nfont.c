@@ -1,4 +1,7 @@
 #include "nge_font.h"
+#include "nge_io_file.h"
+#include "stdlib.h"
+#include "string.h"
 
 enum{
 	HFONT_TYPE_ASCII,
