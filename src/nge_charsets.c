@@ -8,6 +8,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "nge_charsets.h"
+#include <stdlib.h>
+#include <string.h>
+#include "nge_io_file.h"
 
 /* definitions */
 
@@ -2770,7 +2773,7 @@ static const uint16 jisx0213_to_ucs_main[120 * 94] = {
 	0x8329, 0x832a, 0x832b, 0x832c, 0x832d, 0x832e, 0x832f, 0x8330,
 	0x8331, 0x8332, 0x8333, 0x8334, 0x8335, 0x8336, 0x8337, 0x8338,
 	0x8339, 0x833a, 0x0913, 0x0835, 0x080f, 0x13cb, 0x0813, 0x0827,
-	0x8341, 0x8342, 0x8343, 0x8344, 0x8345, 0x8346, 0x8347, 0x8348,
+0x8341, 0x8342, 0x8343, 0x8344, 0x8345, 0x8346, 0x8347, 0x8348,
 	0x8349, 0x834a, 0x834b, 0x834c, 0x834d, 0x834e, 0x834f, 0x8350,
 	0x8351, 0x8352, 0x8353, 0x8354, 0x8355, 0x8356, 0x8357, 0x8358,
 	0x8359, 0x835a, 0x10a0, 0x0713, 0x0ffa, 0x0ffb,
@@ -8881,14 +8884,14 @@ static const Summary16 gbkext_inv_uni2indx_pagefe[31] = {
 
 static const uint16 cp936ext_2uni_pagea6[181-159] = {
   /* 0xa6 */
-                                                          0xfe35,
+														  0xfe35,
   0xfe36, 0xfe39, 0xfe3a, 0xfe3f, 0xfe40, 0xfe3d, 0xfe3e, 0xfe41,
   0xfe42, 0xfe43, 0xfe44, 0xfffd, 0xfffd, 0xfe3b, 0xfe3c, 0xfe37,
   0xfe38, 0xfe31, 0xfffd, 0xfe33, 0xfe34,
 };
 static const uint16 cp936ext_2uni_pagea8[128-122] = {
   /* 0xa8 */
-                  0x0251, 0xfffd, 0x0144, 0x0148, 0xfffd, 0x0261,
+				  0x0251, 0xfffd, 0x0144, 0x0148, 0xfffd, 0x0261,
 };
 
 static const uint16 cp936ext_page01[16] = {
@@ -11391,8 +11394,8 @@ static const Summary16 gb2312_uni2indx_pageff[15] = {
 static int ascii_wctomb(uint8 *r, ucs4_t wc, int n)
 {
   if (wc < 0x0080) {
-    *r = wc;
-    return 1;
+	*r = wc;
+	return 1;
   }
   return RET_ILUNI;
 }
@@ -11742,23 +11745,23 @@ static int gbkext1_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 {
   uint8 c1 = s[0];
   if ((c1 >= 0x81 && c1 <= 0xa0)) {
-    if (n >= 2) {
-      uint8 c2 = s[1];
-      if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
-        uint32 i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
-        uint16 wc = 0xfffd;
-        {
-          if (i < 6080)
-            wc = gbkext1_2uni_page81[i];
-        }
-        if (wc != 0xfffd) {
-          *pwc = (ucs4_t) wc;
-          return 2;
-        }
-      }
-      return RET_ILSEQ;
-    }
-    return RET_TOOFEW(0);
+	if (n >= 2) {
+	  uint8 c2 = s[1];
+	  if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
+		uint32 i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+		uint16 wc = 0xfffd;
+		{
+		  if (i < 6080)
+			wc = gbkext1_2uni_page81[i];
+		}
+		if (wc != 0xfffd) {
+		  *pwc = (ucs4_t) wc;
+		  return 2;
+		}
+	  }
+	  return RET_ILSEQ;
+	}
+	return RET_TOOFEW(0);
   }
   return RET_ILSEQ;
 }
@@ -11767,23 +11770,23 @@ static int gbkext2_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 {
   uint8 c1 = s[0];
   if ((c1 >= 0xa8 && c1 <= 0xfe)) {
-    if (n >= 2) {
-      uint8 c2 = s[1];
-      if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xa1)) {
-        uint32 i = 96 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
-        uint16 wc = 0xfffd;
-        {
-          if (i < 12016)
-            wc = gbkext2_2uni_pagea8[i-3744];
-        }
-        if (wc != 0xfffd) {
-          *pwc = (ucs4_t) wc;
-          return 2;
-        }
-      }
-      return RET_ILSEQ;
-    }
-    return RET_TOOFEW(0);
+	if (n >= 2) {
+	  uint8 c2 = s[1];
+	  if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xa1)) {
+		uint32 i = 96 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+		uint16 wc = 0xfffd;
+		{
+		  if (i < 12016)
+			wc = gbkext2_2uni_pagea8[i-3744];
+		}
+		if (wc != 0xfffd) {
+		  *pwc = (ucs4_t) wc;
+		  return 2;
+		}
+	  }
+	  return RET_ILSEQ;
+	}
+	return RET_TOOFEW(0);
   }
   return RET_ILSEQ;
 }
@@ -11791,41 +11794,41 @@ static int gbkext2_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 static int gbkext_inv_wctomb(uint8 *r, ucs4_t wc, int n)
 {
   if (n >= 2) {
-    const Summary16 *summary = NULL;
-    if (wc >= 0x0200 && wc < 0x02e0)
-      summary = &gbkext_inv_uni2indx_page02[(wc>>4)-0x020];
-    else if (wc >= 0x2000 && wc < 0x22c0)
-      summary = &gbkext_inv_uni2indx_page20[(wc>>4)-0x200];
-    else if (wc >= 0x2500 && wc < 0x2610)
-      summary = &gbkext_inv_uni2indx_page25[(wc>>4)-0x250];
-    else if (wc >= 0x3000 && wc < 0x3100)
-      summary = &gbkext_inv_uni2indx_page30[(wc>>4)-0x300];
-    else if (wc >= 0x3200 && wc < 0x33e0)
-      summary = &gbkext_inv_uni2indx_page32[(wc>>4)-0x320];
-    else if (wc >= 0x4e00 && wc < 0x9fb0)
-      summary = &gbkext_inv_uni2indx_page4e[(wc>>4)-0x4e0];
-    else if (wc >= 0xf900 && wc < 0xfa30)
-      summary = &gbkext_inv_uni2indx_pagef9[(wc>>4)-0xf90];
-    else if (wc >= 0xfe00 && wc < 0xfff0)
-      summary = &gbkext_inv_uni2indx_pagefe[(wc>>4)-0xfe0];
-    if (summary) {
-      uint16 used = summary->used;
-      uint32 i = wc & 0x0f;
-      if (used & ((uint16) 1 << i)) {
-        uint16 c;
-        /* Keep in `used' only the bits 0..i-1. */
-        used &= ((uint16) 1 << i) - 1;
-        /* Add `summary->indx' and the number of bits set in `used'. */
-        used = (used & 0x5555) + ((used & 0xaaaa) >> 1);
-        used = (used & 0x3333) + ((used & 0xcccc) >> 2);
-        used = (used & 0x0f0f) + ((used & 0xf0f0) >> 4);
-        used = (used & 0x00ff) + (used >> 8);
-        c = gbkext_inv_2charset[summary->indx + used];
-        r[0] = (c >> 8); r[1] = (c & 0xff);
-        return 2;
-      }
-    }
-    return RET_ILUNI;
+	const Summary16 *summary = NULL;
+	if (wc >= 0x0200 && wc < 0x02e0)
+	  summary = &gbkext_inv_uni2indx_page02[(wc>>4)-0x020];
+	else if (wc >= 0x2000 && wc < 0x22c0)
+	  summary = &gbkext_inv_uni2indx_page20[(wc>>4)-0x200];
+	else if (wc >= 0x2500 && wc < 0x2610)
+	  summary = &gbkext_inv_uni2indx_page25[(wc>>4)-0x250];
+	else if (wc >= 0x3000 && wc < 0x3100)
+	  summary = &gbkext_inv_uni2indx_page30[(wc>>4)-0x300];
+	else if (wc >= 0x3200 && wc < 0x33e0)
+	  summary = &gbkext_inv_uni2indx_page32[(wc>>4)-0x320];
+	else if (wc >= 0x4e00 && wc < 0x9fb0)
+	  summary = &gbkext_inv_uni2indx_page4e[(wc>>4)-0x4e0];
+	else if (wc >= 0xf900 && wc < 0xfa30)
+	  summary = &gbkext_inv_uni2indx_pagef9[(wc>>4)-0xf90];
+	else if (wc >= 0xfe00 && wc < 0xfff0)
+	  summary = &gbkext_inv_uni2indx_pagefe[(wc>>4)-0xfe0];
+	if (summary) {
+	  uint16 used = summary->used;
+	  uint32 i = wc & 0x0f;
+	  if (used & ((uint16) 1 << i)) {
+		uint16 c;
+		/* Keep in `used' only the bits 0..i-1. */
+		used &= ((uint16) 1 << i) - 1;
+		/* Add `summary->indx' and the number of bits set in `used'. */
+		used = (used & 0x5555) + ((used & 0xaaaa) >> 1);
+		used = (used & 0x3333) + ((used & 0xcccc) >> 2);
+		used = (used & 0x0f0f) + ((used & 0xf0f0) >> 4);
+		used = (used & 0x00ff) + (used >> 8);
+		c = gbkext_inv_2charset[summary->indx + used];
+		r[0] = (c >> 8); r[1] = (c & 0xff);
+		return 2;
+	  }
+	}
+	return RET_ILUNI;
   }
   return RET_TOOSMALL;
 }
@@ -11834,26 +11837,26 @@ static int cp936ext_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 {
   uint8 c1 = s[0];
   if ((c1 == 0xa6) || (c1 == 0xa8)) {
-    if (n >= 2) {
-      uint8 c2 = s[1];
-      if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
-        uint32 i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
-        uint16 wc = 0xfffd;
-        if (i < 7410) {
-          if (i >= 7189 && i < 7211)
-            wc = cp936ext_2uni_pagea6[i-7189];
-        } else {
-          if (i >= 7532 && i < 7538)
-            wc = cp936ext_2uni_pagea8[i-7532];
-        }
-        if (wc != 0xfffd) {
-          *pwc = (ucs4_t) wc;
-          return 2;
-        }
-      }
-      return RET_ILSEQ;
-    }
-    return RET_TOOFEW(0);
+	if (n >= 2) {
+	  uint8 c2 = s[1];
+	  if ((c2 >= 0x40 && c2 < 0x7f) || (c2 >= 0x80 && c2 < 0xff)) {
+		uint32 i = 190 * (c1 - 0x81) + (c2 - (c2 >= 0x80 ? 0x41 : 0x40));
+		uint16 wc = 0xfffd;
+		if (i < 7410) {
+		  if (i >= 7189 && i < 7211)
+			wc = cp936ext_2uni_pagea6[i-7189];
+		} else {
+		  if (i >= 7532 && i < 7538)
+			wc = cp936ext_2uni_pagea8[i-7532];
+		}
+		if (wc != 0xfffd) {
+		  *pwc = (ucs4_t) wc;
+		  return 2;
+		}
+	  }
+	  return RET_ILSEQ;
+	}
+	return RET_TOOFEW(0);
   }
   return RET_ILSEQ;
 }
@@ -11861,18 +11864,18 @@ static int cp936ext_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 static int cp936ext_wctomb(uint8 *r, ucs4_t wc, int n)
 {
   if (n >= 2) {
-    uint16 c = 0;
-    if (wc >= 0x0140 && wc < 0x0150)
-      c = cp936ext_page01[wc-0x0140];
-    else if (wc >= 0x0250 && wc < 0x0268)
-      c = cp936ext_page02[wc-0x0250];
-    else if (wc >= 0xfe30 && wc < 0xfe48)
-      c = cp936ext_pagefe[wc-0xfe30];
-    if (c != 0) {
-      r[0] = (c >> 8); r[1] = (c & 0xff);
-      return 2;
-    }
-    return RET_ILUNI;
+	uint16 c = 0;
+	if (wc >= 0x0140 && wc < 0x0150)
+	  c = cp936ext_page01[wc-0x0140];
+	else if (wc >= 0x0250 && wc < 0x0268)
+	  c = cp936ext_page02[wc-0x0250];
+	else if (wc >= 0xfe30 && wc < 0xfe48)
+	  c = cp936ext_pagefe[wc-0xfe30];
+	if (c != 0) {
+	  r[0] = (c >> 8); r[1] = (c & 0xff);
+	  return 2;
+	}
+	return RET_ILUNI;
   }
   return RET_TOOSMALL;
 }
@@ -11881,26 +11884,26 @@ static int gb2312_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 {
   uint8 c1 = s[0];
   if ((c1 >= 0x21 && c1 <= 0x29) || (c1 >= 0x30 && c1 <= 0x77)) {
-    if (n >= 2) {
-      uint8 c2 = s[1];
-      if (c2 >= 0x21 && c2 < 0x7f) {
-        uint32 i = 94 * (c1 - 0x21) + (c2 - 0x21);
-        uint16 wc = 0xfffd;
-        if (i < 1410) {
-          if (i < 831)
-            wc = gb2312_2uni_page21[i];
-        } else {
-          if (i < 8178)
-            wc = gb2312_2uni_page30[i-1410];
-        }
-        if (wc != 0xfffd) {
-          *pwc = (ucs4_t) wc;
-          return 2;
-        }
-      }
-      return RET_ILSEQ;
-    }
-    return RET_TOOFEW(0);
+	if (n >= 2) {
+	  uint8 c2 = s[1];
+	  if (c2 >= 0x21 && c2 < 0x7f) {
+		uint32 i = 94 * (c1 - 0x21) + (c2 - 0x21);
+		uint16 wc = 0xfffd;
+		if (i < 1410) {
+		  if (i < 831)
+			wc = gb2312_2uni_page21[i];
+		} else {
+		  if (i < 8178)
+			wc = gb2312_2uni_page30[i-1410];
+		}
+		if (wc != 0xfffd) {
+		  *pwc = (ucs4_t) wc;
+		  return 2;
+		}
+	  }
+	  return RET_ILSEQ;
+	}
+	return RET_TOOFEW(0);
   }
   return RET_ILSEQ;
 }
@@ -11908,37 +11911,37 @@ static int gb2312_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 static int gb2312_wctomb(uint8 *r, ucs4_t wc, int n)
 {
   if (n >= 2) {
-    const Summary16 *summary = NULL;
-    if (wc >= 0x0000 && wc < 0x0460)
-      summary = &gb2312_uni2indx_page00[(wc>>4)];
-    else if (wc >= 0x2000 && wc < 0x2650)
-      summary = &gb2312_uni2indx_page20[(wc>>4)-0x200];
-    else if (wc >= 0x3000 && wc < 0x3230)
-      summary = &gb2312_uni2indx_page30[(wc>>4)-0x300];
-    else if (wc >= 0x4e00 && wc < 0x9cf0)
-      summary = &gb2312_uni2indx_page4e[(wc>>4)-0x4e0];
-    else if (wc >= 0x9e00 && wc < 0x9fb0)
-      summary = &gb2312_uni2indx_page9e[(wc>>4)-0x9e0];
-    else if (wc >= 0xff00 && wc < 0xfff0)
-      summary = &gb2312_uni2indx_pageff[(wc>>4)-0xff0];
-    if (summary) {
-      uint16 used = summary->used;
-      uint32 i = wc & 0x0f;
-      if (used & ((uint16) 1 << i)) {
-        uint16 c;
-        /* Keep in `used' only the bits 0..i-1. */
-        used &= ((uint16) 1 << i) - 1;
-        /* Add `summary->indx' and the number of bits set in `used'. */
-        used = (used & 0x5555) + ((used & 0xaaaa) >> 1);
-        used = (used & 0x3333) + ((used & 0xcccc) >> 2);
-        used = (used & 0x0f0f) + ((used & 0xf0f0) >> 4);
-        used = (used & 0x00ff) + (used >> 8);
-        c = gb2312_2charset[summary->indx + used];
-        r[0] = (c >> 8); r[1] = (c & 0xff);
-        return 2;
-      }
-    }
-    return RET_ILUNI;
+	const Summary16 *summary = NULL;
+	if (wc >= 0x0000 && wc < 0x0460)
+	  summary = &gb2312_uni2indx_page00[(wc>>4)];
+	else if (wc >= 0x2000 && wc < 0x2650)
+	  summary = &gb2312_uni2indx_page20[(wc>>4)-0x200];
+	else if (wc >= 0x3000 && wc < 0x3230)
+	  summary = &gb2312_uni2indx_page30[(wc>>4)-0x300];
+	else if (wc >= 0x4e00 && wc < 0x9cf0)
+	  summary = &gb2312_uni2indx_page4e[(wc>>4)-0x4e0];
+	else if (wc >= 0x9e00 && wc < 0x9fb0)
+	  summary = &gb2312_uni2indx_page9e[(wc>>4)-0x9e0];
+	else if (wc >= 0xff00 && wc < 0xfff0)
+	  summary = &gb2312_uni2indx_pageff[(wc>>4)-0xff0];
+	if (summary) {
+	  uint16 used = summary->used;
+	  uint32 i = wc & 0x0f;
+	  if (used & ((uint16) 1 << i)) {
+		uint16 c;
+		/* Keep in `used' only the bits 0..i-1. */
+		used &= ((uint16) 1 << i) - 1;
+		/* Add `summary->indx' and the number of bits set in `used'. */
+		used = (used & 0x5555) + ((used & 0xaaaa) >> 1);
+		used = (used & 0x3333) + ((used & 0xcccc) >> 2);
+		used = (used & 0x0f0f) + ((used & 0xf0f0) >> 4);
+		used = (used & 0x00ff) + (used >> 8);
+		c = gb2312_2charset[summary->indx + used];
+		r[0] = (c >> 8); r[1] = (c & 0xff);
+		return 2;
+	  }
+	}
+	return RET_ILUNI;
   }
   return RET_TOOSMALL;
 }
@@ -11948,44 +11951,44 @@ static int _gbk_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
   uint8 c = *s;
 
   if (c >= 0x81 && c < 0xff) {
-    if (n < 2)
-      return RET_TOOFEW(0);
-    if (c >= 0xa1 && c <= 0xf7) {
-      uint8 c2 = s[1];
-      if (c == 0xa1) {
-        if (c2 == 0xa4) {
-          *pwc = 0x00b7;
-          return 2;
-        }
-        if (c2 == 0xaa) {
-          *pwc = 0x2014;
-          return 2;
-        }
-      }
-      if (c2 >= 0xa1 && c2 < 0xff) {
-        uint8 buf[2];
-        int ret;
-        buf[0] = c-0x80; buf[1] = c2-0x80;
-        ret = gb2312_mbtowc(pwc,buf,2);
-        if (ret != RET_ILSEQ)
-          return ret;
-        buf[0] = c; buf[1] = c2;
-        ret = cp936ext_mbtowc(pwc,buf,2);
-        if (ret != RET_ILSEQ)
-          return ret;
-      }
-    }
-    if (c >= 0x81 && c <= 0xa0)
-      return gbkext1_mbtowc(pwc,s,2);
-    if (c >= 0xa8 && c <= 0xfe)
-      return gbkext2_mbtowc(pwc,s,2);
-    if (c == 0xa2) {
-      uint8 c2 = s[1];
-      if (c2 >= 0xa1 && c2 <= 0xaa) {
-        *pwc = 0x2170+(c2-0xa1);
-        return 2;
-      }
-    }
+	if (n < 2)
+	  return RET_TOOFEW(0);
+	if (c >= 0xa1 && c <= 0xf7) {
+	  uint8 c2 = s[1];
+	  if (c == 0xa1) {
+		if (c2 == 0xa4) {
+		  *pwc = 0x00b7;
+		  return 2;
+		}
+		if (c2 == 0xaa) {
+		  *pwc = 0x2014;
+		  return 2;
+		}
+	  }
+	  if (c2 >= 0xa1 && c2 < 0xff) {
+		uint8 buf[2];
+		int ret;
+		buf[0] = c-0x80; buf[1] = c2-0x80;
+		ret = gb2312_mbtowc(pwc,buf,2);
+		if (ret != RET_ILSEQ)
+		  return ret;
+		buf[0] = c; buf[1] = c2;
+		ret = cp936ext_mbtowc(pwc,buf,2);
+		if (ret != RET_ILSEQ)
+		  return ret;
+	  }
+	}
+	if (c >= 0x81 && c <= 0xa0)
+	  return gbkext1_mbtowc(pwc,s,2);
+	if (c >= 0xa8 && c <= 0xfe)
+	  return gbkext2_mbtowc(pwc,s,2);
+	if (c == 0xa2) {
+	  uint8 c2 = s[1];
+	  if (c2 >= 0xa1 && c2 <= 0xaa) {
+		*pwc = 0x2170+(c2-0xa1);
+		return 2;
+	  }
+	}
   }
   return RET_ILSEQ;
 }
@@ -11996,52 +11999,52 @@ static int _gbk_wctomb(uint8 *r, ucs4_t wc, int n)
   int ret;
 
   if (wc != 0x30fb && wc != 0x2015) {
-    ret = gb2312_wctomb(buf,wc,2);
-    if (ret != RET_ILUNI) {
-      if (ret != 2) abort();
-      if (n < 2)
-        return RET_TOOSMALL;
-      r[0] = buf[0]+0x80;
-      r[1] = buf[1]+0x80;
-      return 2;
-    }
+	ret = gb2312_wctomb(buf,wc,2);
+	if (ret != RET_ILUNI) {
+	  if (ret != 2) abort();
+	  if (n < 2)
+		return RET_TOOSMALL;
+	  r[0] = buf[0]+0x80;
+	  r[1] = buf[1]+0x80;
+	  return 2;
+	}
   }
   ret = gbkext_inv_wctomb(buf,wc,2);
   if (ret != RET_ILUNI) {
-    if (ret != 2) abort();
-    if (n < 2)
-      return RET_TOOSMALL;
-    r[0] = buf[0];
-    r[1] = buf[1];
-    return 2;
+	if (ret != 2) abort();
+	if (n < 2)
+	  return RET_TOOSMALL;
+	r[0] = buf[0];
+	r[1] = buf[1];
+	return 2;
   }
   if (wc >= 0x2170 && wc <= 0x2179) {
-    r[0] = 0xa2;
-    r[1] = 0xa1 + (wc-0x2170);
-    return 2;
+	r[0] = 0xa2;
+	r[1] = 0xa1 + (wc-0x2170);
+	return 2;
   }
   ret = cp936ext_wctomb(buf,wc,2);
   if (ret != RET_ILUNI) {
-    if (ret != 2) abort();
-    if (n < 2)
-      return RET_TOOSMALL;
-    r[0] = buf[0];
-    r[1] = buf[1];
-    return 2;
+	if (ret != 2) abort();
+	if (n < 2)
+	  return RET_TOOSMALL;
+	r[0] = buf[0];
+	r[1] = buf[1];
+	return 2;
   }
   if (wc == 0x00b7) {
-    if (n < 2)
-      return RET_TOOSMALL;
-    r[0] = 0xa1;
-    r[1] = 0xa4;
-    return 2;
+	if (n < 2)
+	  return RET_TOOSMALL;
+	r[0] = 0xa1;
+	r[1] = 0xa4;
+	return 2;
   }
   if (wc == 0x2014) {
-    if (n < 2)
-      return RET_TOOSMALL;
-    r[0] = 0xa1;
-    r[1] = 0xaa;
-    return 2;
+	if (n < 2)
+	  return RET_TOOSMALL;
+	r[0] = 0xa1;
+	r[1] = 0xaa;
+	return 2;
   }
 
   return RET_ILUNI;
@@ -12053,12 +12056,12 @@ static int gbk_mbtowc(ucs4_t *pwc, const uint8 *s, int n)
 
   /* Code set 0 (ASCII or GB 1988-89) */
   if (c < 0x80)
-    return ascii_mbtowc(pwc,s,n);
+	return ascii_mbtowc(pwc,s,n);
   /* Code set 1 (GBK) */
   if (c >= 0x81 && c < 0xff) {
-    if (n < 2)
-      return RET_TOOFEW(0);
-    return _gbk_mbtowc(pwc,s,2);
+	if (n < 2)
+	  return RET_TOOFEW(0);
+	return _gbk_mbtowc(pwc,s,2);
   }
   return RET_ILSEQ;
 }
@@ -12071,17 +12074,17 @@ static int gbk_wctomb(uint8 *r, ucs4_t wc, int n)
   /* Code set 0 (ASCII or GB 1988-89) */
   ret = ascii_wctomb(r,wc,n);
   if (ret != RET_ILUNI)
-    return ret;
+	return ret;
 
   /* Code set 1 (GBK) */
   ret = _gbk_wctomb(buf,wc,2);
   if (ret != RET_ILUNI) {
-    if (ret != 2) abort();
-    if (n < 2)
-      return RET_TOOSMALL;
-    r[0] = buf[0];
-    r[1] = buf[1];
-    return 2;
+	if (ret != 2) abort();
+	if (n < 2)
+	  return RET_TOOSMALL;
+	r[0] = buf[0];
+	r[1] = buf[1];
+	return 2;
   }
   r[0] = 0xa1;
   r[1] = 0xf6;
