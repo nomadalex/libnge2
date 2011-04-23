@@ -28,6 +28,18 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.0.0"
 
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef NULL
+#define NULL  ((void *)0)
+#endif
+
 #ifndef uint32
 typedef unsigned int uint32;
 #endif
