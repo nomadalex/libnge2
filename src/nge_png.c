@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include "nge_png.h"
 #include "nge_debug_log.h"
+#include "nge_png.h"
 #include "nge_io_file.h"
 
 #include "png.h"
@@ -63,7 +63,7 @@ static void png_custom_mread_fn(png_structp png_ptr, png_bytep data, png_size_t 
 	uint32 i;
    if (handle == NULL)
    {
-      png_error(png_ptr, "Read Error!");
+	  png_error(png_ptr, "Read Error!");
    }
    offset +=length;
    for(i=0;i<length;i++){
@@ -111,13 +111,13 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 {
 
 	uint32* p32;
-    uint16* p16;
-    png_structp png_ptr;
-    png_infop info_ptr;
-    unsigned int sig_read = 0;
-    png_uint_32 width, height;
-    int bit_depth, color_type, interlace_type, x, y;
-    uint32* line;
+	uint16* p16;
+	png_structp png_ptr;
+	png_infop info_ptr;
+	unsigned int sig_read = 0;
+	png_uint_32 width, height;
+	int bit_depth, color_type, interlace_type, x, y;
+	uint32* line;
 	image_p pimage = NULL;
 	int texw,texh,bpb,size;
 	uint8 done = 0;
@@ -128,33 +128,33 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 	offset = 0;
 
 	if (mbuf == 0) return 0;
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (png_ptr == NULL) {
-  			return 0;
-    }
-    png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
-    info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL) {
-	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-	    return 0;
-    }
-    png_init_io(png_ptr, NULL);
+	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (png_ptr == NULL) {
+			return 0;
+	}
+	png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
+	info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == NULL) {
+		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		return 0;
+	}
+	png_init_io(png_ptr, NULL);
 	png_set_read_fn(png_ptr, (png_voidp)mbuf, png_custom_mread_fn);
 
-    png_set_sig_bytes(png_ptr, sig_read);
-    png_read_info(png_ptr, info_ptr);
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, int_p_NULL, int_p_NULL);
-    png_set_strip_16(png_ptr);
-    png_set_packing(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
-    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
-    png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-    line = (uint32*) malloc(width * 4);
-    if (!line) {
-	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-	    return 0;
-    }
+	png_set_sig_bytes(png_ptr, sig_read);
+	png_read_info(png_ptr, info_ptr);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, int_p_NULL, int_p_NULL);
+	png_set_strip_16(png_ptr);
+	png_set_packing(png_ptr);
+	if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
+	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
+	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
+	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
+	line = (uint32*) malloc(width * 4);
+	if (!line) {
+		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		return 0;
+	}
 
 	texw = roundpower2(width);
 	texh = roundpower2(height);
@@ -165,45 +165,45 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 	size = texw * texh * bpb;
 	buffer = (uint8*) malloc(size);
 	memset(buffer,0,size);
-    if (buffer){
+	if (buffer){
 		p32 = (uint32*) buffer;
 		p16 = (uint16*) p32;
 		for (y = 0; y < (int)height; y++){
 		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
 		for (x = 0; x < (int)width; x++)  {
-		    color32 = line[x];
-		    color16;
+			color32 = line[x];
+			color16;
 					a = (color32 >> 24) & 0xff;
-		    r = color32 & 0xff;
-		    g = (color32 >> 8) & 0xff;
-		    b = (color32 >> 16) & 0xff;
-		    switch (displaymode){
-			    case DISPLAY_PIXEL_FORMAT_565:
-				    color16 = MAKE_RGBA_565(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_5551:
-				    color16 = MAKE_RGBA_5551(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_4444:
-				    color16 = MAKE_RGBA_4444(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_8888:
-				    color32 = MAKE_RGBA_8888(r,g,b,a);
-				    *(p32+x) = color32;
-				    break;
+			r = color32 & 0xff;
+			g = (color32 >> 8) & 0xff;
+			b = (color32 >> 16) & 0xff;
+			switch (displaymode){
+				case DISPLAY_PIXEL_FORMAT_565:
+					color16 = MAKE_RGBA_565(r,g,b,a);
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_5551:
+					color16 = MAKE_RGBA_5551(r,g,b,a);
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_4444:
+					color16 = MAKE_RGBA_4444(r,g,b,a);
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_8888:
+					color32 = MAKE_RGBA_8888(r,g,b,a);
+					*(p32+x) = color32;
+					break;
 		   }
 		}
-		    p32 += texw;
-		    p16 += texw;
-	       }
+			p32 += texw;
+			p16 += texw;
+		   }
 		   done = 1;
 	 }
-    SAFE_FREE (line);
-    png_read_end(png_ptr, info_ptr);
-    png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+	SAFE_FREE (line);
+	png_read_end(png_ptr, info_ptr);
+	png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
@@ -266,52 +266,52 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 {
 
 	uint32* p32;
-    uint16* p16;
+	uint16* p16;
 	uint8* buffer;
 	uint32* line;
 	image_p pimage = NULL;
-    png_structp png_ptr;
-    png_infop info_ptr;
-    unsigned int sig_read = 0;
-    png_uint_32 width, height;
-    int bit_depth, color_type, interlace_type, x, y;
-   	int texw,texh,bpb,size;
+	png_structp png_ptr;
+	png_infop info_ptr;
+	unsigned int sig_read = 0;
+	png_uint_32 width, height;
+	int bit_depth, color_type, interlace_type, x, y;
+	int texw,texh,bpb,size;
 	uint8 done = 0;
 	int pixcolor;
 	uint32 color32;
-    uint16 color16;
+	uint16 color16;
 	static uint8 r,g,b,a,alpha;
 
 	offset = 0;/*global*/
 
 	if (mbuf == 0) return 0;
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (png_ptr == NULL) {
-  			return 0;
-    }
-    png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
-    info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL) {
-	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-	    return 0;
-    }
-    png_init_io(png_ptr, NULL);
+	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (png_ptr == NULL) {
+			return 0;
+	}
+	png_set_error_fn(png_ptr, (png_voidp) NULL, (png_error_ptr) NULL, user_warning_fn);
+	info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == NULL) {
+		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		return 0;
+	}
+	png_init_io(png_ptr, NULL);
 	png_set_read_fn(png_ptr, (png_voidp)mbuf, png_custom_mread_fn);
 
-    png_set_sig_bytes(png_ptr, sig_read);
-    png_read_info(png_ptr, info_ptr);
-    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, int_p_NULL, int_p_NULL);
-    png_set_strip_16(png_ptr);
-    png_set_packing(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
-    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
-    png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-    line = (uint32*) malloc(width * 4);
-    if (!line) {
-	    png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
-	    return 0;
-    }
+	png_set_sig_bytes(png_ptr, sig_read);
+	png_read_info(png_ptr, info_ptr);
+	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_type, int_p_NULL, int_p_NULL);
+	png_set_strip_16(png_ptr);
+	png_set_packing(png_ptr);
+	if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
+	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
+	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
+	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
+	line = (uint32*) malloc(width * 4);
+	if (!line) {
+		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		return 0;
+	}
 
 	texw = roundpower2(width);
 	texh = roundpower2(height);
@@ -324,61 +324,61 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	memset(buffer,0,size);
 	alpha = 0xff;
 
-    if (buffer){
+	if (buffer){
 		p32 = (uint32*) buffer;
 		p16 = (uint16*) p32;
 		for (y = 0; y < (int)height; y++){
 		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
 		for (x = 0; x < (int)width; x++)  {
-		    color32 = line[x];
-     				a = (color32 >> 24) & 0xff;
-		    r = color32 & 0xff;
-		    g = (color32 >> 8) & 0xff;
-		    b = (color32 >> 16) & 0xff;
+			color32 = line[x];
+					a = (color32 >> 24) & 0xff;
+			r = color32 & 0xff;
+			g = (color32 >> 8) & 0xff;
+			b = (color32 >> 16) & 0xff;
 					pixcolor = MAKE_RGB(r,g,b);
 					alpha = 0xff;
 					if(colorkey == pixcolor){
 						alpha = 0x00;
 					}
-		    switch (displaymode){
-			    case DISPLAY_PIXEL_FORMAT_565:
+			switch (displaymode){
+				case DISPLAY_PIXEL_FORMAT_565:
 									if(alpha==0x00)
 										color16 = MAKE_RGBA_565(r,g,b,alpha);
 									else
 										color16 = MAKE_RGBA_565(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_5551:
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_5551:
 									if(alpha==0x00)
 										color16 = MAKE_RGBA_5551(r,g,b,alpha);
 									else
 										color16 = MAKE_RGBA_5551(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_4444:
-				    if(alpha==0x00)
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_4444:
+					if(alpha==0x00)
 										color16 = MAKE_RGBA_4444(r,g,b,alpha);
 									else
 										color16 = MAKE_RGBA_4444(r,g,b,a);
-				    *(p16+x) = color16;
-				    break;
-			    case DISPLAY_PIXEL_FORMAT_8888:
-				    if(alpha==0x00)
+					*(p16+x) = color16;
+					break;
+				case DISPLAY_PIXEL_FORMAT_8888:
+					if(alpha==0x00)
 										color32 = MAKE_RGBA_8888(r,g,b,alpha);
 									else
 										color32 = MAKE_RGBA_8888(r,g,b,a);
-				    *(p32+x) = color32;
-				    break;
+					*(p32+x) = color32;
+					break;
 		   }
 		}
-		    p32 += texw;
-		    p16 += texw;
-	       }
+			p32 += texw;
+			p16 += texw;
+		   }
 		   done = 1;
 	 }
-    SAFE_FREE (line);
-    png_read_end(png_ptr, info_ptr);
-    png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+	SAFE_FREE (line);
+	png_read_end(png_ptr, info_ptr);
+	png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
 
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
