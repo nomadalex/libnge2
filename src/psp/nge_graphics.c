@@ -1,5 +1,3 @@
-#ifndef WIN32
-
 #include <pspkernel.h>
 #include <pspdisplay.h>
 #include <pspdebug.h>
@@ -8,7 +6,7 @@
 #include <pspgum.h>
 #include <psprtc.h>
 #include "nge_graphics.h"
-#include "nge_vram.h"
+#include "internal/nge_vram.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
 static unsigned int __attribute__((aligned(16))) list[262144];
@@ -104,7 +102,7 @@ void ShowFps()
 		FpsInit();
 		init_fps = 1;
 	}
-	show_fps = 1;	
+	show_fps = 1;
 }
 
 void LimitFps(uint32 limit)
@@ -112,7 +110,7 @@ void LimitFps(uint32 limit)
 	if(limit!=60){
 		if(limit == 0)
 			limit = 60;
-		
+
 		if( timer->get_ticks(timer) < 1000 / limit )
 		{
 				nge_sleep( ( 1000 / limit) - timer->get_ticks(timer) );
@@ -126,25 +124,25 @@ void LimitFps(uint32 limit)
 	}
 }
 
-#include <malloc.h> 
-int __freemem() 
-{ 
- void *ptrs[480]; 
- int mem, x, i; 
+#include <malloc.h>
+int __freemem()
+{
+ void *ptrs[480];
+ int mem, x, i;
  void *ptr;
 
- for (x = 0; x < 480; x++) 
- { 
-    ptr = malloc(51200); 
-    if (!ptr) break; 
-  
-    ptrs[x] = ptr; 
- } 
- mem = x * 51200; 
- for (i = 0; i < x; i++) 
-  free(ptrs[i]); 
+ for (x = 0; x < 480; x++)
+ {
+	ptr = malloc(51200);
+	if (!ptr) break;
 
- return mem; 
+	ptrs[x] = ptr;
+ }
+ mem = x * 51200;
+ for (i = 0; i < x; i++)
+  free(ptrs[i]);
+
+ return mem;
 }
 
 static void myShowFps()
@@ -157,7 +155,7 @@ static void myShowFps()
 
 	++m_fcount;
 	sceRtcGetCurrentTick(&m_currtick);
-	{ 
+	{
 		pspDebugScreenSetOffset((int)m_drawbuf);
 		pspDebugScreenSetXY(0,0);
 		curr_fps = 1.0f / m_currms;
@@ -180,9 +178,9 @@ static void myShowFps()
 static void InitGu(void)
 {
 	// Setup GU
- 	//pspDebugScreenInit();
+	//pspDebugScreenInit();
 	// Setup GU
- 	m_drawbuf = getStaticVramBuffer(BUF_WIDTH,SCR_HEIGHT,GU_PSM_8888);
+	m_drawbuf = getStaticVramBuffer(BUF_WIDTH,SCR_HEIGHT,GU_PSM_8888);
 	m_displaybuf = getStaticVramBuffer(BUF_WIDTH,SCR_HEIGHT,GU_PSM_8888);
 	m_zbuf = getStaticVramBuffer(BUF_WIDTH,SCR_HEIGHT,GU_PSM_4444);
 	// setup GU
@@ -229,11 +227,11 @@ static void InitGu(void)
 		sceGuEnable(GU_DITHER);
 	}*/
 
-	
+
 	// Projection
 	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[0] );
 	gumOrtho( (ScePspFMatrix4*)ProjectionMatrix[0], 0.0f, 480.0f, 272.0f, 0.0f, -1.0f, 1.0f );
-	
+
 	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[1] );
 	ScePspFVector3 displace = { -0.002f, 0.00367f, 0.0f };	// ~ 1/480, 1/272
 	gumTranslate( (ScePspFMatrix4*)ProjectionMatrix[1], &displace );
@@ -241,14 +239,14 @@ static void InitGu(void)
 
 	sceGumMatrixMode(GU_PROJECTION);
 	sceGumLoadMatrix( (ScePspFMatrix4*)ProjectionMatrix[0] );
-	
+
 
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
-	
+
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
-	
+
 	sceGuClearColor( 0x0 );
 	sceGuClear(GU_COLOR_BUFFER_BIT|GU_FAST_CLEAR_BIT);
 	sceGuFinish();
@@ -264,7 +262,7 @@ static void InitGu(void)
 
 void GetVersion()
 {
-	
+
 }
 
 void InitGrahics()
@@ -307,7 +305,7 @@ void SetTexBlend(int src_blend, int des_blend)
 			des_blend = GU_FIX;
 			fixDest = 0x00FFFFFF;
 		}
-		
+
 		//glBlendFunc(src, dest);
 		sceGuBlendFunc(GU_ADD, src_blend, des_blend, fixSrc, fixDest);
 	//}
@@ -355,8 +353,8 @@ void PutPix(float x, float y, int color,int dtype)
 {
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(1* sizeof(struct Vertex));
 	vertices[0].color = color;
-	vertices[0].x = x; 
-	vertices[0].y = y; 
+	vertices[0].x = x;
+	vertices[0].y = y;
 	vertices[0].z = 0.0f;
 
 	sceGuDisable(GU_TEXTURE_2D);
@@ -372,15 +370,15 @@ void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 {
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(2 * sizeof(struct Vertex));
 	vertices[0].color = color;
-	vertices[0].x = x1; 
-	vertices[0].y = y1; 
+	vertices[0].x = x1;
+	vertices[0].y = y1;
 	vertices[0].z = 0.0f;
 
 	vertices[1].color = color;
-	vertices[1].x = x2; 
-	vertices[1].y = y2; 
+	vertices[1].x = x2;
+	vertices[1].y = y2;
 	vertices[1].z = 0.0f;
-	
+
 	sceGuDisable(GU_TEXTURE_2D);
 	sceGuShadeModel(GU_FLAT);
 	sceGuShadeModel(GU_SMOOTH);
@@ -411,28 +409,28 @@ void DrawRect(float x, float y, float width, float height,int color,int dtype)
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(5 * sizeof(struct Vertex));
 
 	vertices[0].color = color;
-	vertices[0].x = x; 
-	vertices[0].y = y; 
+	vertices[0].x = x;
+	vertices[0].y = y;
 	vertices[0].z = 0.0f;
 
 	vertices[1].color = color;
-	vertices[1].x = x; 
-	vertices[1].y = y + height; 
+	vertices[1].x = x;
+	vertices[1].y = y + height;
 	vertices[1].z = 0.0f;
 
 	vertices[2].color = color;
-	vertices[2].x = x + width; 
-	vertices[2].y = y + height; 
+	vertices[2].x = x + width;
+	vertices[2].y = y + height;
 	vertices[2].z = 0.0f;
 
 	vertices[3].color = color;
-	vertices[3].x = x + width; 
-	vertices[3].y = y; 
+	vertices[3].x = x + width;
+	vertices[3].y = y;
 	vertices[3].z = 0.0f;
 
 	vertices[4].color = color;
-	vertices[4].x = x; 
-	vertices[4].y = y; 
+	vertices[4].x = x;
+	vertices[4].y = y;
 	vertices[4].z = 0.0f;
 
 	sceGuDisable(GU_TEXTURE_2D);
@@ -453,23 +451,23 @@ void FillRect(float x, float y, float width, float height,int color,int dtype)
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(4 * sizeof(struct Vertex));
 
 	vertices[0].color = color;
-	vertices[0].x = x; 
-	vertices[0].y = y; 
+	vertices[0].x = x;
+	vertices[0].y = y;
 	vertices[0].z = 0.0f;
 
 	vertices[1].color = color;
-	vertices[1].x = x; 
-	vertices[1].y = y + height; 
+	vertices[1].x = x;
+	vertices[1].y = y + height;
 	vertices[1].z = 0.0f;
 
 	vertices[3].color = color;
-	vertices[3].x = x + width; 
-	vertices[3].y = y + height; 
+	vertices[3].x = x + width;
+	vertices[3].y = y + height;
 	vertices[3].z = 0.0f;
 
 	vertices[2].color = color;
-	vertices[2].x = x + width; 
-	vertices[2].y = y; 
+	vertices[2].x = x + width;
+	vertices[2].y = y;
 	vertices[2].z = 0.0f;
 
 	sceGuDisable(GU_TEXTURE_2D);
@@ -477,7 +475,7 @@ void FillRect(float x, float y, float width, float height,int color,int dtype)
 	sceGuAmbientColor(0xffffffff);
 	sceGuDrawArray(GU_TRIANGLE_STRIP, dtype|GU_VERTEX_32BITF|GU_TRANSFORM_2D, 4, 0, vertices);
 	sceGuEnable(GU_TEXTURE_2D);
-	
+
 }
 
 void FillCircle(float x, float y, float radius, int color,int dtype)
@@ -517,7 +515,7 @@ void DrawCircle(float x, float y, float radius, int color,int dtype)
 {
 	int i,angle = 359;
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(181 * sizeof(struct Vertex));
-	
+
 	for(i=0; i<180; i++)
 	{
 		vertices[i].color = color;
@@ -533,7 +531,7 @@ void DrawCircle(float x, float y, float radius, int color,int dtype)
 	vertices[180].x = x+radius*COSF(0);
 	vertices[180].y = y+radius*SINF(0);
 	vertices[180].z = 0.0f;
-	
+
 
 	sceGuDisable(GU_TEXTURE_2D);
 	sceGuShadeModel(GU_SMOOTH);
@@ -579,7 +577,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 {
 	int i,angle = 359;
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(181 * sizeof(struct Vertex));
-	
+
 	for(i=0; i<180; i++)
 	{
 		vertices[i].color = color;
@@ -595,7 +593,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 	vertices[180].x = x+COSF(0)*xradius;
 	vertices[180].y = y+SINF(0)*yradius;
 	vertices[180].z = 0.0f;
-	
+
 
 	sceGuDisable(GU_TEXTURE_2D);
 	sceGuShadeModel(GU_SMOOTH);
@@ -687,23 +685,23 @@ void FillRectGrad(float x, float y, float width, float height,int* colors,int dt
 	struct Vertex* vertices = (struct Vertex*)sceGuGetMemory(4 * sizeof(struct Vertex));
 
 	vertices[0].color = colors[0];
-	vertices[0].x = x; 
-	vertices[0].y = y; 
+	vertices[0].x = x;
+	vertices[0].y = y;
 	vertices[0].z = 0.0f;
 
 	vertices[1].color = colors[1];
-	vertices[1].x = x; 
-	vertices[1].y = y + height; 
+	vertices[1].x = x;
+	vertices[1].y = y + height;
 	vertices[1].z = 0.0f;
 
 	vertices[3].color = colors[2];
-	vertices[3].x = x + width; 
-	vertices[3].y = y + height; 
+	vertices[3].x = x + width;
+	vertices[3].y = y + height;
 	vertices[3].z = 0.0f;
 
 	vertices[2].color = colors[3];
-	vertices[2].x = x + width; 
-	vertices[2].y = y; 
+	vertices[2].x = x + width;
+	vertices[2].y = y;
 	vertices[2].z = 0.0f;
 
 	sceGuDisable(GU_TEXTURE_2D);
@@ -711,7 +709,7 @@ void FillRectGrad(float x, float y, float width, float height,int* colors,int dt
 	sceGuAmbientColor(0xffffffff);
 	sceGuDrawArray(GU_TRIANGLE_STRIP, dtype|GU_VERTEX_32BITF|GU_TRANSFORM_2D, 4, 0, vertices);
 	sceGuEnable(GU_TEXTURE_2D);
-	
+
 }
 
 void FillRectGradEx(rectf rect,int* colors,int dtype)
@@ -724,97 +722,97 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	float su,sv,swf;
 	float ustart,width,step;
 	struct VertexUV *vertices;
-	
+
 	if(tex == 0 || tex->w == 0 || tex->h ==0)
 		return ;
 	if((xscale==0)||(yscale==0)){
 		xscale = 1.0;
 		yscale = 1.0;
-	} 
+	}
 	if((sw == 0)||(sh == 0)){
-	  	sw = tex->w * xscale;
-	  	sh = tex->h * yscale;
+		sw = tex->w * xscale;
+		sh = tex->h * yscale;
 	}
 	else{
 		sw = sw * xscale;
-        sh = sh * yscale;
-    }
+		sh = sh * yscale;
+	}
 	su = sw/tex->texw;
-    sv = sh/tex->texh;
-    swf = tex->texw;
- 
+	sv = sh/tex->texh;
+	swf = tex->texw;
+
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
- 
+
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
 	//平移,旋转,放缩变换
-    m_transmatrix.x = dx;
+	m_transmatrix.x = dx;
 	m_transmatrix.y = dy;
-    sceGumTranslate(&m_transmatrix);
-    ScePspFVector3 tmp;
-    tmp.x = tex->rcentrex * xscale;
-    tmp.y = tex->rcentrey * yscale;
-    tmp.z = 0.0;
-    sceGumTranslate(&tmp);
-    sceGumRotateZ(angle * PSP_PI_DIV_180); 
-    tmp.x = -tex->rcentrex * xscale;
-    tmp.y = -tex->rcentrey * yscale;
-    tmp.z = 0.0; 
-    sceGumTranslate(&tmp);
+	sceGumTranslate(&m_transmatrix);
+	ScePspFVector3 tmp;
+	tmp.x = tex->rcentrex * xscale;
+	tmp.y = tex->rcentrey * yscale;
+	tmp.z = 0.0;
+	sceGumTranslate(&tmp);
+	sceGumRotateZ(angle * PSP_PI_DIV_180);
+	tmp.x = -tex->rcentrex * xscale;
+	tmp.y = -tex->rcentrey * yscale;
+	tmp.z = 0.0;
+	sceGumTranslate(&tmp);
 
 	if(tex->swizzle == 0 && tex->dontswizzle ==0){
 		swizzle_swap(tex);
 	}
 	sceGuTexMode(tex->mode,0,0,tex->swizzle);
- 	sceKernelDcacheWritebackAll();
- 	sceGuTexOffset(sx/tex->texw,sy/tex->texh);
- 	sceGuTexScale(1.0/xscale,1.0/yscale);
+	sceKernelDcacheWritebackAll();
+	sceGuTexOffset(sx/tex->texw,sy/tex->texh);
+	sceGuTexScale(1.0/xscale,1.0/yscale);
 	if((tex->modified==1)||tex->texid != m_tex_in_ram){
 		m_tex_in_ram = tex->texid;
 		tex->modified = 0;
 		sceGuTexImage(0,tex->texw,tex->texh,tex->texw,tex->data);
- 		sceKernelDcacheWritebackAll();
+		sceKernelDcacheWritebackAll();
 		//nge_print("hit \n");
 	}
- 	//sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
+	//sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	//sceGuTexFilter(GU_LINEAR,GU_LINEAR);
 
 	//psp dcache优化
 	for(ustart = 0,step = 0;ustart<su;ustart += PSP_SLICE_F,step += swf * PSP_SLICE_F){
 		vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct VertexUV));
 		width = (ustart + PSP_SLICE_F ) < su ? (PSP_SLICE_F) : su-ustart;
-				
-		vertices[0].u = ustart; 
+
+		vertices[0].u = ustart;
 		vertices[0].v = 0;
 		vertices[0].color = color;
-		vertices[0].x = ustart * swf; 
-		vertices[0].y = 0; 
+		vertices[0].x = ustart * swf;
+		vertices[0].y = 0;
 		vertices[0].z = 0.0f;
-		vertices[1].u = ustart + width; 
+		vertices[1].u = ustart + width;
 		vertices[1].v = 0;
 		vertices[1].color = color;
-		vertices[1].x = step + width * swf; 
-		vertices[1].y = 0; 
+		vertices[1].x = step + width * swf;
+		vertices[1].y = 0;
 		vertices[1].z = 0.0f;
-		vertices[2].u = ustart; 
+		vertices[2].u = ustart;
 		vertices[2].v = sv;
 		vertices[2].color = color;
-		vertices[2].x = ustart * swf; 
-		vertices[2].y = sh; 
+		vertices[2].x = ustart * swf;
+		vertices[2].y = sh;
 		vertices[2].z = 0.0f;
-		vertices[3].u = ustart + width; 
+		vertices[3].u = ustart + width;
 		vertices[3].v = sv;
 		vertices[3].color = color;
-		vertices[3].x = (step + width * swf); 
-		vertices[3].y = sh; 
+		vertices[3].x = (step + width * swf);
+		vertices[3].y = sh;
 		vertices[3].z = 0.0f;
 		sceGumDrawArray(GU_TRIANGLE_STRIP,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_3D,4,0,vertices);
 	}
 	//恢复坐标
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
-	
+
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
 }
@@ -832,7 +830,7 @@ void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, flo
 	int off ;
 
 	if (tex==0 || tex->w==0 || tex->h==0 || dw == 0 || dh == 0) return;
-	
+
 	u1 = sx + sw;
 	v1 = sy + sh;
 	sceGuTexMode(tex->mode, 0, 0, tex->swizzle);
@@ -858,12 +856,12 @@ void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, flo
 		v1 -= sy;
 		sy = 0.f;
 	}
-	
+
 	m_tex_in_ram = tex->texid;
 	sceGuTexImage(0, MIN(512,tex->texw), MIN(512,tex->texh), tex->texw, data);
 	sceGuEnable(GU_TEXTURE_2D);
-	
-	
+
+
 	cur_u = sx;
 	cur_x = dx;
 	x_end = dx + dw;
@@ -880,8 +878,8 @@ void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, flo
 		vertices[0].color = mask;
 		vertices[0].u = cur_u;
 		vertices[0].v = sy;
-		vertices[0].x = cur_x; 
-		vertices[0].y = dy; 
+		vertices[0].x = cur_x;
+		vertices[0].y = dy;
 		vertices[0].z = 0;
 
 		cur_u += source_width;
@@ -919,13 +917,13 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
 	float u1 ,v1;
 
 	if (tex==0 || tex->w==0 || tex->h==0) return;
-	
+
 	if(sw == 0 && sh ==0){
 		//sw = tex->texw;
 		//sh = tex->texh;
 		sw = tex->w;
 		sh = tex->h;
-	
+
 	}
 	if(dw == 0){
 		if(dh == 0){
@@ -936,7 +934,7 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
 			return;
 		}
 	}
-	
+
 	u1 = sx+sw;
 	v1 = sy+sh;
 	if(tex->swizzle == 0 && tex->dontswizzle ==0){
@@ -948,12 +946,12 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
 		m_tex_in_ram = tex->texid;
 		tex->modified = 0;
 		sceGuTexImage(0, tex->texw,tex->texh,tex->texw, tex->data);
- 		sceKernelDcacheWritebackAll();
+		sceKernelDcacheWritebackAll();
 		//nge_print("hit \n");
 	}
-	
+
 	sceGuEnable(GU_TEXTURE_2D);
-	
+
 
 	cur_u = sx;
 	cur_x = dx;
@@ -971,8 +969,8 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
 		vertices[0].color = mask;
 		vertices[0].u = cur_u;
 		vertices[0].v = sy;
-		vertices[0].x = cur_x; 
-		vertices[0].y = dy; 
+		vertices[0].x = cur_x;
+		vertices[0].y = dy;
 		vertices[0].z = 0;
 
 		cur_u += source_width;
@@ -1005,48 +1003,48 @@ image_p ScreenToImage()
 	uint16 *vram16;
 	uint8 *line;
 	sceDisplayWaitVblankStart();  // if framebuf was set with PSP_DISPLAY_SETBUF_NEXTFRAME, wait until it is changed
-    sceDisplayGetFrameBuf(&temp, &width, &format, PSP_DISPLAY_SETBUF_NEXTFRAME);
+	sceDisplayGetFrameBuf(&temp, &width, &format, PSP_DISPLAY_SETBUF_NEXTFRAME);
 	pimage = image_create(SCREEN_WIDTH,SCREEN_HEIGHT,DISPLAY_PIXEL_FORMAT_8888);
 	if(pimage == NULL)
 		return NULL;
 	vram32 = (uint32*) temp;
-    vram16 = (uint16*) vram32;
+	vram16 = (uint16*) vram32;
 	line = (uint8*)pimage->data;
-    for (y = 0; y < SCREEN_HEIGHT; y++) {
-                for (i = 0, x = 0; x < SCREEN_WIDTH; x++) {
-                       switch (format) {
-                                case PSP_DISPLAY_PIXEL_FORMAT_565:
-                                        color = vram16[x + y * width];
-                                        r = (color & 0x1f) << 3; 
-                                        g = ((color >> 5) & 0x3f) << 2 ;
-                                        b = ((color >> 11) & 0x1f) << 3 ;
-                                        break;
-                                case PSP_DISPLAY_PIXEL_FORMAT_5551:
-                                        color = vram16[x + y * width];
-                                        r = (color & 0x1f) << 3; 
-                                        g = ((color >> 5) & 0x1f) << 3 ;
-                                        b = ((color >> 10) & 0x1f) << 3 ;
-                                        break;
-                                case PSP_DISPLAY_PIXEL_FORMAT_4444:
-                                        color = vram16[x + y * width];
-                                        r = (color & 0xf) << 4; 
-                                        g = ((color >> 4) & 0xf) << 4 ;
-                                        b = ((color >> 8) & 0xf) << 4 ;
-                                        break;
-                                case PSP_DISPLAY_PIXEL_FORMAT_8888:
-                                        color = vram32[x + y * width];
-                                        r = color & 0xff; 
-                                        g = (color >> 8) & 0xff;
-                                        b = (color >> 16) & 0xff;
-                                        break;
-                        }
-                        line[i++] = r;
-                        line[i++] = g;
-                        line[i++] = b;
+	for (y = 0; y < SCREEN_HEIGHT; y++) {
+				for (i = 0, x = 0; x < SCREEN_WIDTH; x++) {
+					   switch (format) {
+								case PSP_DISPLAY_PIXEL_FORMAT_565:
+										color = vram16[x + y * width];
+										r = (color & 0x1f) << 3;
+										g = ((color >> 5) & 0x3f) << 2 ;
+										b = ((color >> 11) & 0x1f) << 3 ;
+										break;
+								case PSP_DISPLAY_PIXEL_FORMAT_5551:
+										color = vram16[x + y * width];
+										r = (color & 0x1f) << 3;
+										g = ((color >> 5) & 0x1f) << 3 ;
+										b = ((color >> 10) & 0x1f) << 3 ;
+										break;
+								case PSP_DISPLAY_PIXEL_FORMAT_4444:
+										color = vram16[x + y * width];
+										r = (color & 0xf) << 4;
+										g = ((color >> 4) & 0xf) << 4 ;
+										b = ((color >> 8) & 0xf) << 4 ;
+										break;
+								case PSP_DISPLAY_PIXEL_FORMAT_8888:
+										color = vram32[x + y * width];
+										r = color & 0xff;
+										g = (color >> 8) & 0xff;
+										b = (color >> 16) & 0xff;
+										break;
+						}
+						line[i++] = r;
+						line[i++] = g;
+						line[i++] = b;
 						line[i++] = 0xff;
-                }
-                line = line+pimage->texw*pimage->bpb;
-        }
+				}
+				line = line+pimage->texw*pimage->bpb;
+		}
 	return pimage;
 }
 
@@ -1059,6 +1057,3 @@ void ScreenShot(const char* filename)
 	image_save_png(pimage,filename,1);
 	image_free(pimage);
 }
-
-
-#endif
