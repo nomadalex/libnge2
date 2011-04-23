@@ -19,10 +19,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include "nge_tga.h"
 #include "nge_debug_log.h"
+#include "nge_tga.h"
 #include "nge_io_file.h"
 #include "nge_rle.h"
+#include <stdlib.h>
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 //for tga load
@@ -65,20 +67,19 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	static uint8 r,g,b,a;
 	TGAFILEHEADER tfh;
 
-	offset = 0;
 	if (mbuf==NULL){
 		return 0;
 	}
-    memset( &tfh, 0, sizeof(TGAFILEHEADER) );
-    fpos = 0;
+	memset( &tfh, 0, sizeof(TGAFILEHEADER) );
+	fpos = 0;
 	workptr = (char*)mbuf;
 
 	memcpy(&tfh,workptr,sizeof(TGAFILEHEADER));
-    fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
+	fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
 
 	workptr += fpos;
 
-    if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
+	if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
 		tfh.ImageTypeCode!=9 && tfh.ImageTypeCode!=10 && tfh.ImageTypeCode!=11)
 	{
 		nge_print("Unknown ImageTypeCode.\n");
@@ -99,8 +100,8 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	dst = NULL;
 	done = 0;
 	bpb = 4;
-    if (tdata==0){
-    	nge_print("malloc failed on tdata.\n");
+	if (tdata==0){
+		nge_print("malloc failed on tdata.\n");
 		return 0;
 	}
 
@@ -340,17 +341,16 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		return 0;
 	}
 
-	offset = 0;
-    memset( &tfh, 0, sizeof(TGAFILEHEADER) );
-    fpos  = 0;
+	memset( &tfh, 0, sizeof(TGAFILEHEADER) );
+	fpos  = 0;
 	workptr = (char*)mbuf;
 
 	memcpy(&tfh,workptr,sizeof(TGAFILEHEADER));
-    fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
+	fpos += sizeof(TGAFILEHEADER)+tfh.ImageIDSize;
 
 	workptr += fpos;
 
-    if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
+	if (tfh.ImageTypeCode!=1 && tfh.ImageTypeCode!=2 && tfh.ImageTypeCode!=3 &&
 		tfh.ImageTypeCode!=9 && tfh.ImageTypeCode!=10 && tfh.ImageTypeCode!=11)
 	{
 		nge_print("Unknown ImageTypeCode.\n");
@@ -371,8 +371,8 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	dst = NULL;
 	done = 0;
 	bpb = 4;
-    if (tdata == 0){
-    	nge_print("malloc failed on tdata.\n");
+	if (tdata == 0){
+		nge_print("malloc failed on tdata.\n");
 		return 0;
 	}
 
@@ -590,7 +590,6 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	TGAFILEHEADER tfh;
 	uint32 x,y;
 	static uint8 b,g,r,a;
-	long pos;
 	uint8 *src;
 	uint16 col16;
 
@@ -603,7 +602,7 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	fd = io_fopen(filename, IO_WRONLY);
 	if (!fd)
 		return 0;
-    memset( &tfh, 0, sizeof(TGAFILEHEADER) );
+	memset( &tfh, 0, sizeof(TGAFILEHEADER) );
 	tfh.ImageTypeCode = 2;
 	tfh.Depth = (alpha?32:24);
 	if (rle)
@@ -622,7 +621,7 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 		io_fclose(fd);
 		return 0;
 	}
-	save_buf = (char*)malloc(pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
+	save_buf = (uint8*)malloc(pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
 	memset(save_buf,0,pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
 	memcpy(save_buf+save_pos,&tfh,sizeof(TGAFILEHEADER));
 	save_pos += sizeof(TGAFILEHEADER);
