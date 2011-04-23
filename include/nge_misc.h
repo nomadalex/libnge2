@@ -11,7 +11,7 @@
 #define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
 
 #elif defined IPHONEOS || defined(__linux__)
-#include <stdlib.h>
+#include <unistd.h>
 #define nge_sleep(tick) usleep(tick)
 #endif
 
