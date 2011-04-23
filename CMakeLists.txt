@@ -36,15 +36,9 @@ set(NGE2_VERSION 2.1)
 string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
 set(NGE2_DLL_SHORTVER 21)
 
-# for some internal headers
-include_directories(include/internal)
-
+# common src files
 set(NGE2_SRCS
-  src/nge_image_effect.c
-
-  src/libnge2.c
-  src/movieplay/nge_movie.c
-
+  src/nge_bmp.c
   src/nge_charsets.c
   src/nge_debug_log.c
   src/nge_font.c
@@ -53,22 +47,29 @@ set(NGE2_SRCS
   src/nge_font_nfont.c
   src/nge_gif_animation.c
   src/nge_gif_show.c
-  src/nge_graphics.c
-  src/nge_graphics_ext.c
-  src/nge_image_load.c
-  src/nge_input_proc.c
+  src/nge_image.c
+  src/nge_image_effect.c
+  src/nge_image_ext.c
+  src/nge_input.c
   src/nge_io_dir.c
   src/nge_io_file.c
+  src/nge_jpg.c
   src/nge_main.c
   src/nge_misc.c
+  src/nge_png.c
   src/nge_rbtree.c
   src/nge_rle.c
   src/nge_sys_compatible.c
   src/nge_tex_cache.c
+  src/nge_tga.c
   src/nge_timer.c
-  src/nge_utils.c
   )
 set(NGE2_LIBS)              # always link with these libraries
+
+if(UNIX OR WIN32 OR APPLE)
+  list(APPEND NGE2_SRCS
+	src/nge_graphics.c)
+endif()
 
 if(PSP)
   list(APPEND NGE2_SRCS
@@ -77,6 +78,7 @@ if(PSP)
 	)
 endif()
 
+# depends
 include_directories(mmgr)
 add_subdirectory(mmgr)
 option(USE_MMGR "Useful for debug." off)
@@ -146,6 +148,28 @@ install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(EXPORT nge2 DESTINATION share/cmake/Modules)
 
+# addons
+# hge particle system
 include_directories(hge)
 add_subdirectory(hge)
-add_subdirectory(samples)
+
+# helpers
+include_directories(helper)
+add_subdirectory(helper)
+
+include_directories(dirent)
+add_subdirectory(dirent)
+
+if(PSP)
+  include_directories(movie)
+  add_subdirectory(movie)
+endif()
+
+if(PSP OR WIN32)
+  include_directories(net)
+  add_subdirectory(net)
+endif()
+
+include_directories(app)
+add_subdirectory(app)
+# add_subdirectory(samples)
