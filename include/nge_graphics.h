@@ -31,12 +31,12 @@ enum{
 };
 
 typedef struct {
-	char name[256];
+	char *name;
 	int width;
 	int height;
 	int bpp;
 	int fullscreen;
-} *screen_context_p;
+}screen_context_t, *screen_context_p;
 
 typedef struct{
 	float x;
