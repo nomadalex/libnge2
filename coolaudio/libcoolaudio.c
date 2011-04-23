@@ -10,15 +10,15 @@
 //default init for windows and linux,load SDL mixer
 void CoolAudioDefaultInit()
 {
+  int rate = MIX_DEFAULT_FREQUENCY;
+  Uint16 format = MIX_DEFAULT_FORMAT;
+  int channels = MIX_DEFAULT_CHANNELS;
+
   /* Initialize the SDL and SDL_mixer library */
   if ( SDL_Init(SDL_INIT_AUDIO) < 0 && Mix_Init(MIX_INIT_MP3|MIX_INIT_OGG) != (MIX_INIT_MP3|MIX_INIT_OGG) ) {
 	fprintf(stderr, "Couldn't initialize SDL: %s\n",SDL_GetError());
 	exit(1);
   }
-
-  int rate = MIX_DEFAULT_FREQUENCY;
-  Uint16 format = MIX_DEFAULT_FORMAT;
-  int channels = MIX_DEFAULT_CHANNELS;
 
   /* Open the audio device */
   if (Mix_OpenAudio(rate, format, channels, 4096) < 0) {
@@ -60,16 +60,16 @@ void CoolAudioDefaultInit()
 {
 #ifdef PSP_FW_VERSION_1XX
 	int result = pspSdkLoadStartModule("flash0:/kd/me_for_vsh.prx", PSP_MEMORY_PARTITION_KERNEL);
-    	result = pspSdkLoadStartModule("flash0:/kd/videocodec.prx", PSP_MEMORY_PARTITION_KERNEL);
-    	result = pspSdkLoadStartModule("flash0:/kd/audiocodec.prx", PSP_MEMORY_PARTITION_KERNEL);
-    	result = pspSdkLoadStartModule("flash0:/kd/mpegbase.prx", PSP_MEMORY_PARTITION_KERNEL);
-    	result = pspSdkLoadStartModule("flash0:/kd/mpeg_vsh.prx", PSP_MEMORY_PARTITION_USER);
-    	pspSdkFixupImports(result);
+		result = pspSdkLoadStartModule("flash0:/kd/videocodec.prx", PSP_MEMORY_PARTITION_KERNEL);
+		result = pspSdkLoadStartModule("flash0:/kd/audiocodec.prx", PSP_MEMORY_PARTITION_KERNEL);
+		result = pspSdkLoadStartModule("flash0:/kd/mpegbase.prx", PSP_MEMORY_PARTITION_KERNEL);
+		result = pspSdkLoadStartModule("flash0:/kd/mpeg_vsh.prx", PSP_MEMORY_PARTITION_USER);
+		pspSdkFixupImports(result);
 #else
 	int result = sceUtilityLoadAvModule(0);
 	result = sceUtilityLoadAvModule(3);
 #endif
-    	sceMpegInit();
+		sceMpegInit();
 }
 
 void CoolAudioDefaultFini()
