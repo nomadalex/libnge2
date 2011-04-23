@@ -19,8 +19,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#include "nge_jpg.h"
 #include "nge_debug_log.h"
+#include "nge_jpg.h"
 #include "nge_io_file.h"
 
 #include "jpeglib.h"
@@ -362,4 +362,3 @@ image_p image_load_jpg_colorkey_fp(int handle,int fsize, int autoclose,int displ
 	SAFE_FREE(mbuf);
 	return pimage;
 }
-
