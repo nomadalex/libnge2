@@ -5,6 +5,7 @@
 #include "nge_graphics.h"
 #include "nge_misc.h"
 #include <string.h>
+#include <stdio.h>
 
 #if defined(WIN32)  || defined(__linux__)
 #include <GL/glut.h>
@@ -30,7 +31,7 @@ typedef struct {
 	int m_status;
 	int m_effect_fps;
 	int m_timeticks;
-    nge_timer* m_ptimer;
+	nge_timer* m_ptimer;
 	//公共函数
 	effect_draw draw;
 	effect_setparam set_param;
@@ -359,7 +360,7 @@ typedef struct {
 	int m_status;
 	int m_effect_fps;
 	int m_timeticks;
-    nge_timer* m_ptimer;
+	nge_timer* m_ptimer;
 	//公共函数
 	effect_draw draw;
 	effect_setparam set_param;
@@ -526,7 +527,7 @@ typedef struct {
 	int m_status;
 	int m_effect_fps;
 	int m_timeticks;
-    nge_timer* m_ptimer;
+	nge_timer* m_ptimer;
 	//公共函数
 	effect_draw draw;
 	effect_setparam set_param;
@@ -618,7 +619,7 @@ void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8
 {
 	static uint16* p16 = 0;
 	static uint32* p32 = 0;
-       if(x<(int)image->texw && y<(int)image->texh && x >= 0 && y >= 0)
+	   if(x<(int)image->texw && y<(int)image->texh && x >= 0 && y >= 0)
 	{
 		switch(image->dtype)
 		{
@@ -643,23 +644,23 @@ void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8
 }
 
 #define CAL_AND_SET_BLUR(type, bit, has_alpha, step)                    \
-				for(bx=((ss+x)<0 ? 0 :ss);bx<=se &&                     \
-                        (bx + x) < pimg->w;bx+=step)                    \
-				{                                                       \
-					for(by=((ss+y)<0 ? 0 :ss);by<=se &&                 \
-                            (by + y) < pimg->h;by+=step)                \
-					{                                                   \
-						GET_RGBA_##type ((*(p##bit + by * pimg->texw + bx)),sr,sb,sg,sa); \
-						tn ++;                                          \
-						a += sa;                                        \
-						b += sb;                                        \
-						r += sr;                                        \
-						g += sg;                                        \
-                    }                                                   \
-                }                                                       \
-				if(tn==0)                                               \
-					break;                                              \
-				*(pdes##bit + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), has_alpha ? (uint8)(a/tn) :(uint8)(0xff/tn), pfblur->m_image->dtype)
+	for(bx=(((int)(ss+x))<0 ? 0 :ss);bx<=se &&                          \
+			(bx + x) < pimg->w;bx+=step)                                \
+	{                                                                   \
+		for(by=(((int)(ss+y))<0 ? 0 :ss);by<=se &&                      \
+				(by + y) < pimg->h;by+=step)                            \
+		{                                                               \
+			GET_RGBA_##type ((*(p##bit + by * pimg->texw + bx)),sr,sb,sg,sa); \
+			tn ++;                                                      \
+			a += sa;                                                    \
+			b += sb;                                                    \
+			r += sr;                                                    \
+			g += sg;                                                    \
+		}                                                               \
+	}                                                                   \
+	if(tn==0)                                                           \
+		break;                                                          \
+	*(pdes##bit + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), has_alpha ? (uint8)(a/tn) :(uint8)(0xff/tn), pfblur->m_image->dtype)
 
 static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
@@ -683,26 +684,26 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32
 			p16 = ((uint16*)pimg->data) + pimg->texw * y;
 			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
 		}
-        
+
 		for(x=0;x<pimg->w;x++)
 		{
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
-                a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(8888, 32, 1, 1);
+				a = 0;b = 0;r = 0;g = 0; tn = 0;
+				CAL_AND_SET_BLUR(8888, 32, 1, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_4444:
-                a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(4444, 16, 1, 1);
+				a = 0;b = 0;r = 0;g = 0; tn = 0;
+				CAL_AND_SET_BLUR(4444, 16, 1, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_5551:
 				a = 1;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(5551, 16, 0, 1);
+				CAL_AND_SET_BLUR(5551, 16, 0, 1);
 				break;
 			case DISPLAY_PIXEL_FORMAT_565:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(565, 16, 0, 1);
+				CAL_AND_SET_BLUR(565, 16, 0, 1);
 				break;
 			default:
 				printf("pixel no supper\n");
@@ -749,19 +750,19 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(8888, 32, 1, step);
+				CAL_AND_SET_BLUR(8888, 32, 1, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_4444:
-                a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(4444, 16, 1, step);
+				a = 0;b = 0;r = 0;g = 0; tn = 0;
+				CAL_AND_SET_BLUR(4444, 16, 1, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_5551:
 				a = 1;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(5551, 16, 0, step);
+				CAL_AND_SET_BLUR(5551, 16, 0, step);
 				break;
 			case DISPLAY_PIXEL_FORMAT_565:
 				a = 0;b = 0;r = 0;g = 0; tn = 0;
-                CAL_AND_SET_BLUR(565, 16, 0, step);
+				CAL_AND_SET_BLUR(565, 16, 0, step);
 				break;
 			default:
 				printf("pixel no supper\n");
@@ -1237,7 +1238,7 @@ typedef struct {
 	int m_status;
 	int m_effect_fps;
 	int m_timeticks;
-    nge_timer* m_ptimer;
+	nge_timer* m_ptimer;
 	//公共函数
 	effect_draw draw;
 	effect_setparam set_param;
