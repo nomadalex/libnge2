@@ -1,5 +1,6 @@
 #include "nge_io_file.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 
 int io_fopen(const char* fname,int flag)
 {
