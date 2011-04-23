@@ -1,8 +1,16 @@
+#include "nge_debug_log.h"
 #include "nge_image_ext.h"
+#include <math.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define _min(a,b) ((a)<(b)?(a):(b))
+#define _max(a,b) ((a)>(b)?(a):(b))
 
 int get_gray_color(int dtype, int scol, int gray)
 {
-	int gcol, r, g, b, a;
+	int gcol = 0, r = 0, g = 0, b = 0, a = 0;
 	if(gray==0)
 		return scol;
 	switch(dtype)
@@ -74,8 +82,8 @@ image_p create_gray_image(image_p src, int gray)
 	uint32 y,x;
 	uint8 recover = 0;
 	image_p pimg;
-	uint16 *p16,*psrc16;
-	uint32 *p32,*psrc32;
+	uint16 *p16 = NULL,*psrc16 = NULL;
+	uint32 *p32 = NULL,*psrc32 = NULL;
 
 	if(gray<0 || gray>100)
 	{
@@ -372,11 +380,25 @@ image_p image_conv(image_p src, int dtype)
 #define FILTER_2PI (2.0 * 3.1415926535897932384626433832795)
 #define FILTER_4PI (4.0 * 3.1415926535897932384626433832795)
 
-#define FILTER_SET_PARAM_IMP(type) int filter_##type##_set_param(void *this,double val,int flags) { \
+enum{
+	FILTER_BOX = 0,
+	FILTER_BILINEAR,
+	FILTER_GAUSSIAN,
+	FILTER_HAMMING,
+	FILTER_BLACKMAN,
+};
+
+enum{
+	FILTER_SET_WIDTH = 0,
+	FILTER_GET_WIDTH,
+};
+
+#define FILTER_SET_PARAM_IMP(type)                                      \
+	int filter_##type##_set_param(void *this,double val,int flags) {    \
 		assert(this != NULL);											\
 		switch(flags) {													\
 		case FILTER_SET_WIDTH:											\
-			(Filter_##type *)this->width = val;							\
+			((Filter_##type *)this)->width = val;                       \
 			return 1;													\
 		default:														\
 			break;														\
@@ -384,11 +406,12 @@ image_p image_conv(image_p src, int dtype)
 		return 0;														\
 	}
 
-#define FILTER_GET_PARAM_IMP(type) int filter_##type##_get_param(void *this,double *pval,int flags) { \
+#define FILTER_GET_PARAM_IMP(type)                                      \
+	int filter_##type##_get_param(void *this,double *pval,int flags) {  \
 		assert((this != NULL) && (pval != NULL));						\
 		switch(flags) {													\
 		case FILTER_GET_WIDTH:											\
-			*pval = (Filter_##type *)this->width;						\
+			*pval = ((Filter_##type *)this)->width;						\
 			return 1;													\
 		default:														\
 			break;														\
@@ -396,11 +419,12 @@ image_p image_conv(image_p src, int dtype)
 		return 0;														\
 	}
 
-#define FILTER_CREATE_IMP(type, val) void* filter_box_create()			\
+#define FILTER_CREATE_IMP(type, val)                                    \
+	void* filter_##type##_create()                                      \
 	{																	\
-		Filter_##type * box = (Filter_##type *)malloc(sizeof(Filter_##type)); \
-		box->width  = val;												\
-		return (void*)box;												\
+		Filter_##type * type = (Filter_##type *)malloc(sizeof(Filter_##type)); \
+		type->width  = val;												\
+		return (void*)type;												\
 	}
 
 //////////////////////////////////////////////////////////////////////////
@@ -409,9 +433,9 @@ typedef struct _filter_box {
 	double     width;
 }Filter_box;
 
-double filter_box_func (void *this, double val)
+double filter_box_proc (void *this, double val)
 {
-	return (fabs(val) <= (Filter_box*) this->width ? 1.0 : 0.0);
+	return (fabs(val) <= ((Filter_box*)this)->width ? 1.0 : 0.0);
 }
 
 FILTER_SET_PARAM_IMP(box)
@@ -427,9 +451,9 @@ typedef struct _filter_bilinear{
 	double     width;
 }Filter_bilinear;
 
-double filter_bilinear_func (void *this,double val)
+double filter_bilinear_proc (void *this,double val)
 {
-	double width = (Filter_bilinear*) this->width;
+	double width = ((Filter_bilinear*)this)->width;
 	val = fabs(val);
 	return (val < width ? width - val : 0.0);
 }
@@ -447,9 +471,9 @@ typedef struct _filter_gaussian{
 	double     width;
 }Filter_gaussian;
 
-double filter_gaussian_func (void *this,double val)
+double filter_gaussian_proc (void *this,double val)
 {
-	return (fabs(val) > (Filter_gaussian*)this->width ? 0.0 : (exp(-val * val / 2.0)) / sqrt(FILTER_2PI));
+	return (fabs(val) > ((Filter_gaussian*)this)->width ? 0.0 : (exp(-val * val / 2.0)) / sqrt(FILTER_2PI));
 }
 
 FILTER_SET_PARAM_IMP(gaussian)
@@ -464,9 +488,9 @@ typedef struct _filter_hamming{
 	double     width;
 }Filter_hamming;
 
-double filter_hamming_func (void *this,double val)
+double filter_hamming_proc (void *this,double val)
 {
-	if (fabs (val) > (Filter_hamming*)this->width)
+	if (fabs (val) > ((Filter_hamming*)this)->width)
 		return 0.0;
 	{
 		double window = 0.54 + 0.46 * cos (FILTER_2PI * val);
@@ -488,13 +512,13 @@ typedef struct _filter_blackman{
 	double     width;
 }Filter_blackman;
 
-double filter_blackman_func (void *this,double val)
+double filter_blackman_proc (void *this,double val)
 {
-	double width = (Filter_blackman*)this->width;
+	double width = ((Filter_blackman*)this)->width;
 	if (fabs (val) > width)
 		return 0.0;
 	{
-		dobule d = 2.0 * width + 1.0;
+		double d = 2.0 * width + 1.0;
 		return (0.42 + 0.5 * cos (FILTER_2PI * val / ( d - 1.0 )) +
 				0.08 * cos (FILTER_4PI * val / ( d - 1.0 )));
 	}
@@ -508,7 +532,9 @@ FILTER_CREATE_IMP(blackman, 0.5)
 //////////////////////////////////////////////////////////////////////////
 
 // we do not need it now
-#undef FILTER_CREATE_IMP FILTER_GET_PARAM_IMP FILTER_SET_PARAM_IMP
+#undef FILTER_CREATE_IMP
+#undef FILTER_GET_PARAM_IMP
+#undef FILTER_SET_PARAM_IMP
 
 typedef void* (*Filter_create)();
 typedef double (*Filter_proc)(void *this,double val);
@@ -589,7 +615,7 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 	double fscale = 1.0;
 	double fwidth;
 	Line_c10n *res;
-	filter_get_prama_funs[filter_type](filter, &fwidth, FILTER_GET_PRAMA);
+	filter_get_param_funs[filter_type](filter, &fwidth, FILTER_GET_WIDTH);
 	if (scale < 1.0)
 	{    // Minification
 		width = fwidth / scale;
@@ -630,7 +656,6 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 		total_weight = 0.0;  // Zero sum of weights
 		for (i = left; i <= right; i++)
 		{   // Calculate weights
-			double test = filter_proc_funs[filter_type](filter,fscale * (center - (double)i));
 			res->row[u].weights[i-left] =
 				fscale * filter_proc_funs[filter_type](filter,fscale * (center - (double)i));
 			total_weight += res->row[u].weights[i-left];
@@ -647,7 +672,7 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 }
 
 #define SCALE_FUN_IMP(type, dw_or_dh, _sdata, _ddata, _src_n, _dst_n)	\
-	void scale_##type (uint8 *sdata, uint32 sw, uint8 *ddata, uint32 dw_or_dh, uint32 u, Line_c10n *contrib,uint32 dpitch,uint32 dtype) \
+	void scale_##type (uint8 *sdata, uint32 sw, uint8 *ddata, uint32 dw_or_dh, uint32 u, Line_c10n *contrib,uint32 pitch,uint32 dtype) \
 	{																	\
 		uint32 ii, i;													\
 		uint8 r,g,b,a,sr,sb,sg,sa;										\
@@ -660,8 +685,8 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 		dst16 = (uint16*) _ddata;										\
 		for (ii = 0; ii < dw_or_dh; ii++)								\
 		{																\
-			left  = contrib->row[y].left;								\
-			right = contrib->row[y].right;								\
+			left  = contrib->row[ii].left;								\
+			right = contrib->row[ii].right;								\
 			r = 0,g = 0,b = 0,a = 0;									\
 			for (i = left; i <= right; i++)								\
 			{															\
@@ -696,11 +721,11 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 		}																\
 	}
 
-SCALE_FUN_IMP(row, dw, sdata+u*spitch, ddata+u*dw, i, ii)
-SCALE_FUN_IMP(col, dh, sdata, ddata, i*sw+u, ii*dpitch+u)
+SCALE_FUN_IMP(row, dw, sdata+u*pitch, ddata+u*dw, i, ii)
+SCALE_FUN_IMP(col, dh, sdata, ddata, i*sw+u, ii*pitch+u)
 
-#define DIRE_SCALE_FUN_IMP(type, dire, dire2)							\
-	void type##_scale (void* filter, int filter_type, uint8 *sdata, uint32 sw, uint32 sh, uint8 *ddata, uint32 dw, uint32 dh,uint32 spitch,uint32 dtype) \
+#define DIRE_SCALE_FUN_IMP(type, stype, dire, dire2)                     \
+	void type##_scale (void* filter, int filter_type, uint8 *sdata, uint32 sw, uint32 sh, uint8 *ddata, uint32 dw, uint32 dh,uint32 pitch,uint32 dtype) \
 	{																	\
 		uint32  u;														\
 		Line_c10n * contrib;											\
@@ -715,13 +740,13 @@ SCALE_FUN_IMP(col, dh, sdata, ddata, i*sw+u, ii*dpitch+u)
 		contrib = calc_contributions (filter, filter_type, d##dire, s##dire, (double)d##dire / (double)s##dire); \
 		for (u = 0; u < d##dire2; u++)									\
 		{    /* Step through rows */									\
-			scale_##stype (sdata, sw, ddata, d##dire, u, contrib, spitch, dtype); \
+			scale_##stype (sdata, sw, ddata, d##dire, u, contrib, pitch, dtype); \
 		}																\
 		free_contributions (contrib);   /* Free contributions structure */ \
 	}
 
-DIRE_SCALE_FUN_IMP(horiz, w, h)
-DIRE_SCALE_FUN_IMP(vert, h, w)
+DIRE_SCALE_FUN_IMP(horiz, row,  w, h)
+DIRE_SCALE_FUN_IMP(vert, col, h, w)
 
 //image scale
 image_p image_scale(image_p src, int w, int h,int mode)
@@ -744,7 +769,7 @@ image_p image_scale(image_p src, int w, int h,int mode)
 	horiz_scale(filter, mode, src->data,src->w,src->h,temp,dst->w,src->h,spitch,src->dtype);
 	vert_scale (filter, mode, temp,dst->w,src->h,dst->data,dst->w,dst->h,dpitch,src->dtype);
 	free(temp);
-	destroy_filter(filter);
+	filter_destroy(filter);
 	if(recover)
 		swizzle_swap(src);
 	return dst;
