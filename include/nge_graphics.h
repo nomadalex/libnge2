@@ -249,9 +249,8 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
  */
 void ImageToScreen(image_p texture,float dx,float dy);
 
-#ifndef IPHONEOS // nge2i上没有这几个函数... 先这样解决，有时间再看是否添加
 /**
- * 同RenderQuad,增加一个trans参数
+ *同RenderQuad,增加一个trans参数
  *@param image_p texture,图片指针
  *@param float sx,图片x坐标
  *@param float sy,图片y坐标
@@ -307,7 +306,6 @@ void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, flo
  *@return 无
  */
 void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
-#endif // notice it.
 
 /**
  *将屏幕内容保存在image_p中
