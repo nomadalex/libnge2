@@ -44,6 +44,7 @@
 #define png_uint_16p_NULL         NULL
 #define png_voidp_NULL            NULL
 #define png_write_status_ptr_NULL NULL
+#define png_set_gray_1_2_4_to_8 png_set_expand_gray_1_2_4_to_8
 #endif
 
 //////////////////////////////////////////////////////////////////////////
