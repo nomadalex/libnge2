@@ -63,16 +63,46 @@ typedef struct
 {
 	GLfloat x,y;
 }Vectice2D_t;
+#define VECT_2D_X(v) (v.x)
+#define VECT_2D_Y(v) (v.y)
+#define VECT_2D_SET(vec, X, Y) \
+	vec.x = X;				   \
+	vec.y = Y
+#define VECT_2D_COPY(v1, v2)   \
+	v1.x = v2.x;			   \
+	v1.y = v2.y
 
 typedef struct
 {
 	GLubyte r,g,b,a;
 }Color_t;
+#define COLOR_T_R(c) (c.r)
+#define COLOR_T_G(c) (c.g)
+#define COLOR_T_B(c) (c.b)
+#define COLOR_T_A(c) (c.a)
+#define COLOR_T_SET(c, R, G, B, A) \
+	c.r = R;					   \
+	c.g = G;					   \
+	c.b = B;					   \
+	c.a = A
+#define COLOR_T_COPY(c1, c2) \
+	c1.r = c2.r;			 \
+	c1.g = c2.g;			 \
+	c1.b = c2.b;			 \
+	c1.a = c2.a
 
 typedef struct
 {
 	GLfloat u,v;
 }TexCoord_t;
+#define TEX_C_T_U(t) (t.u)
+#define TEX_C_T_V(t) (t.v)
+#define TEX_C_T_SET(t, U, V) \
+	t.u = U;				 \
+	t.v = V
+#define TEX_C_T_COPY(t1, t2) \
+	t1.u = t2.u;			 \
+	t1.v = t2.v
 
 static Vectice2D_t *gl_vectices;
 static Color_t *gl_colors;
@@ -142,16 +172,16 @@ char* GetVersion()
 	return version;
 }
 
-static Color_t screen = {0.0};
+static Color_t screen_c = {0, 0, 0, 0};
 
 uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 {
 	uint32 u_lastcolor;
-	u_lastcolor = MAKE_RGBA_8888(((int)(screen.r*255)),((int)(screen.g*255)),((int)(screen.b*255)),((int)(screen.a*255)));
-	screen.r = r/255.0;
-	screen.g = g/255.0;
-	screen.b = b/255.0;
-	screen.a = a/255.0;
+	u_lastcolor = MAKE_RGBA_8888(((int)(COLOR_T_R(screen_c)*255)),((int)(COLOR_T_G(screen_c)*255)),((int)(COLOR_T_B(screen_c)*255)),((int)(COLOR_T_A(screen_c)*255)));
+	COLOR_T_R(screen_c) = r/255.0;
+	COLOR_T_G(screen_c) = g/255.0;
+	COLOR_T_B(screen_c) = b/255.0;
+	COLOR_T_A(screen_c) = a/255.0;
 	return u_lastcolor;
 }
 
@@ -305,7 +335,7 @@ void BeginScene(uint8 clear)
 {
 	if(clear == 1){
 		glDisable(GL_SCISSOR_TEST);
-		glClearColor( screen.r, screen.g, screen.b, screen.a );
+		glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
 		glClear( GL_COLOR_BUFFER_BIT);
 		glEnable(GL_SCISSOR_TEST);
 	}
@@ -341,8 +371,8 @@ void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 	if(y2 == 0.0)
 		y2 = 0.1;
 	GL_ARRAY_CHECK_V(2);
-	gl_vertices[0] = { x1, y1 };
-	gl_vertices[1] = { x2, y2 };
+	VECT_2D_SET(gl_vectices[0], x1, y1);
+	VECT_2D_SET(gl_vectices[1], x2, y2);
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINE, 0, 2);
 	AFTER_DRAW();
@@ -360,8 +390,7 @@ void DrawCircle(float x, float y, float radius, int color,int dtype)
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
 	{
-		gl_vectices[i].x = x+radius*COSF(i);
-		gl_vectices[i].y = y+radius*SINF(i);
+		VECT_2D_SET(gl_vectices[i], x+radius*COSF(i), y+radius*SINF(i));
 	}
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINE_LOOP, 0, 360);
@@ -375,8 +404,7 @@ void FillCircle(float x, float y, float radius, int color,int dtype)
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
 	{
-		gl_vectices[i].x = x+radius*COSF(i);
-		gl_vectices[i].y = y+radius*SINF(i);
+		VECT_2D_SET(gl_vectices[i], x+radius*COSF(i), y+radius*SINF(i));
 	}
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
@@ -390,8 +418,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
 	{
-		gl_vectices[i].x = x+COSF(i)*xradius;
-		gl_vectices[i].y = y+SINF(i)*yradius;
+		VECT_2D_SET(gl_vectices[i], x+xradius*COSF(i), y+yradius*SINF(i));
 	}
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINE_LOOP, 0, 360);
@@ -405,8 +432,7 @@ void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
 	{
-		gl_vectices[i].x = x+COSF(i)*xradius;
-		gl_vectices[i].y = y+SINF(i)*yradius;
+		VECT_2D_SET(gl_vectices[i], x+xradius*COSF(i), y+yradius*SINF(i));
 	}
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
@@ -417,53 +443,57 @@ void PutPix(float x,float y ,int color,int dtype)
 {
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(1);
-	gl_vertices[0] = { x, y };
+	VECT_2D_SET(gl_vectices[0], x, y);
 	SET_COLOR(color,dtype);
 	glDrawArrays(GL_POINT, 0, 1);
 	AFTER_DRAW();
 }
 
-#define DRAW_POLYGON_IMP(mode, has_colors)              \
+#define DRAW_POLYGON_IMP(mode, count)					\
 	BEFORE_DRAW();                                      \
 	GL_ARRAY_CHECK_V(count);							\
 	{                                                   \
 		int i;                                          \
-		if (has_colors)									\
-		{												\
-			GL_ARRAY_EN(COLOR);							\
-			GL_ARRAY_CHECK_C(count);					\
-		}												\
 		for(i=0; i<count;i++)                           \
 		{                                               \
-			gl_vectices[i].x = x[i];					\
-			gl_vectices[i].y = y[i];					\
-			if(has_colors)                              \
-			{                                           \
-				GetRGBA(colors[i],dtype,&r,&g,&b,&a);   \
-				s_colors[i] = { r, g, b, a };			\
-			}                                           \
+			VECT_2D_SET( gl_vectices[i], x[i], y[i] );	\
 		}                                               \
-		if (!has_colors)								\
-			SET_COLOR(color,dtype);                     \
+		SET_COLOR(color,dtype);							\
 		glDrawArrays(mode, 0, count);                   \
-		if (has_colors)									\
-			GL_ARRAY_DIS(COLOR);						\
 	}                                                   \
+	AFTER_DRAW()
+
+#define DRAW_POLYGON_IMP_COLOR(mode, count)				\
+	BEFORE_DRAW();                                      \
+	GL_ARRAY_EN(COLOR);									\
+	GL_ARRAY_CHECK_V(count);							\
+	GL_ARRAY_CHECK_C(count);							\
+	{                                                   \
+		int i;                                          \
+		for(i=0; i<count;i++)                           \
+		{                                               \
+			VECT_2D_SET( gl_vectices[i], x[i], y[i] );	\
+			GetRGBA(colors[i],dtype,&r,&g,&b,&a);		\
+			COLOR_T_SET( gl_colors[i], r, g, b, a );	\
+		}                                               \
+		glDrawArrays(mode, 0, count);                   \
+	}                                                   \
+	GL_ARRAY_DIS(COLOR);								\
 	AFTER_DRAW()
 
 void DrawPolygon(float* x, float* y, int count, int color,int dtype)
 {
-	DRAW_POLYGON_IMP(GL_LINE_LOOP, 0);
+	DRAW_POLYGON_IMP(GL_LINE_LOOP, count);
 }
 
 void FillPolygon(float* x, float* y, int count, int color,int dtype)
 {
-	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 0);
+	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, count);
 }
 
 void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype)
 {
-	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 1);
+	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, count);
 }
 
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
@@ -472,7 +502,7 @@ void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
 	float y[] = { dy, dy-height, dy-height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
-	DRAW_POLYGON_IMP(GL_LINE_LOOP, 0);
+	DRAW_POLYGON_IMP(GL_LINE_LOOP, 4);
 }
 
 void DrawRectEx(rectf rect,int color,int dtype)
@@ -486,7 +516,7 @@ void FillRect(float dx, float dy, float width, float height,int color,int dtype)
 	float y[] = { dy, dy-height, dy-height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
-	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 0);
+	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 4);
 }
 
 void FillRectEx(rectf rect,int color,int dtype)
@@ -507,7 +537,7 @@ void FillRectGrad(float dx, float dy, float width, float height,int* colors,int 
 	float y[] = { dy, dy-height, dy-height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
-	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 1);
+	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, 4);
 }
 
 inline void FillRectGradEx(rectf rect,int* colors,int dtype)
@@ -543,49 +573,50 @@ static inline void TexImage2D(image_p pimg)
 	glTexImage2D(GL_TEXTURE_2D, 0, format, pimg->texw, pimg->texh, 0, format, pimg->dtype, pimg->data);
 }
 
-static uint8 cacheid = 0;
-#define BIND_AND_CACHE(tex, id)                     \
-	do {                                            \
-		int ret = tex_cache_getid(tex->texid,&id);  \
-		glBindTexture(GL_TEXTURE_2D, id);           \
-		if(ret == 0 ||tex->modified==1){            \
-			TexImage2D(tex);                        \
-			tex->modified = 0;                      \
-		}                                           \
+static int cacheid = 0;
+static uint8 tex_ret = 0;
+#define BIND_AND_TEST_CACHE(tex)						\
+	do {												\
+		tex_ret = tex_cache_getid(tex->texid,&cacheid);	\
+		glBindTexture(GL_TEXTURE_2D, cacheid);			\
+		if(tex_ret == 0 ||tex->modified==1){			\
+			TexImage2D(tex);							\
+			tex->modified = 0;							\
+		}												\
 	}while(0)
 
 #define SET_TEX_COORD(tex, sx, sy, sw, sh, topleft, bottomleft, bottomright, topright) \
 	if(sw==0&&sh==0){													\
 		if(sx==0&&sy==0){												\
-			gl_tex_uvs[topleft] = { 0, 1 };								\
-			gl_tex_uvs[bottomleft] = { 0, 0 };							\
-			gl_tex_uvs[bottomright] = { 1, 0 };							\
-			gl_tex_uvs[topright] = { 1, 1 };							\
+			TEX_C_T_SET( gl_tex_uvs[topleft], 0, 1 );					\
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, 0 );				\
+			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 0 );				\
+			TEX_C_T_SET( gl_tex_uvs[topright], 1, 1 );					\
 		}else{															\
-			gl_tex_uvs[topleft] = { sx/tex.texw, 1-sy/tex.texh };		\
-			gl_tex_uvs[bottomleft] = { sx/tex.texw, 0 };				\
-			gl_tex_uvs[bottomright] = { 1, 0 };							\
-			gl_tex_uvs[topright] = { 1, 1-sy/tex.texh };				\
+			TEX_C_T_SET( gl_tex_uvs[topleft], sx/tex->texw, 1-sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], sx/tex->texw, 0 );		\
+			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 0 );				\
+			TEX_C_T_SET( gl_tex_uvs[topright], 1, 1-sy/tex->texh );		\
 		}																\
 	}else{																\
 		if(sx==0&&sy==0){												\
-			gl_tex_uvs[topleft] = { 0, 1 };								\
-			gl_tex_uvs[bottomleft] = { 0, 1-sh/tex.texh };				\
-			gl_tex_uvs[bottomright] = { sw/tex.texw, 1-sh/tex.texh };	\
-			gl_tex_uvs[topright] = { sw/tex.texw, 1 };					\
+			TEX_C_T_SET( gl_tex_uvs[topleft], 0, 1 );					\
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, 1-sh/tex->texh );	\
+			TEX_C_T_SET( gl_tex_uvs[bottomright], sw/tex->texw, 1-sh/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topright], sw/tex->texw, 1 );		\
 		}else{															\
-			gl_tex_uvs[topleft] = { sx/tex.texw, 1-sy/tex.texh };		\
-			gl_tex_uvs[bottomleft] = { sx/tex.texw, 1-(sy+sh)/tex.texh }; \
-			gl_tex_uvs[bottomright] = { (sx+sw)/tex.texw, 1-(sy+sh)/tex.texh };	\
-			gl_tex_uvs[topright] = { (sx+sw)/tex.texw, 1-sy/tex.texh };	\
+			TEX_C_T_SET( gl_tex_uvs[topleft], sx/tex->texw, 1-sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], sx/tex->texw, 1-(sy+sh)/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomright], (sx+sw)/tex->texw, 1-(sy+sh)/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topright], (sx+sw)/tex->texw, 1-sy/tex->texh ); \
 		}																\
 	}
 
 #define BEFORE_DRAW_IMAGE()						\
 	glPushMatrix();								\
-	BIND_AND_CACHE(tex, cacheid);				\
-	GL_ARRAYS_CHECK_V(4);						\
-	GL_ARRAYS_CHECK_T(4)
+	BIND_AND_TEST_CACHE(tex);					\
+	GL_ARRAY_CHECK_V(4);						\
+	GL_ARRAY_CHECK_T(4)
 
 #define AFTER_DRAW_IMAGE()						\
 	GL_ARRAY_EN(TEXTURE_COORD);					\
@@ -593,23 +624,23 @@ static uint8 cacheid = 0;
 	GL_ARRAY_DIS(TEXTURE_COORD);				\
 	glPopMatrix()
 
-#define SET_IMAGE_RECT_ORIG(tex, dx, dy)			\
-	gl_vertices[0] = { dx, dy };					\
-	gl_vertices[1] = { dx, dy-tex.texh };			\
-	gl_vertices[2] = { dx+tex.texw, dy-tex.texh };	\
-	gl_vertices[3] = { dx+tex.texw, dy }
+#define SET_IMAGE_RECT_BY_TEX(tex, dx, dy)						\
+ 	VECT_2D_SET( gl_vectices[0], dx, dy );						\
+	VECT_2D_SET( gl_vectices[1], dx, dy-tex->texh );				\
+	VECT_2D_SET( gl_vectices[2], dx+tex->texw, dy-tex->texh );	\
+	VECT_2D_SET( gl_vectices[3], dx+tex->texw, dy )
 
-#define SET_IMAGE_RECT(dx, dy, dw, dh)			\
-	gl_vertices[0] = { dx, dy };				\
-	gl_vertices[1] = { dx, dy-dh };				\
-	gl_vertices[2] = { dx+dw, dy-dh };			\
-	gl_vertices[3] = { dx+dw, dy }
+#define SET_IMAGE_RECT(dx, dy, dw, dh)				\
+	VECT_2D_SET( gl_vectices[0], dx, dy );			\
+	VECT_2D_SET( gl_vectices[1], dx, dy-dh );		\
+	VECT_2D_SET( gl_vectices[2], dx+dw, dy-dh );	\
+	VECT_2D_SET( gl_vectices[3], dx+dw, dy )
 
 void ImageToScreen(image_p tex,float dx,float dy)
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
-	SET_IMAGE_RECT_ORIG(tex, dx, dy);
+	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
 
@@ -619,7 +650,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
 
 	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_ORIG(tex, dx, dy);
+		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
 		SET_IMAGE_RECT(dx, dy, dw, dh);
 	}
@@ -632,7 +663,7 @@ void DrawImageMask(image_p tex,float sx,float sy,float sw,float sh,float dx,floa
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
 
 	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_ORIG(tex, dx, dy);
+		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
 		SET_IMAGE_RECT(dx, dy, dw, dh);
 	}
@@ -646,8 +677,8 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-	if (sw == 0) sw = tex.texw;
-	if (sh == 0) sh = tex.texh;
+	if (sw == 0) sw = tex->texw;
+	if (sh == 0) sh = tex->texh;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
 	ROTATE_2D(angle, dx+sw*xscale/2, dy-sh*yscale/2);
 	AFTER_DRAW_IMAGE();
@@ -665,7 +696,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
   DrawLargeImageMask(tex,sx,sy,sw,sh,dx,dy,dw,dh,tex->mask);
   }
 */
-#define SET_IMAGE_TRANS(trans)						\
+#define SET_IMAGE_TRANS(trans, tex)					\
 	switch(trans){									\
 	case NGE_TRANS_V:								\
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 1, 0, 3, 2); \
@@ -673,7 +704,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	case NGE_TRANS_H:								\
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 3, 2, 1, 0); \
 		break;										\
-	case NGE_TRANS_VH:								\
+	case NGE_TRANS_HV:								\
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 2, 1, 0, 3); \
 		break;										\
 	default:										\
@@ -683,18 +714,18 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 void ImageToScreenTrans(image_p tex,float dx,float dy,int trans)
 {
 	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans)
-	SET_IMAGE_RECT_ORIG(tex, dx, dy);
+	SET_IMAGE_TRANS(trans, tex);
+	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
 
 void DrawImageTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans)
 {
 	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans)
+	SET_IMAGE_TRANS(trans, tex);
 
 	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_ORIG(tex, dx, dy);
+		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
 		SET_IMAGE_RECT(dx, dy, dw, dh);
 	}
@@ -704,10 +735,10 @@ void DrawImageTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,flo
 void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans)
 {
 	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans)
+	SET_IMAGE_TRANS(trans, tex);
 
 	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_ORIG(tex, dx, dy);
+		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
 		SET_IMAGE_RECT(dx, dy, dw, dh);
 	}
@@ -720,9 +751,9 @@ void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float d
 	if(dy == 0.0f)
 		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans)
-	if (sw == 0) sw = tex.texw;
-	if (sh == 0) sh = tex.texh;
+	SET_IMAGE_TRANS(trans, tex);
+	if (sw == 0) sw = tex->texw;
+	if (sh == 0) sh = tex->texh;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
 	ROTATE_2D(angle, dx+sw*xscale/2, dy-sh*yscale/2);
 	AFTER_DRAW_IMAGE();
@@ -744,6 +775,6 @@ void ScreenShot(const char* filename)
 	image_p pimage = ScreenToImage();
 	if(filename == NULL||pimage == NULL)
 		return;
-	image_save_png(pimage,filename,1);
+	image_save(pimage,filename,1, 1);
 	image_free(pimage);
 }
