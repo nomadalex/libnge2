@@ -11,6 +11,8 @@
 #include "hgevector.h"
 #include "hgecolor.h"
 #include "hgerect.h"
+#include "nge_graphics.h"
+#include <string.h>
 
 #define MAX_PARTICLES	500
 #define MAX_PSYSTEMS	100
