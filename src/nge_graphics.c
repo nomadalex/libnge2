@@ -630,8 +630,8 @@ static uint8 tex_ret = 0;
 	GL_ARRAY_CHECK_V(4);						\
 	GL_ARRAY_CHECK_T(4)
 
-#define AFTER_DRAW_IMAGE()						\
-	GL_ARRAY_EN(TEXTURE_COORD);					\
+#ifndef NDEBUG
+#define DEBUG_PRINT_DRAW_IMAGE					\
 	TEX_C_T_PRINT(gl_tex_uvs[0]);				\
 	TEX_C_T_PRINT(gl_tex_uvs[1]);				\
 	TEX_C_T_PRINT(gl_tex_uvs[2]);				\
@@ -639,7 +639,14 @@ static uint8 tex_ret = 0;
 	VECT_2D_PRINT(gl_vectices[0]);				\
 	VECT_2D_PRINT(gl_vectices[1]);				\
 	VECT_2D_PRINT(gl_vectices[2]);				\
-	VECT_2D_PRINT(gl_vectices[3]);				\
+	VECT_2D_PRINT(gl_vectices[3]);
+#else
+#define DEBUG_PRINT_DRAW_IMAGE
+#endif
+
+#define AFTER_DRAW_IMAGE()						\
+	GL_ARRAY_EN(TEXTURE_COORD);					\
+	DEBUG_PRINT_DRAW_IMAGE						\
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);		\
 	GL_ARRAY_DIS(TEXTURE_COORD);				\
 	glPopMatrix()
