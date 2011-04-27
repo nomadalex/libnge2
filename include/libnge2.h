@@ -1,19 +1,29 @@
-#ifndef LIBNGE2_H_
-#define LIBNGE2_H_
+/***************************************************************************
+ *            libnge2.h
+ *
+ *  2011/04/27 16:58:20
+ *  Copyright  2011  Kun Wang <ifreedom.cn@gmail.com>
+ ****************************************************************************/
+/*
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
-#include "nge_common.h"
-#include "nge_debug_log.h"
-#include "nge_sys_compatible.h"
-#include "nge_io_file.h"
-#include "nge_io_dir.h"
-#include "nge_image.h"
-#include "nge_font.h"
-#include "nge_graphics.h"
-#include "nge_image_ext.h"
-#include "nge_input.h"
-#include "nge_main.h"
-#include "nge_misc.h"
-#include "nge_timer.h"
-#include "nge_gif.h"
+#ifndef _LIBNGE2_H
+#define _LIBNGE2_H
 
-#endif
+#include "libnge2pure.h"
+#include "audio_interface.h"
+
+#endif /* _LIBNGE2_H */
