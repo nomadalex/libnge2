@@ -171,4 +171,5 @@ endif()
 
 include_directories(app)
 add_subdirectory(app)
-# add_subdirectory(samples)
+
+add_subdirectory(samples)
