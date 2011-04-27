@@ -5,6 +5,8 @@
 #include "nge_jpg.h"
 #include "nge_rle.h"
 #include "nge_io_file.h"
+#include <stdlib.h>
+#include <string.h>
 
 uint32 image_tid = 0;
 
