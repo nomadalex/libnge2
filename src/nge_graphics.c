@@ -592,27 +592,35 @@ static uint8 tex_ret = 0;
 #define SET_TEX_COORD(tex, sx, sy, sw, sh, topleft, bottomleft, bottomright, topright) \
 	if(sw==0&&sh==0){													\
 		if(sx==0&&sy==0){												\
-			TEX_C_T_SET( gl_tex_uvs[topleft], 0, 1 );					\
-			TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, 0 );				\
-			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 0 );				\
-			TEX_C_T_SET( gl_tex_uvs[topright], 1, 1 );					\
+			if(tex->w==tex->texw&&tex->h==tex->texh)					\
+			{															\
+				TEX_C_T_SET( gl_tex_uvs[topleft], 0, 0 );				\
+				TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, 1 );			\
+				TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 1 );			\
+				TEX_C_T_SET( gl_tex_uvs[topright], 1, 0 );				\
+			}else{														\
+				TEX_C_T_SET( gl_tex_uvs[topleft], 0, 0 );				\
+				TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, (float)tex->h/tex->texh ); \
+				TEX_C_T_SET( gl_tex_uvs[bottomright], (float)tex->w/tex->texw, (float)tex->h/tex->texh ); \
+				TEX_C_T_SET( gl_tex_uvs[topright], (float)tex->w/tex->texw, 0 ); \
+			}															\
 		}else{															\
-			TEX_C_T_SET( gl_tex_uvs[topleft], sx/tex->texw, 1-sy/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[bottomleft], sx/tex->texw, 0 );		\
-			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 0 );				\
-			TEX_C_T_SET( gl_tex_uvs[topright], 1, 1-sy/tex->texh );		\
+			TEX_C_T_SET( gl_tex_uvs[topleft], (float)sx/tex->texw, (float)sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], (float)sx/tex->texw, 1 ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 1 );				\
+			TEX_C_T_SET( gl_tex_uvs[topright], 1, (float)sy/tex->texh ); \
 		}																\
 	}else{																\
 		if(sx==0&&sy==0){												\
-			TEX_C_T_SET( gl_tex_uvs[topleft], 0, 1 );					\
-			TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, 1-sh/tex->texh );	\
-			TEX_C_T_SET( gl_tex_uvs[bottomright], sw/tex->texw, 1-sh/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[topright], sw/tex->texw, 1 );		\
+			TEX_C_T_SET( gl_tex_uvs[topleft], 0, 0 );					\
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], 0, (float)sh/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomright], (float)sw/tex->texw, (float)sh/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topright], (float)sw/tex->texw, 0 ); \
 		}else{															\
-			TEX_C_T_SET( gl_tex_uvs[topleft], sx/tex->texw, 1-sy/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[bottomleft], sx/tex->texw, 1-(sy+sh)/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[bottomright], (sx+sw)/tex->texw, 1-(sy+sh)/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[topright], (sx+sw)/tex->texw, 1-sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topleft], (float)sx/tex->texw, (float)sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], (float)sx/tex->texw, (float)(sy+sh)/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomright], (float)(sx+sw)/tex->texw, (float)(sy+sh)/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topright], (float)(sx+sw)/tex->texw, (float)sy/tex->texh ); \
 		}																\
 	}
 
@@ -638,14 +646,14 @@ static uint8 tex_ret = 0;
 
 #define SET_IMAGE_RECT_BY_TEX(tex, dx, dy)						\
  	VECT_2D_SET( gl_vectices[0], dx, dy );						\
-	VECT_2D_SET( gl_vectices[1], dx, dy-tex->texh );				\
-	VECT_2D_SET( gl_vectices[2], dx+tex->texw, dy-tex->texh );	\
-	VECT_2D_SET( gl_vectices[3], dx+tex->texw, dy )
+	VECT_2D_SET( gl_vectices[1], dx, dy+tex->h );				\
+	VECT_2D_SET( gl_vectices[2], dx+tex->w, dy+tex->h );	\
+	VECT_2D_SET( gl_vectices[3], dx+tex->w, dy )
 
 #define SET_IMAGE_RECT(dx, dy, dw, dh)				\
 	VECT_2D_SET( gl_vectices[0], dx, dy );			\
-	VECT_2D_SET( gl_vectices[1], dx, dy-dh );		\
-	VECT_2D_SET( gl_vectices[2], dx+dw, dy-dh );	\
+	VECT_2D_SET( gl_vectices[1], dx, dy+dh );		\
+	VECT_2D_SET( gl_vectices[2], dx+dw, dy+dh );	\
 	VECT_2D_SET( gl_vectices[3], dx+dw, dy )
 
 void ImageToScreen(image_p tex,float dx,float dy)
