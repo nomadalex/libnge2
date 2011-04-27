@@ -157,10 +157,9 @@ add_subdirectory(hge)
 include_directories(helper)
 add_subdirectory(helper)
 
-include_directories(dirent)
-add_subdirectory(dirent)
-
 if(PSP)
+  include_directories(dirent)
+  add_subdirectory(dirent)
   include_directories(movie)
   add_subdirectory(movie)
 endif()
