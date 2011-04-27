@@ -11,12 +11,12 @@
 #ifndef HGECOLOR_H
 #define HGECOLOR_H
 
-#include "nge_define.h"
+#include "nge_common.h"
+#include "nge_color.h"
 
 #define hgeColor hgeColorRGB
 
 inline void ColorClamp(float &x) { if(x<0.0f) x=0.0f; if(x>1.0f) x=1.0f; }
-
 
 class hgeColorRGB
 {
