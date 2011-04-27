@@ -503,7 +503,7 @@ void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype)
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy-height, dy-height, dy };
+	float y[] = { dy, dy+height, dy+height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_LINE_LOOP, 4);
@@ -517,7 +517,7 @@ void DrawRectEx(rectf rect,int color,int dtype)
 void FillRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy-height, dy-height, dy };
+	float y[] = { dy, dy+height, dy+height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 4);
@@ -538,7 +538,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype)
 {
 	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy-height, dy-height, dy };
+	float y[] = { dy, dy+height, dy+height, dy };
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, 4);
