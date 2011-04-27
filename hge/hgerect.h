@@ -10,7 +10,8 @@
 
 #ifndef HGERECT_H
 #define HGERECT_H
-#include "nge_define.h"
+
+#include "nge_common.h"
 
 class hgeRect
 {
