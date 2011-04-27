@@ -22,6 +22,7 @@
 #include "nge_debug_log.h"
 #include "nge_png.h"
 #include "nge_io_file.h"
+#include <stdlib.h>
 
 #include "png.h"
 #if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 8
@@ -110,7 +111,6 @@ image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode)
 
 image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 {
-
 	uint32* p32;
 	uint16* p16;
 	png_structp png_ptr;
@@ -173,8 +173,7 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
 		for (x = 0; x < (int)width; x++)  {
 			color32 = line[x];
-			color16;
-					a = (color32 >> 24) & 0xff;
+			a = (color32 >> 24) & 0xff;
 			r = color32 & 0xff;
 			g = (color32 >> 8) & 0xff;
 			b = (color32 >> 16) & 0xff;
