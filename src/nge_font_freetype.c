@@ -43,7 +43,6 @@ static void freetype2_setfontsize(PFont pfont, int fontsize);
 static void freetype2_setfontrotation(PFont pfont, int rot);
 static void freetype2_setfontattr(PFont pfont, int setflags, int clrflags);
 static PFont freetype2_duplicate(PFont psrcfont, int fontsize);
-static void freetype2_setflags(PFont pfont,int flags);
 static uint32  freetype2_setfontcolor(PFont pfont, uint32 color);
 static FontProcs freetype2_procs = {
 	ENCODING_GBK,		/* routines expect unicode 16 */
@@ -122,12 +121,6 @@ PFont create_font_freetype_buf(const char* buf,int bsize, int height,int disp)
 	return (PFont)pf;
 }
 
-
-static void freetype2_setflags(PFont pfont,int flags)
-{
-	PFontFreetype pf = (PFontFreetype) pfont;
-	pf->flags = flags;
-}
 static BOOL freetype2_getfontinfo(PFont pfont, PFontInfo pfontinfo)
 {
 	return 1;
