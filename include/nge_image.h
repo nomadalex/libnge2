@@ -110,6 +110,16 @@ image_p image_create(int w,int h,int displaymode);
 image_p image_create_ex(int w,int h,int color,int displaymode);
 
 /**
+ *将image保存，根据文件名判断保存的格式，目前支持png和tga格式
+ *@param image_p pimage,待保存的image指针
+ *@param const char* filename, 保存的文件名
+ *@param uint8 alpha,是否保存为含alpha通道的图片
+ *@param uint8 rle,是否保存为rle压缩格式的图片
+ *@return int,返回0(加载失败)或1(加载成功)
+ */
+int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
+	
+/**
  *释放一个image
  *@param image_p pimage,待释放的image指针
  *@return void,无返回
