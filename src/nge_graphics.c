@@ -65,6 +65,8 @@ typedef struct
 }Vectice2D_t;
 #define VECT_2D_X(v) (v.x)
 #define VECT_2D_Y(v) (v.y)
+#define VECT_2D_PRINT(v)						\
+	printf(#v "x %f, y %f\n", v.x, v.y)
 #define VECT_2D_SET(vec, X, Y) \
 	vec.x = X;				   \
 	vec.y = Y
@@ -97,6 +99,8 @@ typedef struct
 }TexCoord_t;
 #define TEX_C_T_U(t) (t.u)
 #define TEX_C_T_V(t) (t.v)
+#define TEX_C_T_PRINT(t)						\
+	printf(#t "u %f, v %f\n", t.u, t.v)
 #define TEX_C_T_SET(t, U, V) \
 	t.u = U;				 \
 	t.v = V
@@ -620,6 +624,14 @@ static uint8 tex_ret = 0;
 
 #define AFTER_DRAW_IMAGE()						\
 	GL_ARRAY_EN(TEXTURE_COORD);					\
+	TEX_C_T_PRINT(gl_tex_uvs[0]);				\
+	TEX_C_T_PRINT(gl_tex_uvs[1]);				\
+	TEX_C_T_PRINT(gl_tex_uvs[2]);				\
+	TEX_C_T_PRINT(gl_tex_uvs[3]);				\
+	VECT_2D_PRINT(gl_vectices[0]);				\
+	VECT_2D_PRINT(gl_vectices[1]);				\
+	VECT_2D_PRINT(gl_vectices[2]);				\
+	VECT_2D_PRINT(gl_vectices[3]);				\
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);		\
 	GL_ARRAY_DIS(TEXTURE_COORD);				\
 	glPopMatrix()
