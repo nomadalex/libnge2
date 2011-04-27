@@ -625,6 +625,7 @@ static uint8 tex_ret = 0;
 	}
 
 #define BEFORE_DRAW_IMAGE()						\
+	BEFORE_DRAW();								\
 	glPushMatrix();								\
 	BIND_AND_TEST_CACHE(tex);					\
 	GL_ARRAY_CHECK_V(4);						\
@@ -649,7 +650,8 @@ static uint8 tex_ret = 0;
 	DEBUG_PRINT_DRAW_IMAGE						\
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);		\
 	GL_ARRAY_DIS(TEXTURE_COORD);				\
-	glPopMatrix()
+	glPopMatrix();								\
+	AFTER_DRAW()
 
 #define SET_IMAGE_RECT_BY_TEX(tex, dx, dy)						\
  	VECT_2D_SET( gl_vectices[0], dx, dy );						\
