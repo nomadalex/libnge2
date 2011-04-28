@@ -378,7 +378,7 @@ void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 	VECT_2D_SET(gl_vectices[0], x1, y1);
 	VECT_2D_SET(gl_vectices[1], x2, y2);
 	SET_COLOR(color, dtype);
-	glDrawArrays(GL_LINE, 0, 2);
+	glDrawArrays(GL_LINES, 0, 2);
 	AFTER_DRAW();
 }
 
