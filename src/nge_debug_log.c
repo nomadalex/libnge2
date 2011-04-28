@@ -1,16 +1,16 @@
 #include "nge_debug_log.h"
-#ifdef _PSP
-#include <psploadexec.h>
-#endif
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _PSP
+#include <psploadexec_kernel.h>
+#endif
 
 #ifndef NDEBUG
 
-#ifdef __linux__
-#define _vsnprintf  vsnprintf // linux need it
+#if defined(__linux__) || defined(_PSP)
+#define _vsnprintf  vsnprintf
 #endif
 
 FILE *g_logfile = NULL, *g_errorfile = NULL;
