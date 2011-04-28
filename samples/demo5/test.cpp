@@ -1,5 +1,5 @@
 #include "libnge2.h"
-#include "helper/CppSQLite3.h"
+#include "CppSQLite3.h"
 /**
  * nge_test:测试 sqlite3
  */
@@ -21,21 +21,21 @@ char* CreateInfoByid(int id)
 	static char querybuf[1024]={0};
 	memset(querybuf,0,1024);
 	try
-    {	db.open("database/infodata.db");
+	{	db.open("database/infodata.db");
 		sprintf(querybuf,"select heroinfo.name,ti,wu,zhi,mei,age,herotype.name from "
 			" heroinfo,herotype where heroinfo.id=%d and heroinfo.type=herotype.id;",id);
 		CppSQLite3Query q = db.execQuery(querybuf);
 
 		if (!q.eof())
 	{
-	    sprintf(buffer,"%s  体力%s 武力%s 智力%s 魅力%s 年龄%s 类型 %s", q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
+		sprintf(buffer,"%s  体力%s 武力%s 智力%s 魅力%s 年龄%s 类型 %s", q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
 				q.fieldValue(4),q.fieldValue(5),q.fieldValue(6));
 	}
 		db.close();
 	}catch (CppSQLite3Exception& e){
 
 	printf("%s\n",e.errorMessage());
-    }
+	}
 
 	return buffer;
 }
@@ -44,18 +44,18 @@ int GetInfoCount()
 {
 	int count = 0;
 	try
-    {	db.open("database/infodata.db");
+	{	db.open("database/infodata.db");
 		CppSQLite3Query q = db.execQuery("select count(*) from heroinfo;");
 		if (!q.eof())
 	{
-	     count = atoi(q.fieldValue(0));
+		 count = atoi(q.fieldValue(0));
 
 	}
 		db.close();
 	}catch (CppSQLite3Exception& e){
 
 	printf("%s\n",e.errorMessage());
-    }
+	}
 	return count;
 }
 
@@ -63,7 +63,7 @@ int GetInfoCount()
 void btn_down(int keycode)
 {
 	switch(keycode)
-    {
+	{
 	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
@@ -78,7 +78,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_CROSS:
 		break;
-    case PSP_BUTTON_SQUARE:
+	case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
 		game_quit = 1;
@@ -86,13 +86,13 @@ void btn_down(int keycode)
 	case PSP_BUTTON_START:
 		game_quit = 1;
 		break;
-    }
+	}
 }
 
 void btn_up(int keycode)
 {
 	switch(keycode)
-    {
+	{
 	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
@@ -107,7 +107,7 @@ void btn_up(int keycode)
 		break;
 	case PSP_BUTTON_CROSS:
 		break;
-    case PSP_BUTTON_SQUARE:
+	case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
 		game_quit = 1;
@@ -115,7 +115,7 @@ void btn_up(int keycode)
 	case PSP_BUTTON_START:
 		game_quit = 1;
 		break;
-    }
+	}
 }
 
 void DrawScene()
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 	if(pimage_box == NULL)
 		printf("can not open file\n");
 	pimage_icon[0] = image_load_colorkey("images/demo1_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
-    pimage_icon[1] = image_load_colorkey("images/demo1_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
+	pimage_icon[1] = image_load_colorkey("images/demo1_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	while ( !game_quit )
 	{
 		ShowFps();
