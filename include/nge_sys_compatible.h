@@ -18,6 +18,8 @@ typedef struct st_tm{
 }sys_time_t,*sys_time_p;
 #else
 //psp
+#include <psptypes.h>
+#include <time.h>
 #include <psprtc.h>
 typedef pspTime sys_time_t,*sys_time_p;
 #endif
