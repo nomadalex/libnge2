@@ -9,6 +9,7 @@
 #include "nge_vram.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
+#include <math.h>
 static unsigned int __attribute__((aligned(16))) list[262144];
 
 #define BUF_WIDTH (512)
@@ -1054,6 +1055,6 @@ void ScreenShot(const char* filename)
 	image_p pimage = ScreenToImage();
 	if(filename == NULL||pimage == NULL)
 		return;
-	image_save_png(pimage,filename,1);
+	image_save(pimage,filename,1,1);
 	image_free(pimage);
 }
