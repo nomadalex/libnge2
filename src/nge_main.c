@@ -1,6 +1,7 @@
 #include "nge_main.h"
 #include "nge_graphics.h"
 #include "nge_input.h" // SDL.h is in it
+#include "audio_interface.h"
 
 #ifdef _PSP
 #include <pspmoduleinfo.h>
@@ -76,6 +77,8 @@ void NGE_Init(int flags)
 #ifndef IPHONEOS
 		if(flags&INIT_VIDEO)
 			InitGrahics();
+		if(flags&INIT_AUDIO)
+			CoolAudioDefaultInit();
 #endif
 		initFlags = flags;
 	}
@@ -88,6 +91,8 @@ void NGE_Quit()
 		FiniInput();
 		if(initFlags&INIT_VIDEO)
 			FiniGrahics();
+		if(initFlags&INIT_AUDIO)
+			CoolAudioDefaultFini();
 #endif
 
 #if defined WIN32 || defined __linux__// linux and win32
