@@ -631,7 +631,8 @@ static uint8 tex_ret = 0;
 	GL_ARRAY_CHECK_V(4);						\
 	GL_ARRAY_CHECK_T(4)
 
-#ifndef NDEBUG
+/* #ifndef NDEBUG */
+#if 0
 #define DEBUG_PRINT_DRAW_IMAGE					\
 	TEX_C_T_PRINT(gl_tex_uvs[0]);				\
 	TEX_C_T_PRINT(gl_tex_uvs[1]);				\
