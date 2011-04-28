@@ -1,10 +1,10 @@
 #include "nge_sys_compatible.h"
+#include <stdio.h>
 
 static int cpu_type = CPU_TYPE_222MHZ;
 
 #if defined WIN32 || defined IPHONEOS || defined __linux__
 //win32
-#include <time.h>
 int sys_localtime(sys_time_p stm)
 {
 	time_t t = time(NULL);
@@ -60,6 +60,7 @@ int sys_get_frequency_type()
 
 
 #else
+#include <psppower.h>
 //psp
 int sys_localtime(sys_time_p stm)
 {
@@ -87,9 +88,9 @@ char* sys_get_mac()
 {
 	static char ret[24]={0};
 	unsigned char sVal[8]= {0};
-    int retVal;
+	int retVal;
 	//retVal = sceWlanGetEtherAddr(sVal);
-	if (retVal == 0)    	
+	if (retVal == 0)
 		sprintf(ret,"%02X:%02X:%02X:%02X:%02X:%02X", sVal[0], sVal[1], sVal[2], sVal[3], sVal[4], sVal[5]);
 	return ret;
 }
@@ -105,7 +106,7 @@ char* sys_get_nickname()
 int sys_set_frequency_type(int type)
 {
 	int ret = -1;
-	switch(type) 
+	switch(type)
 	{
 	case CPU_TYPE_333MHZ:
 		ret = scePowerSetClockFrequency(333, 333, 166);
