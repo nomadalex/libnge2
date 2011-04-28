@@ -24,7 +24,7 @@
 #define _NGE_DIRENT_HPP
 
 #if defined __linux__ || defined IPHONEOS
-#error Don't support linux and iphone now
+#error "Don't support linux and iphone now"
 #endif
 #include <vector>
 #include <stack>

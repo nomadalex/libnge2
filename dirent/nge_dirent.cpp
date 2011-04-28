@@ -324,9 +324,9 @@ NGEDirent::~NGEDirent()
 
 #elif defined _PSP
 #include <pspkernel.h>
-#include "directory/fat.h"
-#include "directory/directory.h"
-#include "directory/miniconv.h"
+#include "fat.h"
+#include "directory.h"
+#include "miniconv.h"
 #include "nge_charsets.h"
 
 NGEDirent::NGEDirent()
