@@ -606,9 +606,9 @@ static uint8 tex_ret = 0;
 			}															\
 		}else{															\
 			TEX_C_T_SET( gl_tex_uvs[topleft], (float)sx/tex->texw, (float)sy/tex->texh ); \
-			TEX_C_T_SET( gl_tex_uvs[bottomleft], (float)sx/tex->texw, 1 ); \
-			TEX_C_T_SET( gl_tex_uvs[bottomright], 1, 1 );				\
-			TEX_C_T_SET( gl_tex_uvs[topright], 1, (float)sy/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomleft], (float)sx/tex->texw, (float)tex->h/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[bottomright], (float)tex->w/tex->texw, (float)tex->h/tex->texh ); \
+			TEX_C_T_SET( gl_tex_uvs[topright], (float)tex->w/tex->texw, (float)sy/tex->texh ); \
 		}																\
 	}else{																\
 		if(sx==0&&sy==0){												\
@@ -706,10 +706,12 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-	if (sw == 0) sw = tex->texw;
-	if (sh == 0) sh = tex->texh;
+
+	if (sw == 0) sw = tex->w;
+	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy-sh*yscale/2);
+	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
 
@@ -781,10 +783,12 @@ void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float d
 		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_IMAGE_TRANS(trans, tex);
-	if (sw == 0) sw = tex->texw;
-	if (sh == 0) sh = tex->texh;
+
+	if (sw == 0) sw = tex->w;
+	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy-sh*yscale/2);
+	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
 
