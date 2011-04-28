@@ -1,4 +1,5 @@
 #include "libnge2.h"
+#include "nge_jpg.h"
 #include "unzip.h"
 
 
@@ -159,7 +160,7 @@ int open_zip_image(char* zipfile,char *zipimagename)
 void btn_down(int keycode)
 {
 	switch(keycode)
-    {
+	{
 	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
@@ -174,7 +175,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_CROSS:
 		break;
-    case PSP_BUTTON_SQUARE:
+	case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
 		break;
@@ -182,13 +183,13 @@ void btn_down(int keycode)
 		//¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
-    }
+	}
 }
 
 void btn_up(int keycode)
 {
 	switch(keycode)
-    {
+	{
 	case PSP_BUTTON_UP:
 		break;
 	case PSP_BUTTON_DOWN:
@@ -203,13 +204,13 @@ void btn_up(int keycode)
 		break;
 	case PSP_BUTTON_CROSS:
 		break;
-    case PSP_BUTTON_SQUARE:
+	case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
 		break;
-    }
+	}
 }
 
 void DrawScene()
