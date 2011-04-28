@@ -72,6 +72,7 @@ if(UNIX OR WIN32 OR APPLE)
 endif()
 
 if(PSP)
+  include_directories(${CMAKE_SOURCE_DIR}/include/psp)
   list(APPEND NGE2_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c

@@ -6,7 +6,7 @@
 #include <pspgum.h>
 #include <psprtc.h>
 #include "nge_graphics.h"
-#include "internal/nge_vram.h"
+#include "nge_vram.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
 static unsigned int __attribute__((aligned(16))) list[262144];

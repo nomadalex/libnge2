@@ -1,4 +1,4 @@
-#include "internal/nge_vram.h"
+#include "nge_vram.h"
 
 #include <pspge.h>
 #include <pspgu.h>
