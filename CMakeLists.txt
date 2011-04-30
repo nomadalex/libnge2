@@ -81,11 +81,11 @@ if(PSP)
 endif()
 
 # depends
-include_directories(mmgr)
-add_subdirectory(mmgr)
 option(USE_MMGR "Useful for debug." off)
 if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
   if(USE_MMGR)
+	include_directories(mmgr)
+	add_subdirectory(mmgr)
 	add_definitions(-DMMGR)
 	list(APPEND ${NAME}_LIBS mmgr)
   endif()
