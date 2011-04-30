@@ -70,18 +70,18 @@ if(UNIX)
   # 	#include <sys/procfs.h>
   # 	#include <sys/ioctl.h>
   # 	int main(void) {
-  # 	    struct prpsinfo psinfo;
-  # 	    ioctl(0, PIOCPSINFO, &psinfo);
-  # 	    return 0;
+  # 		struct prpsinfo psinfo;
+  # 		ioctl(0, PIOCPSINFO, &psinfo);
+  # 		return 0;
   # 	}"
   # 	_HAVE_SV_PROCFS_H
   # 	)
   # check_c_source_compiles("
   # 	#include <sys/procfs.h>
   # 	int main(void) {
-  # 	    struct prpsinfo psinfo;
-  # 	    psinfo.pr_argc = 0;
-  # 	    return 0;
+  # 		struct prpsinfo psinfo;
+  # 		psinfo.pr_argc = 0;
+  # 		return 0;
   # 	}"
   # 	_HAVE_PROCFS_ARGCV
   # 	)
@@ -90,7 +90,7 @@ if(UNIX)
   # 	#include <unistd.h>
   # 	#include <sys/mman.h>
   # 	int main(void) {
-  # 	    void *x = MAP_FAILED;
+  # 		void *x = MAP_FAILED;
   # 	}"
   # 	MAP_FAILED_DEFINED)
   # if(NOT MAP_FAILED_DEFINED)
@@ -128,9 +128,9 @@ if(CMAKE_COMPILER_IS_GNUCC)
   set(WFLAGS "-W -Wall -Wno-unused-parameter")
   set(WFLAGS_C_ONLY "-Wdeclaration-after-statement")
   if(STRICT_WARN)
-    set(WFLAGS "${WFLAGS} -Werror -Wpointer-arith")
-    set(WFLAGS_C_ONLY "${WFLAGS_C_ONLY} -Wmissing-declarations")
-    set(WFLAGS_C_ONLY "${WFLAGS_C_ONLY} -Wstrict-prototypes")
+	set(WFLAGS "${WFLAGS} -Werror -Wpointer-arith")
+	set(WFLAGS_C_ONLY "${WFLAGS_C_ONLY} -Wmissing-declarations")
+	set(WFLAGS_C_ONLY "${WFLAGS_C_ONLY} -Wstrict-prototypes")
   endif(STRICT_WARN)
 endif(CMAKE_COMPILER_IS_GNUCC)
 
@@ -138,11 +138,11 @@ if(MINGW)
   set(COMPILER_MINGW 1)
   # Guess MINGDIR from the value of CMAKE_C_COMPILER if it's not set.
   if("$ENV{MINGDIR}" STREQUAL "")
-    string(REGEX REPLACE "/bin/[^/]*$" "" MINGDIR "${CMAKE_C_COMPILER}")
-    message(STATUS "Guessed MinGW directory: ${MINGDIR}")
+	string(REGEX REPLACE "/bin/[^/]*$" "" MINGDIR "${CMAKE_C_COMPILER}")
+	message(STATUS "Guessed MinGW directory: ${MINGDIR}")
   else("$ENV{MINGDIR}" STREQUAL "")
-    file(TO_CMAKE_PATH "$ENV{MINGDIR}" MINGDIR)
-    message(STATUS "Using MINGDIR: ${MINGDIR}")
+	file(TO_CMAKE_PATH "$ENV{MINGDIR}" MINGDIR)
+	message(STATUS "Using MINGDIR: ${MINGDIR}")
   endif("$ENV{MINGDIR}" STREQUAL "")
 
   # Search in MINGDIR for headers and libraries.
@@ -150,9 +150,9 @@ if(MINGW)
 
   # Install to MINGDIR
   if(INSTALL_PREFIX STREQUAL "")
-    set(CMAKE_INSTALL_PREFIX ${MINGDIR})
+	set(CMAKE_INSTALL_PREFIX ${MINGDIR})
   else(INSTALL_PREFIX STREQUAL "")
-    set(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
+	set(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
   endif(INSTALL_PREFIX STREQUAL "")
 
   message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
@@ -174,13 +174,13 @@ if(APPLE)
   # NSQuickDrawView.h when compiling in 64-bit mode, and 64-bit mode is the
   # default when compiling on Snow Leopard.
   if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL i386)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch i386")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch i386")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch i386")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch i386")
   endif()
 
   # The Mac port simply uses too many deprecated things.
   if(COMPILER_GCC)
-    set(WFLAGS "${WFLAGS} -Wno-deprecated-declarations")
+	set(WFLAGS "${WFLAGS} -Wno-deprecated-declarations")
   endif(COMPILER_GCC)
 endif(APPLE)
 
@@ -218,19 +218,19 @@ mark_as_advanced(
 
 if(COMPILER_GCC)
   set(CMAKE_C_FLAGS_PROFILE "-pg"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
   set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_C_FLAGS_PROFILE}"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
   set(CMAKE_EXE_LINKER_FLAGS_PROFILE "-pg"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
 endif(COMPILER_GCC)
 if(COMPILER_MSVC)
   set(CMAKE_C_FLAGS_PROFILE "-Gd -Ox"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
   set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_C_FLAGS_PROFILE}"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
   set(CMAKE_EXE_LINKER_FLAGS_PROFILE "-profile"
-    CACHE STRING "profiling flags")
+	CACHE STRING "profiling flags")
 endif(COMPILER_MSVC)
 
 # message("C_FLAGS is ${CMAKE_C_FLAGS}")
@@ -245,38 +245,38 @@ endif(COMPILER_MSVC)
 function(add_our_library target)
   add_library(${target} ${ARGN})
   set_target_properties(${target}
-    PROPERTIES
-    DEBUG_POSTFIX -debug
-    PROFILE_POSTFIX -profile
-    )
+	PROPERTIES
+	DEBUG_POSTFIX -debug
+	PROFILE_POSTFIX -profile
+	)
 endfunction(add_our_library)
 
 function(set_our_framework_properties target nm)
   if(WANT_FRAMEWORKS)
-    if(WANT_EMBED)
-      set(install_name_dir "@executable_path/../Frameworks")
-    else()
-      set(install_name_dir "${FRAMEWORK_INSTALL_PREFIX}")
-    endif(WANT_EMBED)
-    set_target_properties(${target}
-      PROPERTIES
-      FRAMEWORK on
-      OUTPUT_NAME ${nm}
-      INSTALL_NAME_DIR "${install_name_dir}"
-      )
+	if(WANT_EMBED)
+	  set(install_name_dir "@executable_path/../Frameworks")
+	else()
+	  set(install_name_dir "${FRAMEWORK_INSTALL_PREFIX}")
+	endif(WANT_EMBED)
+	set_target_properties(${target}
+	  PROPERTIES
+	  FRAMEWORK on
+	  OUTPUT_NAME ${nm}
+	  INSTALL_NAME_DIR "${install_name_dir}"
+	  )
   endif(WANT_FRAMEWORKS)
 endfunction(set_our_framework_properties)
 
 function(install_our_library target)
   install(TARGETS ${target}
-    PERMISSIONS WORLD_READ OWNER_WRITE GROUP_WRITE
-    LIBRARY DESTINATION "lib${LIB_SUFFIX}"
-    ARCHIVE DESTINATION "lib${LIB_SUFFIX}"
-    FRAMEWORK DESTINATION "${FRAMEWORK_INSTALL_PREFIX}"
-    RUNTIME DESTINATION "bin"
-    # Doesn't work, see below.
-    # PUBLIC_HEADER DESTINATION "include"
-    )
+	PERMISSIONS WORLD_READ OWNER_WRITE GROUP_WRITE
+	LIBRARY DESTINATION "lib${LIB_SUFFIX}"
+	ARCHIVE DESTINATION "lib${LIB_SUFFIX}"
+	FRAMEWORK DESTINATION "${FRAMEWORK_INSTALL_PREFIX}"
+	RUNTIME DESTINATION "bin"
+	# Doesn't work, see below.
+	# PUBLIC_HEADER DESTINATION "include"
+	)
 endfunction(install_our_library)
 
 # Unfortunately, CMake's PUBLIC_HEADER support doesn't install into nested
@@ -286,9 +286,9 @@ endfunction(install_our_library)
 # substituting the "Headers" prefix with "include".
 function(install_our_headers)
   foreach(hdr ${ARGN})
-    get_source_file_property(LOC ${hdr} MACOSX_PACKAGE_LOCATION)
-    string(REGEX REPLACE "^Headers" "include" LOC ${LOC})
-    install(FILES ${hdr} DESTINATION ${LOC})
+	get_source_file_property(LOC ${hdr} MACOSX_PACKAGE_LOCATION)
+	string(REGEX REPLACE "^Headers" "include" LOC ${LOC})
+	install(FILES ${hdr} DESTINATION ${LOC})
   endforeach()
 endfunction(install_our_headers)
 
@@ -316,19 +316,19 @@ endfunction(sanitize_cmake_link_flags)
 
 function(add_copy_file outputs from to)
   if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
-    return()
+	return()
   endif()
 
   if(NOT to)
-    set(to ${from})
+	set(to ${from})
   endif()
 
   add_custom_command(
-    OUTPUT  "${to}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-    COMMAND "${CMAKE_COMMAND}" -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${to}")
+	OUTPUT  "${to}"
+	DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	COMMAND "${CMAKE_COMMAND}" -E copy
+	"${CMAKE_CURRENT_SOURCE_DIR}/${from}"
+	"${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${to}")
   list(APPEND ${outputs} ${to})
   set(${outputs} ${${outputs}} PARENT_SCOPE)
   # message("${outputs} ${${outputs}} ${from} ${to}")
