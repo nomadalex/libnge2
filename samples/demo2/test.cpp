@@ -1,4 +1,6 @@
 #include "libnge2.h"
+#include <stdlib.h>
+#include <string.h>
 /**
  * nge_test:测试nge2的按键输入字体
  * 采用最新的音频接口~

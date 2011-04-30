@@ -1,4 +1,5 @@
 #include "libnge2.h"
+#include <string.h>
 
 /**
  * nge_test:测试nge2的按键输入字体

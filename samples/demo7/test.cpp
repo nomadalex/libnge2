@@ -1,6 +1,6 @@
-#include "hgeparticle.h"
 #include "libnge2.h"
-
+#include "hgeparticle.h"
+#include <stdlib.h>
 /**
  * nge_test:nge³ÌÐò:ÏÔÊ¾Á£×Ó
  */

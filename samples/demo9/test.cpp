@@ -1,7 +1,8 @@
 #include "libnge2.h"
 #include "nge_jpg.h"
 #include "unzip.h"
-
+#include <stdlib.h>
+#include <string.h>
 
 PFont pf[1];
 int game_quit = 0;
