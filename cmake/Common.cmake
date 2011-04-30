@@ -292,27 +292,36 @@ function(install_our_headers)
   endforeach()
 endfunction(install_our_headers)
 
-# Oh my. CMake really is bad for this - but I couldn't find a better
-# way.
-function(sanitize_cmake_link_flags return)
-  SET(acc_libs)
-  foreach(lib ${ARGN})
-    # Watch out for -framework options (OS X)
-    IF (NOT lib MATCHES "-framework.*|.*framework")
-      # Remove absolute path.
-      string(REGEX REPLACE "/.*/(.*)" "\\1" lib ${lib})
+FUNCTION(RM_DUP_LIB LIBS_VAR LIB_DIRS_VAR)
+  SET(_LIBS)
+  SET(_LIB_DIRS)
+  FOREACH(lib ${ARGN})
+	# Watch out for -framework options (OS X)
+	IF (NOT lib MATCHES "-framework.*|.*framework")
+	  # Remove absolute path and add it to _LIB_DIRS.
+	  IF(lib MATCHES "/.*")
+		SET(abs_path)
+		STRING(REGEX REPLACE "(/.*)/.*" "\\1" abs_path ${lib})
+		LIST(APPEND _LIB_DIRS ${abs_path})
+		STRING(REGEX REPLACE "/.*/(.*)" "\\1" lib ${lib})
+	  ENDIF()
 
-      # Remove .a/.so/.dylib.
-      string(REGEX REPLACE "lib(.*)\\.(a|so|dylib)" "\\1" lib ${lib})
+	  # Remove .a/.so/.dylib.
+	  STRING(REGEX REPLACE "lib(.*)\\.(a|so|dylib)" "\\1" lib ${lib})
 
-      # Remove -l prefix if it's there already.
-      string(REGEX REPLACE "-l(.*)" "\\1" lib ${lib})
+	  # Remove -l prefix if it's there already.
+	  STRING(REGEX REPLACE "-l(.*)" "\\1" lib ${lib})
 
-      set(acc_libs "${acc_libs} -l${lib}")
-    ENDIF()
-  endforeach(lib)
-  set(${return} ${acc_libs} PARENT_SCOPE)
-endfunction(sanitize_cmake_link_flags)
+	  LIST(APPEND _LIBS "${lib}")
+	ENDIF()
+  ENDFOREACH()
+  LIST(REVERSE _LIBS)
+  LIST(REMOVE_DUPLICATES _LIBS)
+  LIST(REVERSE _LIBS)
+  SET(${LIBS_VAR} ${_LIBS} PARENT_SCOPE)
+  LIST(REMOVE_DUPLICATES _LIB_DIRS)
+  SET(${LIB_DIRS_VAR} ${_LIB_DIRS} PARENT_SCOPE)
+ENDFUNCTION()
 
 function(add_copy_file outputs from to)
   if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
