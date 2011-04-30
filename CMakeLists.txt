@@ -93,7 +93,10 @@ endif()
 
 include_directories(coolaudio)
 add_subdirectory(coolaudio)
-list(APPEND NGE2_LIBS coolaudio)
+LIST(APPEND ${NAME}_LIBS coolaudio)
+IF(COOLAUDIO_LIBS)
+  LIST(APPEND ${NAME}_LIBS ${COOLAUDIO_LIBS})
+ENDIF()
 
 macro(add_package name include libraries)
   find_package(${name})
