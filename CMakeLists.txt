@@ -118,10 +118,9 @@ if(UNIX OR WIN32)
   add_package(OpenGL OPENGL_INCLUDE_DIR OPENGL_LIBRARIES)
 endif()
 
-list(APPEND NGE2_LIBS g c stdc++)
-
 if(PSP)
-  list(APPEND NGE2_LIBS vorbisfile vorbis ogg pspmpeg pspaudiocodec pspaudio psppower pspgum pspgu psprtc)
+  list(APPEND ${NAME}_LIBS psppower pspgum pspgu psprtc)
+  ADD_PSPSDK_LIBS(${NAME}_LIBS)
 endif()
 
 # -- Unix --
