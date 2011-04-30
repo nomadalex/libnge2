@@ -29,15 +29,16 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 # Set the project name.
 project(NGE2 C CXX)
+SET(NAME NGE2)
 
 include(Common)
 
-set(NGE2_VERSION 2.1)
-string(REGEX MATCH "^[0-9]+[.][0-9]+" NGE2_SOVERSION ${NGE2_VERSION})
-set(NGE2_DLL_SHORTVER 21)
+set(${NAME}_VERSION 2.1)
+string(REGEX MATCH "^[0-9]+[.][0-9]+" ${NAME}_SOVERSION ${${NAME}_VERSION})
+set(${NAME}_DLL_SHORTVER 21)
 
 # common src files
-set(NGE2_SRCS
+set(${NAME}_SRCS
   src/nge_bmp.c
   src/nge_charsets.c
   src/nge_debug_log.c
@@ -64,16 +65,16 @@ set(NGE2_SRCS
   src/nge_tga.c
   src/nge_timer.c
   )
-set(NGE2_LIBS)              # always link with these libraries
+set(${NAME}_LIBS)              # always link with these libraries
 
 if(UNIX OR WIN32 OR APPLE)
-  list(APPEND NGE2_SRCS
+  list(APPEND ${NAME}_SRCS
 	src/nge_graphics.c)
 endif()
 
 if(PSP)
   include_directories(${CMAKE_SOURCE_DIR}/include/psp)
-  list(APPEND NGE2_SRCS
+  list(APPEND ${NAME}_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c
 	)
@@ -86,7 +87,7 @@ option(USE_MMGR "Useful for debug." off)
 if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
   if(USE_MMGR)
 	add_definitions(-DMMGR)
-	list(APPEND NGE2_LIBS mmgr)
+	list(APPEND ${NAME}_LIBS mmgr)
   endif()
 endif()
 
@@ -97,7 +98,7 @@ list(APPEND NGE2_LIBS coolaudio)
 macro(add_package name include libraries)
   find_package(${name})
   include_directories(${${include}})
-  list(APPEND NGE2_LIBS ${${libraries}})
+  list(APPEND ${NAME}_LIBS ${${libraries}})
   # message("${name} : ${${include}} -- ${${libraries}}")
 endmacro()
 
@@ -130,7 +131,7 @@ if(UNIX)
 	message(FATAL_ERROR "Unix port requires pthreads support.")
   endif()
   set(_HAVE_LIBPTHREAD 1)
-  list(APPEND NGE2_LIBS m ${CMAKE_THREAD_LIBS_INIT})
+  list(APPEND ${NAME}_LIBS m ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -142,8 +143,19 @@ if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
   endif()
 endif()
 
-add_library(nge2 STATIC ${NGE2_SRCS})
-target_link_libraries(nge2 ${NGE2_LIBS})
+list(APPEND ${NAME}_LIBS g c stdc++)
+
+if(PSP)
+  ADD_PSPSDK_LIBS(${NAME}_LIBS)
+endif()
+
+SET(${NAME}_TYPE STATIC)
+add_our_library(nge2 ${${NAME}_TYPE} ${${NAME}_SRCS})
+IF(${${NAME}_TYPE} STREQUAL STATIC)
+  SET(${NAME}_LIBS ${${NAME}_LIBS} PARENT_SCOPE)
+ELSE()
+  target_link_libraries(nge2 ${${NAME}_LIBS})
+ENDIF()
 
 install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
