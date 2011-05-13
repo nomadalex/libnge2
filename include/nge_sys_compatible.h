@@ -5,7 +5,6 @@
 #define CPU_TYPE_222MHZ 222
 #define CPU_TYPE_111MHZ 111
 
-#include <time.h>
 #if defined WIN32 || defined IPHONEOS || defined __linux__
 #include "nge_common.h"
 typedef struct st_tm{
@@ -19,6 +18,7 @@ typedef struct st_tm{
 }sys_time_t,*sys_time_p;
 #else
 //psp
+#include <time.h>
 #include <psptypes.h>
 #include <psprtc.h>
 typedef pspTime sys_time_t,*sys_time_p;

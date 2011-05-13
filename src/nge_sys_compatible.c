@@ -4,6 +4,7 @@
 static int cpu_type = CPU_TYPE_222MHZ;
 
 #if defined WIN32 || defined IPHONEOS || defined __linux__
+#include <time.h>
 //win32
 int sys_localtime(sys_time_p stm)
 {
