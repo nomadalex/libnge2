@@ -35,6 +35,7 @@ function(add_resource all_res dir)
   set(${all_res} ${${all_res}} PARENT_SCOPE)
 endfunction()
 
+include(CopyFile)
 function(copy_res_files target)
   set(files)
 

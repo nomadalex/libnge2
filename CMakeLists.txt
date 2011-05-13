@@ -3,23 +3,20 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-# Search in the `cmake' directory for additional CMake modules.
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+# Set the project name.
+project(NGE2)
 
-#-----------------------------------------------------------------------------#
-#
-# Build options
-#
+# Search in the directorys for additional CMake modules.
+set(CMAKE_MODULE_PATH 
+  "${CMAKE_SOURCE_DIR}/CMake"
+  "${CMAKE_SOURCE_DIR}/CMake/Utils" 
+  "${CMAKE_SOURCE_DIR}/CMake/Packages"
+)
+include(Common)
+include(DupLibs)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-	"Choose the type of build, options are:
-	None Debug Release RelWithDebInfo MinSizeRel Profile."
-	FORCE)
-endif()
-# Restrict configuration types to the selected build type.
-# Note: This needs to be done before the project command
-set(CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" CACHE INTERNAL "internal")
+set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
+  "Real variable for buile." FORCE)
 
 # Search for C header files in these directories.
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -27,18 +24,10 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 # Put libraries into `lib'.
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
-# Set the project name.
-project(NGE2 C CXX)
-SET(NAME NGE2)
-
-include(Common)
-
-set(${NAME}_VERSION 2.1)
-string(REGEX MATCH "^[0-9]+[.][0-9]+" ${NAME}_SOVERSION ${${NAME}_VERSION})
-set(${NAME}_DLL_SHORTVER 21)
+set(NGE2_VERSION 2.1)
 
 # common src files
-set(${NAME}_SRCS
+set(NGE2_SRCS
   src/nge_bmp.c
   src/nge_charsets.c
   src/nge_debug_log.c
@@ -65,16 +54,16 @@ set(${NAME}_SRCS
   src/nge_tga.c
   src/nge_timer.c
   )
-set(${NAME}_LIBS)              # always link with these libraries
+set(NGE2_LIBS)              # always link with these libraries
 
-if(UNIX OR WIN32 OR APPLE)
-  list(APPEND ${NAME}_SRCS
+if(UNIX OR WIN32 OR IPHONE)
+  list(APPEND NGE2_SRCS
 	src/nge_graphics.c)
 endif()
 
 if(PSP)
   include_directories(${CMAKE_SOURCE_DIR}/include/psp)
-  list(APPEND ${NAME}_SRCS
+  list(APPEND NGE2_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c
 	)
@@ -82,26 +71,26 @@ endif()
 
 # depends
 option(USE_MMGR "Useful for debug." off)
-if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
+if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
   if(USE_MMGR)
 	include_directories(mmgr)
 	add_subdirectory(mmgr)
 	add_definitions(-DMMGR)
-	list(APPEND ${NAME}_LIBS mmgr)
+	list(APPEND NGE2_LIBS mmgr)
   endif()
 endif()
 
 include_directories(coolaudio)
 add_subdirectory(coolaudio)
-LIST(APPEND ${NAME}_LIBS coolaudio)
+LIST(APPEND NGE2_LIBS coolaudio)
 IF(COOLAUDIO_LIBS)
-  LIST(APPEND ${NAME}_LIBS ${COOLAUDIO_LIBS})
+  LIST(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
 ENDIF()
 
 macro(add_package name include libraries)
   find_package(${name})
   include_directories(${${include}})
-  list(APPEND ${NAME}_LIBS ${${libraries}})
+  list(APPEND NGE2_LIBS ${${libraries}})
   # message("${name} : ${${include}} -- ${${libraries}}")
 endmacro()
 
@@ -122,8 +111,7 @@ if(UNIX OR WIN32)
 endif()
 
 if(PSP)
-  list(APPEND ${NAME}_LIBS psppower pspgum pspgu psprtc)
-  ADD_PSPSDK_LIBS(${NAME}_LIBS)
+  list(APPEND NGE2_LIBS psppower pspgum pspgu psprtc)
 endif()
 
 # -- Unix --
@@ -133,31 +121,24 @@ if(UNIX)
 	message(FATAL_ERROR "Unix port requires pthreads support.")
   endif()
   set(_HAVE_LIBPTHREAD 1)
-  list(APPEND ${NAME}_LIBS m ${CMAKE_THREAD_LIBS_INIT})
+  list(APPEND NGE2_LIBS m ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 option(USE_STDOUT_DEBUG "debug logs use stdout." on)
-if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
+if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
   if(USE_STDOUT_DEBUG)
 	add_definitions(-D_DEBUG_STDOUT)
   endif()
 endif()
 
-list(APPEND ${NAME}_LIBS g c stdc++)
-
+list(APPEND NGE2_LIBS g c stdc++)
 if(PSP)
-  ADD_PSPSDK_LIBS(${NAME}_LIBS)
+  ADD_PSPSDK_LIBS(NGE2_LIBS)
 endif()
 
-SET(${NAME}_TYPE STATIC)
-add_our_library(nge2 ${${NAME}_TYPE} ${${NAME}_SRCS})
-IF(${${NAME}_TYPE} STREQUAL STATIC)
-  SET(${NAME}_LIBS ${${NAME}_LIBS} PARENT_SCOPE)
-ELSE()
-  target_link_libraries(nge2 ${${NAME}_LIBS})
-ENDIF()
+add_our_library(nge2 STATIC ${NGE2_SRCS})
 
 install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
