@@ -1,3 +1,4 @@
+include(RmDupLibs)
 function(add_nge_executable nm)
   set(_ARGS)
   set(_LIBS)
