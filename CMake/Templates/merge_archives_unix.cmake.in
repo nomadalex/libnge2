@@ -1,0 +1,47 @@
+# This script merges many static libraries into
+# one big library on Unix.
+set(target_location "@target_location@")
+set(target "@target@")
+set(static_libs "@static_libs@")
+set(CMAKE_CURRENT_BINARY_DIR "@CMAKE_CURRENT_BINARY_DIR@")
+set(CMAKE_AR "@CMAKE_AR@")
+set(CMAKE_RANLIB "@CMAKE_RANLIB@")
+
+
+set(temp_dir ${CMAKE_CURRENT_BINARY_DIR}/merge_archives_${target})
+make_directory(${temp_dir})
+# Extract each archive to its own subdirectory(avoid object filename clashes)
+foreach(lib ${static_libs})
+  get_filename_component(name_no_ext ${lib} NAME_WE)
+  set(temp_subdir ${temp_dir}/${name_no_ext})
+  make_directory(${temp_subdir})
+  execute_process(
+    COMMAND ${CMAKE_AR} -x ${lib}
+    WORKING_DIRECTORY ${temp_subdir}
+  )
+
+  file(GLOB_RECURSE lib_objects "${temp_subdir}/*")
+  set(objects ${objects} ${lib_objects})
+endforeach()
+
+# Use relative paths, makes command line shorter.
+get_filename_component(abs_temp_dir ${temp_dir} ABSOLUTE)
+foreach(obj ${objects})
+  file(RELATIVE_PATH obj ${abs_temp_dir} ${obj})
+  file(TO_NATIVE_PATH ${obj} obj)
+  set(all_objects ${all_objects} ${obj})
+endforeach()
+
+file(TO_NATIVE_PATH ${target_location} ${target_location})
+# Now pack the objects into library with ar.
+execute_process(
+  COMMAND ${CMAKE_AR} -r ${target_location} ${all_objects}
+  WORKING_DIRECTORY ${temp_dir}
+)
+execute_process(
+  COMMAND ${CMAKE_RANLIB} ${target_location}
+  WORKING_DIRECTORY ${temp_dir}
+)
+
+# Cleanup
+file(REMOVE_RECURSE ${temp_dir})
