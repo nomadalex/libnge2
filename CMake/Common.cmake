@@ -115,7 +115,7 @@ macro(add_our_library target type)
 
 	foreach(lib ${${name}_LIBS})
 	  if(TARGET ${lib})
-		target_link_libraries(${target} ${lib})
+		add_dependencies(${target} ${lib})
 	  endif()
 	endforeach()
   else()
