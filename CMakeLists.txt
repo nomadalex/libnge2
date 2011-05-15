@@ -10,11 +10,13 @@ set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
 
 # Search in the directorys for additional CMake modules.
-set(CMAKE_MODULE_PATH 
+set(CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/CMake"
-  "${CMAKE_SOURCE_DIR}/CMake/Utils" 
+  "${CMAKE_SOURCE_DIR}/CMake/Utils"
   "${CMAKE_SOURCE_DIR}/CMake/Packages"
 )
+set(CMAKE_TEMPLATE_PATH "${CMAKE_SOURCE_DIR}/CMake/Templates")
+
 include(Common)
 include(SetupDepends)
 
@@ -72,6 +74,8 @@ if(PSP)
 endif()
 
 # depends
+set(_pack_libs)
+
 option(USE_MMGR "Useful for debug." off)
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
   if(USE_MMGR)
@@ -79,6 +83,7 @@ if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
 	add_subdirectory(mmgr)
 	add_definitions(-DMMGR)
 	list(APPEND NGE2_LIBS mmgr)
+	list(APPEND _pack_libs mmgr)
   endif()
 endif()
 
@@ -104,36 +109,39 @@ endif()
 
 list(APPEND NGE2_LIBS g c stdc++)
 if(PSP)
-  ADD_PSPSDK_LIBS(NGE2_LIBS)
+  add_pspsdk_libs(NGE2_LIBS)
 endif()
 
-add_our_library(nge2 STATIC ${NGE2_SRCS})
-install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
-install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(EXPORT nge2 DESTINATION share/cmake/Modules)
+set(NGE2_ORIG_LIBS ${NGE2_LIBS})
+add_our_library(nge2_orig STATIC ${NGE2_SRCS})
 
 # addons
+macro(add_addon subdir target)
+  include_directories(${subdir})
+  add_subdirectory(${subdir})
+  list(APPEND _pack_libs ${target})
+endmacro()
+
 # hge particle system
-include_directories(hge)
-add_subdirectory(hge)
+add_addon(hge hge)
 
 # helpers
-include_directories(helper)
-add_subdirectory(helper)
+add_addon(helper nge_helper)
 
 if(PSP)
-  include_directories(dirent)
-  add_subdirectory(dirent)
-  include_directories(movie)
-  add_subdirectory(movie)
+  add_addon(dirent nge_dirent)
+  add_addon(movie nge_movie)
 endif()
 
 if(PSP OR WIN32)
-  include_directories(net)
-  add_subdirectory(net)
+  add_addon(net nge_net)
 endif()
 
-include_directories(app)
-add_subdirectory(app)
+add_addon(app nge_app)
+
+include(LibUtils)
+merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)
+install(TARGETS nge2 DESTINATION lib)
+install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 add_subdirectory(samples)

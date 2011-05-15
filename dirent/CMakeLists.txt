@@ -6,7 +6,7 @@ set(DIRENT_SRCS
   )
 
 add_our_library(nge_dirent STATIC ${DIRENT_SRCS})
-target_link_libraries(nge_dirent nge2)
+target_link_libraries(nge_dirent nge2_orig)
 
-install(TARGETS nge_dirent EXPORT nge2 DESTINATION lib)
+install(TARGETS nge_dirent DESTINATION lib)
 install(FILES nge_dirent.hpp nge_ch_io_dir.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

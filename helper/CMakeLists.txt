@@ -6,7 +6,6 @@ set(HELPER_SRCS
   )
 
 add_our_library(nge_helper STATIC ${HELPER_SRCS})
-target_link_libraries(nge_helper nge2)
 
-install(TARGETS nge_helper EXPORT nge2 DESTINATION lib)
+install(TARGETS nge_helper DESTINATION lib)
 install(FILES CppSQLite3.h dictionary.h iniparser.h package.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

@@ -8,5 +8,5 @@ set(SOURCES
 
 add_our_library(nge_app STATIC ${HEADERS} ${SOURCES})
 
-install(TARGETS nge_app EXPORT nge2 DESTINATION lib)
+install(TARGETS nge_app DESTINATION lib)
 install(FILES ${HEADERS}  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

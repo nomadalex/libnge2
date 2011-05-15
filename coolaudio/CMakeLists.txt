@@ -39,5 +39,5 @@ endif()
 
 add_our_library(coolaudio STATIC ${COOLAUDIO_SRCS})
 
-install(TARGETS coolaudio EXPORT nge2 DESTINATION lib)
+install(TARGETS coolaudio DESTINATION lib)
 install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

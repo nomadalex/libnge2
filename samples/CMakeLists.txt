@@ -17,10 +17,9 @@ function(add_nge_executable nm)
   endforeach()
 
   add_executable(${nm} WIN32 ${_ARGS})
-  SET(_LIBS nge2 ${_LIBS} ${NGE2_LIBS})
+  set(_LIBS nge2 ${_LIBS} ${NGE2_LIBS})
 
-  RM_DUP_LIB(_LIBS _LIB_DIRS ${_LIBS})
-  LINK_DIRECTORIES(${_LIB_DIRS})
+  rm_dup_lib(_LIBS)
   target_link_libraries(${nm} ${_LIBS})
   if(PSP)
 	pack_psp_eboot(${nm})
