@@ -106,7 +106,13 @@ macro(add_our_library target type)
   SET(${name}_TYPE ${type})
   add_library(${target} ${${name}_TYPE} ${ARGN})
   IF(${${name}_TYPE} STREQUAL STATIC)
-	SET(${name}_LIBS ${${name}_LIBS} PARENT_SCOPE)
+
+	if(${CMAKE_CURRENT_LIST_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+	  SET(${name}_LIBS ${${name}_LIBS})
+	else()
+	  SET(${name}_LIBS ${${name}_LIBS} PARENT_SCOPE)
+	endif()
+
 	foreach(lib ${${name}_LIBS})
 	  if(TARGET ${lib})
 		target_link_libraries(${target} ${lib})
@@ -116,7 +122,7 @@ macro(add_our_library target type)
 	target_link_libraries(${target} ${${name}_LIBS})
   ENDIF()
   # message("name: " ${name} "\nLIBS: " ${${name}_LIBS})
-endmacro(add_our_library)
+endmacro()
 
 function(install_our_target target)
   install(TARGETS ${target}
@@ -126,4 +132,4 @@ function(install_our_target target)
 	FRAMEWORK DESTINATION "${FRAMEWORK_INSTALL_PREFIX}"
 	RUNTIME DESTINATION "bin"
 	)
-endfunction(install_our_target)
+endfunction()
