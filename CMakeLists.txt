@@ -5,6 +5,9 @@ endif(COMMAND cmake_policy)
 
 # Set the project name.
 project(NGE2)
+set(NGE2_SRCS)
+set(NGE2_LIBS)
+set(NGE2_VERSION 2.1)
 
 # Search in the directorys for additional CMake modules.
 set(CMAKE_MODULE_PATH 
@@ -13,21 +16,20 @@ set(CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/CMake/Packages"
 )
 include(Common)
-include(DupLibs)
+include(SetupDepends)
 
 set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
   "Real variable for buile." FORCE)
 
-# Search for C header files in these directories.
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_BINARY_DIR}/include)
 # Put libraries into `lib'.
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
-set(NGE2_VERSION 2.1)
+# Search for C header files in these directories.
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 
 # common src files
-set(NGE2_SRCS
+list(APPEND NGE2_SRCS
   src/nge_bmp.c
   src/nge_charsets.c
   src/nge_debug_log.c
@@ -54,7 +56,7 @@ set(NGE2_SRCS
   src/nge_tga.c
   src/nge_timer.c
   )
-set(NGE2_LIBS)              # always link with these libraries
+list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
 
 if(UNIX OR WIN32 OR IPHONE)
   list(APPEND NGE2_SRCS
@@ -87,43 +89,6 @@ IF(COOLAUDIO_LIBS)
   LIST(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
 ENDIF()
 
-macro(add_package name include libraries)
-  find_package(${name})
-  include_directories(${${include}})
-  list(APPEND NGE2_LIBS ${${libraries}})
-  # message("${name} : ${${include}} -- ${${libraries}}")
-endmacro()
-
-#-----------------------------------------------------------------------------#
-#
-# Platform drivers
-#
-
-add_package(ZLIB ZLIB_INCLUDE_DIR ZLIB_LIBRARIES)
-add_package(JPEG JPEG_INCLUDE_DIR JPEG_LIBRARIES)
-add_package(PNG PNG_INCLUDE_DIR PNG_LIBRARIES)
-add_package(Freetype FREETYPE_INCLUDE_DIRS FREETYPE_LIBRARIES)
-add_package(GIF GIF_INCLUDE_DIR GIF_LIBRARIES)
-
-if(UNIX OR WIN32)
-  add_package(SDL SDL_INCLUDE_DIR SDL_LIBRARY)
-  add_package(OpenGL OPENGL_INCLUDE_DIR OPENGL_LIBRARIES)
-endif()
-
-if(PSP)
-  list(APPEND NGE2_LIBS psppower pspgum pspgu psprtc)
-endif()
-
-# -- Unix --
-if(UNIX)
-  find_package(Threads)
-  if(NOT CMAKE_USE_PTHREADS_INIT)
-	message(FATAL_ERROR "Unix port requires pthreads support.")
-  endif()
-  set(_HAVE_LIBPTHREAD 1)
-  list(APPEND NGE2_LIBS m ${CMAKE_THREAD_LIBS_INIT})
-endif()
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 option(USE_STDOUT_DEBUG "debug logs use stdout." on)
@@ -133,13 +98,16 @@ if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
   endif()
 endif()
 
+if(PSP)
+  list(APPEND NGE2_LIBS psppower pspgum pspgu psprtc)
+endif()
+
 list(APPEND NGE2_LIBS g c stdc++)
 if(PSP)
   ADD_PSPSDK_LIBS(NGE2_LIBS)
 endif()
 
 add_our_library(nge2 STATIC ${NGE2_SRCS})
-
 install(TARGETS nge2 EXPORT nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(EXPORT nge2 DESTINATION share/cmake/Modules)
