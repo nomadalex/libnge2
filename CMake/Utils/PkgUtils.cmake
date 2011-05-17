@@ -197,12 +197,7 @@ macro(findpkg_finish PREFIX)
   endif ()
 endmacro(findpkg_finish)
 
-include(CMakeParseArguments)
-macro(define_find_pkg PKG)
-  set(oneValueArgs PKG_CONFIG_NAME)
-  set(multiValueArgs LIBRARY_HINTS HEADER_HINTS HEADER_SUFFIXES LIBRARY_SUFFIXES)
-  cmake_parse_arguments(${PKG}_ARG "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
+macro(prepare_find_pkg_vars PKG)
   # Get path, convert backslashes as ${ENV_${var}}
   getenv_path(${PKG}_HOME)
 
@@ -216,7 +211,15 @@ macro(define_find_pkg PKG)
 	${PKG}_LIBRARY_DBG
 	${PKG}_INCLUDE_DIR
 	)
+endmacro()
 
+include(CMakeParseArguments)
+macro(define_find_pkg PKG)
+  set(oneValueArgs PKG_CONFIG_NAME)
+  set(multiValueArgs LIBRARY_HINTS HEADER_HINTS HEADER_SUFFIXES LIBRARY_SUFFIXES)
+  cmake_parse_arguments(${PKG}_ARG "" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  prepare_find_pkg_vars(${PKG})
   set(${PKG}_LIBRARY_NAMES ${${PKG}_ARG_LIBRARY_HINTS})
   make_debug_names(${PKG}_LIBRARY_NAMES)
 
