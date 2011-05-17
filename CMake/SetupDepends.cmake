@@ -41,10 +41,10 @@ endif()
 ################################################################################
 # coolauido
 set(COOLAUDIO_DEP_LIBS)
-if(UNIX OR WIN32)
-  find_package(SDL_mixer)
-  log_feature(SDLMIXER_FOUND "SDL mixer" "Sample multi-channel audio mixer library" "http://www.libsdl.org/projects/SDL_mixer/" REQUIRED)
-  add_package(SDLMIXER COOLAUDIO_DEP_LIBS)
+if(LINUX)
+  find_package(GStreamer)
+  log_feature(GSTREAMER_FOUND "Gstreamer" "Open source multimedia framework" "http://gstreamer.freedesktop.org/" REQUIRED)
+  add_package(GSTREAMER COOLAUDIO_DEP_LIBS)
 endif()
 
 ################################################################################

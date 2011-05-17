@@ -3,12 +3,15 @@ set(COOLAUDIO_SRCS)
 set(COOLAUDIO_LIBS)
 set(COOLAUDIO_VERSION 1.1)
 
-list(APPEND COOLAUDIO_SRCS libcoolaudio.c)
 list(APPEND COOLAUDIO_LIBS ${COOLAUDIO_DEP_LIBS})
 
-if(WIN32 OR UNIX)
+if(LINUX)
   list(APPEND COOLAUDIO_SRCS
-	nge_audio.cpp)
+	nge_audio_linux.c)
+endif()
+
+if(PSP OR IPHONE)
+  list(APPEND COOLAUDIO_SRCS libcoolaudio.c)
 endif()
 
 if(PSP)
