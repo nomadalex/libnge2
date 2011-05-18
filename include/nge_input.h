@@ -103,7 +103,7 @@ void InputProc();
  *退出输入系统
  *@return 无
  */
-#define FiniInput(...) // we do not need it at all!!
+#define FiniInput() // we do not need it at all!!
 
 /**
  *初始化mouse-touch

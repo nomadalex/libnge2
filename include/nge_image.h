@@ -229,8 +229,8 @@ int roundpower2(int width);
 void swizzle_swap(image_p pimage);
 void unswizzle_swap(image_p pimage);
 #else
-#define swizzle_swap(...)
-#define unswizzle_swap(...)
+#define swizzle_swap(p)
+#define unswizzle_swap(p)
 #endif
 
 #ifdef __cplusplus
