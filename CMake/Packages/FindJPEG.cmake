@@ -10,7 +10,7 @@ if(NOT JPEG_FOUND)
   findpkg_begin(JPEG)
 
   define_find_pkg(JPEG
-	LIBRARY_HINTS jpeg
+	LIBRARY_HINTS jpeg libjpeg
 	HEADER_HINTS jpeglib.h)
 
   findpkg_finish(JPEG)
