@@ -57,7 +57,7 @@ typedef short sint16;
 #endif
 
 #ifndef uint8
-typedef  unsigned char uint8;
+typedef unsigned char uint8;
 #endif
 
 #ifndef sint8
@@ -69,6 +69,10 @@ typedef uint8 BOOL;
 #endif
 
 #define SAFE_FREE(ptr) free(ptr)
+
+#if defined(WIN32) && !defined(__cplusplus)
+#define inline __inline
+#endif
 
 #ifdef __cplusplus
 extern "C" {
