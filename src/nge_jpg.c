@@ -24,6 +24,7 @@
 #include "nge_io_file.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "jpeglib.h"
 #if JPEG_LIB_VERSION > 62
