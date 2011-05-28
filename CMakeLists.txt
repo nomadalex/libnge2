@@ -3,12 +3,6 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
 
-# Set the project name.
-project(NGE2)
-set(NGE2_SRCS)
-set(NGE2_LIBS)
-set(NGE2_VERSION 2.1)
-
 # Search in the directorys for additional CMake modules.
 set(CMAKE_MODULE_PATH
   "${CMAKE_SOURCE_DIR}/CMake"
@@ -19,7 +13,19 @@ set(CMAKE_TEMPLATE_PATH "${CMAKE_SOURCE_DIR}/CMake/Templates")
 
 include(Common)
 
+option(BUILD_PSP "Whether build for psp" ${BUILD_PSP})
+if(BUILD_PSP)
+  set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psptoolchain.cmake")
+endif()
+
 option(BUILD_SAMPLES "Whether build samples" ON)
+
+# Set the project name.
+project(NGE2)
+set(NGE2_SRCS)
+set(NGE2_LIBS)
+set(NGE2_VERSION 2.1)
+
 include(SetupDepends)
 
 set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
