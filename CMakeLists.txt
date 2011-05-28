@@ -101,7 +101,9 @@ IF(COOLAUDIO_LIBS)
   LIST(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
 ENDIF()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+if(COMPILER_GCC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
+endif()
 
 option(USE_STDOUT_DEBUG "debug logs use stdout." on)
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
