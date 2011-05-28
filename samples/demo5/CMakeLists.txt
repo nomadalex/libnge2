@@ -1,5 +1,6 @@
 string(REGEX MATCH "demo(.+)" D_NAME ${CMAKE_CURRENT_SOURCE_DIR})
 aux_source_directory(. ${D_NAME}_SRCS)
+include_directories(${SQLITE3_INCLUDE_DIR})
 add_nge_executable(${D_NAME} ${${D_NAME}_SRCS} LIBRARIES ${SQLITE3_LIBRARIES})
 
 add_resource(${D_NAME}_all_res images
