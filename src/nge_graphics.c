@@ -114,7 +114,7 @@ static TexCoord_t *gl_tex_uvs;
 
 static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 #define GL_ARRAY_CHECK_V(size)											\
-	if(size > max_vectices){											\
+	if(((uint32)size) > max_vectices){									\
 		max_vectices = size;											\
 		SAFE_FREE(gl_vectices);											\
 		gl_vectices = (Vectice2D_t*)malloc(size*sizeof(Vectice2D_t));	\
@@ -122,7 +122,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_C(size)											\
-	if(size>max_colors)													\
+	if(((uint32)size) > max_colors)										\
 	{																	\
 		max_colors = size;												\
 		SAFE_FREE(gl_colors);											\
@@ -131,7 +131,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_T(size)											\
-	if(size>max_tex_uvs)												\
+	if(((uint32)size) > max_tex_uvs)									\
 	{																	\
 		max_tex_uvs = size;												\
 		SAFE_FREE(gl_tex_uvs);											\
