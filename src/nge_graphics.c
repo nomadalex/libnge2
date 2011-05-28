@@ -24,11 +24,20 @@
 #include "nge_misc.h"
 #include "nge_tex_cache.h"
 #include <math.h>
+#include <stdio.h>
 
 #if defined WIN32 || defined __linux__
 #include <GL/glut.h>
 #include <GL/gl.h>
+
+#if defined __linux__
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+
+#else
 #include <SDL.h>
+#endif
+
 #elif defined IPHONEOS
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
@@ -58,6 +67,12 @@ static screen_context_t nge_screen = {
 	SCREEN_BPP,
 	0,
 };
+
+#if defined(__linux__)
+Display *g_dpy;
+Window g_win;
+GLXContext g_ctx;
+#endif
 
 typedef struct
 {
@@ -231,10 +246,69 @@ void ResetClip()
 	glScissor(0,0,nge_screen.width, nge_screen.height);
 }
 
+#if defined(__linux__)
+static void
+makeWindow(const char *name, int x, int y, int width, int height)
+{
+	int attrib[] = { GLX_RGBA,
+					 GLX_RED_SIZE, 1,
+					 GLX_GREEN_SIZE, 1,
+					 GLX_BLUE_SIZE, 1,
+					 GLX_DOUBLEBUFFER,
+					 None };
+	int scrnum;
+	XSetWindowAttributes attr;
+	unsigned long mask;
+	Window root;
+	XVisualInfo *visinfo;
+
+	scrnum = DefaultScreen( g_dpy );
+	root = RootWindow( g_dpy, scrnum );
+
+	visinfo = glXChooseVisual( g_dpy, scrnum, attrib );
+	if (!visinfo) {
+		printf("Error: couldn't get an RGB, Double-buffered visual\n");
+		exit(1);
+	}
+
+	/* window attributes */
+	attr.background_pixel = 0;
+	attr.border_pixel = 0;
+	attr.colormap = XCreateColormap( g_dpy, root, visinfo->visual, AllocNone);
+	attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+	mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
+
+	g_win = XCreateWindow( g_dpy, root, 0, 0, width, height,
+						 0, visinfo->depth, InputOutput,
+						 visinfo->visual, mask, &attr );
+
+	/* set hints and properties */
+	{
+		XSizeHints sizehints;
+		sizehints.x = x;
+		sizehints.y = y;
+		sizehints.width  = width;
+		sizehints.height = height;
+		sizehints.flags = USSize | USPosition;
+		XSetNormalHints(g_dpy, g_win, &sizehints);
+		XSetStandardProperties(g_dpy, g_win, name, name,
+							   None, (char **)NULL, 0, &sizehints);
+	}
+
+	g_ctx = glXCreateContext( g_dpy, visinfo, NULL, True );
+	if (!g_ctx) {
+		printf("Error: glXCreateContext failed\n");
+		exit(1);
+	}
+
+	XFree(visinfo);
+}
+#endif
+
 void InitGrahics()
 {
 	int i = 0;
-#if defined(WIN32) || defined(__linux__)
+#if defined(WIN32)
 	int screen_flag = 0;
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
 		exit(1);
@@ -249,6 +323,15 @@ void InitGrahics()
 	if(nge_screen.fullscreen != 0)
 		screen_flag |= SDL_FULLSCREEN;
 	SDL_SetVideoMode( nge_screen.width, nge_screen.height, nge_screen.bpp,screen_flag);
+#elif defined(__linux__)
+	g_dpy = XOpenDisplay(NULL);
+	if (!g_dpy) {
+		printf("ERROR: couldn't open default display.\n");
+		return;
+	}
+	makeWindow(nge_screen.name, 0, 0, nge_screen.width, nge_screen.height);
+	XMapWindow(g_dpy, g_win);
+	glXMakeCurrent(g_dpy, g_win, g_ctx);
 #endif
 
 	glEnable( GL_TEXTURE_2D );
@@ -300,6 +383,12 @@ void FiniGrahics()
 	SAFE_FREE(gl_vectices);
 	SAFE_FREE(gl_colors);
 	SAFE_FREE(gl_tex_uvs);
+
+#if defined(__linux__)
+	glXDestroyContext(g_dpy, g_ctx);
+	XDestroyWindow(g_dpy, g_win);
+	XCloseDisplay(g_dpy);
+#endif
 }
 
 void ShowFps()
@@ -352,7 +441,11 @@ void BeginScene(uint8 clear)
 void EndScene()
 {
 #ifndef IPHONEOS
+#if defined(__linux__)
+	glXSwapBuffers(g_dpy, g_win);
+#else
 	SDL_GL_SwapBuffers();
+#endif
 #endif
 }
 
