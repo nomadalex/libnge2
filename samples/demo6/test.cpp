@@ -1,4 +1,5 @@
 #include "libnge2.h"
+#include <stdio.h>
 /**
  * nge_gif:œ‘ æ“ª’≈gifÕº∆¨
  */

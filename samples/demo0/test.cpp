@@ -1,4 +1,5 @@
 #include "libnge2.h"
+#include <stdio.h>
 /**
  * nge_test:最简单的nge程序:显示一张图片
  */
