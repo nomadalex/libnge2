@@ -10,9 +10,6 @@ static void TM_stop(nge_timer* timer);
 static void TM_pause(nge_timer* timer);
 static void TM_unpause(nge_timer* timer);
 
-//static uint32 nge_get_tick();
-
-
 nge_timer* timer_create()
 {
 	nge_timer* timer = (nge_timer*)malloc(sizeof(nge_timer));
@@ -97,14 +94,35 @@ static void TM_unpause(nge_timer* timer)
 	}
 }
 
-
 #if defined _PSP
 #include <psptypes.h>
 #include <time.h>
 #include <psprtc.h>
 static u64 mTickFrequency = 0;
+#elif defined(WIN32)
+#include "SDL.h"
+#elif defined(__linux__)
+#include <sys/time.h>
+#endif
+
 uint32 nge_get_tick()
 {
+#if defined(__linux__)
+	static struct timeval start;
+	static uint8 uninited = 1;
+	uint32 ticks;
+	struct timeval now;
+	if (uninited) {
+		uninited = 0;
+		gettimeofday(&start, NULL);
+	}
+
+	gettimeofday(&now, NULL);
+	ticks=(now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000;
+	return(ticks);
+#elif defined(WIN32)
+	return SDL_GetTicks();
+#elif defined(_PSP)
 	u64 ticks;
 	uint32 tick32;
 
@@ -113,11 +131,5 @@ uint32 nge_get_tick()
 	sceRtcGetCurrentTick(&ticks);
 	tick32 = ticks/1000;
 	return tick32;
-}
-#else
-#include "SDL.h"
-uint32 nge_get_tick()
-{
-	return SDL_GetTicks();
-}
 #endif
+}

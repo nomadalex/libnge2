@@ -50,6 +50,4 @@ uint32 nge_get_tick();
 }
 #endif
 
-
-
 #endif
