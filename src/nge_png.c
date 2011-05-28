@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 #include "png.h"
-#if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 8
+#if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 33
 #define USE_HIGH_LIBPNG
 #endif
 
