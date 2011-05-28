@@ -27,11 +27,13 @@ find_package(Freetype)
 log_feature(FREETYPE_FOUND "freetype" "Portable font engine" "http://www.freetype.org" REQUIRED)
 add_package(FREETYPE NGE2_DEP_LIBS)
 
-if(UNIX OR WIN32)
+if(WIN32)
   find_package(SDL)
   log_feature(SDL_FOUND "SDL" "Simple DirectMedia Layer" "http://www.libsdl.org/" REQUIRED)
   add_package(SDL NGE2_DEP_LIBS)
+endif()
 
+if(WIN32 OR LINUX)
   # Find OpenGL
   find_package(OpenGL)
   log_feature(OPENGL_FOUND "OpenGL" "OpenGL render system" "http://www.opengl.org/" REQUIRED)
