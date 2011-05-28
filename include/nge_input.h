@@ -24,7 +24,7 @@
 #define _NGE_INPUT_H
 
 //input proc define
-#if defined WIN32 || defined(__linux__)
+#if defined WIN32
 #include "SDL.h"
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
@@ -40,6 +40,22 @@
 #define PSP_BUTTON_START         SDLK_b
 #define PSP_BUTTON_HOME          SDLK_n
 #define PSP_BUTTON_HOLD          SDLK_m
+#elif defined(__linux__)
+#include <X11/keysym.h>
+#define PSP_BUTTON_UP            XK_w
+#define PSP_BUTTON_DOWN          XK_s
+#define PSP_BUTTON_LEFT          XK_a
+#define PSP_BUTTON_RIGHT         XK_d
+#define PSP_BUTTON_TRIANGLE      XK_i
+#define PSP_BUTTON_CIRCLE        XK_l
+#define PSP_BUTTON_CROSS         XK_k
+#define PSP_BUTTON_SQUARE        XK_j
+#define PSP_BUTTON_LEFT_TRIGGER  XK_e
+#define PSP_BUTTON_RIGHT_TRIGGER XK_u
+#define PSP_BUTTON_SELECT        XK_v
+#define PSP_BUTTON_START         XK_b
+#define PSP_BUTTON_HOME          XK_n
+#define PSP_BUTTON_HOLD          XK_m
 #elif defined _PSP || defined IPHONEOS
 #define PSP_BUTTON_UP            8
 #define PSP_BUTTON_DOWN          6
@@ -69,13 +85,6 @@ extern "C" {
 #endif
 
 typedef void (*ButtonProc)(int key);
-typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
-
-typedef void (*MouseMoveProc)(int x,int y);
-typedef void (*MouseButtonProc)(int type,int x,int y);
-
-typedef void (*TouchMoveProc)(int which,int x,int y,int rx,int ry);
-typedef void (*TouchButtonProc)(int which,int type,int x,int y);
 
 /**
  *初始化输入系统
@@ -86,12 +95,37 @@ typedef void (*TouchButtonProc)(int which,int type,int x,int y);
  */
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
 
+#if defined(_PSP) || defined(__linux__) || defined(WIN32)
+typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 /**
  *初始化摇杆
  *@param AnalogProc,摇杆的回调函数
  *@return
  */
 void InitAnalog(AnalogProc analogproc);
+#endif
+
+#if defined(__linux__) || defined(WIN32)
+typedef void (*MouseMoveProc)(int x,int y);
+typedef void (*MouseButtonProc)(int type,int x,int y);
+
+/**
+ *初始化mouse-touch
+ */
+void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
+#endif
+
+#if defined(__linux__) || defined(WIN32) || defined(IPHONEOS)
+typedef void (*TouchMoveProc)(int which,int x,int y,int rx,int ry);
+typedef void (*TouchButtonProc)(int which,int type,int x,int y);
+
+void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
+#if defined(__linux__) || defined(WIN32)
+void EmulateTouchMove(int flag);
+#endif
+#endif
+
+void SetSwapXY(int flag);
 
 /**
  *输入响应,具体使用请看例子test/input_test.cpp
@@ -103,24 +137,7 @@ void InputProc();
  *退出输入系统
  *@return 无
  */
-#define FiniInput() // we do not need it at all!!
-
-/**
- *初始化mouse-touch
- */
-void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
-
-void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
-
-#ifndef IPHONEOS
-MouseMoveProc GetMouseMoveProc();
-MouseButtonProc GetMouseButtonProc();
-
-void SetSwapXY(int flag);
-int  GetSwapXY();
-#endif
-
-void EmulateTouchMove(int flag);
+#define FiniInput()
 
 #ifdef __cplusplus
 }
