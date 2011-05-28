@@ -18,6 +18,8 @@ set(CMAKE_MODULE_PATH
 set(CMAKE_TEMPLATE_PATH "${CMAKE_SOURCE_DIR}/CMake/Templates")
 
 include(Common)
+
+option(BUILD_SAMPLES "Whether build samples" ON)
 include(SetupDepends)
 
 set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
@@ -155,4 +157,6 @@ merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)
 install(TARGETS nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-add_subdirectory(samples)
+if(BUILD_SAMPLES)
+  add_subdirectory(samples)
+endif()

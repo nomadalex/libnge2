@@ -48,6 +48,11 @@ function(copy_res_files target)
 endfunction()
 
 #demo 3 need pmp mod library.
-foreach(i 0 1 2 4 5 6 7 8 9)
+foreach(i 0 1 2 4 6 7 8 9)
   add_subdirectory(demo${i})
 endforeach()
+
+if(SQLITE3_FOUND)
+  add_subdirectory(demo5)  
+endif()
+
