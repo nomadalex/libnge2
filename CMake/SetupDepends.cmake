@@ -53,6 +53,10 @@ endif()
 find_package(SQLite3)
 log_feature(SQLITE3_FOUND "sqlite3" "a self-contained, serverless, zero-configuration, transactional SQL database engine" "http://www.sqlite.org/")
 
+# for demo9
+find_package(Unzip)
+log_feature(UNZIP_FOUND "unzip" "a unzip library, you can download it from download page." "")
+
 ################################################################################
 # Tools
 find_package(Doxygen)
