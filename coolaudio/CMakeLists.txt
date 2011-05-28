@@ -28,7 +28,7 @@ if(PSP)
 	)
 endif()
 
-if(APPLE) # IPHONESO?
+if(IPHONE) # IPHONESO?
   list(APPEND COOLAUDIO_SRCS
 	LSAudioDeleCall.m
 	libLSAudio.m
@@ -40,6 +40,13 @@ if(PSP)
   ADD_PSPSDK_LIBS(COOLAUDIO_LIBS)
 endif()
 
-add_our_library(coolaudio STATIC ${COOLAUDIO_SRCS})
-install(TARGETS coolaudio DESTINATION lib)
+if(PSP OR LINUX)
+  add_our_library(coolaudio STATIC ${COOLAUDIO_SRCS})
+  install(TARGETS coolaudio DESTINATION lib)
+elseif(WIN32)
+  find_library(COOLAUDIO_LOC NAMES coolaudio libcoolaudio PATHS "${CMAKE_SOURCE_DIR}/Win32Depends" ${NGE2_DEPENDENCIES_DIR} PATH_SUFFIXES lib)
+  set(COOLAUDIO_LIBRARY ${COOLAUDIO_LOC} PARENT_SCOPE)
+  set(COOLAUDIO_LIBS ${COOLAUDIO_LIBS} PARENT_SCOPE)
+endif()
+
 install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
