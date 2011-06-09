@@ -11,7 +11,7 @@ if(NOT SQLITE3_FOUND)
 
   define_find_pkg(SQLITE3
 	PKG_CONFIG_NAME sqlite3
-	LIBRARY_HINTS sqlite3 libsqlite3
+	LIBRARY_HINTS sqlite3 libsqlite3 libsqlite
 	HEADER_HINTS sqlite3.h)
 
   findpkg_finish(SQLITE3)
