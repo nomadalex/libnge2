@@ -28,6 +28,7 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.1.0"
 
+#ifndef _MSC_VER
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -39,47 +40,25 @@
 #ifndef NULL
 #define NULL  (0)
 #endif
-
-#ifndef uint32
-#define uint32 unsigned int
 #endif
 
-#ifndef sint32
-#define sint32 int
-#endif
+typedef unsigned int uint32;
+typedef int sint32;
+typedef unsigned short uint16;
+typedef short sint16;
+typedef unsigned char uint8;
+typedef char sint8;
 
-#ifndef uint16
-#define uint16 unsigned short
-#endif
-
-#ifndef sint16
-#define sint16 short
-#endif
-
-#ifndef uint8
-#define uint8 unsigned char
-#endif
-
-#ifndef sint8
-#define sint8 char
-#endif
-
-#ifndef BOOL
-#define BOOL uint8
+#ifdef _MSC_VER
+typedef int BOOL;
+#else
+typedef uint8 BOOL;
 #endif
 
 #define SAFE_FREE(ptr) free(ptr)
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif /* _NGE_COMMON_H */
