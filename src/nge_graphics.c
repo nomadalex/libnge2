@@ -25,9 +25,9 @@
 #include "nge_tex_cache.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #if defined WIN32 || defined __linux__
-#include <GL/glut.h>
 #include <GL/gl.h>
 
 #if defined __linux__

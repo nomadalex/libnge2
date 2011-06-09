@@ -1,14 +1,12 @@
-//Modified by Kun Wang <ifreedom.cn@gmail.com> 2011-04-06 20:01
-//   Add macro CAL_AND_SET_BLUR
 #include "nge_image_effect.h"
 #include "nge_image.h"
 #include "nge_graphics.h"
 #include "nge_misc.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #if defined(WIN32)  || defined(__linux__)
-#include <GL/glut.h>
 #include <GL/gl.h>
 
 #elif  IPHONEOS
