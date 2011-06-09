@@ -8,25 +8,67 @@ if(NOT CMAKE_BUILD_TYPE)
 	FORCE)
 endif()
 
+# Set postfix
+set(CMAKE_DEBUG_POSTFIX "_d" CACHE STRING "postfix for debug version")
+set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "postfix for release version")
+set(CMAKE_RELWITHDEBINFO_POSTFIX "_rd" CACHE STRING "postfix for release with debug info version")
+set(CMAKE_MINSIZEREL_POSTFIX "_s" CACHE STRING "postfix for minsize release version")
+
+set(INSTALL_PREFIX "")
+
+option(STRICT_WARN "Halt at warnings" off)
+
 #-----------------------------------------------------------------------------#
 # Common Compiler and platform setup
 
 # Use relative paths
 # This is mostly to reduce path size for command-line limits on windows
 if(WIN32)
-  # This seems to break Xcode projects so definitely don't enable on Apple builds
   set(CMAKE_USE_RELATIVE_PATHS true)
   set(CMAKE_SUPPRESS_REGENERATION true)
 endif()
 
-if (NOT APPLE)
-  # Create debug libraries with _d postfix
-  set(CMAKE_DEBUG_POSTFIX "_d")
-endif ()
+if(PSP)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -G0")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -G0 -fno-exceptions -fno-rtti")
+elseif(WIN32)
+  if(MINGW)
+	set(COMPILER_MINGW 1)
+	# Guess MINGDIR from the value of CMAKE_C_COMPILER if it's not set.
+	if("$ENV{MINGDIR}" STREQUAL "")
+	  string(REGEX REPLACE "/bin/[^/]*$" "" MINGDIR "${CMAKE_C_COMPILER}")
+	  message(STATUS "Guessed MinGW directory: ${MINGDIR}")
+	else("$ENV{MINGDIR}" STREQUAL "")
+	  file(TO_CMAKE_PATH "$ENV{MINGDIR}" MINGDIR)
+	  message(STATUS "Using MINGDIR: ${MINGDIR}")
+	endif("$ENV{MINGDIR}" STREQUAL "")
 
-option(STRICT_WARN "Halt at warnings" off)
+	# Search in MINGDIR for headers and libraries.
+	set(CMAKE_PREFIX_PATH "${MINGDIR}")
 
-set(INSTALL_PREFIX "")
+	# Install to MINGDIR
+	if(INSTALL_PREFIX STREQUAL "")
+	  set(CMAKE_INSTALL_PREFIX ${MINGDIR})
+	else(INSTALL_PREFIX STREQUAL "")
+	  set(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
+	endif(INSTALL_PREFIX STREQUAL "")
+
+	message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+  elseif(MSVC)
+	set(COMPILER_MSVC 1)
+	set(WFLAGS "/W3 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE")
+
+	option(WIN32_USE_MP "Set to ON to build with the /MP option (Visual Studio 2005 and above)." OFF)
+	mark_as_advanced(WIN32_USE_MP)
+	if(WIN32_USE_MP)
+	  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+	endif()
+  endif()
+elseif(UNIX)
+  if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+	set(LINUX 1)
+  endif()
+endif()
 
 if(CMAKE_COMPILER_IS_GNUCC)
   set(COMPILER_GCC 1)
@@ -38,59 +80,6 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	set(WFLAGS_C_ONLY "${WFLAGS_C_ONLY} -Wstrict-prototypes")
   endif(STRICT_WARN)
 endif(CMAKE_COMPILER_IS_GNUCC)
-
-if(MINGW)
-  set(COMPILER_MINGW 1)
-  # Guess MINGDIR from the value of CMAKE_C_COMPILER if it's not set.
-  if("$ENV{MINGDIR}" STREQUAL "")
-	string(REGEX REPLACE "/bin/[^/]*$" "" MINGDIR "${CMAKE_C_COMPILER}")
-	message(STATUS "Guessed MinGW directory: ${MINGDIR}")
-  else("$ENV{MINGDIR}" STREQUAL "")
-	file(TO_CMAKE_PATH "$ENV{MINGDIR}" MINGDIR)
-	message(STATUS "Using MINGDIR: ${MINGDIR}")
-  endif("$ENV{MINGDIR}" STREQUAL "")
-
-  # Search in MINGDIR for headers and libraries.
-  set(CMAKE_PREFIX_PATH "${MINGDIR}")
-
-  # Install to MINGDIR
-  if(INSTALL_PREFIX STREQUAL "")
-	set(CMAKE_INSTALL_PREFIX ${MINGDIR})
-  else(INSTALL_PREFIX STREQUAL "")
-	set(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
-  endif(INSTALL_PREFIX STREQUAL "")
-
-  message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
-endif(MINGW)
-
-if(MSVC)
-  set(COMPILER_MSVC 1)
-  set(WFLAGS "/W3 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE")
-endif(MSVC)
-
-if(APPLE)
-  # Hack to deal with Mac OS X 10.6.  NSQuickDrawView is not defined by
-  # NSQuickDrawView.h when compiling in 64-bit mode, and 64-bit mode is the
-  # default when compiling on Snow Leopard.
-  if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL i386)
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch i386")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch i386")
-  endif()
-
-  # The Mac port simply uses too many deprecated things.
-  if(COMPILER_GCC)
-	set(WFLAGS "${WFLAGS} -Wno-deprecated-declarations")
-  endif(COMPILER_GCC)
-endif(APPLE)
-
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
-  set(LINUX 1)
-endif()
-
-if(PSP)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -G0")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -G0 -fno-exceptions -fno-rtti")
-endif(PSP)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WFLAGS} ${WFLAGS_C_ONLY}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WFLAGS}")
