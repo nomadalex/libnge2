@@ -121,7 +121,7 @@ if(PSP)
 endif()
 
 if(WIN32)
-  list(APPEND NGE2_LIBS ${SDLMAIN_LIBRARY} msvcrt)
+  list(APPEND NGE2_LIBS ${SDLMAIN_LIBRARY})
 else()
   list(APPEND NGE2_LIBS g c stdc++)
 endif()
