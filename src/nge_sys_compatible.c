@@ -1,5 +1,6 @@
 #include "nge_sys_compatible.h"
 #include <stdio.h>
+#include <string.h>
 
 static int cpu_type = CPU_TYPE_222MHZ;
 
