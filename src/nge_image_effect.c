@@ -7,6 +7,12 @@
 #include <stdlib.h>
 
 #if defined(WIN32)  || defined(__linux__)
+#if defined(WIN32) // on WIN32, gl need it
+#define WINGDIAPI
+#define APIENTRY WINAPI
+#define WINAPI __stdcall
+#endif
+
 #include <GL/gl.h>
 
 #elif  IPHONEOS
