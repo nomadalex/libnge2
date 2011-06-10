@@ -28,7 +28,6 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.1.0"
 
-#ifndef _MSC_VER
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -38,7 +37,10 @@
 #endif
 
 #ifndef NULL
-#define NULL  (0)
+#ifdef __cplusplus
+#define NULL    0
+#else
+#define NULL    ((void *)0)
 #endif
 #endif
 
