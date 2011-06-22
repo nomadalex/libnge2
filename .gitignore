@@ -1,5 +1,6 @@
 build*/
 temp/
+jni/Android/
 samples/res/
 samples/res.zip
 Win32Depends/
