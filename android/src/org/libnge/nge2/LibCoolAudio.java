@@ -1,3 +1,4 @@
+
 /**
  * @file  LibCoolAudio.java
  * @author Kun Wang <a href="mailto:ifreedom.cn@gmail.com">ifreedom.cn@gmail.com</a>
@@ -20,18 +21,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-package org.libnge;
+package org.libnge.nge2;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+
 import android.util.Log;
 
 public class LibCoolAudio extends Object
 {
+	public LibCoolAudio()
+	{
+	}
+
 	private static final String TAG = "LibCoolAudio";
 	private MediaPlayer mplayer = null;
 	private Object mplayer_lock= new Object();
-	private boolean isPrepared = false;
 	private boolean isEof = false;
 	private boolean isPaused = false;
 	private boolean isSeeking = false;
@@ -39,11 +47,13 @@ public class LibCoolAudio extends Object
 	private int volume = 100;
 
 	public int init() {
+		Log.i(TAG, "libcoolaudio inited\n");
 		try {
 			if(mplayer == null) {
 				mplayer = new MediaPlayer();
 			}
 			if(mplayer == null) return -1;
+			mplayer.reset();
 			mplayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 					public boolean onError(MediaPlayer mp, int what, int extra) {
 						if(mplayer != null)
@@ -58,7 +68,7 @@ public class LibCoolAudio extends Object
 			mplayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					public void onCompletion(MediaPlayer mp) {
 						synchronized(mplayer_lock) {
-							if (times > 0) {
+							if (times > 1) {
 								times--;
 								mplayer.start();
 							}
@@ -67,19 +77,14 @@ public class LibCoolAudio extends Object
 								isEof = true;
 							}
 						}
-						mplayer_lock.notify();
-					}
-				});
-			mplayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-					public void onPrepared(MediaPlayer mp) {
-						isPrepared = true;
-						mplayer_lock.notify();
 					}
 				});
 			mplayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
 					public void onSeekComplete(MediaPlayer mp) {
-						isSeeking = false;
-						mplayer_lock.notify();
+						synchronized(mplayer_lock) {
+							isSeeking = false;
+							mplayer_lock.notify();
+						}
 					}
 				});
 		} catch (Exception e) {
@@ -102,34 +107,36 @@ public class LibCoolAudio extends Object
 
 	public void load(String filename) {
 		try {
-			mplayer.setDataSource(filename);
+			FileInputStream is = new FileInputStream(filename);
+			if(is.available() > 0) {
+				mplayer.reset();
+				mplayer.setDataSource(is.getFD());
+				mplayer.prepare();
 
-			mplayer.prepare();
-			while (!isPrepared)
-				mplayer_lock.wait();
-
-			mplayer.setVolume(100, 100);
+				mplayer.setVolume(100, 100);
+				Log.i(TAG, "ok!" + filename);
+			}
+			else
+				Log.i(TAG, "err!" + filename);
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in init(): " + e.toString());
+			Log.e(TAG, "Exception in load(): " + e.toString());
 		}
 	}
 
 	public void loadBuf(FileDescriptor fd, long offset, long length) {
 		try {
+			mplayer.reset();
 			mplayer.setDataSource(fd, offset, length);
-
 			mplayer.prepare();
-			while (!isPrepared)
-				mplayer_lock.wait();
 
 			mplayer.setVolume(100, 100);
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in init(): " + e.toString());
+			Log.e(TAG, "Exception in loadbuf(): " + e.toString());
 		}
 	}
 
 	public void play(int times_) {
-		times = times;
+		times = times_;
 		isPaused = false;
 		mplayer.start();
 	}
@@ -157,13 +164,15 @@ public class LibCoolAudio extends Object
 	}
 
 	public void rewind() {
-		isSeeking = true;
-		mplayer.seekTo(0);
 		try {
+			isSeeking = true;
+			mplayer.seekTo(0);
 			while (isSeeking)
-				mplayer_lock.wait();
+				synchronized(mplayer_lock) {
+					mplayer_lock.wait();
+				}
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in init(): " + e.toString());
+			Log.e(TAG, "Exception in rewind(): " + e.toString());
 		}
 	}
 
@@ -186,9 +195,11 @@ public class LibCoolAudio extends Object
 		}
 		try {
 			while (isSeeking)
-				mplayer_lock.wait();
+				synchronized(mplayer_lock) {
+					mplayer_lock.wait();
+				}
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in init(): " + e.toString());
+			Log.e(TAG, "Exception in seek(): " + e.toString());
 		}
 	}
 
