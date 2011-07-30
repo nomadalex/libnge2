@@ -1,14 +1,10 @@
 #include "nge_debug_log.h"
 #include "nge_io_dir.h"
-#ifdef WIN32
-#include <windows.h>
-#endif
 #include <string.h>
 
-//////////////////////////////////////////////////////////////////////////
-//for win32
-//////////////////////////////////////////////////////////////////////////
 #ifdef WIN32
+#include <windows.h>
+
 static HANDLE st_FindFirstFile(const char* path)
 {
 	//win32
@@ -100,11 +96,8 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 	return ret_code;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//for psp and linux
-//////////////////////////////////////////////////////////////////////////
-#elif defined _PSP || defined __linux__
-#ifdef __linux__
+#elif defined _PSP || defined __linux__ || defined ANDROID
+#if defined __linux__ || defined ANDROID
 #include <unistd.h>
 #endif
 #include <dirent.h>
@@ -112,74 +105,80 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 
 static void   dir_scan(const char* path,const char* file,file_travel_cb callback,void* user_data)
 {
-	   struct   stat   s;
-	   DIR           *dir;
-	   struct   dirent   *dt;
-	   char   dirname[256];
-	   dir_desc_t  dir_entry;
-	   memset(dirname,   0,   256);
-	  strncpy(dirname,path,256);
+	struct   stat   s;
+	DIR           *dir;
+	struct   dirent   *dt;
+	char   dirname[256];
+	dir_desc_t  dir_entry;
+	memset(dirname,   0,   256);
+	strncpy(dirname,path,256);
 
-	  if(stat(file,   &s)   <   0){
-			   printf("stat   error!\n");
-			   return;
-	  }
-	 if(S_ISDIR(s.st_mode)){
-			strcpy(dirname+strlen(dirname),   file);
-			strcpy(dirname+strlen(dirname),   "/");
-			if((dir   =   opendir(file))   ==   NULL){
-				   printf("opendir   %s   error!\n",file);
-				   return;
+	if(stat(file,   &s)   <   0){
+		printf("stat   error!\n");
+		return;
+	}
+	if(S_ISDIR(s.st_mode)){
+		strcpy(dirname+strlen(dirname),   file);
+		strcpy(dirname+strlen(dirname),   "/");
+		if((dir   =   opendir(file))   ==   NULL){
+			printf("opendir   %s   error!\n",file);
+			return;
+		}
+		if(chdir(file)   <   0)   {
+			printf("chdir   error!\n");
+			return;
+		}
+		while((dt   =   readdir(dir))   !=   NULL){
+			if(dt->d_name[0]   ==   '.'){
+				continue;
 			}
-			if(chdir(file)   <   0)   {
-				   printf("chdir   error!\n");
-				   return;
-			}
-			while((dt   =   readdir(dir))   !=   NULL){
-				   if(dt->d_name[0]   ==   '.'){
-							   continue;
-				   }
-				  dir_scan(dirname,dt->d_name, callback,user_data);
-		   }
-		  if(chdir("..")   <   0){
-				   printf("chdir   error!\n");
-				   return;
-		  }
-		  closedir(dir);
-		  memset(&dir_entry,0,sizeof(dir_desc_t));
-	  sprintf(dir_entry.name,"%s",dirname);
-	  if(dir_entry.name[strlen(dir_entry.name)-1]=='/'){
-	  	dir_entry.name[strlen(dir_entry.name)-1]= 0;
-			 if((strcmp(dir_entry.name,file)==0)&&(strlen(dir_entry.name)==strlen(file))){
+			dir_scan(dirname,dt->d_name, callback,user_data);
+		}
+		if(chdir("..")   <   0){
+			printf("chdir   error!\n");
+			return;
+		}
+		closedir(dir);
+		memset(&dir_entry,0,sizeof(dir_desc_t));
+		sprintf(dir_entry.name,"%s",dirname);
+		if(dir_entry.name[strlen(dir_entry.name)-1]=='/'){
+			dir_entry.name[strlen(dir_entry.name)-1]= 0;
+			if((strcmp(dir_entry.name,file)==0)&&(strlen(dir_entry.name)==strlen(file))){
 				//current dir ommited
 				return;
-	  		 }
-			 dir_entry.flag = FIO_F_DIR;
-				 callback(&dir_entry,user_data);
+			}
+			dir_entry.flag = FIO_F_DIR;
+			callback(&dir_entry,user_data);
 
-	}
+		}
 
-   }else{
-		  memset(&dir_entry,0,sizeof(dir_desc_t));
-	  sprintf(dir_entry.name,"%s%s",dirname,file);
-	  dir_entry.flag = FIO_F_FILE;
-		  callback(&dir_entry,user_data);
+	}else{
+		memset(&dir_entry,0,sizeof(dir_desc_t));
+		sprintf(dir_entry.name,"%s%s",dirname,file);
+		dir_entry.flag = FIO_F_FILE;
+		callback(&dir_entry,user_data);
 	}
 }
 
 int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data)
 {
-		char workdir[MAX_NAME]={0};
-		char backdir[MAX_NAME]={0};
-		getcwd(backdir,MAX_NAME);
-		if(directory==NULL)
-				return 0;
-		strncpy(workdir,directory,MAX_NAME);
-		if(workdir[strlen(workdir)-1] == '/')
-				workdir[strlen(workdir)-1] = 0;
-		dir_scan("",workdir,callback,user_data);
-		chdir(backdir);
-		return 1;
+	char workdir[MAX_NAME]={0};
+	char backdir[MAX_NAME]={0};
+	getcwd(backdir,MAX_NAME);
+	if(directory==NULL)
+		return 0;
+	strncpy(workdir,directory,MAX_NAME);
+	if(workdir[strlen(workdir)-1] == '/')
+		workdir[strlen(workdir)-1] = 0;
+	dir_scan("",workdir,callback,user_data);
+	chdir(backdir);
+	return 1;
+}
+#else
+int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data)
+{
+	nge_log("%s not support!\n");
+	return 0;
 }
 
 #endif
