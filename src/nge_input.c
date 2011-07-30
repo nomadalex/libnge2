@@ -1,6 +1,8 @@
+#include "nge_debug_log.h"
 #include "nge_input.h"
 #include "nge_common.h"
 #include <stdlib.h>
+
 #if defined(_PSP)
 #include <pspkernel.h>
 #include <pspdebug.h>
@@ -14,67 +16,14 @@ extern int cbid;
 
 #endif
 
+static int game_quit = 0;
+
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 static void btn_down_default(int keycode) { }
 static void btn_up_default(int keycode) { }
 
 static ButtonProc btn_down = btn_down_default;
 static ButtonProc btn_up   = btn_up_default;
-
-static int game_quit = 0;
-static int need_swapxy = 0;
-
-void SetSwapXY(int flag)
-{
-	if(flag)
-		need_swapxy = 1;
-}
-
-#if defined(WIN32) || defined(__linux__)
-static int touched = 0;
-static int touch_mode = 0;
-
-void EmulateTouchMove(int flag)
-{
-	if(flag == 1)
-		touch_mode  = 1;
-	else
-		touch_mode  = 0;
-}
-
-static MouseMoveProc mouse_move_proc = NULL;
-static MouseButtonProc mouse_btn_proc = NULL;
-
-void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
-{
-	if(mouse_move != NULL)
-		mouse_move_proc = mouse_move;
-	if(mouse_btn != NULL)
-		mouse_btn_proc = mouse_btn;
-}
-#endif
-
-#if defined(IPHONEOS) || defined(WIN32) || defined(__linux__)
-static TouchMoveProc touch_move_proc = NULL;
-static TouchButtonProc touch_button_proc = NULL;
-
-void InitTouch(TouchButtonProc touch_button,TouchMoveProc touch_move)
-{
-	if(touch_button != NULL)
-		touch_button_proc = touch_button;
-	if(touch_move != NULL)
-		touch_move_proc = touch_move;
-}
-#endif
-
-#if defined(_PSP) || defined(__linux__) || defined(WIN32)
-static AnalogProc analog_proc = NULL;
-
-void InitAnalog(AnalogProc analogproc)
-{
-	if(analogproc!=NULL)
-		analog_proc = analogproc;
-}
-#endif
 
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {
@@ -92,16 +41,60 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 		btn_up = upproc;
 	game_quit = doneflag;
 }
+#endif
 
-#if defined(WIN32) || defined (__linux__)
+static int need_swapxy = 0;
+
+void SetSwapXY(int flag)
+{
+	if(flag)
+		need_swapxy = 1;
+}
+
+#ifdef NGE_INPUT_MOUSE_SUPPORT
+#if defined WIN32 || defined __linux__
+static int touched = 0;
+static int touch_mode = 0;
+
+void EmulateTouchMove(int flag)
+{
+	if(flag == 1)
+		touch_mode  = 1;
+	else
+		touch_mode  = 0;
+}
+#endif
+
+static MouseMoveProc mouse_move_proc = NULL;
+static MouseButtonProc mouse_btn_proc = NULL;
+
+void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
+{
+	if(mouse_move != NULL)
+		mouse_move_proc = mouse_move;
+	if(mouse_btn != NULL)
+		mouse_btn_proc = mouse_btn;
+}
+#endif
+
+#ifdef NGE_INPUT_ANALOG_SUPPORT
+static AnalogProc analog_proc = NULL;
+
+void InitAnalog(AnalogProc analogproc)
+{
+	if(analogproc!=NULL)
+		analog_proc = analogproc;
+}
+
 //Ä£ÄâÒ¡¸Ë
+#if defined(WIN32) || defined (__linux__)
 #define ANALOG_LEFT  0
 #define ANALOG_RIGHT 1
 #define ANALOG_UP    2
 #define ANALOG_DOWN  3
 static char btn_analog[4] = {0};
 
-uint8 GetAnalogX()
+static uint8 GetAnalogX()
 {
 	if (btn_analog[ANALOG_LEFT]) return 0;
 	if (btn_analog[ANALOG_RIGHT]) return 0xff;
@@ -109,8 +102,7 @@ uint8 GetAnalogX()
 	return 0x80;
 }
 
-
-uint8 GetAnalogY()
+static uint8 GetAnalogY()
 {
 	if (btn_analog[ANALOG_UP]) return 0;
 	if (btn_analog[ANALOG_DOWN]) return 0xff;
@@ -124,42 +116,43 @@ static int SetAnalog(int key,char flag)
 	switch(key)
 	{
 #if defined(WIN32)
-		case SDLK_UP:
+	case SDLK_UP:
 #elif defined(__linux__)
-		case XK_Up:
+	case XK_Up:
 #endif
-			btn_analog[ANALOG_UP] = flag;
-			ret = 1;
-			break;
+		btn_analog[ANALOG_UP] = flag;
+		ret = 1;
+		break;
 #if defined(WIN32)
-		case SDLK_DOWN:
+	case SDLK_DOWN:
 #elif defined(__linux__)
-		case XK_Down:
+	case XK_Down:
 #endif
-			btn_analog[ANALOG_DOWN] = flag;
-			ret = 1;
-			break;
+		btn_analog[ANALOG_DOWN] = flag;
+		ret = 1;
+		break;
 #if defined(WIN32)
-		case SDLK_LEFT:
+	case SDLK_LEFT:
 #elif defined(__linux__)
-		case XK_Left:
+	case XK_Left:
 #endif
-			btn_analog[ANALOG_LEFT] = flag;
-			ret = 1;
-			break;
+		btn_analog[ANALOG_LEFT] = flag;
+		ret = 1;
+		break;
 #if defined(WIN32)
-		case SDLK_RIGHT:
+	case SDLK_RIGHT:
 #elif defined(__linux__)
-		case XK_Right:
+	case XK_Right:
 #endif
-			btn_analog[ANALOG_RIGHT] = flag;
-			ret = 1;
-			break;
-		default:
-			break;
+		btn_analog[ANALOG_RIGHT] = flag;
+		ret = 1;
+		break;
+	default:
+		break;
 	}
 	return ret;
 }
+#endif
 #endif
 
 #if defined(__linux__)
@@ -193,7 +186,7 @@ _DEF_INPUT_PROC(mouse_move)
 
 #define BUTTON_PROC(type)										\
 	int button;													\
-	if (event->xbutton.button == Button1)							\
+	if (event->xbutton.button == Button1)						\
 		button = MOUSE_LBUTTON_##type;							\
 	else if (event->xbutton.button == Button2)					\
 		button = MOUSE_MBUTTON_##type;							\
@@ -396,7 +389,6 @@ void InputProc()
 				nge_keymap[i].held  = 0;;
 			}
 			else{
-				//btn_up(nge_keymap[i].mapcode);
 				if(nge_keymap[i].held==0){
 					nge_keymap[i].held = 1;
 					nge_keymap[i].press =1;

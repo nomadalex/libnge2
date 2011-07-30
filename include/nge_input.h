@@ -23,7 +23,9 @@
 #ifndef _NGE_INPUT_H
 #define _NGE_INPUT_H
 
-//input proc define
+#if defined _PSP || defined __linux__ || defined WIN32
+#define NGE_INPUT_BUTTON_SUPPORT
+#define NGE_INPUT_ANALOG_SUPPORT
 #if defined WIN32
 #include "SDL.h"
 #define PSP_BUTTON_UP            SDLK_w
@@ -73,12 +75,12 @@
 #define PSP_BUTTON_HOLD          13
 #endif
 
-#if defined _PSP || defined __linux__ || defined WIN32
 typedef void (*ButtonProc)(int key);
 typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 #endif
 
 #ifndef _PSP
+#define NGE_INPUT_MOUSE_SUPPORT
 // 在iphone和android上用触摸屏模拟鼠标
 // 手指离开为MOUSE_LBUTTON_UP，落下为MOUSE_LBUTTON_DOWN，在屏上移动为MouseMove
 typedef void (*MouseMoveProc)(int x,int y);
@@ -86,6 +88,7 @@ typedef void (*MouseButtonProc)(int type,int x,int y);
 #define MOUSE_LBUTTON_DOWN 1
 #define MOUSE_LBUTTON_UP   2
 #if defined WIN32 || defined __linux__
+#define NGE_INPUT_MOUSE_FULL_SUPPORT
 #define MOUSE_RBUTTON_DOWN 3
 #define MOUSE_RBUTTON_UP   4
 #define MOUSE_MBUTTON_DOWN 5
@@ -97,7 +100,7 @@ typedef void (*MouseButtonProc)(int type,int x,int y);
 extern "C" {
 #endif
 
-#if defined(_PSP) || defined(__linux__) || defined(WIN32)
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 /**
  *初始化输入系统
  *@param ButtonProc downproc,按键按下的处理消息函数
@@ -106,7 +109,9 @@ extern "C" {
  *@return 无
  */
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
+#endif
 
+#ifdef NGE_INPUT_ANALOG_SUPPORT
 /**
  *初始化摇杆
  *@param AnalogProc,摇杆的回调函数
@@ -115,7 +120,7 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
 void InitAnalog(AnalogProc analogproc);
 #endif
 
-#ifndef _PSP
+#ifdef NGE_INPUT_MOUSE_SUPPORT
 /**
  *初始化mouse-touch
  */
@@ -124,11 +129,14 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 
 void SetSwapXY(int flag);
 
+#if !defined IPHONES || !defined ANDROID
+#define NGE_INPUT_HAS_PROC
 /**
  *输入响应,具体使用请看例子test/input_test.cpp
  *@return 无
  */
 void InputProc();
+#endif
 
 /**
  *退出输入系统
