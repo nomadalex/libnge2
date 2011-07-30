@@ -2,8 +2,6 @@
 #ifndef	__NGE_DEBUG_LOG_H__
 #define	__NGE_DEBUG_LOG_H__
 
-#include "nge_common.h"
-
 #ifdef MMGR
 #include "nge_mmgr.h"
 #endif
