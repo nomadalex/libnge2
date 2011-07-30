@@ -4,10 +4,6 @@
 #include "nge_common.h"
 #include "nge_image.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 //encoding flags
 #define ENCODING_ASCII   0
 #define ENCODING_UNICODE 1
@@ -34,67 +30,67 @@ enum{
 
 typedef struct {
 	/**
-	* Maximum advance width of any character.
-	*/
+	 * Maximum advance width of any character.
+	 */
 	int maxwidth;
 	/**
-	* Height of "most characters" in the font. This does not include any
-	* leading (blank space between lines of text).
-	* Always equal to (baseline+descent).
-	*/
+	 * Height of "most characters" in the font. This does not include any
+	 * leading (blank space between lines of text).
+	 * Always equal to (baseline+descent).
+	 */
 	int height;
 	/**
-	* The ascent (height above the baseline) of "most characters" in
-	* the font.
-	*
-	* Note: This member variable should be called "ascent", to be
-	* consistent with FreeType 2, and also to be internally consistent
-	* with the "descent" member.  It has not been renamed because that
-	* would break backwards compatibility.  FIXME
-	*/
+	 * The ascent (height above the baseline) of "most characters" in
+	 * the font.
+	 *
+	 * Note: This member variable should be called "ascent", to be
+	 * consistent with FreeType 2, and also to be internally consistent
+	 * with the "descent" member.  It has not been renamed because that
+	 * would break backwards compatibility.  FIXME
+	 */
 	int baseline;
 	/**
-	* The descent (height below the baseline) of "most characters" in
-	* the font.
-	*
-	* Should be a POSITIVE number.
-	*/
+	 * The descent (height below the baseline) of "most characters" in
+	 * the font.
+	 *
+	 * Should be a POSITIVE number.
+	 */
 	int descent;
 	/**
-	* Maximum height of any character above the baseline.
-	*/
+	 * Maximum height of any character above the baseline.
+	 */
 	int maxascent;
 	/**
-	* Maximum height of any character below the baseline.
-	* Should be a POSITIVE number.
-	*/
+	 * Maximum height of any character below the baseline.
+	 * Should be a POSITIVE number.
+	 */
 	int maxdescent;
 	/**
-	* The distance between the baselines of two consecutive lines of text.
-	* This is usually height plus some font-specific "leading" value.
-	*/
+	 * The distance between the baselines of two consecutive lines of text.
+	 * This is usually height plus some font-specific "leading" value.
+	 */
 	int linespacing;
 	/**
-	* First character in the font.
-	*/
+	 * First character in the font.
+	 */
 	int firstchar;
 	/**
-	* Last character in the font.
-	*/
+	 * Last character in the font.
+	 */
 	int lastchar;
 	/**
-	* True (nonzero) if font is fixed width.  In that case, maxwidth
-	* gives the width for every character in the font.
-	*/
+	 * True (nonzero) if font is fixed width.  In that case, maxwidth
+	 * gives the width for every character in the font.
+	 */
 	BOOL fixed;
 	/**
-	* Table of character advance widths for characters 0-255.
-	* Note that fonts can contain characters with codes >255 - in that
-	* case this table contains the advance widths for some but not all
-	* characters.  Also note that if the font contains kerning
-	* information, the advance width of the string "AV" may differ from
-	* the sum of the advance widths for the characters 'A' and 'V'.
-	*/
+	 * Table of character advance widths for characters 0-255.
+	 * Note that fonts can contain characters with codes >255 - in that
+	 * case this table contains the advance widths for some but not all
+	 * characters.  Also note that if the font contains kerning
+	 * information, the advance width of the string "AV" may differ from
+	 * the sum of the advance widths for the characters 'A' and 'V'.
+	 */
 	uint8 widths[256];
 } FontInfo, *PFontInfo;
 
@@ -123,6 +119,10 @@ typedef struct _fontproc{
 	void    (*SetFlags)(PFont pfont,int flags);
 	void    (*SetShadowColor)(PFont pfont, uint32 color_fg,uint32 color_bg,uint32 color_sh);
 }FontProcs,*PFontProcs;
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 /**
  *创建一个GBK(hzk)font,默认为GBK的点阵

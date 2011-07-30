@@ -10,7 +10,7 @@
 #include <pspthreadman.h>
 #define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
 
-#elif defined IPHONEOS || defined(__linux__)
+#elif defined IPHONEOS || defined(__linux__) || defined ANDRIOD
 #include <unistd.h>
 #define nge_sleep(tick) usleep(tick)
 #endif
@@ -19,9 +19,13 @@
 extern "C"{
 #endif
 
-//生成一个min---max的浮点数
+/**
+ *生成一个min---max的浮点数
+ */
 float rand_float(float min, float max);
-//生成一个(min,max)的整数
+/**
+ *生成一个(min,max)的整数
+ */
 int rand_int(int min, int max);
 
 /**

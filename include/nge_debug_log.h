@@ -13,7 +13,6 @@
  */
 #ifndef NDEBUG
 #if defined _PSP
-#include <stdio.h>
 #define printf pspDebugScreenPrintf
 #endif
 

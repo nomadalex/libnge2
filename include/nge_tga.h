@@ -26,10 +26,6 @@
 #include "nge_common.h"
 #include "nge_image.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ImageType Codes
 #define TGA_TYPE_MAPPED		1
 #define TGA_TYPE_COLOR		2
@@ -38,12 +34,11 @@ extern "C" {
 #define TGA_TYPE_COLOR_RLE	10
 #define TGA_TYPE_GRAY_RLE	11
 
-
 /* Image descriptor:
-     3-0: attribute (alpha) bpp
-     4:   left-to-right ordering
-     5:   top-to-bottom ordering
-     7-6: zero
+   3-0: attribute (alpha) bpp
+   4:   left-to-right ordering
+   5:   top-to-bottom ordering
+   7-6: zero
 */
 // Image Description Bitmasks
 #define TGA_DESC_ABITS		0x0f			// Alpha Bits
@@ -66,6 +61,10 @@ typedef struct {
     uint8	ImageDescrip;
 } TGAFILEHEADER;
 #pragma pack(pop)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  *加载tga图片,从文件加载

@@ -56,7 +56,7 @@
 #define PSP_BUTTON_START         XK_b
 #define PSP_BUTTON_HOME          XK_n
 #define PSP_BUTTON_HOLD          XK_m
-#elif defined _PSP || defined IPHONEOS
+#elif defined _PSP
 #define PSP_BUTTON_UP            8
 #define PSP_BUTTON_DOWN          6
 #define PSP_BUTTON_LEFT          7
@@ -73,19 +73,31 @@
 #define PSP_BUTTON_HOLD          13
 #endif
 
+#if defined _PSP || defined __linux__ || defined WIN32
+typedef void (*ButtonProc)(int key);
+typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
+#endif
+
+#ifndef _PSP
+// 在iphone和android上用触摸屏模拟鼠标
+// 手指离开为MOUSE_LBUTTON_UP，落下为MOUSE_LBUTTON_DOWN，在屏上移动为MouseMove
+typedef void (*MouseMoveProc)(int x,int y);
+typedef void (*MouseButtonProc)(int type,int x,int y);
 #define MOUSE_LBUTTON_DOWN 1
 #define MOUSE_LBUTTON_UP   2
+#if defined WIN32 || defined __linux__
 #define MOUSE_RBUTTON_DOWN 3
 #define MOUSE_RBUTTON_UP   4
 #define MOUSE_MBUTTON_DOWN 5
 #define MOUSE_MBUTTON_UP   6
+#endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (*ButtonProc)(int key);
-
+#if defined(_PSP) || defined(__linux__) || defined(WIN32)
 /**
  *初始化输入系统
  *@param ButtonProc downproc,按键按下的处理消息函数
@@ -95,8 +107,6 @@ typedef void (*ButtonProc)(int key);
  */
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
 
-#if defined(_PSP) || defined(__linux__) || defined(WIN32)
-typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 /**
  *初始化摇杆
  *@param AnalogProc,摇杆的回调函数
@@ -105,24 +115,11 @@ typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 void InitAnalog(AnalogProc analogproc);
 #endif
 
-#if defined(__linux__) || defined(WIN32)
-typedef void (*MouseMoveProc)(int x,int y);
-typedef void (*MouseButtonProc)(int type,int x,int y);
-
+#ifndef _PSP
 /**
  *初始化mouse-touch
  */
 void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
-#endif
-
-#if defined(__linux__) || defined(WIN32) || defined(IPHONEOS)
-typedef void (*TouchMoveProc)(int which,int x,int y,int rx,int ry);
-typedef void (*TouchButtonProc)(int which,int type,int x,int y);
-
-void InitTouch(TouchButtonProc touchbuttonproc,TouchMoveProc touchmoveproc);
-#if defined(__linux__) || defined(WIN32)
-void EmulateTouchMove(int flag);
-#endif
 #endif
 
 void SetSwapXY(int flag);

@@ -2,15 +2,7 @@
 #define IO_FILE_H_
 
 //PSP与win32文件读写统一接口
-#if defined WIN32 || defined IPHONEOS || defined(__linux__)
-#define IO_RDONLY 0
-#define IO_WRONLY 1
-#define IO_APPEND 2
-
-#define IO_SEEK_CUR SEEK_CUR
-#define IO_SEEK_END SEEK_END
-#define IO_SEEK_SET SEEK_SET
-#else // psp
+#ifdef _PSP
 #include <pspiofilemgr.h>
 #define IO_RDONLY PSP_O_RDONLY
 #define IO_WRONLY PSP_O_RDWR
@@ -19,6 +11,14 @@
 #define IO_SEEK_CUR PSP_SEEK_CUR
 #define IO_SEEK_END PSP_SEEK_END
 #define IO_SEEK_SET PSP_SEEK_SET
+#else
+#define IO_RDONLY 0
+#define IO_WRONLY 1
+#define IO_APPEND 2
+
+#define IO_SEEK_CUR SEEK_CUR
+#define IO_SEEK_END SEEK_END
+#define IO_SEEK_SET SEEK_SET
 #endif
 
 #ifdef __cplusplus

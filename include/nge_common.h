@@ -44,12 +44,17 @@
 #endif
 #endif
 
-typedef unsigned int uint32;
-typedef int sint32;
-typedef unsigned short uint16;
-typedef short sint16;
-typedef unsigned char uint8;
-typedef char sint8;
+#ifdef __cplusplus
+#include <cstdint>
+#else
+#include <stdint.h>
+#endif
+typedef uint32_t uint32;
+typedef int32_t sint32;
+typedef uint16_t uint16;
+typedef int16_t sint16;
+typedef uint8_t uint8;
+typedef int8_t sint8;
 
 #ifdef _MSC_VER
 typedef int BOOL;

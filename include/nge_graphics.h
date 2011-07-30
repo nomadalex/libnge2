@@ -10,16 +10,21 @@
 #define SCREEN_WIDTH_IPHONE  320
 #define SCREEN_HEIGHT_IPHONE 480
 
+#define SCREEN_WIDTH_ANDROID  240
+#define SCREEN_HEIGHT_ANDROID 320
+
 #ifdef IPHONEOS
 #define	SCREEN_WIDTH  SCREEN_WIDTH_IPHONE
 #define	SCREEN_HEIGHT SCREEN_HEIGHT_IPHONE
-#else
+#elif defined(_PSP)
 #define	SCREEN_WIDTH  SCREEN_WIDTH_PSP
 #define	SCREEN_HEIGHT SCREEN_HEIGHT_PSP
+#elif defined(ANDROID)
+#define	SCREEN_WIDTH  SCREEN_WIDTH_ANDROID
+#define	SCREEN_HEIGHT SCREEN_HEIGHT_ANDROID
 #endif
+
 #define SCREEN_BPP    32
-#define TEXTRUE_MAX_WIDTH 512
-#define TEXTRUE_MAX_HEIGHT 512
 #define DEFAULT_FPS 60
 
 //NGE_TRANS_x
@@ -48,7 +53,7 @@ typedef struct{
 	float left;
 	float right;
 	float bottom;
-}rectf;
+} rectf;
 
 #ifdef __cplusplus
 extern "C"{
@@ -340,12 +345,7 @@ void SetTexBlend(int src_blend, int des_blend);
  */
 void ResetTexBlend();
 
-/*fix me 画大于512*512的图*/
-/*
-void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask);
-void DrawLargeImage(image_p tex,float sx,float sy,float sw,float sh, float dx, float dy, float dw, float dh);
-*/
-/*
+/**
  * 在屏幕上画一个点的函数
  *@param float x,横坐标
  *@param float y,纵坐标
@@ -365,6 +365,7 @@ void PutPix(float x,float y ,int color,int dtype);
  *@return
  */
 void DrawCircle(float x, float y, float radius, int color,int dtype);
+
 /**
  * 画实心圆函数
  *@param float x,圆心横坐标
@@ -375,6 +376,7 @@ void DrawCircle(float x, float y, float radius, int color,int dtype);
  *@return
  */
 void FillCircle(float x, float y, float radius, int color,int dtype);
+
 /**
  * 画椭圆线框函数
  *@param float x,圆心横坐标
@@ -386,6 +388,7 @@ void FillCircle(float x, float y, float radius, int color,int dtype);
  *@return
  */
 void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
+
 /**
  * 画实心椭圆函数
  *@param float x,圆心横坐标
@@ -397,6 +400,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@return
  */
 void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
+
 /**
  * 画任意多边形线框函数
  * 注意顶点顺序是顺时针方向
@@ -408,6 +412,7 @@ void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@return
  */
 void DrawPolygon(float* x, float* y, int count, int color,int dtype);
+
 /**
  * 画任意实心多边形函数
  * 注意顶点顺序是顺时针方向
@@ -419,6 +424,7 @@ void DrawPolygon(float* x, float* y, int count, int color,int dtype);
  *@return
  */
 void FillPolygon(float* x, float* y, int count, int color,int dtype);
+
 /**
  * 画渐进颜色任意实心多边形函数
  * 注意顶点顺序是顺时针方向
@@ -430,15 +436,13 @@ void FillPolygon(float* x, float* y, int count, int color,int dtype);
  *@return
  */
 void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
+
 /**
  *设置屏幕类型0通常1全屏,2翻转横屏(ip)
  */
 void SetScreenType(int type);
 
-
 #ifdef __cplusplus
 }
 #endif
-
-
 #endif
