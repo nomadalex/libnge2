@@ -102,13 +102,13 @@ static void TM_unpause(nge_timer* timer)
 static u64 mTickFrequency = 0;
 #elif defined(WIN32)
 #include "SDL.h"
-#elif defined(__linux__)
+#elif defined(__linux__) || defined ANDROID || defined IPHONEOS
 #include <sys/time.h>
 #endif
 
 uint32 nge_get_tick()
 {
-#if defined(__linux__)
+#elif defined(__linux__) || defined ANDROID || defined IPHONEOS
 	static struct timeval start;
 	static uint8 uninited = 1;
 	uint32 ticks;
