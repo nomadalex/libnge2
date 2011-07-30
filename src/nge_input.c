@@ -52,19 +52,6 @@ void SetSwapXY(int flag)
 }
 
 #ifdef NGE_INPUT_MOUSE_SUPPORT
-#if defined WIN32 || defined __linux__
-static int touched = 0;
-static int touch_mode = 0;
-
-void EmulateTouchMove(int flag)
-{
-	if(flag == 1)
-		touch_mode  = 1;
-	else
-		touch_mode  = 0;
-}
-#endif
-
 static MouseMoveProc mouse_move_proc = NULL;
 static MouseButtonProc mouse_btn_proc = NULL;
 
@@ -194,40 +181,14 @@ _DEF_INPUT_PROC(mouse_move)
 		button = MOUSE_RBUTTON_##type;							\
 	mouse_btn_proc(button, event->xbutton.x, event->xbutton.y)
 
-static int touch_x, touch_y;
-
 _DEF_INPUT_PROC(mouse_down)
 {
 	BUTTON_PROC(DOWN);
-	if (touch_mode) {
-		if (button == MOUSE_LBUTTON_DOWN) {
-			touched = TRUE;
-			touch_x = event->xbutton.x;
-			touch_y = event->xbutton.y;
-		}
-		if (button == MOUSE_RBUTTON_DOWN) {
-			if (touch_button_proc)
-				touch_button_proc(button, button, event->xbutton.x, event->xbutton.y);
-		}
-	}
 }
 
 _DEF_INPUT_PROC(mouse_up)
 {
 	BUTTON_PROC(UP);
-	if (touch_mode) {
-		if (button == MOUSE_LBUTTON_UP) {
-			if (touched) {
-				touched = FALSE;
-				if (touch_move_proc)
-					touch_move_proc(button, touch_x, touch_y, event->xbutton.x, event->xbutton.y);
-			}
-		}
-		if (button == MOUSE_RBUTTON_DOWN) {
-			if (touch_button_proc)
-				touch_button_proc(button, button, event->xbutton.x, event->xbutton.y);
-		}
-	}
 }
 #elif defined(_PSP)
 typedef struct {
@@ -323,7 +284,6 @@ void InputProc()
 
 			if(event.button.button == SDL_BUTTON_LEFT){
 				mouse_btn_type = MOUSE_LBUTTON_DOWN;
-				touched = 1;
 			}
 			else if(event.button.button == SDL_BUTTON_RIGHT)
 				mouse_btn_type = MOUSE_RBUTTON_DOWN;
@@ -340,7 +300,6 @@ void InputProc()
 
 			if(event.button.button == SDL_BUTTON_LEFT){
 				mouse_btn_type = MOUSE_LBUTTON_UP;
-				touched = 0;
 			}
 			else if(event.button.button == SDL_BUTTON_RIGHT)
 				mouse_btn_type = MOUSE_RBUTTON_UP;
