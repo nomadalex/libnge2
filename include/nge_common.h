@@ -44,11 +44,7 @@
 #endif
 #endif
 
-#ifdef __cplusplus
-#include <cstdint>
-#else
 #include <stdint.h>
-#endif
 typedef uint32_t uint32;
 typedef int32_t sint32;
 typedef uint16_t uint16;
