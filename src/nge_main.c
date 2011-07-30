@@ -1,3 +1,4 @@
+#include "nge_debug_log.h"
 #include "nge_main.h"
 #include "nge_graphics.h"
 #include "nge_input.h" // SDL.h is in it

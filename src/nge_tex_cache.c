@@ -1,8 +1,9 @@
+#include "nge_debug_log.h"
+#include "nge_tex_cache.h"
+#include "nge_rbtree.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "nge_tex_cache.h"
-#include "nge_rbtree.h"
 
 typedef struct tag_tex_node{
 	int texid;

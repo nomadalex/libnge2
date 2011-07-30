@@ -1,8 +1,8 @@
+#include "nge_debug_log.h"
+#include "nge_io_dir.h"
 #ifdef WIN32
 #include <windows.h>
 #endif
-#include "nge_io_dir.h"
-#include "nge_debug_log.h"
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////////

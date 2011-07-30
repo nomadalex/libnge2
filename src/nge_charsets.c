@@ -7,6 +7,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+#include "nge_debug_log.h"
 #include "nge_charsets.h"
 #include <stdlib.h>
 #include <string.h>

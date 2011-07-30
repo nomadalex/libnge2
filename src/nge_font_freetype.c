@@ -1,3 +1,4 @@
+#include "nge_debug_log.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_TRIGONOMETRY_H

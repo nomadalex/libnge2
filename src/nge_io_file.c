@@ -1,3 +1,4 @@
+#include "nge_debug_log.h"
 #include "nge_io_file.h"
 #include <stdio.h>
 #include <stdlib.h>
