@@ -1,5 +1,5 @@
+#include "nge_debug_log.h"
 #include "nge_image_effect.h"
-#include "nge_image.h"
 #include "nge_graphics.h"
 #include "nge_misc.h"
 #include <string.h>
