@@ -78,53 +78,45 @@ int  tex_cache_add(int i,int texid)
 	return 1;
 }
 
-
 int  tex_cache_getid(int imgid,int* cacheid)
 {
 	KeyType key = imgid;
-    RbtStatus status;
-    NodeType *p;
-	ValType val;
+	RbtStatus status;
+	NodeType *p;
 	int ret = 0;
-	//static int hit = 0;
-	//static int total = 0;
-
-	//total++;
 
 	if ((p = rbtFind(rb,key)) != NULL) {
 		*cacheid = ((tex_node_p)(p->val.node))->texid;
 		ret = 1;
-		//hit++;
-		//printf("%.1f%% hit cache %d!\n",hit*1.0f*100/total,hit);
 	} else {
+		ValType val;
 		val.stuff = imgid;
 		val.node  = get_free_node();
 		key = imgid;
 		status = rbtInsert(rb,key, val);
-		if (status) 
+		if (status)
 			printf("fail: status = %d\n", status);
 		*cacheid  = ((tex_node_p)(val.node))->texid;
-    }
-	
+	}
+
 	return ret;
 }
 
 int  tex_cache_free(int imgid)
 {
 	KeyType key = imgid;
-    NodeType *p;
+	NodeType *p;
 	tex_node_p tex_node;
-		
+
 	if ((p = rbtFind(rb,key)) != NULL) {
 		tex_node = (tex_node_p)(p->val.node);
 		tex_node->next =  free_tex_list;
 		free_tex_list = tex_node;
 		rbtErase(rb,p);
 		return 1;
-	} 
+	}
 	return 0;
 }
-
 
 void tex_cache_fini()
 {
