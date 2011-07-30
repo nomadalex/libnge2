@@ -19,6 +19,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include "nge_debug_log.h"
 #include "nge_graphics.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
@@ -28,6 +29,7 @@
 #include <stdlib.h>
 
 #if defined WIN32 || defined __linux__
+
 #if defined(WIN32) // on WIN32, gl need it
 #define WINGDIAPI
 #define APIENTRY WINAPI
@@ -44,9 +46,15 @@
 #include <SDL.h>
 #endif
 
-#elif defined IPHONEOS
+#elif defined IPHONEOS || defined ANDROID
+
+#ifdef IPHONEOS
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
+#else
+#include <GLES/gl.h>
+#endif
+
 #define glOrtho glOrthof
 #endif
 
@@ -73,12 +81,6 @@ static screen_context_t nge_screen = {
 	SCREEN_BPP,
 	0,
 };
-
-#if defined(__linux__)
-Display *g_dpy;
-Window g_win;
-GLXContext g_ctx;
-#endif
 
 typedef struct
 {
@@ -190,6 +192,8 @@ char* GetVersion()
 	static char version[] = {
 #ifdef IPHONEOS
 		"nge2 iphone opengles driver v1.0"
+#elif defined ANDROID
+		"nge2 android opengles driver v1.0"
 #else
 		"nge2 driver v2.0"
 #endif
@@ -253,6 +257,9 @@ void ResetClip()
 }
 
 #if defined(__linux__)
+Display *g_dpy;
+Window g_win;
+GLXContext g_ctx;
 static void
 makeWindow(const char *name, int x, int y, int width, int height)
 {
@@ -311,6 +318,17 @@ makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
+void reset_cache(void)
+{
+	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+		tex_cache_add(i,m_texcache[i]);
+		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+}
+
 void InitGrahics()
 {
 	int i = 0;
@@ -332,7 +350,7 @@ void InitGrahics()
 #elif defined(__linux__)
 	g_dpy = XOpenDisplay(NULL);
 	if (!g_dpy) {
-		printf("ERROR: couldn't open default display.\n");
+		nge_error("Couldn't open default display.\n");
 		return;
 	}
 	makeWindow(nge_screen.name, 0, 0, nge_screen.width, nge_screen.height);
@@ -349,13 +367,7 @@ void InitGrahics()
 	GL_ARRAY_EN(VERTEX);
 
 	tex_cache_init(MAX_TEX_CACHE_SIZE);
-	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
-	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
-		tex_cache_add(i,m_texcache[i]);
-		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	}
+	reset_cache();
 
 	glEnable(GL_SCISSOR_TEST);
 	ResetClip();
@@ -377,9 +389,8 @@ void InitGrahics()
 		m_sintable[i] = sin(i*DEG2RAD);
 		m_costable[i] = cos(i*DEG2RAD);
 	}
-#ifndef NDEBUG
-	printf("Init Graphics Ok\n");
-#endif
+
+	nge_log("Init Graphics Ok\n");
 }
 
 void FiniGrahics()
@@ -406,7 +417,7 @@ void ShowFps()
 	t = nge_get_tick();
 	if ( (t - m_t0) >= 1000) {
 		seconds = (t - m_t0) / 1000.0;
-		printf("%d frames in %g seconds = %g FPS\n", m_frame, seconds, m_frame / seconds);
+		nge_log("%d frames in %g seconds = %g FPS\n", m_frame, seconds, m_frame / seconds);
 		m_t0 = t;
 		m_frame = 0;
 	}
@@ -446,12 +457,12 @@ void BeginScene(uint8 clear)
 
 void EndScene()
 {
-#ifndef IPHONEOS
-#if defined(__linux__)
+#if defined __linux__
 	glXSwapBuffers(g_dpy, g_win);
-#else
+#elif defined WIN32
 	SDL_GL_SwapBuffers();
-#endif
+#elif defined ANDROID
+	glFlush();
 #endif
 }
 
@@ -815,18 +826,6 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	AFTER_DRAW_IMAGE();
 }
 
-/*
-  fix me
-  void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
-  {
-  void DrawImageMask(tex,sx,sy,sw,sh,dx,dy,dw,dh,mask);
-  }
-
-  void DrawLargeImage(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
-  {
-  DrawLargeImageMask(tex,sx,sy,sw,sh,dx,dy,dw,dh,tex->mask);
-  }
-*/
 #define SET_IMAGE_TRANS(trans, tex)					\
 	switch(trans){									\
 	case NGE_TRANS_V:								\
@@ -898,7 +897,7 @@ image_p ScreenToImage()
 	if(pimage == NULL)
 		return NULL;
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glReadPixels( 0, 0, TEXTRUE_MAX_WIDTH, TEXTRUE_MAX_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, pimage->data );
+	glReadPixels( 0, 0, nge_screen.width, nge_screen.height, GL_RGBA, GL_UNSIGNED_BYTE, pimage->data );
 	image_flipv(pimage);
 	return pimage;
 }
