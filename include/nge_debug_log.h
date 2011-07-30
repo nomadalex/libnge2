@@ -30,18 +30,28 @@ void nge_mem_log();
 #endif
 #else // defined NDEBUG
 #ifndef NGE_NEED_PRINTF
+#include <stdio.h>
+#ifdef WIN32
 #define printf()
+#else
+#define printf(...)
+#endif
 #endif
 
 #ifdef WIN32
 #pragma warning(disable :4002)
-#endif
-
 #define	nge_log()
 #define nge_print nge_log
 #define	nge_error()
 #define nge_debug_quitgame();
 #define nge_line()
+#else
+#define	nge_log(...)
+#define nge_print nge_log
+#define	nge_error(...)
+#define nge_debug_quitgame(...);
+#define nge_line(...)
+#endif
 #endif // _DEBUG_LOG
 
 #endif // __NGELOG_H__
