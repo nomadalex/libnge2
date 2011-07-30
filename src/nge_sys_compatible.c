@@ -5,64 +5,7 @@
 
 static int cpu_type = CPU_TYPE_222MHZ;
 
-#if defined WIN32 || defined IPHONEOS || defined __linux__
-#include <time.h>
-//win32
-int sys_localtime(sys_time_p stm)
-{
-	time_t t = time(NULL);
-	struct tm *pt = localtime(&t);
-	if(stm){
-		stm->year  = pt->tm_year+1900;
-		stm->month = pt->tm_mon+1;
-		stm->day   = pt->tm_mday;
-		stm->hour  = pt->tm_hour;
-		stm->minutes = pt->tm_min;
-		stm->seconds = pt->tm_sec;
-		stm->microseconds = 0;
-		return 1;
-	}
-	return 0;
-}
-
-//set 'F'
-char* sys_get_idstorage()
-{
-	static char ret[32] = {0};
-	memset(ret,'F',30);
-	return ret;
-}
-
-char* sys_get_mac()
-{
-	static char ret[24]={0};
-	unsigned char sVal[8]= {0};
-	memset(sVal,0xff,8);
-  	sprintf(ret,"%02X:%02X:%02X:%02X:%02X:%02X", sVal[0], sVal[1], sVal[2], sVal[3], sVal[4], sVal[5]);
-	return ret;
-}
-
-char* sys_get_nickname()
-{
-	static char ret[64]={"NGE2"};
-	return ret;
-}
-
-
-int sys_set_frequency_type(int type)
-{
-	printf("switch cpu to %d mhz\n",type);
-	cpu_type = type;
-	return 1;
-}
-
-int sys_get_frequency_type()
-{
-	return cpu_type;
-}
-
-
-#else
+#ifdef _PSP
 #include <psppower.h>
 //psp
 int sys_localtime(sys_time_p stm)
@@ -128,6 +71,59 @@ int sys_set_frequency_type(int type)
 		return 1;
 	}
 	return 0;
+}
+
+int sys_get_frequency_type()
+{
+	return cpu_type;
+}
+#else
+#include <time.h>
+int sys_localtime(sys_time_p stm)
+{
+	time_t t = time(NULL);
+	struct tm *pt = localtime(&t);
+	if(stm){
+		stm->year  = pt->tm_year+1900;
+		stm->month = pt->tm_mon+1;
+		stm->day   = pt->tm_mday;
+		stm->hour  = pt->tm_hour;
+		stm->minutes = pt->tm_min;
+		stm->seconds = pt->tm_sec;
+		stm->microseconds = 0;
+		return 1;
+	}
+	return 0;
+}
+
+//set 'F'
+char* sys_get_idstorage()
+{
+	static char ret[32] = {0};
+	memset(ret,'F',30);
+	return ret;
+}
+
+char* sys_get_mac()
+{
+	static char ret[24]={0};
+	unsigned char sVal[8]= {0};
+	memset(sVal,0xff,8);
+  	sprintf(ret,"%02X:%02X:%02X:%02X:%02X:%02X", sVal[0], sVal[1], sVal[2], sVal[3], sVal[4], sVal[5]);
+	return ret;
+}
+
+char* sys_get_nickname()
+{
+	static char ret[64]={"NGE2"};
+	return ret;
+}
+
+int sys_set_frequency_type(int type)
+{
+	printf("switch cpu to %d mhz\n",type);
+	cpu_type = type;
+	return 1;
 }
 
 int sys_get_frequency_type()
