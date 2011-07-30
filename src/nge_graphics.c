@@ -320,6 +320,7 @@ makeWindow(const char *name, int x, int y, int width, int height)
 
 void reset_cache(void)
 {
+	int i;
 	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
