@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if defined(WIN32)  || defined(__linux__)
+#if defined WIN32 || defined __linux__
+
 #if defined(WIN32) // on WIN32, gl need it
 #define WINGDIAPI
 #define APIENTRY WINAPI
@@ -15,14 +16,24 @@
 
 #include <GL/gl.h>
 
-#elif  IPHONEOS
+#if defined __linux__
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+
+#else
+#include <SDL.h>
+#endif
+
+#elif defined IPHONEOS || defined ANDROID
+
+#ifdef IPHONEOS
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
+#else
+#include <GLES/gl.h>
+#endif
 
-#else // psp
-#include <pspgu.h>
-#include <pspgum.h>
-
+#define glOrtho glOrthof
 #endif
 
 #define ___Max(x, y) (x>y?x:y)
