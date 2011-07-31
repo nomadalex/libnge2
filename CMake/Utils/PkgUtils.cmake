@@ -138,6 +138,8 @@ macro(prepare_dep_search PREFIX)
   # Set hardcoded path guesses for various platforms
   if(WIN32)
 	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/Win32Depends")
+  elseif(ANDROID)
+	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/AndroidDepends")
   elseif(UNIX)
 	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "/usr/local")
   endif()
