@@ -2,6 +2,6 @@ build*/
 temp/
 samples/res/
 samples/res.zip
-Win32Depends/
-Win32Depends.7z
-
+*Depends/
+*Depends.7z
+Android/
