@@ -24,8 +24,8 @@
 #define _NGE_APP_HPP
 
 enum{
-	APP_QUIT = 0,
-	APP_NEXT
+	NGE_APP_NORMAL = 0,
+	NGE_APP_QUIT,
 };
 
 class CNgeApp

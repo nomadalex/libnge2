@@ -25,8 +25,8 @@
 #define _NGE_APP_H
 
 enum{
-	APP_QUIT = 0,
-	APP_NEXT
+	NGE_APP_NORMAL = 0,
+	NGE_APP_QUIT,
 };
 
 typedef struct nge_app {
