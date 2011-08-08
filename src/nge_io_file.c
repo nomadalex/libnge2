@@ -1,3 +1,4 @@
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_io_file.h"
 #include <stdio.h>
@@ -5,7 +6,7 @@
 
 int io_fopen(const char* fname,int flag)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	int fd = 0;
 	if(flag == IO_RDONLY)
 		fd = sceIoOpen(fname, PSP_O_RDONLY, 0777);
@@ -25,7 +26,7 @@ int io_fopen(const char* fname,int flag)
 
 int io_fread(void* buffer,int count,int size,int handle)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	return sceIoRead(handle, (char*)buffer, size*count);
 #else
 	return fread((char*)buffer,count,size,(FILE*)handle);
@@ -34,7 +35,7 @@ int io_fread(void* buffer,int count,int size,int handle)
 
 int io_fwrite(void* buffer,int count,int size,int handle)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	return sceIoWrite(handle, (char*)buffer, size*count);
 #else
 	return fwrite((char*)buffer,count,size,(FILE*)handle);
@@ -43,7 +44,7 @@ int io_fwrite(void* buffer,int count,int size,int handle)
 
 int io_fseek(int handle,int offset,int flag)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	int ret = sceIoLseek(handle, offset, flag);
 	if(ret >= 0)
 		return 0;
@@ -56,7 +57,7 @@ int io_fseek(int handle,int offset,int flag)
 
 int io_ftell(int handle)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	int ret = sceIoLseek(handle, 0, IO_SEEK_CUR);
 	return ret;
 #else
@@ -66,7 +67,7 @@ int io_ftell(int handle)
 
 int io_fclose(int handle)
 {
-#if defined _PSP
+#if defined NGE_PSP
 	if (handle >= 0)
 		return sceIoClose(handle);
 #else
@@ -82,7 +83,7 @@ int io_fsize(int handle)
 	int size,cur;
 	//if(handle <= 0)
 	//	return 0;
-#if defined _PSP
+#if defined NGE_PSP
 	cur = sceIoLseek(handle, 0, IO_SEEK_CUR);
 	size = sceIoLseek(handle, 0, IO_SEEK_END);
 	sceIoLseek(handle, cur, IO_SEEK_SET);

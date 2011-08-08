@@ -1,9 +1,10 @@
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_input.h"
 #include "nge_common.h"
 #include <stdlib.h>
 
-#if defined(_PSP)
+#if defined NGE_PSP
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
@@ -11,7 +12,7 @@
 //define in nge_main.c
 extern int cbid;
 
-#elif defined(__linux__)
+#elif defined NGE_LINUX
 #include <X11/Xlib.h>
 
 #endif
@@ -27,7 +28,7 @@ static ButtonProc btn_up   = btn_up_default;
 
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {
-#ifdef _PSP
+#ifdef NGE_PSP
 	static int inited = 0;
 	if(inited == 0){
 		sceCtrlSetSamplingCycle(0);
@@ -74,7 +75,7 @@ void InitAnalog(AnalogProc analogproc)
 }
 
 //Ä£ÄâÒ¡¸Ë
-#if defined(WIN32) || defined (__linux__)
+#if defined NGE_WIN || defined NGE_LINUX
 #define ANALOG_LEFT  0
 #define ANALOG_RIGHT 1
 #define ANALOG_UP    2
@@ -102,33 +103,33 @@ static int SetAnalog(int key,char flag)
 	int ret = 0;
 	switch(key)
 	{
-#if defined(WIN32)
+#if defined NGE_WIN
 	case SDLK_UP:
-#elif defined(__linux__)
+#elif defined(NGE_LINUX)
 	case XK_Up:
 #endif
 		btn_analog[ANALOG_UP] = flag;
 		ret = 1;
 		break;
-#if defined(WIN32)
+#if defined(NGE_WIN)
 	case SDLK_DOWN:
-#elif defined(__linux__)
+#elif defined(NGE_LINUX)
 	case XK_Down:
 #endif
 		btn_analog[ANALOG_DOWN] = flag;
 		ret = 1;
 		break;
-#if defined(WIN32)
+#if defined(NGE_WIN)
 	case SDLK_LEFT:
-#elif defined(__linux__)
+#elif defined(NGE_LINUX)
 	case XK_Left:
 #endif
 		btn_analog[ANALOG_LEFT] = flag;
 		ret = 1;
 		break;
-#if defined(WIN32)
+#if defined(NGE_WIN)
 	case SDLK_RIGHT:
-#elif defined(__linux__)
+#elif defined(NGE_LINUX)
 	case XK_Right:
 #endif
 		btn_analog[ANALOG_RIGHT] = flag;
@@ -142,7 +143,7 @@ static int SetAnalog(int key,char flag)
 #endif
 #endif
 
-#if defined(__linux__)
+#if defined(NGE_LINUX)
 // backward declarations
 // (in nge_graphics)
 extern Display *g_dpy;
@@ -190,7 +191,7 @@ _DEF_INPUT_PROC(mouse_up)
 {
 	BUTTON_PROC(UP);
 }
-#elif defined(_PSP)
+#elif defined(NGE_PSP)
 typedef struct {
 	uint32 press;
 	uint32 held;
@@ -219,9 +220,9 @@ int key_num = 14;
 
 void InputProc()
 {
-#if defined(__linux__) || defined(WIN32)
+#if defined(NGE_LINUX) || defined(NGE_WIN)
 	int ana_ret = 0;
-#if defined(__linux__)
+#if defined(NGE_LINUX)
 	static long mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | PointerMotionMask | StructureNotifyMask;
 	static XEvent event;
 	while (XCheckWindowEvent(g_dpy, g_win,
@@ -251,7 +252,7 @@ void InputProc()
 			}
 		}
 	}
-#elif defined(WIN32)
+#elif defined(NGE_WIN)
 	int x,y,dx,dy,state,tmp;
 	int mouse_btn_type = 0;
 	static SDL_Event event;
@@ -315,7 +316,7 @@ void InputProc()
 	if(analog_proc!=NULL&&ana_ret){
 		analog_proc(GetAnalogX(),GetAnalogY());
 	}
-#elif defined(_PSP)
+#elif defined(NGE_PSP)
 	static SceCtrlData pad;
 	uint32 Buttons;
 	int i;

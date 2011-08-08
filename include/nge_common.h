@@ -64,4 +64,6 @@ typedef uint8 BOOL;
 #define inline __inline
 #endif
 
+#include "nge_platform.h"
+
 #endif /* _NGE_COMMON_H */

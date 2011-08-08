@@ -5,16 +5,14 @@ set(COOLAUDIO_VERSION 1.1)
 
 list(APPEND COOLAUDIO_LIBS ${COOLAUDIO_DEP_LIBS})
 
-if(LINUX)
-  list(APPEND COOLAUDIO_SRCS
-	nge_audio_linux.c)
-endif()
-
 if(PSP OR IPHONE)
   list(APPEND COOLAUDIO_SRCS libcoolaudio.c)
 endif()
 
-if(PSP)
+if(ANDROID)
+  list(APPEND COOLAUDIO_SRCS
+	audio_android.c)
+elseif(PSP)
   list(APPEND COOLAUDIO_SRCS
 	audio_codec.cpp
 	codecs/mp3_codec.cpp
@@ -26,13 +24,14 @@ if(PSP)
 	parsers/pcm_parser.cpp
 	nge_io_mem.c
 	)
-endif()
-
-if(IPHONE) # IPHONESO?
+elseif(IPHONE) # IPHONESO?
   list(APPEND COOLAUDIO_SRCS
 	LSAudioDeleCall.m
 	libLSAudio.m
 	)
+elseif(LINUX)
+  list(APPEND COOLAUDIO_SRCS
+	nge_audio_linux.c)
 endif()
 
 if(PSP)

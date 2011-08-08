@@ -5,8 +5,8 @@
 #ifndef __RLE_C__
 #define __RLE_C__
 
+#include "nge_platform.h"
 #include "nge_rle.h"
-
 
 void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
 {
@@ -166,7 +166,7 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
     }
     
     #else
-    #ifdef PSP
+    #ifdef NGE_PSP
     if (bits==8) {
 		asm(
 			"addiu $8, $0, $0\n"		// edx = 0

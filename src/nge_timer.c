@@ -1,7 +1,12 @@
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_timer.h"
 #include <stdlib.h>
 #include <string.h>
+
+#if defined NGE_LINUX || defined NGE_IPHONE || defined NGE_ANDROID
+#define NGE_UNIX
+#endif
 
 static uint32 TM_get_ticks(nge_timer* timer);
 static uint32 TM_is_started(nge_timer* timer);
@@ -95,20 +100,20 @@ static void TM_unpause(nge_timer* timer)
 	}
 }
 
-#if defined _PSP
+#if defined NGE_PSP
 #include <psptypes.h>
 #include <time.h>
 #include <psprtc.h>
 static u64 mTickFrequency = 0;
-#elif defined(WIN32)
+#elif defined NGE_WIN
 #include "SDL.h"
-#elif defined(__linux__) || defined ANDROID || defined IPHONEOS
+#elif defined NGE_UNIX
 #include <sys/time.h>
 #endif
 
 uint32 nge_get_tick()
 {
-#elif defined(__linux__) || defined ANDROID || defined IPHONEOS
+#if defined NGE_UNIX
 	static struct timeval start;
 	static uint8 uninited = 1;
 	uint32 ticks;
@@ -121,9 +126,9 @@ uint32 nge_get_tick()
 	gettimeofday(&now, NULL);
 	ticks=(now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000;
 	return(ticks);
-#elif defined(WIN32)
+#elif defined NGE_WIN
 	return SDL_GetTicks();
-#elif defined(_PSP)
+#elif defined NGE_PSP
 	u64 ticks;
 	uint32 tick32;
 

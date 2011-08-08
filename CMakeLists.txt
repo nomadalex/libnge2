@@ -11,18 +11,33 @@ set(CMAKE_MODULE_PATH
 )
 set(CMAKE_TEMPLATE_PATH "${CMAKE_SOURCE_DIR}/CMake/Templates")
 
-option(BUILD_PSP "Whether build for psp" ${BUILD_PSP})
-if(BUILD_PSP)
-  set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psptoolchain.cmake")
+if(NOT BUILD_FOR)
+  set(BUILD_FOR Normal CACHE STRING
+	"Choose the os of build, options are:
+     Normal PSP Android."
+	 FORCE)
 endif()
 
-option(BUILD_SAMPLES "Whether build samples" ON)
+if(${BUILD_FOR} STREQUAL PSP)
+  set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psp.toolchain.cmake")
+elseif(${BUILD_FOR} STREQUAL Android)
+  set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
+endif()
+
+if(NOT ANDROID)
+  option(BUILD_SAMPLES "Whether build samples" ON)
+endif()
 
 # Set the project name.
 project(NGE2)
 set(NGE2_SRCS)
 set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
+
+if(ANDROID)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DANDROID -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DANDROID -pedantic")
+endif()
 
 include(Common)
 include(SetupDepends)
@@ -31,7 +46,11 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
   "Real variable for buile." FORCE)
 
 # Put libraries into `lib'.
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+if(ANDROID)
+  set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_SOURCE_DIR}/Android)
+else()
+  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+endif()
 
 # Search for C header files in these directories.
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -64,13 +83,9 @@ list(APPEND NGE2_SRCS
   src/nge_tex_cache.c
   src/nge_tga.c
   src/nge_timer.c
+  src/nge_graphics.c
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
-
-if(UNIX OR WIN32 OR IPHONE)
-  list(APPEND NGE2_SRCS
-	src/nge_graphics.c)
-endif()
 
 if(PSP)
   include_directories(${CMAKE_SOURCE_DIR}/include/psp)
@@ -83,8 +98,8 @@ endif()
 # depends
 set(_pack_libs)
 
-option(USE_MMGR "Useful for debug." off)
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+  option(USE_MMGR "Useful for debug." off)
   if(USE_MMGR)
 	include_directories(mmgr)
 	add_subdirectory(mmgr)
@@ -109,8 +124,8 @@ if(COMPILER_GCC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
 
-option(USE_STDOUT_DEBUG "debug logs use stdout." on)
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+  option(USE_STDOUT_DEBUG "debug logs use stdout." on)
   if(USE_STDOUT_DEBUG)
 	add_definitions(-D_DEBUG_STDOUT)
   endif()
@@ -122,6 +137,8 @@ endif()
 
 if(WIN32)
   list(APPEND NGE2_LIBS ${SDLMAIN_LIBRARY})
+elseif(ANDROID)
+  list(APPEND NGE2_LIBS log GLESv1_CM)
 else()
   list(APPEND NGE2_LIBS g c stdc++)
 endif()

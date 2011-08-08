@@ -34,16 +34,18 @@ if(WIN32)
 endif()
 
 if(WIN32 OR LINUX)
-  # Find OpenGL
-  find_package(OpenGL)
-  log_feature(OPENGL_FOUND "OpenGL" "OpenGL render system" "http://www.opengl.org/" REQUIRED)
-  add_package(OPENGL NGE2_DEP_LIBS)
+  if(NOT ANDROID)
+	# Find OpenGL
+	find_package(OpenGL)
+	log_feature(OPENGL_FOUND "OpenGL" "OpenGL render system" "http://www.opengl.org/" REQUIRED)
+	add_package(OPENGL NGE2_DEP_LIBS)
+  endif()
 endif()
 
 ################################################################################
 # coolauido
 set(COOLAUDIO_DEP_LIBS)
-if(LINUX)
+if(LINUX AND NOT ANDROID)
   find_package(GStreamer)
   log_feature(GSTREAMER_FOUND "Gstreamer" "Open source multimedia framework" "http://gstreamer.freedesktop.org/" REQUIRED)
   add_package(GSTREAMER COOLAUDIO_DEP_LIBS)
@@ -51,6 +53,7 @@ endif()
 
 ################################################################################
 # samples deps
+if(NOT ANDROID)
 # for demo5
 find_package(SQLite3)
 log_feature(SQLITE3_FOUND "sqlite3" "a self-contained, serverless, zero-configuration, transactional SQL database engine" "http://www.sqlite.org/")
@@ -58,7 +61,7 @@ log_feature(SQLITE3_FOUND "sqlite3" "a self-contained, serverless, zero-configur
 # for demo9
 find_package(Unzip)
 log_feature(UNZIP_FOUND "unzip" "a unzip library, you can download it from download page." "")
-
+endif()
 ################################################################################
 # Tools
 find_package(Doxygen)
@@ -67,4 +70,3 @@ log_feature(DOXYGEN_FOUND "Doxygen" "Tool for building API documentation" "http:
 # Display results, terminate if anything required is missing
 set(MISS_FEATURE_CUSTOM_MSG "-- If you are in Windows, try passing -DNGE2_DEPENDENCIES_DIR=<path to dependencies>")
 display_feature_log()
-

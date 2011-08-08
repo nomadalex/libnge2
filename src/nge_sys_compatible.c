@@ -1,3 +1,4 @@
+#include "nge_common.h"
 #include "nge_debug_log.h"
 #include "nge_sys_compatible.h"
 #include <stdio.h>
@@ -5,7 +6,7 @@
 
 static int cpu_type = CPU_TYPE_222MHZ;
 
-#ifdef _PSP
+#ifdef NGE_PSP
 #include <psppower.h>
 //psp
 int sys_localtime(sys_time_p stm)

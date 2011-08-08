@@ -1,3 +1,4 @@
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_image_effect.h"
 #include "nge_graphics.h"
@@ -6,7 +7,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if defined WIN32 || defined __linux__
+#if defined NGE_WIN || defined NGE_IPHONE || defined NGE_LINUX || defined NGE_ANDROID
+#define NGE_NORMAL_GL_API
+#endif
+
+#if defined NGE_IPHONE || defined NGE_ANDROID
+
+#ifdef NGE_IPHONE
+#include <OpenGLES/ES1/gl.h>
+#include <OpenGLES/ES1/glext.h>
+#else
+#include <GLES/gl.h>
+#endif
+
+#define glOrtho glOrthof
+#elif defined NGE_WIN || defined NGE_LINUX
 
 #if defined(WIN32) // on WIN32, gl need it
 #define WINGDIAPI
@@ -16,24 +31,13 @@
 
 #include <GL/gl.h>
 
-#if defined __linux__
+#if defined NGE_LINUX
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 
 #else
 #include <SDL.h>
 #endif
-
-#elif defined IPHONEOS || defined ANDROID
-
-#ifdef IPHONEOS
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
-#else
-#include <GLES/gl.h>
-#endif
-
-#define glOrtho glOrthof
 #endif
 
 #define ___Max(x, y) (x>y?x:y)
@@ -1308,7 +1312,7 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 		if(pftran->m_src_img)
 			DrawImage(pftran->m_src_img, 0, 0, 0, 0, dx, dy, 0, 0);
 
-#if defined WIN32 ||defined IPHONEOS || defined(__linux__)
+#if defined NGE_NORMAL_GL_API
 
 		//printf("GF:%d / %d\n", pftran->m_ptimer->get_ticks(pftran->m_ptimer), pftran->m_timeticks);
 

@@ -1,8 +1,9 @@
+#include "nge_common.h"
 #include "nge_debug_log.h"
 #include "nge_io_dir.h"
 #include <string.h>
 
-#ifdef WIN32
+#ifdef NGE_WIN
 #include <windows.h>
 
 static HANDLE st_FindFirstFile(const char* path)
@@ -96,8 +97,8 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 	return ret_code;
 }
 
-#elif defined _PSP || defined __linux__ || defined ANDROID
-#if defined __linux__ || defined ANDROID
+#elif defined NGE_PSP || defined NGE_LINUX || defined NGE_IPHONE || defined NGE_ANDROID
+#if defined NGE_LINUX || defined NGE_IPHONE || defined NGE_ANDROID
 #include <unistd.h>
 #endif
 #include <dirent.h>

@@ -1,20 +1,21 @@
 #ifndef NDEBUG
 
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _PSP
+#ifdef NGE_PSP
 #include <psploadexec_kernel.h>
 #endif
 
-#if defined(__linux__) || defined(_PSP)
+#if defined NGE_LINUX || defined NGE_PSP
 #define _vsnprintf  vsnprintf
 #endif
 
-#if !defined ANDROID && !defined IPHONES
+#if !defined NGE_ANDROID && !defined NGE_IPHONE
 FILE *g_logfile = NULL, *g_errorfile = NULL;
 
 /**
@@ -39,12 +40,12 @@ inline void nge_printf (FILE** pFile, const char* filename, const char* pMessage
 }
 #endif
 
-#ifdef ANDROID
+#ifdef NGE_ANDROID
 #include <android/log.h>
 #define  LOG_TAG "libnge2"
 #define NGE_LOG(msg, argptr) __android_log_vprint(ANDROID_LOG_INFO, LOG_TAG, msg, argptr)
 #define NGE_ERR(msg, argptr) __android_log_vprint(ANDROID_LOG_ERROR, LOG_TAG, msg, argptr)
-#elif defined IPHONES
+#elif defined NGE_IPHONE
 // -- fixme
 #define NGE_LOG(msg, argptr)
 #define NGE_ERR(msg, argptr)
@@ -80,7 +81,7 @@ void nge_mem_log()
 
 void nge_debug_quitgame()
 {
-#if defined(_PSP)
+#if defined NGE_PSP
 	sceKernelExitGame();
 #endif
 	exit(-1);

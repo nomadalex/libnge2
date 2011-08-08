@@ -23,10 +23,12 @@
 #ifndef _NGE_INPUT_H
 #define _NGE_INPUT_H
 
-#if defined _PSP || defined __linux__ || defined WIN32
+#include "nge_common.h"
+
+#if defined NGE_PSP || defined NGE_LINUX || defined NGE_WIN
 #define NGE_INPUT_BUTTON_SUPPORT
 #define NGE_INPUT_ANALOG_SUPPORT
-#if defined WIN32
+#if defined NGE_WIN
 #include "SDL.h"
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
@@ -42,7 +44,7 @@
 #define PSP_BUTTON_START         SDLK_b
 #define PSP_BUTTON_HOME          SDLK_n
 #define PSP_BUTTON_HOLD          SDLK_m
-#elif defined(__linux__)
+#elif defined NGE_LINUX
 #include <X11/keysym.h>
 #define PSP_BUTTON_UP            XK_w
 #define PSP_BUTTON_DOWN          XK_s
@@ -58,7 +60,7 @@
 #define PSP_BUTTON_START         XK_b
 #define PSP_BUTTON_HOME          XK_n
 #define PSP_BUTTON_HOLD          XK_m
-#elif defined _PSP
+#elif defined NGE_PSP
 #define PSP_BUTTON_UP            8
 #define PSP_BUTTON_DOWN          6
 #define PSP_BUTTON_LEFT          7
@@ -79,7 +81,7 @@ typedef void (*ButtonProc)(int key);
 typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 #endif
 
-#ifndef _PSP
+#ifndef NGE_PSP
 #define NGE_INPUT_MOUSE_SUPPORT
 // 在iphone和android上用触摸屏模拟鼠标
 // 手指离开为MOUSE_LBUTTON_UP，落下为MOUSE_LBUTTON_DOWN，在屏上移动为MouseMove
@@ -87,7 +89,7 @@ typedef void (*MouseMoveProc)(int x,int y);
 typedef void (*MouseButtonProc)(int type,int x,int y);
 #define MOUSE_LBUTTON_DOWN 1
 #define MOUSE_LBUTTON_UP   2
-#if defined WIN32 || defined __linux__
+#if defined NGE_WIN || defined NGE_LINUX
 #define NGE_INPUT_MOUSE_FULL_SUPPORT
 #define MOUSE_RBUTTON_DOWN 3
 #define MOUSE_RBUTTON_UP   4
@@ -129,7 +131,7 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 
 void SetSwapXY(int flag);
 
-#if !defined IPHONES || !defined ANDROID
+#if !defined NGE_IPHONE || !defined NGE_ANDROID
 #define NGE_INPUT_HAS_PROC
 /**
  *输入响应,具体使用请看例子test/input_test.cpp

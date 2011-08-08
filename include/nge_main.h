@@ -23,6 +23,8 @@
 #ifndef _NGE_MAIN_H
 #define _NGE_MAIN_H
 
+#include "nge_common.h"
+
 #define INIT_VIDEO 1
 #define INIT_AUDIO 2
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO

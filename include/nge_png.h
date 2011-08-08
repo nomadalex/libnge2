@@ -23,6 +23,7 @@
 #ifndef _NGE_PNG_H
 #define _NGE_PNG_H
 
+#include "nge_common.h"
 #include "nge_image.h"
 
 #ifdef __cplusplus

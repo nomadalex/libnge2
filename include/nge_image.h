@@ -225,7 +225,7 @@ int image_flipv(image_p pimage);
 int GET_PSM_COLOR_MODE(int dtype);
 int roundpower2(int width);
 
-#ifdef _PSP
+#ifdef NGE_PSP
 void swizzle_swap(image_p pimage);
 void unswizzle_swap(image_p pimage);
 #else

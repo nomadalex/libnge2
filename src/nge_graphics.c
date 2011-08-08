@@ -19,6 +19,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_graphics.h"
 #include "nge_timer.h"
@@ -28,27 +29,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if defined WIN32 || defined __linux__
-
-#if defined(WIN32) // on WIN32, gl need it
-#define WINGDIAPI
-#define APIENTRY WINAPI
-#define WINAPI __stdcall
-#endif
-
-#include <GL/gl.h>
-
-#if defined __linux__
-#include <X11/Xlib.h>
-#include <GL/glx.h>
-
-#else
-#include <SDL.h>
-#endif
-
-#elif defined IPHONEOS || defined ANDROID
-
-#ifdef IPHONEOS
+#if defined NGE_IPHONE || defined NGE_ANDROID
+#define NGE_GLES
+#ifdef NGE_IPHONE
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
 #else
@@ -56,6 +39,23 @@
 #endif
 
 #define glOrtho glOrthof
+#elif defined NGE_WIN || defined NGE_LINUX
+
+#if defined NGE_WIN // on WIN32, gl need it
+#define WINGDIAPI
+#define APIENTRY WINAPI
+#define WINAPI __stdcall
+#endif
+
+#include <GL/gl.h>
+
+#if defined NGE_LINUX
+#include <X11/Xlib.h>
+#include <GL/glx.h>
+
+#else
+#include <SDL.h>
+#endif
 #endif
 
 static float m_sintable[360];
@@ -190,9 +190,9 @@ static inline void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8*
 char* GetVersion()
 {
 	static char version[] = {
-#ifdef IPHONEOS
+#ifdef NGE_IPHONE
 		"nge2 iphone opengles driver v1.0"
-#elif defined ANDROID
+#elif defined NGE_ANDROID
 		"nge2 android opengles driver v1.0"
 #else
 		"nge2 driver v2.0"
@@ -221,7 +221,7 @@ screen_context_p GetScreenContext()
 
 void SetScreenType(int type)
 {
-#ifdef IPHONEOS
+#ifdef NGE_IPHONE
 	if(type == 2){
 		nge_screen.fullscreen = 2;
 		SetSwapXY(1);
@@ -256,7 +256,7 @@ void ResetClip()
 	glScissor(0,0,nge_screen.width, nge_screen.height);
 }
 
-#if defined(__linux__)
+#if defined NGE_LINUX
 Display *g_dpy;
 Window g_win;
 GLXContext g_ctx;
@@ -333,7 +333,7 @@ void reset_cache(void)
 void InitGrahics()
 {
 	int i = 0;
-#if defined(WIN32)
+#if defined NGE_WIN
 	int screen_flag = 0;
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
 		exit(1);
@@ -348,7 +348,7 @@ void InitGrahics()
 	if(nge_screen.fullscreen != 0)
 		screen_flag |= SDL_FULLSCREEN;
 	SDL_SetVideoMode( nge_screen.width, nge_screen.height, nge_screen.bpp,screen_flag);
-#elif defined(__linux__)
+#elif defined NGE_LINUX
 	g_dpy = XOpenDisplay(NULL);
 	if (!g_dpy) {
 		nge_error("Couldn't open default display.\n");
@@ -402,7 +402,7 @@ void FiniGrahics()
 	SAFE_FREE(gl_colors);
 	SAFE_FREE(gl_tex_uvs);
 
-#if defined(__linux__)
+#if defined NGE_LINUX
 	glXDestroyContext(g_dpy, g_ctx);
 	XDestroyWindow(g_dpy, g_win);
 	XCloseDisplay(g_dpy);
@@ -458,11 +458,11 @@ void BeginScene(uint8 clear)
 
 void EndScene()
 {
-#if defined __linux__
+#if defined NGE_LINUX
 	glXSwapBuffers(g_dpy, g_win);
-#elif defined WIN32
+#elif defined NGE_WIN
 	SDL_GL_SwapBuffers();
-#elif defined ANDROID
+#elif defined NGE_ANDROID
 	glFlush();
 #endif
 }
@@ -472,11 +472,16 @@ static uint8 r,g,b,a;
 	GetRGBA(color,dtype,&r,&g,&b,&a);           \
 	glColor4ub(r, g, b, a)
 
+#if defined NGE_GLES
+#define BEFORE_DRAW()
+#define AFTER_DRAW()
+#else
 #define BEFORE_DRAW()                           \
 	glPushAttrib(GL_CURRENT_BIT)
 
 #define AFTER_DRAW()                            \
 	glPopAttrib()
+#endif
 
 void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 {
@@ -560,7 +565,7 @@ void PutPix(float x,float y ,int color,int dtype)
 	GL_ARRAY_CHECK_V(1);
 	VECT_2D_SET(gl_vectices[0], x, y);
 	SET_COLOR(color,dtype);
-	glDrawArrays(GL_POINT, 0, 1);
+	glDrawArrays(GL_POINTS, 0, 1);
 	AFTER_DRAW();
 }
 

@@ -1,11 +1,13 @@
 #ifndef NGE_SYS_COMPATIBLE_H_
 #define NGE_SYS_COMPATIBLE_H_
 
+#include "nge_common.h"
+
 #define CPU_TYPE_333MHZ 333
 #define CPU_TYPE_222MHZ 222
 #define CPU_TYPE_111MHZ 111
 
-#ifdef _PSP
+#ifdef NGE_PSP
 #include <time.h>
 #include <psptypes.h>
 #include <psprtc.h>

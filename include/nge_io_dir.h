@@ -1,6 +1,8 @@
 #ifndef NGE_DIR_IO_H
 #define NGE_DIR_IO_H
 
+#include "nge_common.h"
+
 enum FileFlags{
 	FIO_F_DIR,//dir
 	FIO_F_FILE//file

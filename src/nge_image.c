@@ -10,7 +10,7 @@
 
 uint32 image_tid = 0;
 
-#if defined(_PSP)
+#if defined(NGE_PSP)
 static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsigned int height)
 {
 	unsigned int blockx, blocky;

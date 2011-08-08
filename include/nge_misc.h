@@ -1,6 +1,8 @@
 #ifndef NGE_MISC_H_
 #define NGE_MISC_H_
 
+#include "nge_common.h"
+
 //–›√ﬂ∫¡√Î ˝
 #if defined WIN32
 #include "SDL.h"
@@ -10,7 +12,7 @@
 #include <pspthreadman.h>
 #define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
 
-#elif defined IPHONEOS || defined(__linux__) || defined ANDRIOD
+#elif defined __linux__
 #include <unistd.h>
 #define nge_sleep(tick) usleep(tick)
 #endif

@@ -1,7 +1,6 @@
 #ifndef NGE_FONT_H_
 #define NGE_FONT_H_
 
-#include "nge_common.h"
 #include "nge_image.h"
 
 //encoding flags

@@ -1,3 +1,4 @@
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_main.h"
 #include "nge_graphics.h"
@@ -5,7 +6,7 @@
 #include "audio_interface.h"
 #include <string.h>
 
-#ifdef _PSP
+#ifdef NGE_PSP
 #include <pspmoduleinfo.h>
 #include <pspthreadman.h>
 #include <pspdebug.h>
@@ -76,7 +77,7 @@ void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height
 void NGE_Init(int flags)
 {
 	if(initFlags==0){
-#ifndef IPHONEOS
+#ifndef NGE_IPHONE
 		if(flags&INIT_VIDEO)
 			InitGrahics();
 		if(flags&INIT_AUDIO)
@@ -89,7 +90,7 @@ void NGE_Init(int flags)
 void NGE_Quit()
 {
 	if(initFlags){
-#ifndef IPHONEOS
+#ifndef NGE_IPHONE
 		FiniInput();
 		if(initFlags&INIT_VIDEO)
 			FiniGrahics();
@@ -97,7 +98,7 @@ void NGE_Quit()
 			CoolAudioDefaultFini();
 #endif
 
-#if defined WIN32
+#if defined NGE_WIN
 		SDL_Quit();
 #endif
 

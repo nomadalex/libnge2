@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 /* color define */
-#if defined _PSP
+#if defined NGE_PSP
 #include <pspgu.h>
 #define DISPLAY_PIXEL_FORMAT_565  GU_COLOR_5650
 #define DISPLAY_PIXEL_FORMAT_5551 GU_COLOR_5551
@@ -97,7 +97,7 @@ extern "C" {
 #define GET_RGBA_A(col)	((col>>24)&0xFF)
 
 //注意PSP是ABGR(高->低)其他是RGBA(高->低)正好反序
-#if defined _PSP
+#if defined NGE_PSP
 #define MAKE_RGBA_5551(r,g,b,a)  ((r >> 3) | ((g >> 3) << 5) | ((b >> 3) << 10) | ((a >> 7) << 15))
 #define MAKE_RGBA_4444(r,g,b,a)  ((r >> 4) | ((g >> 4) << 4) | ((b >> 4) << 8) | ((a >> 4) << 12))
 #define MAKE_RGBA_565(r,g,b,a)   ((r >> 3) | ((g >> 2) << 5) | ((b >> 3) << 11))
