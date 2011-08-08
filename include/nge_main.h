@@ -29,9 +29,7 @@
 #define INIT_AUDIO 2
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
 
-#if defined _PSP
-#define main	NGE_main
-#endif
+#define main NGE_main
 
 #ifdef __cplusplus
 extern "C"{

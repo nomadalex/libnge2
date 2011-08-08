@@ -20,22 +20,28 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#include "nge_app.hpp"
 #include "nge_app.h"
 
-static CNgeApp* global_app; 
+static nge_app_t app;
+static CNgeApp *App = 0;
 
-int app_Init()
-{
-	global_app = LoadApp();
-	return global_app->Init();
+static int app_init() {
+	return App->Init();
 }
 
-int app_Mainloop()
-{
-	return global_app->Mainloop();
+static int app_mainloop() {
+	return App->Mainloop();
 }
 
-int app_Fini()
-{
-	return global_app->Fini();
+static int app_fini() {
+	return App->Fini();
+}
+
+void nge_registerApp(CNgeApp *app) {
+	App = app;
+	app.init = app_init;
+	app.mainloop = app_mainloop;
+	app.fini = app_fini;
+	nge_register_app(&app);
 }

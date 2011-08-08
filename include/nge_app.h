@@ -29,29 +29,18 @@ enum{
 	APP_NEXT
 };
 
-#ifdef __cplusplus
-class CNgeApp
-{
-public:	
-	CNgeApp() { mFps = 60; };
-	~CNgeApp() {};
-	virtual	int Init() = 0;
-	virtual	int Mainloop() = 0;
-	virtual	int Fini() = 0;
-public:
-	int mFps;
-};
-
-CNgeApp* LoadApp();
-#endif
+typedef struct nge_app {
+	int (*init) (void);
+	int (*mainloop) (void);
+	int (*fini) (void);
+} nge_app_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-int app_Init();
-int app_Mainloop();
-int app_Fini();
+	void nge_register_app(nge_app_t *app);
+	nge_app_t* nge_get_app();
 
 #ifdef __cplusplus
 }
