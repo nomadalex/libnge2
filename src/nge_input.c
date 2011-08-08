@@ -53,8 +53,8 @@ void SetSwapXY(int flag)
 }
 
 #ifdef NGE_INPUT_MOUSE_SUPPORT
-static MouseMoveProc mouse_move_proc = NULL;
-static MouseButtonProc mouse_btn_proc = NULL;
+MouseMoveProc mouse_move_proc = NULL;
+MouseButtonProc mouse_btn_proc = NULL;
 
 void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 {
