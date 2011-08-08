@@ -10,14 +10,13 @@
 
 #include "nge_app.h"
 #include "libnge2.h"
-#include "nge_input_compatible.h"
 
 extern "C"
 {
 	static nge_app_t *s_app = NULL;
 
 	static unsigned char sPaused = 0;
-	static unsigned char sPaused = 0;
+	static unsigned char sResume = 0;
 	static char sPackName[256]={0};
 	static screen_context_p screen;
 
@@ -82,7 +81,7 @@ extern "C"
 			jobject thiz )
 	{
 		if(sPaused)
-			return;
+			return NGE_APP_NORMAL;
 		if(sResume) {
 			sResume = 0;
 		}
@@ -93,7 +92,7 @@ extern "C"
 	void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
 			jobject thiz )
 	{
-		sInstant->Fini();
+		s_app->fini();
 		nge_print("nge2 finished normaly.\n");
 	}
 
@@ -113,20 +112,26 @@ extern "C"
 		sResume = 1;
 	}
 
+	extern MouseMoveProc mouse_move_proc;
+	extern MouseButtonProc mouse_btn_proc;
+
 	void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
 			jobject thiz , jint action, jint x, jint y)
 	{
 		switch (action)
 		{
 			case 0: // ACTION_DOWN
-				(GetMouseButtonProc())(MOUSE_LBUTTON_DOWN,int(x*screen->rate_w),int(y*screen->rate_h));
+				if (mouse_btn_proc)
+					mouse_btn_proc(MOUSE_LBUTTON_DOWN,int(x*screen->rate_w),int(y*screen->rate_h));
 				break;
 
 			case 1: // ACTION_UP:
-				(GetMouseButtonProc())(MOUSE_LBUTTON_UP,int(x*screen->rate_w),int(y*screen->rate_h));
+				if (mouse_btn_proc)
+					mouse_btn_proc(MOUSE_LBUTTON_UP,int(x*screen->rate_w),int(y*screen->rate_h));
 				break;
 			case 2: // ACTION_MOVE:
-				(GetMouseMoveProc())(int(x*screen->rate_w),int(y*screen->rate_h));
+				if (mouse_move_proc)
+					mouse_move_proc(int(x*screen->rate_w),int(y*screen->rate_h));
 				break;
 			default:
 				break;
