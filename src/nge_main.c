@@ -47,6 +47,7 @@ int nge_psp_setup_callbacks(void)
 }
 #endif
 
+#if !defined NGE_ANDROID
 #undef main
 int main(int argc, char *argv[])
 {
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
 #endif
 	return ret;
 }
+#endif
 
 static int initFlags = 0;
 
