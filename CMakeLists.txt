@@ -24,7 +24,9 @@ elseif(${BUILD_FOR} STREQUAL Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
 endif()
 
-if(NOT ANDROID)
+if(ANDROID)
+  option(BUILD_SAMPLES "Whether build samples" OFF)
+else()
   option(BUILD_SAMPLES "Whether build samples" ON)
 endif()
 
@@ -84,6 +86,8 @@ list(APPEND NGE2_SRCS
   src/nge_tga.c
   src/nge_timer.c
   src/nge_graphics.c
+  src/nge_app.c
+  src/nge_app.cpp
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
 
@@ -92,6 +96,10 @@ if(PSP)
   list(APPEND NGE2_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c
+	)
+elseif(ANDROID)
+  list(APPEND NGE2_SRCS
+	src/android/nge_jni.cpp
 	)
 endif()
 
@@ -171,8 +179,6 @@ endif()
 if(PSP)
   add_addon(net nge_net)
 endif()
-
-add_addon(app nge_app)
 
 include(LibUtils)
 merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)

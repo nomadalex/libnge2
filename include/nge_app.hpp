@@ -23,10 +23,7 @@
 #ifndef _NGE_APP_HPP
 #define _NGE_APP_HPP
 
-enum{
-	NGE_APP_NORMAL = 0,
-	NGE_APP_QUIT,
-};
+#include "nge_app.h"
 
 class CNgeApp
 {

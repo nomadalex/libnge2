@@ -21,27 +21,26 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 #include "nge_app.hpp"
-#include "nge_app.h"
 
-static nge_app_t app;
-static CNgeApp *App = 0;
+static nge_app_t s_app;
+static CNgeApp *s_App = 0;
 
 static int app_init() {
-	return App->Init();
+	return s_App->Init();
 }
 
 static int app_mainloop() {
-	return App->Mainloop();
+	return s_App->Mainloop();
 }
 
 static int app_fini() {
-	return App->Fini();
+	return s_App->Fini();
 }
 
 void nge_registerApp(CNgeApp *app) {
-	App = app;
-	app.init = app_init;
-	app.mainloop = app_mainloop;
-	app.fini = app_fini;
-	nge_register_app(&app);
+	s_App = app;
+	s_app.init = app_init;
+	s_app.mainloop = app_mainloop;
+	s_app.fini = app_fini;
+	nge_register_app(&s_app);
 }
