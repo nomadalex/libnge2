@@ -318,9 +318,10 @@ makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
-void reset_cache(void)
+void nge_graphics_reset(void)
 {
 	int i;
+	tex_cache_clear();
 	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
@@ -328,6 +329,23 @@ void reset_cache(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
+
+	glEnable( GL_TEXTURE_2D );
+	glDisable( GL_DEPTH_TEST );
+	glShadeModel( GL_SMOOTH );
+	glEnable(GL_BLEND);
+	ResetTexBlend();
+
+	GL_ARRAY_EN(VERTEX);
+
+	glEnable(GL_SCISSOR_TEST);
+	ResetClip();
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
+
+	glMatrixMode(GL_MODELVIEW);
 }
 
 void InitGrahics()
@@ -359,26 +377,6 @@ void InitGrahics()
 	glXMakeCurrent(g_dpy, g_win, g_ctx);
 #endif
 
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_DEPTH_TEST );
-	glShadeModel( GL_SMOOTH );
-	glEnable(GL_BLEND);
-	ResetTexBlend();
-
-	GL_ARRAY_EN(VERTEX);
-
-	tex_cache_init(MAX_TEX_CACHE_SIZE);
-	reset_cache();
-
-	glEnable(GL_SCISSOR_TEST);
-	ResetClip();
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
-
-	glMatrixMode(GL_MODELVIEW);
-
 	// init for fps------------------
 	m_frame = 0;
 	m_t0 = 0;
@@ -390,6 +388,9 @@ void InitGrahics()
 		m_sintable[i] = sin(i*DEG2RAD);
 		m_costable[i] = cos(i*DEG2RAD);
 	}
+
+	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	nge_graphics_reset();
 
 	nge_log("Init Graphics Ok\n");
 }
