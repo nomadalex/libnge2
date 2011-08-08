@@ -37,10 +37,30 @@ void tex_cache_init (int size)
 
 
 void deleteNodeProc(rbtree_p tree, NodeType *p) {
-	//É¾³ýÒ»°ë
 	if(delete_count < delete_max){
 		deleted_node[delete_count] = p;
 		delete_count++;
+	}
+}
+
+void tex_cache_clear()
+{
+	tex_node_p ret = NULL;
+	tex_node_p tex_node = NULL;
+	int i = 0;
+	int delete_max_orig = delete_max;
+
+	delete_count = 0;
+	delete_max = node_size;
+
+	rbtInorder(rb,rb->root, deleteNodeProc);
+	delete_max = delete_max_orig;
+
+	for(i =0;i<delete_count;i++){
+		tex_node = (tex_node_p)(deleted_node[i]->val.node);
+		tex_node->next =  free_tex_list;
+		free_tex_list = tex_node;
+		rbtErase(rb,deleted_node[i]);
 	}
 }
 

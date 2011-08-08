@@ -10,6 +10,7 @@ int  tex_cache_getid(int imgid,int* cacheid);
 int  tex_cache_free(int imgid);
 void tex_cache_fini();
 int  tex_cache_add(int i,int texid);
+void tex_cache_clear();
 
 #ifdef __cplusplus
 }
