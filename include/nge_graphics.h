@@ -41,6 +41,11 @@ typedef struct {
 	int height;
 	int bpp;
 	int fullscreen;
+
+	int ori_width;
+	int ori_height;
+	float rate_w;
+	float rate_h;
 }screen_context_t, *screen_context_p;
 
 typedef struct{
