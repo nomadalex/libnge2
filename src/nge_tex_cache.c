@@ -45,7 +45,6 @@ void deleteNodeProc(rbtree_p tree, NodeType *p) {
 
 void tex_cache_clear()
 {
-	tex_node_p ret = NULL;
 	tex_node_p tex_node = NULL;
 	int i = 0;
 	int delete_max_orig = delete_max;
