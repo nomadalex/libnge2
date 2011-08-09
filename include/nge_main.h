@@ -59,6 +59,7 @@ void NGE_Quit();
  */
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
+void NGE_SetNativeResolution(int width,int height);
 #ifdef __cplusplus
 }
 #endif

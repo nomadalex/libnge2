@@ -93,6 +93,19 @@ void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height
 	screen->height = screen_height;
 	screen->bpp = screen_bpp;
 	screen->fullscreen = screen_full;
+
+	screen->ori_width = screen_width;
+	screen->ori_height = screen_height;
+	screen->rate_h = screen->rate_w = 1.0f;
+}
+
+void NGE_SetNativeResolution(int width,int height)
+{
+	screen_context_p screen = GetScreenContext();
+	screen->ori_width = width;
+	screen->ori_height = height;
+	screen->rate_w = 1.0f * width/screen->width;
+	screen->rate_h = 1.0f * height/screen->height;
 }
 
 void NGE_Init(int flags)

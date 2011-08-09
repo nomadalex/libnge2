@@ -216,7 +216,7 @@ public class NGE2 extends Activity
 		private int w;
 		private int h;
 		public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-			// null
+			nativeResetContext();
 		}
 
 		public void onSurfaceChanged(GL10 gl, int width, int height) {

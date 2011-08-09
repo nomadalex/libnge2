@@ -23,7 +23,7 @@ extern "C"
 	void Java_org_libnge_nge2_NGE2_nativeSetContext(JNIEnv* env,
 		jobject thiz,jint w,jint h)
 	{
-		NGE_SetScreenContext("NGE2A",w,h,32,1);
+		NGE_SetNativeResolution(w,h);
 		screen = GetScreenContext();
 	}
 
@@ -112,6 +112,7 @@ extern "C"
 		sResume = 1;
 	}
 
+	// decl from nge_input.c
 	extern MouseMoveProc mouse_move_proc;
 	extern MouseButtonProc mouse_btn_proc;
 
