@@ -24,17 +24,17 @@ elseif(${BUILD_FOR} STREQUAL Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
 endif()
 
-if(ANDROID)
-  option(BUILD_SAMPLES "Whether build samples" OFF)
-else()
-  option(BUILD_SAMPLES "Whether build samples" ON)
-endif()
-
 # Set the project name.
 project(NGE2)
 set(NGE2_SRCS)
 set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
+
+if(ANDROID)
+  option(BUILD_SAMPLES "Whether build samples" OFF)
+else()
+  option(BUILD_SAMPLES "Whether build samples" ON)
+endif()
 
 if(ANDROID)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DANDROID -pedantic")
@@ -185,6 +185,8 @@ merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)
 install(TARGETS nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 
+message("BUILD_SAMPLES ${BUILD_SAMPLES} 3")
 if(BUILD_SAMPLES)
+  message("BUILD_SAMPLES ${BUILD_SAMPLES} 4")
   add_subdirectory(samples)
 endif()
