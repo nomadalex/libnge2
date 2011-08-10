@@ -19,6 +19,7 @@ if(NOT BUILD_FOR)
 endif()
 
 if(${BUILD_FOR} STREQUAL PSP)
+  set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_SOURCE_DIR}/Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psp.toolchain.cmake")
 elseif(${BUILD_FOR} STREQUAL Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
@@ -48,9 +49,7 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
   "Real variable for buile." FORCE)
 
 # Put libraries into `lib'.
-if(ANDROID)
-  set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_SOURCE_DIR}/Android)
-else()
+if(NOT ANDROID)
   set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 endif()
 
