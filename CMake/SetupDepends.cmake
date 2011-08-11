@@ -18,9 +18,11 @@ find_package(PNG)
 log_feature(PNG_FOUND "libpng" "Official PNG reference library" "http://www.libpng.org/pub/png/libpng.html" REQUIRED)
 add_package(PNG NGE2_DEP_LIBS)
 
-find_package(GIF)
-log_feature(GIF_FOUND "giflib" " A library for processing GIF" "http://sourceforge.net/projects/giflib" REQUIRED)
-add_package(GIF NGE2_DEP_LIBS)
+if(NOT ANDROID)
+  find_package(GIF)
+  log_feature(GIF_FOUND "giflib" " A library for processing GIF" "http://sourceforge.net/projects/giflib" REQUIRED)
+  add_package(GIF NGE2_DEP_LIBS)
+endif()
 
 # Find FreeType
 find_package(Freetype)
