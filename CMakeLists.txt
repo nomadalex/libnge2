@@ -19,7 +19,6 @@ if(NOT BUILD_FOR)
 endif()
 
 if(${BUILD_FOR} STREQUAL PSP)
-  set(LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_SOURCE_DIR}/Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psp.toolchain.cmake")
 elseif(${BUILD_FOR} STREQUAL Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
@@ -31,15 +30,11 @@ set(NGE2_SRCS)
 set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
 
-if(ANDROID)
-  option(BUILD_SAMPLES "Whether build samples" OFF)
-else()
-  option(BUILD_SAMPLES "Whether build samples" ON)
-endif()
+option(BUILD_SAMPLES "Whether build samples" ON)
 
 if(ANDROID)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DANDROID -pedantic")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DANDROID -pedantic")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
 endif()
 
 include(Common)
@@ -49,7 +44,9 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
   "Real variable for buile." FORCE)
 
 # Put libraries into `lib'.
-if(NOT ANDROID)
+if(ANDROID)
+  set_output_root(${CMAKE_BINARY_DIR}/Android)
+else()
   set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 endif()
 
@@ -66,8 +63,6 @@ list(APPEND NGE2_SRCS
   src/nge_font_freetype.c
   src/nge_font_hzk.c
   src/nge_font_nfont.c
-  src/nge_gif_animation.c
-  src/nge_gif_show.c
   src/nge_image.c
   src/nge_image_effect.c
   src/nge_image_ext.c
@@ -89,6 +84,13 @@ list(APPEND NGE2_SRCS
   src/nge_app.cpp
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
+
+if(NOT ANDROID)
+  list(APPEND NGE2_SRCS
+	src/nge_gif_animation.c
+	src/nge_gif_show.c
+	)
+endif()
 
 if(PSP)
   include_directories(${CMAKE_SOURCE_DIR}/include/psp)
@@ -184,8 +186,6 @@ merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)
 install(TARGETS nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-message("BUILD_SAMPLES ${BUILD_SAMPLES} 3")
 if(BUILD_SAMPLES)
-  message("BUILD_SAMPLES ${BUILD_SAMPLES} 4")
   add_subdirectory(samples)
 endif()
