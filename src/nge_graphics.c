@@ -80,6 +80,11 @@ static screen_context_t nge_screen = {
 	SCREEN_HEIGHT,
 	SCREEN_BPP,
 	0,
+
+	SCREEN_WIDTH,
+	SCREEN_HEIGHT,
+	1.0f,
+	1.0f
 };
 
 typedef struct
