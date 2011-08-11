@@ -209,10 +209,18 @@ else()
 endif()
 
 #setup output directories
-set( LIBRARY_OUTPUT_PATH_ROOT ${CMAKE_SOURCE_DIR} CACHE PATH "root for library output, set this to change where android libs are installed to" )
-set( LIBRARY_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH_ROOT}/libs/${ARMEABI_NDK_NAME} CACHE PATH "path for android libs" FORCE )
-set( EXECUTABLE_OUTPUT_PATH ${LIBRARY_OUTPUT_PATH_ROOT}/bin/${ARMEABI_NDK_NAME} CACHE PATH "Output directory for applications" FORCE)
-set( CMAKE_INSTALL_PREFIX ${ANDROID_NDK_TOOLCHAIN_ROOT}/user/${ARMEABI_NDK_NAME} CACHE STRING "path for installing" FORCE )
+function(set_output_root path)
+  # "root for library output, set this to change where android libs are installed to"
+  set( LIBRARY_OUTPUT_PATH_ROOT ${path} PARENT_SCOPE )
+  # "path for android libs"
+  set( LIBRARY_OUTPUT_PATH ${path}/libs/${ARMEABI_NDK_NAME} PARENT_SCOPE )
+  # "Output directory for applications"
+  set( EXECUTABLE_OUTPUT_PATH ${path}/bin/${ARMEABI_NDK_NAME} PARENT_SCOPE )
+  # "path for installing"
+  set( CMAKE_INSTALL_PREFIX ${path}/user/${ARMEABI_NDK_NAME} PARENT_SCOPE )
+endfunction()
+
+set_output_root(${CMAKE_SOURCE_DIR})
 
 # where is the target environment 
 if( BUILD_WITH_ANDROID_NDK )
@@ -290,7 +298,7 @@ set( ANDROID True )
 set( BUILD_ANDROID True )
 
 #SWIG junk...
-set( NO_SWIG OFF CACHE BOOL "Don't search for SWIG" )
+set( NO_SWIG ON CACHE BOOL "Don't search for SWIG" )
 if( NOT NO_SWIG )
  #need to search in the  host for swig to be found
  set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH )
