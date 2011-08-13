@@ -2,6 +2,7 @@
 #include "nge_debug_log.h"
 #include "nge_io_dir.h"
 #include <string.h>
+#include <stdio.h>
 
 #ifdef NGE_WIN
 #include <windows.h>
@@ -115,18 +116,18 @@ static void   dir_scan(const char* path,const char* file,file_travel_cb callback
 	strncpy(dirname,path,256);
 
 	if(stat(file,   &s)   <   0){
-		printf("stat   error!\n");
+		nge_print("stat   error!\n");
 		return;
 	}
 	if(S_ISDIR(s.st_mode)){
 		strcpy(dirname+strlen(dirname),   file);
 		strcpy(dirname+strlen(dirname),   "/");
 		if((dir   =   opendir(file))   ==   NULL){
-			printf("opendir   %s   error!\n",file);
+			nge_print("opendir   %s   error!\n",file);
 			return;
 		}
 		if(chdir(file)   <   0)   {
-			printf("chdir   error!\n");
+			nge_print("chdir   error!\n");
 			return;
 		}
 		while((dt   =   readdir(dir))   !=   NULL){
@@ -136,7 +137,7 @@ static void   dir_scan(const char* path,const char* file,file_travel_cb callback
 			dir_scan(dirname,dt->d_name, callback,user_data);
 		}
 		if(chdir("..")   <   0){
-			printf("chdir   error!\n");
+			nge_print("chdir   error!\n");
 			return;
 		}
 		closedir(dir);
