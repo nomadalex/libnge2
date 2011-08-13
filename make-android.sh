@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ "x$1" = "x--help" ]; then
+	cat <<EOF
+Usage:
+./make-android.sh [BuildType [ArmTarget [FORCE] ] ]
+EOF
+	exit 0
+fi
+
 dir=`pwd`
 if [ "x$1" = "x" ]; then
 	type=Debug
