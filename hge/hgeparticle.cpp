@@ -37,7 +37,7 @@ float Random_Float(float min, float max)
 hgeParticleSystem::hgeParticleSystem(const char *filename, sprite_p sprite)
 {
 	int handle = io_fopen(filename,IO_RDONLY);
-	if(handle<=0)
+	if(handle==0)
 		return ;
 	io_fread(&info,1,sizeof(hgeParticleSystemInfo),handle);
 	io_fclose(handle);
@@ -255,7 +255,7 @@ void hgeParticleSystem::Stop(BOOL bKillParticles)
 		rectBoundingBox.Clear();
 	}
 }
-#include "nge_debug_log.h"
+
 void hgeParticleSystem::Render()
 {
 	int i;
