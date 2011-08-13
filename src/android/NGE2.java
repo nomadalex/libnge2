@@ -26,7 +26,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.os.Bundle;
-import com.iacger.reversi.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,111 +39,41 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.util.DisplayMetrics;
 
-import org.libnge.nge2.LibCoolAudio;
-
 public class NGE2 extends Activity
 {
 	private NGE2View m_view;
 	private NGE2Renderer m_renderer;
-	private LibCoolAudio m_audio;
 	public int g_height;
 	public int g_width;
 
-	private static native void nativeSetContext(int w,int h);
-	private static native void nativeSetWorkPath(String packname);
+	private static native void nativeSetPackname(String packname);
 
 	private static native void nativeInitialize();
+	private static native void nativeFinalize();
 
 	public static final int APP_NORMAL = 0;
 	public static final int APP_QUIT = 1;
 	private static native int nativeUpdate();
 
-	private static native void nativeFinalize();
-	private static native void nativePause();
-	private static native void nativeResetContext();
-	private static native void nativeResume();
 	private static native void nativeTouch(int action, int x, int y);
+	private static native void nativeSetContext(int w,int h);
+	private static native void nativeResetContext();
 
+	private static native void nativePause();
+	private static native void nativeStop();
+	private static native void nativeResume();
+
+	private String TAG = "nge2";
 	static {
 		System.loadLibrary("nge2app-jni");
 	}
 
-	private void processResource(Activity activity)
-	{
-		String[] files;
-		try
-		{
-			files = activity.getAssets().list("");
-		}
-		catch (IOException e1)
-		{
-			return;
-		}
-
-		String mPathName = "/data/data/"+activity.getPackageName()+"/resource/";
-		File mWorkPath = new File(mPathName);
-		if(!mWorkPath.exists())
-		{
-			if(!mWorkPath.mkdirs())
-			{
-				new AlertDialog.Builder(activity)
-				.setTitle("NGE2 ERROR")
-				.setMessage("FAILED_DIR_CREATE")
-				.setPositiveButton(android.R.string.ok, new OnClickListener(){
-					@Override
-					public void onClick(DialogInterface dialog, int which)
-					{
-						dialog.dismiss();
-					}
-				})
-				.create()
-				.show();
-			}
-		}
-		for(int i = 0; i < files.length; i++)
-		{
-			try
-			{
-				String fileName = files[i];
-
-				if(fileName.compareTo("images") == 0 ||
-				   fileName.compareTo("sounds") == 0 ||
-				   fileName.compareTo("webkit") == 0)
-				{
-					continue;
-				}
-
-				File outFile = new File(mWorkPath, fileName);
-				if(outFile.exists()) continue;
-
-				InputStream in = activity.getAssets().open(fileName);
-				OutputStream out = new FileOutputStream(outFile);
-
-				// Transfer bytes from in to out
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = in.read(buf)) > 0)
-				{
-					out.write(buf, 0, len);
-				}
-
-				in.close();
-				out.close();
-			}
-			catch (FileNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-
+	public boolean m_need_init = true;
 	@Override public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		nativeSetPackname(getPackageName());
 
 		getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
@@ -153,44 +82,46 @@ public class NGE2 extends Activity
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 		g_height = displayMetrics.heightPixels;
 		g_width = displayMetrics.widthPixels;
-		nativeSetContext(g_width,g_height);
-		processResource(this);
-		Log.d("nge2",getApplication().getApplicationContext().getFilesDir().getAbsolutePath());
-		nativeSetWorkPath(getPackageName());
-		m_audio = new LibCoolAudio();
+
 		m_view = new NGE2View(this);
 		m_renderer = new NGE2Renderer();
 		m_view.setRenderer(m_renderer);
+
 		setContentView(m_view);
+		Log.i(TAG, "Create.");
 	}
 
-	@Override public void onPause()
-	{
+	@Override public void onPause() {
+		Log.i(TAG, "Pause.");
 		super.onPause();
 
 		m_view.onPause();
 		nativePause();
 	}
 
+	@Override public void onStop() {
+		Log.i(TAG, "Stop.");
+
+		super.onStop();
+		nativeStop();
+	}
+
 	@Override public void onResume()
 	{
+		Log.i(TAG, "Resume.");
 		super.onResume();
 
 		m_view.onResume();
 		nativeResume();
 	}
 
-	@Override public void onStop() {
-		super.onStop();
-	}
-
 	@Override public void onDestroy()
 	{
+		Log.i(TAG, "Destory.");
 		super.onDestroy();
-
 		nativeFinalize();
+		m_need_init = true;
 	}
-
 
 	private class NGE2View extends GLSurfaceView
 	{
@@ -213,29 +144,26 @@ public class NGE2 extends Activity
 
 	private class NGE2Renderer implements Renderer
 	{
-		private int w;
-		private int h;
-		public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-			nativeResetContext();
-		}
-
-		public void onSurfaceChanged(GL10 gl, int width, int height) {
-			w = width;
-			h = height;
-			String msg = String.format("w = %d,h = %d", g_width,g_height);
-			Log.d("nge2",msg);
-			nativeSetContext(w,h);
-			nativeResetContext();
-		}
-
-		private boolean m_is_first = true;
-		public void onDrawFrame(GL10 gl)
-		{
-			if (m_is_first)
-			{
-				m_is_first = false;
+		@Override public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+			Log.i(TAG, "onSurfaceCreated.");
+			if (m_need_init) {
+				m_need_init = false;
+				Log.i(TAG, "nativeInitialize.");
 				nativeInitialize();
 			}
+		}
+
+		@Override public void onSurfaceChanged(GL10 gl, int width, int height) {
+			Log.i(TAG, "onSurfaceChanged.");
+			String msg = String.format("w = %d,h = %d", width, height);
+			Log.d(TAG,msg);
+			gl.glViewport(0, 0, width, height);
+			nativeSetContext(width, height);
+			nativeResetContext();
+		}
+
+		@Override public void onDrawFrame(GL10 gl)
+		{
 			if (nativeUpdate() == APP_QUIT)
 				onDestroy();
 		}

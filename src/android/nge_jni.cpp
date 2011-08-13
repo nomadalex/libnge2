@@ -11,17 +11,20 @@
 #include "nge_app.h"
 #include "libnge2.h"
 
-#define JNIEXPORT extern "C"
+#define JNIAPI extern "C"
+// #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
+
+char *main_argv[2] = { 0, 0};
 
 static nge_app_t *s_app = NULL;
 
 static unsigned char sPaused = 0;
 static unsigned char sResume = 0;
-static char sPackName[256]={0};
+
 static screen_context_p screen;
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeSetContext(JNIEnv* env,
-														  jobject thiz,jint w,jint h)
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetContext(JNIEnv* env,
+													   jobject thiz,jint w,jint h)
 {
 	NGE_SetNativeResolution(w,h);
 	screen = GetScreenContext();
@@ -47,77 +50,81 @@ char* jstringTostring(JNIEnv* env, jstring jstr)
 	return rtn;
 }
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeSetWorkPath(JNIEnv* env,
-														   jobject thiz,jstring packname)
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetPackname(JNIEnv* env,
+														jobject thiz,jstring packname)
 {
-	char fullname[512]={0};
-	char* name = jstringTostring(env, packname);
-	sprintf(fullname,"/data/data/%s/resource/",name);
-	if(name)
-		free(name);
-	chdir(fullname);
-	nge_print("nge2 set workpath:%s.\n",fullname);
+	main_argv[0] = jstringTostring(env, packname);
 }
 
-extern void nge_graphics_reset(void);
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
-															jobject thiz )
+extern "C" void nge_graphics_reset(void);
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
+														 jobject thiz )
 {
-	nge_graphics_reset();
+	if(sResume) {
+		nge_print("nge2 reset graphics.\n");
+		nge_graphics_reset();
+		sResume = 0;
+	}
 }
 
-extern int NGE_main(int argc, char *argv[]);
+extern "C" int main(int argc, char *argv[]);
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
-														  jobject thiz )
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
+													   jobject thiz )
 {
-	NGE_main(0, 0);
+	main(1, main_argv);
 	s_app = nge_get_app();
+	if (!s_app)
+		nge_error("no app!");
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }
 
-JNIEXPORT int Java_org_libnge_nge2_NGE2_nativeUpdate(JNIEnv* env,
-													 jobject thiz )
+JNIAPI int Java_org_libnge_nge2_NGE2_nativeUpdate(JNIEnv* env,
+												  jobject thiz )
 {
 	if(sPaused)
 		return NGE_APP_NORMAL;
-	if(sResume) {
-		sResume = 0;
-	}
 
 	return s_app->mainloop();
 }
 
-JNIEXPORT void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
-														 jobject thiz )
+JNIAPI void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
+													  jobject thiz )
 {
 	s_app->fini();
 	nge_print("nge2 finished normaly.\n");
 }
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
-													 jobject thiz )
+JNIAPI void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
+												  jobject thiz )
 {
-	// do nothing for now
 	nge_print("Paused.\n");
 	sPaused = 1;
 }
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
-													  jobject thiz )
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeStop(JNIEnv* env,
+												  jobject thiz )
+{
+	nge_print("Stoped.\n");
+}
+
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
+												   jobject thiz )
 {
 	nge_print("Resume.\n");
-	sPaused = 0;
-	sResume = 1;
+	if (sPaused) {
+		sPaused = 0;
+		sResume = 1;
+	}
 }
 
 // decl from nge_input.c
 extern MouseMoveProc mouse_move_proc;
 extern MouseButtonProc mouse_btn_proc;
 
-JNIEXPORT void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
-													 jobject thiz , jint action, jint x, jint y)
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
+												  jobject thiz , jint action, jint x, jint y)
 {
 	switch (action)
 	{
