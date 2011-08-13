@@ -253,12 +253,12 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	glScissor(x,nge_screen.height-y-h,w,h);
+	glScissor(x, nge_screen.height-y-h, w, h);
 }
 
 void ResetClip()
 {
-	glScissor(0,0,nge_screen.width, nge_screen.height);
+	SetClip(0,0,nge_screen.width, nge_screen.height);
 }
 
 #if defined NGE_LINUX
@@ -341,6 +341,16 @@ void nge_graphics_reset(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+
+#ifndef NGE_ANDROID
+	glEnable(GL_SCISSOR_TEST);
+	ResetClip();
+#endif
+
 	glEnable( GL_TEXTURE_2D );
 	glDisable( GL_DEPTH_TEST );
 	glShadeModel( GL_SMOOTH );
@@ -348,21 +358,9 @@ void nge_graphics_reset(void)
 	ResetTexBlend();
 
 	GL_ARRAY_EN(VERTEX);
-	if (gl_vectices)
-		glVertexPointer(2,GL_FLOAT,sizeof(Vectice2D_t),gl_vectices);
-	if (gl_colors)
-		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Color_t), gl_colors);
-	if (gl_tex_uvs)
-		glTexCoordPointer(2,GL_FLOAT,sizeof(TexCoord_t),gl_tex_uvs);
-
-	glEnable(GL_SCISSOR_TEST);
-	ResetClip();
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
-
-	glMatrixMode(GL_MODELVIEW);
+	glVertexPointer(2,GL_FLOAT,sizeof(Vectice2D_t),gl_vectices);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Color_t), gl_colors);
+	glTexCoordPointer(2,GL_FLOAT,sizeof(TexCoord_t),gl_tex_uvs);
 }
 
 void InitGrahics()
@@ -468,10 +466,14 @@ void LimitFps(uint32 limit)
 void BeginScene(uint8 clear)
 {
 	if(clear == 1){
+#ifndef NGE_ANDROID
 		glDisable(GL_SCISSOR_TEST);
+#endif
 		glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
 		glClear( GL_COLOR_BUFFER_BIT);
+#ifndef NGE_ANDROID
 		glEnable(GL_SCISSOR_TEST);
+#endif
 	}
 	glLoadIdentity();
 	if(nge_screen.fullscreen == 2){
@@ -639,10 +641,20 @@ void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype)
 	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, count);
 }
 
+#define SET_RECT_ARRAY()						\
+	float x[4], y[4];							\
+	x[0] = dx;									\
+	x[1] = dx;									\
+	x[2] = dx+width;							\
+	x[3] = dx+width;							\
+	y[0] = dy;									\
+	y[1] = dy+height;							\
+	y[2] = dy+height;							\
+	y[3] = dy
+
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
 {
-	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy+height, dy+height, dy };
+	SET_RECT_ARRAY();
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_LINE_LOOP, 4);
@@ -655,8 +667,7 @@ void DrawRectEx(rectf rect,int color,int dtype)
 
 void FillRect(float dx, float dy, float width, float height,int color,int dtype)
 {
-	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy+height, dy+height, dy };
+	SET_RECT_ARRAY();
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 4);
@@ -676,8 +687,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 //
 void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype)
 {
-	float x[] = { dx, dx, dx+width, dx+width };
-	float y[] = { dy, dy+height, dy+height, dy };
+	SET_RECT_ARRAY();
 	if(dy == 0.0)
 		dy = 0.1;
 	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, 4);
@@ -698,7 +708,13 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {
-	float x[4] = { v1.x, v2.x, v3.x }, y[4] = { v1.y, v2.y, v3.y };
+	float x[3], y[3];
+	x[0] = v1.x;
+	x[1] = v2.x;
+	x[2] = v3.x;
+	y[0] = v1.y;
+	y[1] = v2.y;
+	y[2] = v3.y;
 	FillPolygon(x, y, 3, color, dtype);
 }
 
