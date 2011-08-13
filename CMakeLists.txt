@@ -98,10 +98,6 @@ if(PSP)
 	src/psp/nge_graphics.c
 	src/psp/vram.c
 	)
-elseif(ANDROID)
-  list(APPEND NGE2_SRCS
-	src/android/nge_jni.cpp
-	)
 endif()
 
 # depends
@@ -154,6 +150,18 @@ endif()
 
 if(PSP)
   add_pspsdk_libs(NGE2_LIBS)
+endif()
+
+if(ANDROID)
+  include(CopyFile)
+  function(copy_nge_android_java_files target dir)
+	set(fromfile "${CMAKE_SOURCE_DIR}/src/android/NGE2.java")
+	set(tofile "${dir}/src/org/libnge/nge2/NGE2.java")
+	copy_file("NGE2.java for ${nm}" ${fromfile} ${tofile})
+	add_custom_target(${target}_nge_java DEPENDS "NGE2.java for ${nm}")
+	add_dependencies(${target} ${target}_nge_java)
+  endfunction()
+  set(NGE_ANDROID_JNI_FILE ${CMAKE_SOURCE_DIR}/src/android/nge_jni.cpp)
 endif()
 
 set(NGE2_ORIG_LIBS ${NGE2_LIBS})
