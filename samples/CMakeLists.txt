@@ -83,7 +83,7 @@ function(copy_res_files target)
   set(files)
 
   if(ANDROID)
-	set(prefix android/assets/)
+	set(prefix res/)
   else()
 	set(prefix "")
   endif()
