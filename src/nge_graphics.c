@@ -326,6 +326,12 @@ makeWindow(const char *name, int x, int y, int width, int height)
 void nge_graphics_reset(void)
 {
 	int i;
+	// reset for fps------------------
+	m_frame = 0;
+	m_t0 = 0;
+	fps_last_ticks = nge_get_tick();
+
+	// reset cache
 	tex_cache_clear();
 	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
@@ -342,6 +348,12 @@ void nge_graphics_reset(void)
 	ResetTexBlend();
 
 	GL_ARRAY_EN(VERTEX);
+	if (gl_vectices)
+		glVertexPointer(2,GL_FLOAT,sizeof(Vectice2D_t),gl_vectices);
+	if (gl_colors)
+		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Color_t), gl_colors);
+	if (gl_tex_uvs)
+		glTexCoordPointer(2,GL_FLOAT,sizeof(TexCoord_t),gl_tex_uvs);
 
 	glEnable(GL_SCISSOR_TEST);
 	ResetClip();
@@ -382,10 +394,6 @@ void InitGrahics()
 	glXMakeCurrent(g_dpy, g_win, g_ctx);
 #endif
 
-	// init for fps------------------
-	m_frame = 0;
-	m_t0 = 0;
-	fps_last_ticks = nge_get_tick();
 	//-------------------------------
 
 	for (i=0;i<360;i++)
@@ -403,10 +411,19 @@ void InitGrahics()
 void FiniGrahics()
 {
 	tex_cache_fini();
+#ifndef NGE_ANDROID
+	/* android will destory gl context by itself. */
 	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
+#endif
 	SAFE_FREE(gl_vectices);
+	gl_vectices = NULL;
+	max_vectices = 0;
 	SAFE_FREE(gl_colors);
+	gl_colors = NULL;
+	max_colors = 0;
 	SAFE_FREE(gl_tex_uvs);
+	gl_tex_uvs = NULL;
+	max_tex_uvs = 0;
 
 #if defined NGE_LINUX
 	glXDestroyContext(g_dpy, g_ctx);
