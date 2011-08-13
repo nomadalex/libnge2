@@ -22,41 +22,37 @@ http://www.iacger.com/product/official/nge2.php
 安装
 ---------
 
-nge2使用 CMake 进行构建，请尽量使用 out-of-source 方式进行构建。
-建议：
-    $ mkdir build
-    $ cd build
+nge2使用 CMake 进行构建，在windows上请使用cmake-gui.
+在类UNIX平台下（psp、android、linux）请使用项目根目录下提供的
+脚本，例：
 
-    $ cmake ..
-    or
-    $ cmake -G "xxx" ..
+PSP:
+./make-psp.sh
+linux:
+./make-linux.sh
+android:
+./make-android.sh
 
-psp平台只需选中BUILD_PSP选项即可
-    $ mkdir build
-    $ cd build
-    $ cmake -DBUILD_PSP=ON ..
-	$ make
-	$ make install
+更详细的用法请通过--help选项查看，例：
 
-在 Unix/Mac 平台上，你可以使用 `ccmake` 图形式设定你需要的选项。
-在 windows 上，则可以使用 `cmake-gui` (关于如何使用cmake-gui，请自行G之)。
+./make-android.sh --help
 
 如果你缺失了任何依赖，CMake 会将其指出。你可以在安装完依赖后继续构建，当然，你需要先删除 `CMakeCache.txt` 文件。
 
-使用生成的 makefiles 或项目文件来构建 NGE2. 如果使用 makefiles, 键入 `make` 或 `mingw32-make`. 如果使用项目文件，用你的 IDE 打开它。如果使用 Xcode, 你可以使用 IDE 或从命令行里键入 `xcodebuild`.
+cache的修改：
+在 Unix/Mac 平台上，你可以使用 `ccmake` 图形式设定你需要的选项。
+在 windows 上，则可以使用 `cmake-gui` (关于如何使用cmake-gui，请自行G之)。
 
-如果你需要，你可以安装库文件和头文件。
+目前已通过 linux 、android 和 psp 端的编译。
 
-	$ make install
-	or
-	$ make install DESTDIR=/path/to/destination
-
-目前已通过 linux 下本地和 psp 端的编译。
-
-对VC6.0，VS2003，VS2005，VS2008编译环境的支持正在调教中...
+windows下：
+VC6.0已通过。
+对VS2003，VS2005，VS2008编译环境的支持正在调教中（太大，没装）...
 
 依赖
 ---------
+你可以直接下载由我们打包好的压缩包解压到项目根目录即可。
+
 * zlib 
 Simple data compression library 
 http://www.zlib.net
@@ -102,7 +98,7 @@ on linux, you can download it from download page.
 推荐：
 minpspw(pspsdk)(http://sourceforge.net/projects/minpspw/)
 
-二进制版本下载地址：
+二进制版本下载地址（未更新）：
 
 * [linux (ubuntu 32bit)](http://sourceforge.net/projects/minpspw/files/SDK%20%2B%20devpak/pspsdk%200.11.1/minpspw_0.11.1-1ubuntu0_i386.deb/download)
 
