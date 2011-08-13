@@ -82,8 +82,6 @@ int main(int argc, char *argv[])
 }
 #endif
 
-static int initFlags = 0;
-
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full)
 {
 	screen_context_p screen = GetScreenContext();
@@ -108,6 +106,8 @@ void NGE_SetNativeResolution(int width,int height)
 	screen->rate_h = 1.0f * height/screen->height;
 }
 
+static int initFlags = 0;
+
 void NGE_Init(int flags)
 {
 	if(initFlags==0){
@@ -131,6 +131,7 @@ void NGE_Quit()
 		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
 #endif
+		initFlags = 0;
 
 #if defined NGE_WIN
 		SDL_Quit();
