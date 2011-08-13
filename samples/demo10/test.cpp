@@ -1,6 +1,7 @@
 #include "libnge2.h"
 #include "nge_app.h"
 #include <stdio.h>
+// #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
 /**
  * nge_test:最简单的nge程序:显示一张图片
  */
@@ -59,6 +60,12 @@ void DrawScene()
 	EndScene();
 }
 
+#ifdef ANDROID
+#define RES_PATH(path) ("/sdcard/libnge2/demo10/" path)
+#else
+#define RES_PATH(path) (path)
+#endif
+
 int init() {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL
 	NGE_Init(INIT_VIDEO);
@@ -68,12 +75,12 @@ int init() {
 	InitInput(btn_down,NULL,1);
 #endif
 	//最后一个参数是psp swizzle优化，通常填1
-	p_bg = image_load("images/demo0.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
+	p_bg = image_load(RES_PATH("images/demo0.jpg"),DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_bg == NULL)
-		printf("can not open file\n");
-	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_4444,1);
+		nge_print("can not open file\n");
+	p_logo = image_load(RES_PATH("images/nge2logo.png"),DISPLAY_PIXEL_FORMAT_4444,1);
 	if(p_logo == NULL)
-		printf("can not open file\n");
+		nge_print("can not open file\n");
 	//创建一个半透明的图片遮罩color
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
 	//随便创建一个图片遮罩color
@@ -96,7 +103,9 @@ int mainloop() {
 
 int fini() {
 	image_free(p_bg);
+	p_bg = NULL;
 	image_free(p_logo);
+	p_logo = NULL;
 	NGE_Quit();
 	return 0;
 }
