@@ -1,3 +1,5 @@
+set(SAMPLE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 include(RmDupLibs)
 function(add_nge_executable nm)
   set(_ARGS)
@@ -17,7 +19,7 @@ function(add_nge_executable nm)
   endforeach()
 
   if(ANDROID)
-	add_library(${nm} SHARED ${_ARGS})
+	add_library(${nm} SHARED ${NGE_ANDROID_JNI_FILE} ${_ARGS})
   else()
 	add_executable(${nm} WIN32 ${_ARGS})
   endif()
@@ -38,12 +40,31 @@ function(add_nge_executable nm)
 	else()
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
+
+	copy_coolaudio_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
+	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
+
+	configure_file("${SAMPLE_SOURCE_DIR}/Android/default.properties"
+	  "android/default.properties" COPYONLY)
+	set(package_name "org.libnge.nge2.${nm}")
+	configure_file("${SAMPLE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
+	  "android/AndroidManifest.xml" @ONLY)
+	set(app_name "${nm}")
+	configure_file("${SAMPLE_SOURCE_DIR}/Android/strings.xml.in"
+	  "android/res/values/strings.xml" @ONLY)
+	set(project_name "${nm}")
+	configure_file("${SAMPLE_SOURCE_DIR}/Android/project_create.sh.in"
+	  "android/project_create.sh" @ONLY)
+
 	add_custom_command(
 	  TARGET ${nm}
 	  POST_BUILD
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
 	  "${CMAKE_CURRENT_BINARY_DIR}/android/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
+	  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/android/project_create.sh"
+	  COMMAND "ant" debug
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/android"
 	  )
   endif()
 endfunction()
