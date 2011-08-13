@@ -1,5 +1,3 @@
-set(SAMPLE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
 include(RmDupLibs)
 function(add_nge_executable nm)
   set(_ARGS)
@@ -44,16 +42,16 @@ function(add_nge_executable nm)
 	copy_coolaudio_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
 	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
 
-	configure_file("${SAMPLE_SOURCE_DIR}/Android/default.properties"
+	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
 	  "android/default.properties" COPYONLY)
 	set(package_name "org.libnge.nge2.${nm}")
-	configure_file("${SAMPLE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
+	configure_file("${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
 	  "android/AndroidManifest.xml" @ONLY)
 	set(app_name "${nm}")
-	configure_file("${SAMPLE_SOURCE_DIR}/Android/strings.xml.in"
+	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
 	  "android/res/values/strings.xml" @ONLY)
 	set(project_name "${nm}")
-	configure_file("${SAMPLE_SOURCE_DIR}/Android/project_create.sh.in"
+	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
 	  "android/project_create.sh" @ONLY)
 
 	add_custom_command(

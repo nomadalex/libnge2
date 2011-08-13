@@ -45,7 +45,7 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
 
 # Put libraries into `lib'.
 if(ANDROID)
-  set_output_root(${CMAKE_BINARY_DIR})
+  set_output_root(${CMAKE_SOURCE_DIR}/Android)
 else()
   set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 endif()
