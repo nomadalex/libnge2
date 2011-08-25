@@ -253,7 +253,10 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	glScissor(x, nge_screen.height-y-h, w, h);
+	float rate_w_ori = 1/nge_screen.rate_w;
+	float rate_h_ori = 1/nge_screen.rate_h;
+	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori* (y-h)),
+			  ceil(w*rate_w_ori),ceil(h*rate_h_ori));
 }
 
 void ResetClip()
@@ -346,10 +349,8 @@ void nge_graphics_reset(void)
 	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 
-#ifndef NGE_ANDROID
 	glEnable(GL_SCISSOR_TEST);
 	ResetClip();
-#endif
 
 	glEnable( GL_TEXTURE_2D );
 	glDisable( GL_DEPTH_TEST );
@@ -466,14 +467,10 @@ void LimitFps(uint32 limit)
 void BeginScene(uint8 clear)
 {
 	if(clear == 1){
-#ifndef NGE_ANDROID
 		glDisable(GL_SCISSOR_TEST);
-#endif
 		glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
 		glClear( GL_COLOR_BUFFER_BIT);
-#ifndef NGE_ANDROID
 		glEnable(GL_SCISSOR_TEST);
-#endif
 	}
 	glLoadIdentity();
 	if(nge_screen.fullscreen == 2){
