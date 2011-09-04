@@ -48,6 +48,8 @@ public class NGE2 extends Activity
 
 	private static native void nativeSetPackname(String packname);
 
+	private static native void nativeCreate();
+
 	private static native void nativeInitialize();
 	private static native void nativeFinalize();
 
@@ -78,6 +80,8 @@ public class NGE2 extends Activity
 		getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 
+		nativeCreate();
+		
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 		g_height = displayMetrics.heightPixels;

@@ -56,6 +56,15 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetPackname(JNIEnv* env,
 	main_argv[0] = jstringTostring(env, packname);
 }
 
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeCreate(JNIEnv* env,
+												   jobject thiz)
+{
+	main(1, main_argv);
+	s_app = nge_get_app();
+	if (!s_app)
+		nge_error("no app!");
+}
+
 extern "C" void nge_graphics_reset(void);
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 														 jobject thiz )
@@ -72,10 +81,6 @@ extern "C" int main(int argc, char *argv[]);
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
 {
-	main(1, main_argv);
-	s_app = nge_get_app();
-	if (!s_app)
-		nge_error("no app!");
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }
