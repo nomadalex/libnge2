@@ -27,11 +27,13 @@ nge2使用 CMake 进行构建。
 在类UNIX平台下（psp、android、linux）推荐使用项目根目录下提供的
 脚本，例：
 
-PSP:
+PSP: 
 ./script/make-psp.sh
-linux:
+
+linux: 
 ./script/make-linux.sh
-android:
+
+android: 
 ./script/make-android.sh
 
 更详细的用法请通过--help选项查看，例：
