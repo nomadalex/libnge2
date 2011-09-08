@@ -22,20 +22,21 @@ http://www.iacger.com/product/official/nge2.php
 安装
 ---------
 
-nge2使用 CMake 进行构建，在windows上请使用cmake-gui.
-在类UNIX平台下（psp、android、linux）请使用项目根目录下提供的
+nge2使用 CMake 进行构建。
+在windows上推荐使用cmake-gui.
+在类UNIX平台下（psp、android、linux）推荐使用项目根目录下提供的
 脚本，例：
 
 PSP:
-./make-psp.sh
+./script/make-psp.sh
 linux:
-./make-linux.sh
+./script/make-linux.sh
 android:
-./make-android.sh
+./script/make-android.sh
 
 更详细的用法请通过--help选项查看，例：
 
-./make-android.sh --help
+./script/make-android.sh --help
 
 如果你缺失了任何依赖，CMake 会将其指出。你可以在安装完依赖后继续构建，当然，你需要先删除 `CMakeCache.txt` 文件。
 
@@ -43,11 +44,14 @@ cache的修改：
 在 Unix/Mac 平台上，你可以使用 `ccmake` 图形式设定你需要的选项。
 在 windows 上，则可以使用 `cmake-gui` (关于如何使用cmake-gui，请自行G之)。
 
-目前已通过 linux 、android 和 psp 端的编译。
+目前已通过 linux 、android 和 psp 平台的编译。
 
-windows下：
+windows平台：
 VC6.0已通过。
-对VS2003，VS2005，VS2008编译环境的支持正在调教中（太大，没装）...
+VS2003，VS2005，VS2008编译环境请自行尝试，不会有太大问题的。
+
+注：
+如需编译例子，请先下载res.7z解压到samples目录。
 
 依赖
 ---------
