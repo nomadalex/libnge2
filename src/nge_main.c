@@ -106,6 +106,11 @@ void NGE_SetNativeResolution(int width,int height)
 	screen->rate_h = 1.0f * height/screen->height;
 }
 
+char *NGE_OP_Path = NULL;
+void NGE_SetOPMoviePath(const char* path) {
+	NGE_OP_Path = path;
+}
+
 static int initFlags = 0;
 
 void NGE_Init(int flags)

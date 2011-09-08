@@ -59,7 +59,18 @@ void NGE_Quit();
  */
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
+/**
+ *设置系统原生屏幕分辨率
+ *@param int width,宽度
+ *@param int height,高度
+ */
 void NGE_SetNativeResolution(int width,int height);
+
+/**
+ *设置片头动画地址
+ *@param const char* path,地址
+ */
+void NGE_SetOPMoviePath(const char* path);
 #ifdef __cplusplus
 }
 #endif

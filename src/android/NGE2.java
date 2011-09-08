@@ -39,6 +39,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.util.DisplayMetrics;
 
+import android.media.MediaPlayer;
+import android.widget.MediaController;
+import android.widget.VideoView;
+
 public class NGE2 extends Activity
 {
 	private NGE2View m_view;
@@ -46,24 +50,29 @@ public class NGE2 extends Activity
 	public int g_height;
 	public int g_width;
 
-	private static native void nativeSetPackname(String packname);
+	private native void nativeSetPackname(String packname);
 
-	private static native void nativeCreate();
+	private native void nativeCreate();
 
-	private static native void nativeInitialize();
-	private static native void nativeFinalize();
+	private native void nativeInitialize();
+	private native void nativeFinalize();
 
 	public static final int APP_NORMAL = 0;
 	public static final int APP_QUIT = 1;
-	private static native int nativeUpdate();
+	private native int nativeUpdate();
 
-	private static native void nativeTouch(int action, int x, int y);
-	private static native void nativeSetContext(int w,int h);
-	private static native void nativeResetContext();
+	private native void nativeTouch(int action, int x, int y);
+	private native void nativeSetContext(int w,int h);
+	private native void nativeResetContext();
 
-	private static native void nativePause();
-	private static native void nativeStop();
-	private static native void nativeResume();
+	private native void nativePause();
+	private native void nativeStop();
+	private native void nativeResume();
+
+	private boolean OP_Playing = false;
+	private String OP_Path;
+	private VideoView OP_View;
+	private int OP_Pos = 0;
 
 	private String TAG = "nge2";
 	static {
@@ -71,27 +80,49 @@ public class NGE2 extends Activity
 	}
 
 	public boolean m_need_init = true;
-	@Override public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
 
-		nativeSetPackname(getPackageName());
-
-		getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-
-		nativeCreate();
-		
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-		g_height = displayMetrics.heightPixels;
-		g_width = displayMetrics.widthPixels;
-
+	private void prepareGLView() {
 		m_view = new NGE2View(this);
 		m_renderer = new NGE2Renderer();
 		m_view.setRenderer(m_renderer);
 
 		setContentView(m_view);
+	}
+
+	@Override public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		nativeSetPackname(getPackageName());
+		nativeCreate();
+
+		getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+		g_height = displayMetrics.heightPixels;
+		g_width = displayMetrics.widthPixels;
+
+		if (OP_Path != null) {
+			OP_View = new VideoView(getApplicationContext());
+			OP_View.setVideoPath(OP_Path);
+			OP_View.setMediaController(new MediaController(this));
+			OP_View.requestFocus();
+			OP_View.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+					@Override
+					public void onCompletion(MediaPlayer mp)
+					{
+						OP_Playing = false;
+						prepareGLView();
+					}
+				});
+			OP_Playing = true;
+			setContentView(OP_View);
+		}
+		else
+			prepareGLView();
+
 		Log.i(TAG, "Create.");
 	}
 
@@ -99,15 +130,23 @@ public class NGE2 extends Activity
 		Log.i(TAG, "Pause.");
 		super.onPause();
 
-		m_view.onPause();
-		nativePause();
+		if (!OP_Playing) {
+			m_view.onPause();
+			nativePause();
+		}
 	}
 
 	@Override public void onStop() {
 		Log.i(TAG, "Stop.");
 
 		super.onStop();
-		nativeStop();
+		if (OP_Playing) {
+			OP_View.pause();
+			OP_Pos = OP_View.getCurrentPosition();
+		}
+		else {
+			nativeStop();
+		}
 	}
 
 	@Override public void onResume()
@@ -115,16 +154,28 @@ public class NGE2 extends Activity
 		Log.i(TAG, "Resume.");
 		super.onResume();
 
-		m_view.onResume();
-		nativeResume();
+		if (OP_Playing) {
+			OP_View.seekTo(OP_Pos);
+			OP_View.start();
+		}
+		else {
+			m_view.onResume();
+			nativeResume();
+		}
 	}
 
 	@Override public void onDestroy()
 	{
 		Log.i(TAG, "Destory.");
 		super.onDestroy();
-		nativeFinalize();
-		m_need_init = true;
+
+		if (OP_Playing) {
+			OP_View.destroyDrawingCache();
+		}
+		else {
+			nativeFinalize();
+			m_need_init = true;
+		}
 	}
 
 	private class NGE2View extends GLSurfaceView

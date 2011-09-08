@@ -14,6 +14,16 @@
 #define JNIAPI extern "C"
 // #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
 
+// forward declare
+/* from nge_main.c */
+extern char *NGE_OP_Path;
+extern "C" int main(int argc, char *argv[]);
+/* from nge_graphics.c */
+extern "C" void nge_graphics_reset(void);
+/* from nge_input.c */
+extern MouseMoveProc mouse_move_proc;
+extern MouseButtonProc mouse_btn_proc;
+
 char *main_argv[2] = { 0, 0};
 
 static nge_app_t *s_app = NULL;
@@ -56,16 +66,25 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetPackname(JNIEnv* env,
 	main_argv[0] = jstringTostring(env, packname);
 }
 
+inline static void setOP_PathToJava(JNIEnv* env, jobject thiz) {
+	if (NGE_OP_Path) {
+		jclass cls = env->GetObjectClass(thiz);
+		jfieldID field = env->GetFieldID(cls, "OP_Path", "Ljava/lang/String;");
+		jstring path = env->NewStringUTF(NGE_OP_Path);
+		env->SetObjectField(thiz, field, path);
+	}
+}
+
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeCreate(JNIEnv* env,
 												   jobject thiz)
 {
 	main(1, main_argv);
+	setOP_PathToJava(env, thiz);
 	s_app = nge_get_app();
 	if (!s_app)
 		nge_error("no app!");
 }
 
-extern "C" void nge_graphics_reset(void);
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 														 jobject thiz )
 {
@@ -75,8 +94,6 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 		sResume = 0;
 	}
 }
-
-extern "C" int main(int argc, char *argv[]);
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
@@ -123,10 +140,6 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
 		sResume = 1;
 	}
 }
-
-// decl from nge_input.c
-extern MouseMoveProc mouse_move_proc;
-extern MouseButtonProc mouse_btn_proc;
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
 												  jobject thiz , jint action, jint x, jint y)
