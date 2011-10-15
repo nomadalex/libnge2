@@ -13,6 +13,7 @@ add_resource(${D_NAME}_all_res fonts
   simfang.ttf)
 add_resource(${D_NAME}_all_res music
   simple1.mp3
-  simple3.wav)
+  simple3.wav
+  test.org)
 
 copy_res_files(${D_NAME} ${${D_NAME}_all_res})
