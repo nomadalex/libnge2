@@ -114,6 +114,27 @@ void DrawScene()
 
 static int step = 0;
 static int temp_count = 0;
+static bool audio_playing[3];
+
+void notifyCallback(int type, void* data, void* pCookie)
+{
+	switch (type) {
+	case NGE_NOTIFY_PAUSE:
+		for (int i = 0; i < 3; i++) {
+			if (audio_playing[i])
+				audio[i]->pause(audio[i]);
+		}
+		nge_print("notify pause\n");
+		break;
+	case NGE_NOTIFY_RESUME:
+		for (int i = 0; i < 3; i++) {
+			if (audio_playing[i])
+				audio[i]->resume(audio[i]);
+		}
+		nge_print("notify resume\n");
+		break;
+	}
+}
 
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 void mouseButtonProc(int type, int x, int y)
@@ -140,6 +161,8 @@ int init()
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 	InitMouse(mouseButtonProc, NULL);
 #endif
+
+	NGE_RegisterNotifyCallback(notifyCallback, NULL);
 
 	int i;
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致
@@ -187,6 +210,10 @@ int init()
 	step = 1;
 	temp_count = 60*100;
 
+	for (int i = 0; i < 3; i++) {
+		audio_playing[i] = false;
+	}
+
 	return 0;
 }
 
@@ -202,37 +229,54 @@ int mainloop()
 	case 1:
 		// play ogg and wait end
 		audio[2]->play(audio[2], 1, 0);
+		audio_playing[2] = true;
 		step = 2;
 		break;
 
 	case 2:
-		if (audio[2]->iseof(audio[2]))
+		if (audio[2]->iseof(audio[2])) {
+			audio_playing[2] = false;
 			step = 3;
+		}
 		break;
 
 	case 3:
 		// play wav 2 times and wait end
 		audio[1]->play(audio[1], 2, 0);
+		audio_playing[1] = true;
 		step = 4;
 		break;
 
 	case 4:
-		if (audio[1]->iseof(audio[1]))
+		if (audio[1]->iseof(audio[1])) {
+			audio_playing[1] = false;
 			step = 5;
+		}
 		break;
 
 	case 5:
 		audio[0]->play(audio[0], 1, 0);
 		audio[2]->playstop(audio[2]);
 		audio[1]->play(audio[1], 1, 0);
+		audio_playing[0] = true;
+		audio_playing[1] = true;
+		audio_playing[2] = true;
 		startTouch = TRUE;
-		step = 0;
+		step = 7;
 		break;
 
 	case 6:
 		audio[0]->seek(audio[0], -3000, AUDIO_SEEK_CUR);
 		nge_print("seek -3000 ms\n");
 		step = 0;
+		break;
+
+	case 7:
+		for (int i = 0; i < 3; i++) {
+			if (audio_playing[i])
+				if (audio[i]->iseof(audio[i]))
+					audio_playing[i] = false;
+		}
 		break;
 	}
 
