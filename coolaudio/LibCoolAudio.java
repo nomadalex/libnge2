@@ -158,8 +158,10 @@ public class LibCoolAudio extends Object
 
 	public void resume() {
 		if (!hasError) {
-			mplayer.start();
-			isPaused = false;
+			if (isPaused) {
+				mplayer.start();
+				isPaused = false;
+			}
 		}
 	}
 
