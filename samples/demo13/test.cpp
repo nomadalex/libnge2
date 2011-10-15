@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "nge_app.h"
 /**
  * nge_test:测试nge2的按键输入字体
  * 采用最新的音频接口~
@@ -28,6 +29,8 @@ int maskbox = MAKE_RGBA_8888(255,255,255,128);
 int wav_ret;
 
 audio_play_p audio[3];
+PFont pf[2];
+static BOOL startTouch = FALSE;
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 void btn_down(int keycode)
@@ -109,8 +112,23 @@ void DrawScene()
 	EndScene();
 }
 
-extern "C"
-int main(int argc, char* argv[])
+static int step = 0;
+static int temp_count = 0;
+
+#ifdef NGE_INPUT_MOUSE_SUPPORT
+void mouseButtonProc(int type, int x, int y)
+{
+	switch (type) {
+	case MOUSE_LBUTTON_DOWN:
+		if (startTouch)
+			step = 6;
+		nge_print("mouse lbutton down\n");
+		break;
+	}
+}
+#endif
+
+int init()
 {
 	NGE_Init(INIT_ALL);
 	//audio_play_p mp3 = CreateMp3Player();
@@ -119,7 +137,10 @@ int main(int argc, char* argv[])
 	InitInput(btn_down,btn_up,1);
 #endif
 
-	PFont pf[2] ;
+#ifdef NGE_INPUT_MOUSE_SUPPORT
+	InitMouse(mouseButtonProc, NULL);
+#endif
+
 	int i;
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
@@ -152,7 +173,6 @@ int main(int argc, char* argv[])
 	pimage_icon[0] = image_load_colorkey(RES_PATH("images/demo2_icon1.png"),DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	pimage_icon[1] = image_load_colorkey(RES_PATH("images/demo2_icon0.bmp"),DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 
-
 	//载入3声音一会播放
 	//0-mp3
 	audio[0] = CreateMp3Player();
@@ -160,20 +180,72 @@ int main(int argc, char* argv[])
 	//1-wav
 	audio[1] = CreateWavPlayer();
 	audio[1]->load(audio[1], RES_PATH("music/simple3.wav"));
-	//mp3 comes mix with ogg;
-	audio[0]->play(audio[0],1,0);
-	printf("mp3 comes mix with ogg ~\n");
-	//wav comes mix all
-	printf("wav comes mix all~ \n");
-	audio[1]->play(audio[1],1,0);
+	//2-ogg
+	audio[2] = CreateOggPlayer();
+	audio[2]->load(audio[2], RES_PATH("music/test.ogg"));
 
-	while ( !game_quit )
-	{
-		//ShowFps();
-		InputProc();
-		DrawScene();
-		LimitFps(60);
+	step = 1;
+	temp_count = 60*100;
+
+	return 0;
+}
+
+int mainloop()
+{
+	if (game_quit)
+		return NGE_APP_QUIT;
+
+	switch (step) {
+	case 0:
+		break;
+
+	case 1:
+		// play ogg and wait end
+		audio[2]->play(audio[2], 1, 0);
+		step = 2;
+		break;
+
+	case 2:
+		if (audio[2]->iseof(audio[2]))
+			step = 3;
+		break;
+
+	case 3:
+		// play wav 2 times and wait end
+		audio[1]->play(audio[1], 2, 0);
+		step = 4;
+		break;
+
+	case 4:
+		if (audio[1]->iseof(audio[1]))
+			step = 5;
+		break;
+
+	case 5:
+		audio[0]->play(audio[0], 1, 0);
+		audio[2]->playstop(audio[2]);
+		audio[1]->play(audio[1], 1, 0);
+		startTouch = TRUE;
+		step = 0;
+		break;
+
+	case 6:
+		audio[0]->seek(audio[0], -3000, AUDIO_SEEK_CUR);
+		nge_print("seek -3000 ms\n");
+		step = 0;
+		break;
 	}
+
+	//ShowFps();
+	InputProc();
+//	DrawScene();
+	LimitFps(60);
+
+	return NGE_APP_NORMAL;
+}
+
+int fini()
+{
 	font_destory(pf[0]);
 	font_destory(pf[1]);
 	image_free(pimage_bg);
@@ -182,6 +254,20 @@ int main(int argc, char* argv[])
 	//释放声音资源
 	audio[0]->destroy(audio[0]);
 	audio[1]->destroy(audio[1]);
+	audio[2]->destroy(audio[2]);
 	NGE_Quit();
+
+	return 0;
+}
+
+static nge_app_t app;
+
+extern "C"
+int main(int argc, char* argv[])
+{
+	app.init = init;
+	app.mainloop = mainloop;
+	app.fini = fini;
+	nge_register_app(&app);
 	return 0;
 }
