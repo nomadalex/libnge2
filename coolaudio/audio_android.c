@@ -83,7 +83,7 @@ inline void load_ca_methods()
 		cLibCoolAudio = (*env)->FindClass(env, "org/libnge/nge2/LibCoolAudio");
 		if (!cLibCoolAudio)
 		{
-			LOGI("org.libnge.nge2.LibCoolAudio class is not found.");
+			LOGE("org.libnge.nge2.LibCoolAudio class is not found.");
 			return;
 		}
 
@@ -254,7 +254,9 @@ MAKE_METHOD(int, volume, (audio_media_player_t* p, int volume))
 	DEBUGME();
 	GetEnv();
 
-	return (*env)->CallIntMethod(env, p->obj, CA_METHOD(volume), volume);
+	volume = (int)((float)volume/128*100);
+	volume = (*env)->CallIntMethod(env, p->obj, CA_METHOD(volume), volume);
+	return (int)((float)volume*1.28);
 }
 
 MAKE_METHOD(void, rewind, (audio_media_player_t* p))
@@ -307,21 +309,12 @@ MAKE_METHOD(int, destroy, (audio_media_player_t* p))
 	return 0;
 }
 
-MAKE_METHOD(void, init, (audio_media_player_t* p))
+MAKE_METHOD(audio_media_player_t*, init, ())
 {
+	audio_media_player_t* p = (audio_media_player_t*)malloc(sizeof(audio_media_player_t));
+
 	DEBUGME();
 	GetEnv();
-
-	p->obj = (*env)->NewObject(env, cLibCoolAudio, CA_METHOD(LibCoolAudio));
-	p->obj = (*env)->NewGlobalRef(env, p->obj);
-
-	int ret = (*env)->CallIntMethod(env, p->obj, CA_METHOD(init));
-	if (ret) {
-		LOGI("ERROR in init!\n");
-		return;
-	}
-
-	p->fd = 0;
 
 #define LOAD_METHOD(name) p->name = (fd_##name) _METHOD(name)
 	LOAD_METHOD(load);
@@ -339,30 +332,35 @@ MAKE_METHOD(void, init, (audio_media_player_t* p))
 	LOAD_METHOD(ispaused);
 	LOAD_METHOD(destroy);
 #undef LOAD_METHOD
+
+	p->obj = (*env)->NewObject(env, cLibCoolAudio, CA_METHOD(LibCoolAudio));
+	p->obj = (*env)->NewGlobalRef(env, p->obj);
+
+	int ret = (*env)->CallIntMethod(env, p->obj, CA_METHOD(init));
+	if (ret) {
+		LOGE("ERROR in init!\n");
+		_METHOD(destroy)(p);
+		return NULL;
+	}
+
+	p->fd = 0;
+
+	return p;
 }
 
 #undef MAKE_METHOD
 
 audio_play_p CreateWavPlayer()
 {
-	audio_media_player_t* pAudio = (audio_media_player_t*)malloc(sizeof(audio_media_player_t));
-	_METHOD(init)(pAudio);
-
-	return (audio_play_p)pAudio;
+	return (audio_play_p) _METHOD(init)();
 }
 
 audio_play_p CreateMp3Player()
 {
-	audio_media_player_t* pAudio = (audio_media_player_t*)malloc(sizeof(audio_media_player_t));
-	_METHOD(init)(pAudio);
-
-	return (audio_play_p)pAudio;
+	return (audio_play_p) _METHOD(init)();
 }
 
 audio_play_p CreateOggPlayer()
 {
-	audio_media_player_t* pAudio = (audio_media_player_t*)malloc(sizeof(audio_media_player_t));
-	_METHOD(init)(pAudio);
-
-	return (audio_play_p)pAudio;
+	return (audio_play_p) _METHOD(init)();
 }

@@ -39,12 +39,13 @@ public class LibCoolAudio extends Object
 
 	private static final String TAG = "LibCoolAudio";
 	private MediaPlayer mplayer = null;
-	private Object mplayer_lock= new Object();
+	private Object mplayer_lock = new Object();
 	private boolean isEof = false;
 	private boolean isPaused = false;
 	private boolean isSeeking = false;
 	private int times = 0;
 	private int volume = 100;
+	private boolean hasError = false;
 
 	public int init() {
 		Log.i(TAG, "libcoolaudio inited\n");
@@ -56,12 +57,13 @@ public class LibCoolAudio extends Object
 			mplayer.reset();
 			mplayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 					public boolean onError(MediaPlayer mp, int what, int extra) {
-						if(mplayer != null)
-							synchronized(mplayer_lock) {
-								mplayer.release(); 	mplayer = null;
+						synchronized(mplayer_lock) {
+							if(mplayer != null) {
+								mplayer.reset();
+								hasError = true;
 							}
+						}
 						Log.e(TAG, "mplayer playback aborted with errors: " + what + ", " + extra);
-						mplayer_lock.notify();
 						return false;
 					}
 				});
@@ -96,8 +98,8 @@ public class LibCoolAudio extends Object
 
 	@Override
 	public void finalize() {
-		if(mplayer != null) {
-			synchronized(mplayer_lock) {
+		synchronized(mplayer_lock) {
+			if(mplayer != null) {
 				if(mplayer.isPlaying()) mplayer.stop();
 				mplayer.release();
 				mplayer = null;
@@ -107,6 +109,8 @@ public class LibCoolAudio extends Object
 
 	public void load(String filename) {
 		try {
+			hasError = false;
+
 			FileInputStream is = new FileInputStream(filename);
 			if(is.available() > 0) {
 				mplayer.reset();
@@ -125,6 +129,8 @@ public class LibCoolAudio extends Object
 
 	public void loadBuf(FileDescriptor fd, long offset, long length) {
 		try {
+			hasError = false;
+
 			mplayer.reset();
 			mplayer.setDataSource(fd, offset, length);
 			mplayer.prepare();
@@ -136,43 +142,55 @@ public class LibCoolAudio extends Object
 	}
 
 	public void play(int times_) {
-		times = times_;
-		isPaused = false;
-		mplayer.start();
+		if (!hasError) {
+			times = times_;
+			isPaused = false;
+			mplayer.start();
+		}
 	}
 
 	public void pause() {
-		mplayer.pause();
-		isPaused = true;
+		if (!hasError) {
+			mplayer.pause();
+			isPaused = true;
+		}
 	}
 
 	public void resume() {
-		mplayer.start();
-		isPaused = false;
+		if (!hasError) {
+			mplayer.start();
+			isPaused = false;
+		}
 	}
 
 	public void stop() {
-		mplayer.stop();
-		times = 0;
+		if (!hasError) {
+			times = 0;
+			mplayer.stop();
+		}
 	}
 
 	public int volume(int volume_) {
 		int oldvolume = volume;
-		mplayer.setVolume(volume_,volume_);
-		volume = volume_;
+		if (!hasError) {
+			mplayer.setVolume(volume_,volume_);
+			volume = volume_;
+		}
 		return oldvolume;
 	}
 
 	public void rewind() {
-		try {
-			isSeeking = true;
-			mplayer.seekTo(0);
-			while (isSeeking)
+		if (!hasError) {
+			try {
+				isSeeking = true;
+				mplayer.seekTo(0);
 				synchronized(mplayer_lock) {
-					mplayer_lock.wait();
+					while (isSeeking)
+						mplayer_lock.wait();
 				}
-		} catch (Exception e) {
-			Log.e(TAG, "Exception in rewind(): " + e.toString());
+			} catch (Exception e) {
+				Log.e(TAG, "Exception in rewind(): " + e.toString());
+			}
 		}
 	}
 
@@ -181,25 +199,27 @@ public class LibCoolAudio extends Object
 	public static final int AUDIO_SEEK_END = 2;
 
 	public void seek(int ms, int flag) {
-		isSeeking = true;
-		if (flag == AUDIO_SEEK_SET) {
-			mplayer.seekTo(ms);
-		}
-		else if (flag == AUDIO_SEEK_CUR) {
-			int cur = mplayer.getCurrentPosition();
-			mplayer.seekTo(cur + ms);
-		}
-		else if (flag == AUDIO_SEEK_END) {
-			int end = mplayer.getDuration();
-			mplayer.seekTo(end - ms);
-		}
-		try {
-			while (isSeeking)
+		if (!hasError) {
+			isSeeking = true;
+			if (flag == AUDIO_SEEK_SET) {
+				mplayer.seekTo(ms);
+			}
+			else if (flag == AUDIO_SEEK_CUR) {
+				int cur = mplayer.getCurrentPosition();
+				mplayer.seekTo(cur + ms);
+			}
+			else if (flag == AUDIO_SEEK_END) {
+				int end = mplayer.getDuration();
+				mplayer.seekTo(end - ms);
+			}
+			try {
 				synchronized(mplayer_lock) {
-					mplayer_lock.wait();
+					while (isSeeking)
+						mplayer_lock.wait();
 				}
-		} catch (Exception e) {
-			Log.e(TAG, "Exception in seek(): " + e.toString());
+			} catch (Exception e) {
+				Log.e(TAG, "Exception in seek(): " + e.toString());
+			}
 		}
 	}
 
