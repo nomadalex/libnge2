@@ -149,6 +149,9 @@ void NGE_Quit()
 		m_dumpMemoryReport();
 #endif
 	}
+
+	_notifyCallback = NULL;
+	_notifyCookie = NULL;
 }
 
 void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie)
