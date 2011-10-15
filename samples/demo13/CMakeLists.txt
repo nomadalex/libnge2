@@ -14,6 +14,6 @@ add_resource(${D_NAME}_all_res fonts
 add_resource(${D_NAME}_all_res music
   simple1.mp3
   simple3.wav
-  test.org)
+  test.ogg)
 
 copy_res_files(${D_NAME} ${${D_NAME}_all_res})
