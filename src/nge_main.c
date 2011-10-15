@@ -9,6 +9,9 @@
 
 extern int NGE_main(int argc, char *argv[]);
 
+NotifyCallback _notifyCallback = NULL;
+void* _notifyCookie = NULL;
+
 #ifdef NGE_PSP
 #include <pspmoduleinfo.h>
 #include <pspthreadman.h>
@@ -146,4 +149,10 @@ void NGE_Quit()
 		m_dumpMemoryReport();
 #endif
 	}
+}
+
+void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie)
+{
+	_notifyCallback = cb;
+	_notifyCookie = pCookie;
 }

@@ -31,6 +31,21 @@
 
 #define main NGE_main
 
+enum NotifyType
+{
+	NGE_NOTIFY_PAUSE = 0,
+	NGE_NOTIFY_RESUME,
+	NGE_NOTIFY_STOP,
+};
+
+/**
+ *回调函数
+ *@param int type, 通知类型
+ *@param void* data, 通知数据
+ *@param void* pCookie, 用户数据
+ */
+typedef void (*NotifyCallback)(int type, void* data, void* pCookie);
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -71,6 +86,12 @@ void NGE_SetNativeResolution(int width,int height);
  *@param const char* path,地址
  */
 void NGE_SetOPMoviePath(const char* path);
+
+/**
+ *注册通知回调函数
+ *@param NotifyCallback cb, 回调函数
+ */
+void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
 #ifdef __cplusplus
 }
 #endif
