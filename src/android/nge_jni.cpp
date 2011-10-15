@@ -24,6 +24,10 @@ extern "C" void nge_graphics_reset(void);
 extern MouseMoveProc mouse_move_proc;
 extern MouseButtonProc mouse_btn_proc;
 
+/* in nge_main.c */
+extern NotifyCallback _notifyCallback;
+extern void* _notifyCookie;
+
 char *main_argv[2] = { 0, 0};
 
 static nge_app_t *s_app = NULL;
@@ -118,17 +122,23 @@ JNIAPI void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
 	nge_print("nge2 finished normaly.\n");
 }
 
+#define NOTIFY_CALLBACK(type)						\
+	if (_notifyCallback)							\
+		_notifyCallback(type, NULL, _notifyCookie);
+
 JNIAPI void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
 												  jobject thiz )
 {
 	nge_print("Paused.\n");
 	sPaused = 1;
+	NOTIFY_CALLBACK(NGE_NOTIFY_PAUSE);
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeStop(JNIEnv* env,
 												  jobject thiz )
 {
 	nge_print("Stoped.\n");
+	NOTIFY_CALLBACK(NGE_NOTIFY_STOP);
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
@@ -139,6 +149,7 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
 		sPaused = 0;
 		sResume = 1;
 	}
+	NOTIFY_CALLBACK(NGE_NOTIFY_RESUME);
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
