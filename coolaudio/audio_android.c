@@ -78,37 +78,34 @@ inline void load_ca_methods()
 {
 	GetEnv();
 
+	cLibCoolAudio = (*env)->FindClass(env, "org/libnge/nge2/LibCoolAudio");
 	if (!cLibCoolAudio)
 	{
-		cLibCoolAudio = (*env)->FindClass(env, "org/libnge/nge2/LibCoolAudio");
-		if (!cLibCoolAudio)
-		{
-			LOGE("org.libnge.nge2.LibCoolAudio class is not found.");
-			return;
-		}
+		LOGE("org.libnge.nge2.LibCoolAudio class is not found.");
+		return;
+	}
 
-		cLibCoolAudio = (*env)->NewGlobalRef(env, cLibCoolAudio);
+	cLibCoolAudio = (*env)->NewGlobalRef(env, cLibCoolAudio);
 
-		CA_METHOD(LibCoolAudio) = (*env)->GetMethodID(env, cLibCoolAudio, "<init>", "()V");
+	CA_METHOD(LibCoolAudio) = (*env)->GetMethodID(env, cLibCoolAudio, "<init>", "()V");
 
 #define GET_CA_METHOD(method, signture) CA_METHOD(method) = (*env)->GetMethodID( \
-			env, cLibCoolAudio, #method, signture)
+		env, cLibCoolAudio, #method, signture)
 
-		GET_CA_METHOD(init, "()I");
-		GET_CA_METHOD(finalize, "()V");
-		GET_CA_METHOD(load, "(Ljava/lang/String;)V");
-		GET_CA_METHOD(loadBuf, "(Ljava/io/FileDescriptor;JJ)V");
-		GET_CA_METHOD(play, "(I)V");
-		GET_CA_METHOD(pause, "()V");
-		GET_CA_METHOD(resume, "()V");
-		GET_CA_METHOD(stop, "()V");
-		GET_CA_METHOD(volume, "(I)I");
-		GET_CA_METHOD(rewind, "()V");
-		GET_CA_METHOD(seek, "(II)V");
-		GET_CA_METHOD(iseof, "()Z");
-		GET_CA_METHOD(ispaused, "()Z");
+	GET_CA_METHOD(init, "()I");
+	GET_CA_METHOD(finalize, "()V");
+	GET_CA_METHOD(load, "(Ljava/lang/String;)V");
+	GET_CA_METHOD(loadBuf, "(Ljava/io/FileDescriptor;JJ)V");
+	GET_CA_METHOD(play, "(I)V");
+	GET_CA_METHOD(pause, "()V");
+	GET_CA_METHOD(resume, "()V");
+	GET_CA_METHOD(stop, "()V");
+	GET_CA_METHOD(volume, "(I)I");
+	GET_CA_METHOD(rewind, "()V");
+	GET_CA_METHOD(seek, "(II)V");
+	GET_CA_METHOD(iseof, "()Z");
+	GET_CA_METHOD(ispaused, "()Z");
 #undef GET_CA_METHOD
-	}
 }
 
 void CoolAudioDefaultInit()
@@ -164,10 +161,12 @@ typedef struct audio_media_player
 
 MAKE_METHOD(int, load, (audio_media_player_t* p, const char* filename))
 {
+	jstring fn;
+
 	DEBUGME();
 	GetEnv();
 
-	jstring fn = (*env)->NewStringUTF(env, filename);
+	fn = (*env)->NewStringUTF(env, filename);
 	(*env)->CallVoidMethod(env, p->obj, CA_METHOD(load), fn);
 	(*env)->DeleteLocalRef(env, fn);
 	return 0;
@@ -175,10 +174,12 @@ MAKE_METHOD(int, load, (audio_media_player_t* p, const char* filename))
 
 MAKE_METHOD(int, load_buf, (audio_media_player_t* p, const char* buf, int size))
 {
+	int fd[2];
+	jclass jfd;
+
 	DEBUGME();
 	GetEnv();
 
-	int fd[2];
 	if (pipe(fd) < 0) {
 		printf("Can not open pipe!\n");
 		return -1;
@@ -190,7 +191,7 @@ MAKE_METHOD(int, load_buf, (audio_media_player_t* p, const char* buf, int size))
 	if (p->fd)
 		close(p->fd);
 	p->fd = fd[0];
-	jclass jfd = createFD(env, fd[0]);
+	jfd = createFD(env, fd[0]);
 	(*env)->CallVoidMethod(env, p->obj, CA_METHOD(loadBuf), jfd, 0, size);
 	(*env)->DeleteLocalRef(env, jfd);
 	return 0;
@@ -312,6 +313,7 @@ MAKE_METHOD(int, destroy, (audio_media_player_t* p))
 MAKE_METHOD(audio_media_player_t*, init, ())
 {
 	audio_media_player_t* p = (audio_media_player_t*)malloc(sizeof(audio_media_player_t));
+	int ret;
 
 	DEBUGME();
 	GetEnv();
@@ -336,7 +338,7 @@ MAKE_METHOD(audio_media_player_t*, init, ())
 	p->obj = (*env)->NewObject(env, cLibCoolAudio, CA_METHOD(LibCoolAudio));
 	p->obj = (*env)->NewGlobalRef(env, p->obj);
 
-	int ret = (*env)->CallIntMethod(env, p->obj, CA_METHOD(init));
+	ret = (*env)->CallIntMethod(env, p->obj, CA_METHOD(init));
 	if (ret) {
 		LOGE("ERROR in init!\n");
 		_METHOD(destroy)(p);
