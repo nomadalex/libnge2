@@ -28,6 +28,22 @@ extern "C"{
 #endif
 
 /**
+ *载入打包文件
+ *@param const char*,文件名
+ *@param int, 一些选项（可选）
+ *@return int, 返回包文件句柄，为0时为失败
+ */
+int io_load_package(const char* fname, int option);
+
+/**
+ *切换io打开的模式，使用io_load_package得到的包句柄来切换io_fopen等其他api操作的对象，
+  用0作为参数时切换回正常的文件系统。
+ *@param int, 包句柄
+ *@return int, 为0时为失败
+ */
+int io_change_package(int pack_handle);
+
+/**
  *打开文件
  *@param const char*,文件名
  *@param int,打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
