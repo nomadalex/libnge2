@@ -46,6 +46,7 @@ public class LibCoolAudio extends Object
 	private int times = 0;
 	private int volume = 100;
 	private boolean hasError = false;
+	private boolean loop = false;
 
 	public int init() {
 		Log.i(TAG, "libcoolaudio inited\n");
@@ -75,8 +76,12 @@ public class LibCoolAudio extends Object
 								mplayer.start();
 							}
 							else {
-								Log.i(TAG, "mplayer playback completed");
-								isEof = true;
+								if (loop)
+									mplayer.start();
+								else {
+									Log.i(TAG, "mplayer playback completed");
+									isEof = true;
+								}
 							}
 						}
 					}
@@ -143,6 +148,11 @@ public class LibCoolAudio extends Object
 
 	public void play(int times_) {
 		if (!hasError) {
+			if (times_ == 0)
+				loop = true;
+			else
+				loop = false;
+
 			times = times_;
 			isPaused = false;
 			mplayer.start();
@@ -175,7 +185,8 @@ public class LibCoolAudio extends Object
 	public int volume(int volume_) {
 		int oldvolume = volume;
 		if (!hasError) {
-			mplayer.setVolume(volume_,volume_);
+			float v = volume_/100.0f;
+			mplayer.setVolume(v,v);
 			volume = volume_;
 		}
 		return oldvolume;
