@@ -267,8 +267,8 @@ void hgeParticleSystem::Render()
 	for(i=0; i<nParticlesAlive; i++)
 	{
 		RenderQuad(info.sprite->sprite_image,
-			       (float)prectf->left,(float)prectf->top,(float)prectf->right-(float)prectf->left,(float)prectf->bottom-(float)prectf->top,//子图4元组
-			       (float)(par->vecLocation.x+fTx), (float)(par->vecLocation.y+fTy), //屏幕坐标dx,dy
+			       (float)prectf->left,(float)prectf->top,(float)prectf->right-(float)prectf->left,(float)prectf->bottom-(float)prectf->top,//瀛愬浘4鍏冪粍
+			       (float)(par->vecLocation.x+fTx), (float)(par->vecLocation.y+fTy), //灞忓箷鍧愭爣dx,dy
 				   (float)par->fSize, (float)par->fSize,//size scale
 				   (float)(par->fSpin*par->fAge*360),//angel rot
 				   (int)(par->colColor.GetHWColor())//color mask

@@ -6,47 +6,47 @@ extern "C" {
 #endif
 
 /**
- * ´´½¨Ò»¸ösocket
- *@param int af,µØÖ·´ØÖ¸¶¨,Í¨³£ÌîĞ´AF_INET
- *@param int type,socketÀàĞÍ,¿ÉÌîĞ´SOCK_STREAM(TCP)ºÍSOCK_DGRAM(UDP)
- *@param int protocol,Ğ­Òé´Ø,Í¨³£Ìî0
- *@return int,socket¾ä±ú,ÓÃ´Ë¾ä±ú×öºóĞø²Ù×÷,<=0´ú±í³ö´í
+ * åˆ›å»ºä¸€ä¸ªsocket
+ *@param int af,åœ°å€ç°‡æŒ‡å®š,é€šå¸¸å¡«å†™AF_INET
+ *@param int type,socketç±»å‹,å¯å¡«å†™SOCK_STREAM(TCP)å’ŒSOCK_DGRAM(UDP)
+ *@param int protocol,åè®®ç°‡,é€šå¸¸å¡«0
+ *@return int,socketå¥æŸ„,ç”¨æ­¤å¥æŸ„åšåç»­æ“ä½œ,<=0ä»£è¡¨å‡ºé”™
  */
 int socket_create(int af,int type,int protocol);
 /**
- * ÉèÖÃsocketÑ¡Ïî,Í¨³£ÊÇ²»ĞèÒªÉèÖÃÑ¡ÏîµÄ
- *@param int fd,socket handle,ÌîÈëÓÉsocket_create()´´½¨µÄhandle
- *@param int level,Ñ¡Ïî¶¨ÒåµÄ²ã´Î:Ä¿Ç°½öÖ§³ÖSOL_SOCKETºÍIPPROTO_TCP²ã´Î.
- *@param int optname,ĞèÉèÖÃµÄÑ¡Ïî,½Ï³£ÓÃµÄÊÇSO_REUSEADDR
- *@param const char* optval,Ö¸Ïò´æ·ÅÑ¡ÏîÖµµÄ»º³åÇø
- *@param int optval,»º³åÇøµÄ³¤¶È
- *@return int,·µ»ØÖµĞ¡ÓÚµÈÓÚ0³ö´í
+ * è®¾ç½®socketé€‰é¡¹,é€šå¸¸æ˜¯ä¸éœ€è¦è®¾ç½®é€‰é¡¹çš„
+ *@param int fd,socket handle,å¡«å…¥ç”±socket_create()åˆ›å»ºçš„handle
+ *@param int level,é€‰é¡¹å®šä¹‰çš„å±‚æ¬¡:ç›®å‰ä»…æ”¯æŒSOL_SOCKETå’ŒIPPROTO_TCPå±‚æ¬¡.
+ *@param int optname,éœ€è®¾ç½®çš„é€‰é¡¹,è¾ƒå¸¸ç”¨çš„æ˜¯SO_REUSEADDR
+ *@param const char* optval,æŒ‡å‘å­˜æ”¾é€‰é¡¹å€¼çš„ç¼“å†²åŒº
+ *@param int optval,ç¼“å†²åŒºçš„é•¿åº¦
+ *@return int,è¿”å›å€¼å°äºç­‰äº0å‡ºé”™
  */
 int socket_setopt(int fd,int level,int optname,const char* optval,int optlen);
 /**
- * ÉèÖÃÍøÂçÎª·Ç×èÈûÄ£Ê½
- *@param int fd,socket handle,ÌîÈëÓÉsocket_create()´´½¨µÄhandle
- *@return int, ·µ»ØÖµĞ¡ÓÚµÈÓÚ0³ö´í
+ * è®¾ç½®ç½‘ç»œä¸ºéé˜»å¡æ¨¡å¼
+ *@param int fd,socket handle,å¡«å…¥ç”±socket_create()åˆ›å»ºçš„handle
+ *@return int, è¿”å›å€¼å°äºç­‰äº0å‡ºé”™
  */
 int socket_setnoblock(int fd);
 /**
- *@param int fd,socket handle,ÌîÈëÓÉsocket_create()´´½¨µÄhandle
- *@param const char* buf,½ÓÊÕbuf»º´æ
- *@param int len,bufµÄ³¤¶È
- *@return int, ·µ»ØÊµ¼Ê½ÓÊÕµÄ³¤¶È,<=0Îª³ö´í,¶ÔTCPÀ´Ëµ(µÈÓÚ0ÎªClientÕı³£¶Ï¿ªÁ´½Ó,Ğ¡ÓÚ0Îª·¢ÉúÆäËû´íÎó)
+ *@param int fd,socket handle,å¡«å…¥ç”±socket_create()åˆ›å»ºçš„handle
+ *@param const char* buf,æ¥æ”¶bufç¼“å­˜
+ *@param int len,bufçš„é•¿åº¦
+ *@return int, è¿”å›å®é™…æ¥æ”¶çš„é•¿åº¦,<=0ä¸ºå‡ºé”™,å¯¹TCPæ¥è¯´(ç­‰äº0ä¸ºClientæ­£å¸¸æ–­å¼€é“¾æ¥,å°äº0ä¸ºå‘ç”Ÿå…¶ä»–é”™è¯¯)
  */
 int socket_recv(int fd,const char *buf,int len);
 /**
- *@param int fd,socket handle,ÌîÈëÓÉsocket_create()´´½¨µÄhandle
- *@param const char* buf,·¢ËÍbuf»º´æ
- *@param int len,bufµÄ³¤¶È
- *@return int, ·µ»ØÊµ¼Ê·¢ËÍµÄ³¤¶È,<=0Îª³ö´í,ÔÚÉèÖÃnoblockºóÖ±½Ó·µ»Ø·ñÔòÎª×èÈû·¢ËÍ
+ *@param int fd,socket handle,å¡«å…¥ç”±socket_create()åˆ›å»ºçš„handle
+ *@param const char* buf,å‘é€bufç¼“å­˜
+ *@param int len,bufçš„é•¿åº¦
+ *@return int, è¿”å›å®é™…å‘é€çš„é•¿åº¦,<=0ä¸ºå‡ºé”™,åœ¨è®¾ç½®noblockåç›´æ¥è¿”å›å¦åˆ™ä¸ºé˜»å¡å‘é€
  */
 int socket_send(int fd,const char *buf,int len);
 /**
- * ¹Ø±ÕÒ»¸ösocket
- *@param int fd,socket handle,ÌîÈëÓÉsocket_create()´´½¨µÄhandle
- *@return int,·µ»ØÖµ´óÓÚ0³É¹¦
+ * å…³é—­ä¸€ä¸ªsocket
+ *@param int fd,socket handle,å¡«å…¥ç”±socket_create()åˆ›å»ºçš„handle
+ *@return int,è¿”å›å€¼å¤§äº0æˆåŠŸ
  */
 int socket_close(int fd);
 

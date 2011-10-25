@@ -43,7 +43,7 @@
 #define ___Max(x, y) (x>y?x:y)
 
 //////////////////////////////////////////////////////////////////////////
-//½¥Èë¿ªÊ¼
+//æ¸å…¥å¼€å§‹
 //////////////////////////////////////////////////////////////////////////
 typedef struct {
 	int m_type;
@@ -51,7 +51,7 @@ typedef struct {
 	int m_effect_fps;
 	int m_timeticks;
 	nge_timer* m_ptimer;
-	//¹«¹²º¯Êı
+	//å…¬å…±å‡½æ•°
 	effect_draw draw;
 	effect_setparam set_param;
 	effect_getparam get_param;
@@ -183,7 +183,7 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks)
 	image_effect_fade_p pfadein = (image_effect_fade_p)malloc(sizeof(image_effect_fade_t));
 	memset(pfadein,0,sizeof(image_effect_fade_t));
 	if(src_alpha > des_alpha){
-		//½¥ÈëÓ¦¸ÃÊÇÓÃĞ¡->´ó,Èç¹ûÓÃ»§²ÎÊıÊäÈë´íÎó¸øËü½»»»ÏÂ
+		//æ¸å…¥åº”è¯¥æ˜¯ç”¨å°->å¤§,å¦‚æœç”¨æˆ·å‚æ•°è¾“å…¥é”™è¯¯ç»™å®ƒäº¤æ¢ä¸‹
 		tmp = src_alpha;
 		src_alpha = des_alpha;
 		des_alpha = tmp;
@@ -204,18 +204,18 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks)
 	pfadein->m_effect_fps = DEFAULT_FPS;
 	pfadein->m_ptimer = timer_create();
 
-	//¼ÆËãÒ»Ğ©²ÎÊı
+	//è®¡ç®—ä¸€äº›å‚æ•°
 	pfadein->m_mins = (float)((pfadein->m_des_alpha - pfadein->m_src_alpha)*1000.0/(pfadein->m_timeticks*pfadein->m_effect_fps));
 
 	return (image_effect_p)pfadein;
 }
 //////////////////////////////////////////////////////////////////////////
-//½¥Èë½áÊø
+//æ¸å…¥ç»“æŸ
 //////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////
-//½¥³ö¿ªÊ¼
+//æ¸å‡ºå¼€å§‹
 //////////////////////////////////////////////////////////////////////////
 static float effect_setparam_fadeout(image_effect_p effector,float param,int flags)
 {
@@ -336,7 +336,7 @@ image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks)
 	image_effect_fade_p pfadeout = (image_effect_fade_p)malloc(sizeof(image_effect_fade_t));
 	memset(pfadeout,0,sizeof(image_effect_fade_t));
 	if(src_alpha < des_alpha){
-		//½¥³öÓ¦¸ÃÊÇÓÃ´ó->Ğ¡,Èç¹ûÓÃ»§²ÎÊıÊäÈë´íÎó¸øËü½»»»ÏÂ
+		//æ¸å‡ºåº”è¯¥æ˜¯ç”¨å¤§->å°,å¦‚æœç”¨æˆ·å‚æ•°è¾“å…¥é”™è¯¯ç»™å®ƒäº¤æ¢ä¸‹
 		tmp = src_alpha;
 		src_alpha = des_alpha;
 		des_alpha = tmp;
@@ -357,22 +357,22 @@ image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks)
 	pfadeout->m_effect_fps = DEFAULT_FPS;
 	pfadeout->m_ptimer = timer_create();
 
-	//¼ÆËãÒ»Ğ©²ÎÊı
+	//è®¡ç®—ä¸€äº›å‚æ•°
 	pfadeout->m_mins = (float)((pfadeout->m_src_alpha - pfadeout->m_des_alpha)*1000.0/(pfadeout->m_timeticks*pfadeout->m_effect_fps));
 
 	return (image_effect_p)pfadeout;
 }
 //////////////////////////////////////////////////////////////////////////
-//½¥³ö½áÊø
+//æ¸å‡ºç»“æŸ
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
-//¶¶¶¯Ğ§¹û¿ªÊ¼
+//æŠ–åŠ¨æ•ˆæœå¼€å§‹
 //////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////////////////
-//¶¶¶¯Ğ§¹û½áÊø
+//æŠ–åŠ¨æ•ˆæœç»“æŸ
 //////////////////////////////////////////////////////////////////////////
 typedef struct {
 	int m_type;
@@ -380,7 +380,7 @@ typedef struct {
 	int m_effect_fps;
 	int m_timeticks;
 	nge_timer* m_ptimer;
-	//¹«¹²º¯Êı
+	//å…¬å…±å‡½æ•°
 	effect_draw draw;
 	effect_setparam set_param;
 	effect_getparam get_param;
@@ -534,12 +534,12 @@ image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks)
 	pshake->m_type = IMAGE_EFFECT_SHAKE;
 	pshake->m_effect_fps = DEFAULT_FPS;
 	pshake->m_ptimer = timer_create();
-	//¼ÆËãÒ»Ğ©²ÎÊı
+	//è®¡ç®—ä¸€äº›å‚æ•°
 	return (image_effect_p)pshake;
 }
 
 //////////////////////////////////////////////////////////////////////////
-//Ä£ºıĞ§¹û
+//æ¨¡ç³Šæ•ˆæœ
 //////////////////////////////////////////////////////////////////////////
 typedef struct {
 	int m_type;
@@ -547,7 +547,7 @@ typedef struct {
 	int m_effect_fps;
 	int m_timeticks;
 	nge_timer* m_ptimer;
-	//¹«¹²º¯Êı
+	//å…¬å…±å‡½æ•°
 	effect_draw draw;
 	effect_setparam set_param;
 	effect_getparam get_param;
@@ -683,7 +683,7 @@ void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8
 
 static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
-	// ²»ÓÅ»¯ËÙ¶È·½Ê½»æÖÆÄ£ºıĞ§¹û
+	// ä¸ä¼˜åŒ–é€Ÿåº¦æ–¹å¼ç»˜åˆ¶æ¨¡ç³Šæ•ˆæœ
 	int tn,a,b,r,g,bx,by,ss,se;
 	static char sr,sb,sg,sa;
 	uint32 x,y;
@@ -741,7 +741,7 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32
 }
 static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
-	// ÒÔËÄ¹Ø¼üµã·½Ê½»æÖÆÄ£ºıĞ§¹û
+	// ä»¥å››å…³é”®ç‚¹æ–¹å¼ç»˜åˆ¶æ¨¡ç³Šæ•ˆæœ
 	int tn,a,b,r,g,bx,by,step,ss,se;
 	static char sr,sb,sg,sa;
 	uint32 x,y;
@@ -800,7 +800,7 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 }
 static uint32 effect_draw_blur_op2_transition(int dtype, int color1,int color2,int bs)
 {
-	// ²ÎÊı b  0 - 255, 0 ·µ»Ø color1, 255 ·µ»Ø color2;
+	// å‚æ•° b  0 - 255, 0 è¿”å› color1, 255 è¿”å› color2;
 	int a,b,r,g;
 	static char sa,sb,sr,sg;
 	if(bs==0)
@@ -865,7 +865,7 @@ static uint32 effect_draw_blur_op2_transition(int dtype, int color1,int color2,i
 }
 static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
-	// ÒÔµ¥¹Ø¼üµã²î²¹·½Ê½»æÖÆÄ£ºıĞ§¹û
+	// ä»¥å•å…³é”®ç‚¹å·®è¡¥æ–¹å¼ç»˜åˆ¶æ¨¡ç³Šæ•ˆæœ
 	int by,col,coll,colt,collt;
 	uint32 x,y,bx;
 	for(y=0;y<pimg->h;y+=s)
@@ -885,15 +885,15 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
-				// ¸´ÖÆµ±Ç°µãÑÕÉ«
+				// å¤åˆ¶å½“å‰ç‚¹é¢œè‰²
 				col = *(p32 + x);
 				*(pdes32 + x) = col;
 				if(x>0 && y>0)
 				{
-					// ²úÉú²¹É«
-					coll = *(p32 + x - s);// ×ó²¹É«
-					colt = *(p32 + x - s * pimg->texw);// ÉÏ²¹É«
-					collt = *(p32 - s * pimg->texw + x - s);// ×óÉÏ²¹É«
+					// äº§ç”Ÿè¡¥è‰²
+					coll = *(p32 + x - s);// å·¦è¡¥è‰²
+					colt = *(p32 + x - s * pimg->texw);// ä¸Šè¡¥è‰²
+					collt = *(p32 - s * pimg->texw + x - s);// å·¦ä¸Šè¡¥è‰²
 					for(bx=0;bx<s;bx++)
 					{
 						for(by=0;by<s;by++)
@@ -910,15 +910,15 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 			case DISPLAY_PIXEL_FORMAT_4444:
 			case DISPLAY_PIXEL_FORMAT_5551:
 			case DISPLAY_PIXEL_FORMAT_565:
-				// ¸´ÖÆµ±Ç°µãÑÕÉ«
+				// å¤åˆ¶å½“å‰ç‚¹é¢œè‰²
 				col = *(p16 + x);
 				*(pdes16 + x) = col;
 				if(x>0 && y>0)
 				{
-					// ²úÉú²¹É«
-					coll = *(p16 + x - s);// ×ó²¹É«
-					colt = *(p16 + x - s * pimg->texw);// ÉÏ²¹É«
-					collt = *(p16 - s * pimg->texw + x - s);// ×óÉÏ²¹É«
+					// äº§ç”Ÿè¡¥è‰²
+					coll = *(p16 + x - s);// å·¦è¡¥è‰²
+					colt = *(p16 + x - s * pimg->texw);// ä¸Šè¡¥è‰²
+					collt = *(p16 - s * pimg->texw + x - s);// å·¦ä¸Šè¡¥è‰²
 					for(bx=0;bx<s;bx++)
 					{
 						for(by=0;by<s;by++)
@@ -937,7 +937,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 				break;
 			}
 		}
-		// »æÖÆ³¬³öµÄ x
+		// ç»˜åˆ¶è¶…å‡ºçš„ x
 		if(y>0)
 		{
 			for(bx=0;bx<(pimg->w-(x-s));bx++)
@@ -961,7 +961,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 			}
 		}
 	}
-	// »æÖÆ³¬³öµÄ y
+	// ç»˜åˆ¶è¶…å‡ºçš„ y
 	if(pimg->dtype==DISPLAY_PIXEL_FORMAT_8888)
 		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	else
@@ -994,7 +994,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 }
 static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
-	// ÒÔµ¥¹Ø¼üµã·½Ê½»æÖÆÄ£ºıĞ§¹û
+	// ä»¥å•å…³é”®ç‚¹æ–¹å¼ç»˜åˆ¶æ¨¡ç³Šæ•ˆæœ
 	uint32 x,y,bx,by,col;
 
 	for(y=0;y<pimg->h;y+=s)
@@ -1014,7 +1014,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 			switch(pimg->dtype)
 			{
 			case DISPLAY_PIXEL_FORMAT_8888:
-				// ¸´ÖÆµ±Ç°µãÑÕÉ«
+				// å¤åˆ¶å½“å‰ç‚¹é¢œè‰²
 				col = *(p32 + x);
 				*(pdes32 + x) = col;
 				if(x>0 && y>0)
@@ -1031,7 +1031,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 			case DISPLAY_PIXEL_FORMAT_4444:
 			case DISPLAY_PIXEL_FORMAT_5551:
 			case DISPLAY_PIXEL_FORMAT_565:
-				// ¸´ÖÆµ±Ç°µãÑÕÉ«
+				// å¤åˆ¶å½“å‰ç‚¹é¢œè‰²
 				col = *(p16 + x);
 				*(pdes16 + x) = col;
 				if(x>0 && y>0)
@@ -1050,7 +1050,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 				break;
 			}
 		}
-		// »æÖÆ³¬³öµÄ x
+		// ç»˜åˆ¶è¶…å‡ºçš„ x
 		if(y>0)
 		{
 			for(bx=0;bx<(pimg->w-(x-s));bx++)
@@ -1072,7 +1072,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 			}
 		}
 	}
-	// »æÖÆ³¬³öµÄ y
+	// ç»˜åˆ¶è¶…å‡ºçš„ y
 	if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
 	else
@@ -1244,13 +1244,13 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks,int op
 	pfblur->m_effect_fps = DEFAULT_FPS;
 	pfblur->m_ptimer = timer_create();
 	pfblur->m_lasts = -1;
-	//¼ÆËãÒ»Ğ©²ÎÊı
+	//è®¡ç®—ä¸€äº›å‚æ•°
 	return (image_effect_p)pfblur;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-//×ª³¡Ğ§¹û¿ªÊ¼
+//è½¬åœºæ•ˆæœå¼€å§‹
 //////////////////////////////////////////////////////////////////////////
 typedef struct {
 	int m_type;
@@ -1258,7 +1258,7 @@ typedef struct {
 	int m_effect_fps;
 	int m_timeticks;
 	nge_timer* m_ptimer;
-	//¹«¹²º¯Êı
+	//å…¬å…±å‡½æ•°
 	effect_draw draw;
 	effect_setparam set_param;
 	effect_getparam get_param;
@@ -1316,52 +1316,52 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 
 		//printf("GF:%d / %d\n", pftran->m_ptimer->get_ticks(pftran->m_ptimer), pftran->m_timeticks);
 
-		glEnable(GL_ALPHA_TEST);		// ÆôÓÃÍ¸Ã÷¶È²âÊÔ
+		glEnable(GL_ALPHA_TEST);		// å¯ç”¨é€æ˜åº¦æµ‹è¯•
 		if(pftran->m_reversed)
-			glAlphaFunc(GL_GEQUAL, gf);		// Éè¶¨Í¸Ã÷¶È²âÊÔ·½·¨
+			glAlphaFunc(GL_GEQUAL, gf);		// è®¾å®šé€æ˜åº¦æµ‹è¯•æ–¹æ³•
 		else
-			glAlphaFunc(GL_LEQUAL, gf);		// Éè¶¨Í¸Ã÷¶È²âÊÔ·½·¨
+			glAlphaFunc(GL_LEQUAL, gf);		// è®¾å®šé€æ˜åº¦æµ‹è¯•æ–¹æ³•
 
-		glClearStencil(0);				// Éè¶¨Ä£°æ»º³åÇøÇå¿ÕÖµ
-		glClear(GL_STENCIL_BUFFER_BIT);		// Çå¿ÕÄ£°æ»º³åÇø
-		glEnable(GL_STENCIL_TEST);		// ÆôÓÃÄ£°æ²âÊÔ
-		glStencilFunc(GL_ALWAYS, 1, 0xffffffff);	// Éè¶¨Ä£°æ²âÊÔ·½·¨
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// Éè¶¨Ä£°æĞ´Èë·½·¨
+		glClearStencil(0);				// è®¾å®šæ¨¡ç‰ˆç¼“å†²åŒºæ¸…ç©ºå€¼
+		glClear(GL_STENCIL_BUFFER_BIT);		// æ¸…ç©ºæ¨¡ç‰ˆç¼“å†²åŒº
+		glEnable(GL_STENCIL_TEST);		// å¯ç”¨æ¨¡ç‰ˆæµ‹è¯•
+		glStencilFunc(GL_ALWAYS, 1, 0xffffffff);	// è®¾å®šæ¨¡ç‰ˆæµ‹è¯•æ–¹æ³•
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// è®¾å®šæ¨¡ç‰ˆå†™å…¥æ–¹æ³•
 
-		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);	// Í£ÓÃÊä³ö
-		glDepthMask(GL_FALSE);			// Í£ÓÃÉî¶È»º³å
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);	// åœç”¨è¾“å‡º
+		glDepthMask(GL_FALSE);			// åœç”¨æ·±åº¦ç¼“å†²
 		if(pftran->m_effect_img)
 			DrawImage(pftran->m_effect_img, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
 
-		glDisable(GL_ALPHA_TEST);		// Í£ÓÃÍ¸Ã÷¶È²âÊÔ
+		glDisable(GL_ALPHA_TEST);		// åœç”¨é€æ˜åº¦æµ‹è¯•
 
-		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);	// ÆôÓÃÊä³ö
-		glDepthMask(GL_TRUE);			// ÆôÓÃÉî¶È»º³å
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);	// å¯ç”¨è¾“å‡º
+		glDepthMask(GL_TRUE);			// å¯ç”¨æ·±åº¦ç¼“å†²
 
-		glStencilFunc(GL_EQUAL, 1, 1);	// Éè¶¨Ä£°æ²âÊÔ·½·¨
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// Éè¶¨Ä£°æĞ´Èë·½·¨
+		glStencilFunc(GL_EQUAL, 1, 1);	// è®¾å®šæ¨¡ç‰ˆæµ‹è¯•æ–¹æ³•
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// è®¾å®šæ¨¡ç‰ˆå†™å…¥æ–¹æ³•
 
 		if(pimg)
 			DrawImage(pimg, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
 
-		glDisable(GL_STENCIL_TEST);		// Í£ÓÃÄ£°æ²âÊÔ
+		glDisable(GL_STENCIL_TEST);		// åœç”¨æ¨¡ç‰ˆæµ‹è¯•
 
 #else
 
-		sceGuEnable(GU_ALPHA_TEST);		// ÆôÓÃÍ¸Ã÷¶È²âÊÔ
+		sceGuEnable(GU_ALPHA_TEST);		// å¯ç”¨é€æ˜åº¦æµ‹è¯•
 		if(pftran->m_reversed)
-			sceGuAlphaFunc(GU_GEQUAL, gf * 255, 0xff);		// Éè¶¨Í¸Ã÷¶È²âÊÔ·½·¨
+			sceGuAlphaFunc(GU_GEQUAL, gf * 255, 0xff);		// è®¾å®šé€æ˜åº¦æµ‹è¯•æ–¹æ³•
 		else
-			sceGuAlphaFunc(GU_LEQUAL, gf * 255, 0xff);		// Éè¶¨Í¸Ã÷¶È²âÊÔ·½·¨
+			sceGuAlphaFunc(GU_LEQUAL, gf * 255, 0xff);		// è®¾å®šé€æ˜åº¦æµ‹è¯•æ–¹æ³•
 
-		sceGuClearStencil(0);				// Éè¶¨Ä£°æ»º³åÇøÇå¿ÕÖµ
-		sceGuClear(GU_STENCIL_BUFFER_BIT);		// Çå¿ÕÄ£°æ»º³åÇø
-		sceGuEnable(GU_STENCIL_TEST);		// ÆôÓÃÄ£°æ²âÊÔ
-		sceGuStencilFunc(GU_ALWAYS, 1, 0xffffffff);	// Éè¶¨Ä£°æ²âÊÔ·½·¨
-		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_REPLACE);	// Éè¶¨Ä£°æĞ´Èë·½·¨
+		sceGuClearStencil(0);				// è®¾å®šæ¨¡ç‰ˆç¼“å†²åŒºæ¸…ç©ºå€¼
+		sceGuClear(GU_STENCIL_BUFFER_BIT);		// æ¸…ç©ºæ¨¡ç‰ˆç¼“å†²åŒº
+		sceGuEnable(GU_STENCIL_TEST);		// å¯ç”¨æ¨¡ç‰ˆæµ‹è¯•
+		sceGuStencilFunc(GU_ALWAYS, 1, 0xffffffff);	// è®¾å®šæ¨¡ç‰ˆæµ‹è¯•æ–¹æ³•
+		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_REPLACE);	// è®¾å®šæ¨¡ç‰ˆå†™å…¥æ–¹æ³•
 
-		//sceGuDisable(GU_COLOR_BUFFER_BIT);	// Í£ÓÃÊä³ö
-		sceGuDepthMask(GU_FALSE);			// Í£ÓÃÉî¶È»º³å
+		//sceGuDisable(GU_COLOR_BUFFER_BIT);	// åœç”¨è¾“å‡º
+		sceGuDepthMask(GU_FALSE);			// åœç”¨æ·±åº¦ç¼“å†²
 
 		if(pftran->m_effect_img)
 		{
@@ -1369,17 +1369,17 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 			DrawImage(pftran->m_effect_img, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
 		}
 
-		sceGuDisable(GU_ALPHA_TEST);		// Í£ÓÃÍ¸Ã÷¶È²âÊÔ
+		sceGuDisable(GU_ALPHA_TEST);		// åœç”¨é€æ˜åº¦æµ‹è¯•
 
-		//sceGuEnable(GU_COLOR_BUFFER_BIT);	// ÆôÓÃÊä³ö
-		sceGuDepthMask(GU_TRUE);			// ÆôÓÃÉî¶È»º³å
+		//sceGuEnable(GU_COLOR_BUFFER_BIT);	// å¯ç”¨è¾“å‡º
+		sceGuDepthMask(GU_TRUE);			// å¯ç”¨æ·±åº¦ç¼“å†²
 
-		sceGuStencilFunc(GU_EQUAL, 1, 1);	// Éè¶¨Ä£°æ²âÊÔ·½·¨
-		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);	// Éè¶¨Ä£°æĞ´Èë·½·¨
+		sceGuStencilFunc(GU_EQUAL, 1, 1);	// è®¾å®šæ¨¡ç‰ˆæµ‹è¯•æ–¹æ³•
+		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);	// è®¾å®šæ¨¡ç‰ˆå†™å…¥æ–¹æ³•
 
 		DrawImage(pimg, 0, 0, 0, 0, dx, dy, ___Max(pimg->w, pftran->m_src_img->w), ___Max(pimg->h, pftran->m_src_img->h));
 
-		sceGuDisable(GU_STENCIL_TEST);		// Í£ÓÃÄ£°æ²âÊÔ
+		sceGuDisable(GU_STENCIL_TEST);		// åœç”¨æ¨¡ç‰ˆæµ‹è¯•
 
 
 #endif
@@ -1449,5 +1449,5 @@ image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, in
 }
 
 //////////////////////////////////////////////////////////////////////////
-//ÆäËûĞ§¹û
+//å…¶ä»–æ•ˆæœ
 //////////////////////////////////////////////////////////////////////////

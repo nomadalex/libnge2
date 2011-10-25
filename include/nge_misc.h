@@ -3,7 +3,7 @@
 
 #include "nge_common.h"
 
-//ĞİÃßºÁÃëÊı
+//ä¼‘çœ æ¯«ç§’æ•°
 #if defined WIN32
 #include "SDL.h"
 #define nge_sleep(tick) SDL_Delay(tick)
@@ -22,21 +22,21 @@ extern "C"{
 #endif
 
 /**
- *Éú³ÉÒ»¸ömin---maxµÄ¸¡µãÊı
+ *ç”Ÿæˆä¸€ä¸ªmin---maxçš„æµ®ç‚¹æ•°
  */
 float rand_float(float min, float max);
 /**
- *Éú³ÉÒ»¸ö(min,max)µÄÕûÊı
+ *ç”Ÿæˆä¸€ä¸ª(min,max)çš„æ•´æ•°
  */
 int rand_int(int min, int max);
 
 /**
- *½«GBK±àÂëµÄ×Ö·û×ª»¯Îªunicode×Ö·û
- *×¢ÒâoutbufferĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡.
- *@param unsigned short* out,×ª»»ºóunicode×Ö·û±£´æÔÚÕâÀï,×¢ÒâĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡
- *@param const char* in,ÊäÈë×Ö·û»º´æ
- *@param int n,GBK×Ö·û¸öÊıÒÔ×Ö½Ú¼Ç,strlen¼ÆËãµÄ¸öÊı(ÀıÈçÒ»¸öºº×ÖÎª2¸ö×Ö·û)
- *@return int n,×ª»»µÄunicode×Ö·û¸öÊı
+ *å°†GBKç¼–ç çš„å­—ç¬¦è½¬åŒ–ä¸ºunicodeå­—ç¬¦
+ *æ³¨æ„outbufferéœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°.
+ *@param unsigned short* out,è½¬æ¢åunicodeå­—ç¬¦ä¿å­˜åœ¨è¿™é‡Œ,æ³¨æ„éœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°
+ *@param const char* in,è¾“å…¥å­—ç¬¦ç¼“å­˜
+ *@param int n,GBKå­—ç¬¦ä¸ªæ•°ä»¥å­—èŠ‚è®°,strlenè®¡ç®—çš„ä¸ªæ•°(ä¾‹å¦‚ä¸€ä¸ªæ±‰å­—ä¸º2ä¸ªå­—ç¬¦)
+ *@return int n,è½¬æ¢çš„unicodeå­—ç¬¦ä¸ªæ•°
  */
 int gbk_to_unicode(unsigned short* out,const char* in,int n);
 

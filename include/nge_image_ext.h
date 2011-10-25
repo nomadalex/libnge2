@@ -8,37 +8,37 @@ extern "C"{
 #endif
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄ»Ò¶È°æ±¾
+ * å»ºç«‹ src å›¾åƒçš„ç°åº¦ç‰ˆæœ¬
  *
- * @param src Ô´Í¼Ïñ
- * @param gray »Ò¶È 0 µ½ 100, 0 ÎªÔ´Í¼Ïñ, 100 Îª´¿»ÒÉ«Í¼Ïñ
+ * @param src æºå›¾åƒ
+ * @param gray ç°åº¦ 0 åˆ° 100, 0 ä¸ºæºå›¾åƒ, 100 ä¸ºçº¯ç°è‰²å›¾åƒ
  */
 image_p create_gray_image(image_p src, int gray);
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄÁÁ¶È£¬±¥ºÍ¶È°æ±¾
+ * å»ºç«‹ src å›¾åƒçš„äº®åº¦ï¼Œé¥±å’Œåº¦ç‰ˆæœ¬
  *
- * @param src Ô´Í¼Ïñ
- * @param saturation ±¥ºÏ¶È -100(»Ò¶ÈÍ¼Ïñ) ÖÁ 100(¸ß²ÊÉ«±ÈÍ¼Ïñ)
- * @param brightness ÁÁ¶È -100(È«ºÚ) ÖÁ 100(È«°×)
+ * @param src æºå›¾åƒ
+ * @param saturation é¥±åˆåº¦ -100(ç°åº¦å›¾åƒ) è‡³ 100(é«˜å½©è‰²æ¯”å›¾åƒ)
+ * @param brightness äº®åº¦ -100(å…¨é»‘) è‡³ 100(å…¨ç™½)
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness);
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄÆäËûÑÕÉ«Ä£Ê½Í¼Æ¬
- * @param src Ô´Í¼Ïñ
- * @param dtype ÑÕÉ«Ä£Ê½,DISPLAY_PIXEL_FORMAT_XXXXµÄÒ»ÖÖ
- * @return image_p Éú³ÉµÄÍ¼Æ¬
+ * å»ºç«‹ src å›¾åƒçš„å…¶ä»–é¢œè‰²æ¨¡å¼å›¾ç‰‡
+ * @param src æºå›¾åƒ
+ * @param dtype é¢œè‰²æ¨¡å¼,DISPLAY_PIXEL_FORMAT_XXXXçš„ä¸€ç§
+ * @return image_p ç”Ÿæˆçš„å›¾ç‰‡
  */
 image_p image_conv(image_p src, int dtype);
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄËõ·ÅÍ¼£¬Ìá¹©0-4ËÄÖÖËõ·ÅÂË¾µ
- * @param src Ô´Í¼Ïñ
- * @param w Ëõ·ÅµÄ¿í
- * @param h Ëõ·ÅµÄ¸ß
- * @param mode Ëõ·ÅÄ£Ê½0-4
- * @return image_p Ëõ·ÅÍ¼
+ * å»ºç«‹ src å›¾åƒçš„ç¼©æ”¾å›¾ï¼Œæä¾›0-4å››ç§ç¼©æ”¾æ»¤é•œ
+ * @param src æºå›¾åƒ
+ * @param w ç¼©æ”¾çš„å®½
+ * @param h ç¼©æ”¾çš„é«˜
+ * @param mode ç¼©æ”¾æ¨¡å¼0-4
+ * @return image_p ç¼©æ”¾å›¾
  */
 image_p image_scale(image_p src, int w, int h,int mode);
 

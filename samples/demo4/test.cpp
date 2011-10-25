@@ -2,12 +2,12 @@
 #include "cAnimation.h"
 #include <stdio.h>
 /**
- * nge_test:×î¼òµ¥µÄnge³ÌÐò:ÏÔÊ¾Ò»ÕÅÍ¼Æ¬
+ * nge_test:æœ€ç®€å•çš„ngeç¨‹åº:æ˜¾ç¤ºä¸€å¼ å›¾ç‰‡
  */
 
-//ÍË³ö±êÊ¶
+//é€€å‡ºæ ‡è¯†
 int game_quit = 0;
-//±³¾°Í¼Æ¬
+//èƒŒæ™¯å›¾ç‰‡
 image_p p_bg = NULL;
 
 
@@ -19,10 +19,10 @@ image_p p_bg = NULL;
 extern "C"
 int main(int argc, char* argv[])
 {
-	//³õÊ¼»¯NGE·ÖÎªVIDEO,AUDIO£¬ÕâÀïÊÇÖ»³õÊ¼»¯VIDEO£¬Èç¹û³õÊ¼»¯ËùÓÐÓÃINIT_VIDEO|INIT_AUDIO,»òÕßINIT_ALL
+	//åˆå§‹åŒ–NGEåˆ†ä¸ºVIDEO,AUDIOï¼Œè¿™é‡Œæ˜¯åªåˆå§‹åŒ–VIDEOï¼Œå¦‚æžœåˆå§‹åŒ–æ‰€æœ‰ç”¨INIT_VIDEO|INIT_AUDIO,æˆ–è€…INIT_ALL
 	NGE_Init(INIT_VIDEO);
 	
-	//×îºóÒ»¸ö²ÎÊýÊÇpsp swizzleÓÅ»¯£¬Í¨³£Ìî1
+	//æœ€åŽä¸€ä¸ªå‚æ•°æ˜¯psp swizzleä¼˜åŒ–ï¼Œé€šå¸¸å¡«1
 	p_bg = image_load("images/demo4_bg.png",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_bg == NULL)
 		printf("can not open file!\n");

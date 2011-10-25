@@ -533,7 +533,7 @@ image_p image_clone(image_p pimage)
 
 
 /*alpha blend!
- *0 ÍêÈ«Í¸Ã÷£¬255²»Í¸Ã÷
+ *0 å®Œå…¨é€æ˜ï¼Œ255ä¸é€æ˜
  *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
  *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
 #define MAKEALPHA(SRC,DES,ALPHA) (( SRC*ALPHA + DES*(255-ALPHA) ) /255)

@@ -9,13 +9,13 @@ typedef uint32 (*fp_proc_int)(struct tagTimer*);
 typedef void (*fp_proc_void)(struct tagTimer*);
 
 typedef struct tagTimer{
-	fp_proc_int		get_ticks; /**<  »ñÈ¡time tick */
-	fp_proc_void	start;     /**<  ¿ªÊ¼timer */
-	fp_proc_void	stop;      /**<  Í£Ö¹timer */
-	fp_proc_void	pause;     /**<  ÔÝÍ£timer */
-	fp_proc_void	unpause;   /**<  »Ö¸´timer */
-	fp_proc_int		is_started;/**<  »ñÈ¡timerÊÇ·ñ¿ªÊ¼ */
-	fp_proc_int		is_paused; /**<  »ñÈ¡timerÊÇ·ñÔÝÍ£ */
+	fp_proc_int		get_ticks; /**<  èŽ·å–time tick */
+	fp_proc_void	start;     /**<  å¼€å§‹timer */
+	fp_proc_void	stop;      /**<  åœæ­¢timer */
+	fp_proc_void	pause;     /**<  æš‚åœtimer */
+	fp_proc_void	unpause;   /**<  æ¢å¤timer */
+	fp_proc_int		is_started;/**<  èŽ·å–timeræ˜¯å¦å¼€å§‹ */
+	fp_proc_int		is_paused; /**<  èŽ·å–timeræ˜¯å¦æš‚åœ */
 	//privated
 	uint32 startTicks;
     uint32 pausedTicks;
@@ -28,20 +28,20 @@ extern "C"{
 #endif
 
 /**
- *´´½¨Ò»¸ötimer
- *@return nge_timer*,·µ»ØtimerµÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªtimer
+ *@return nge_timer*,è¿”å›žtimerçš„æŒ‡é’ˆ
  */	
 nge_timer* timer_create();
 
 /**
- *ÊÍ·ÅÒ»¸ötimer
- *@param nge_timer* timer,´ýÊÍ·ÅµÄtimerÖ¸Õë
- *@return ÎÞ
+ *é‡Šæ”¾ä¸€ä¸ªtimer
+ *@param nge_timer* timer,å¾…é‡Šæ”¾çš„timeræŒ‡é’ˆ
+ *@return æ— 
  */
 void timer_free(nge_timer* timer);
 
 /**
- * µÃµ½ÏµÍ³µ±Ç°ticks
+ * å¾—åˆ°ç³»ç»Ÿå½“å‰ticks
  *@return ticks
  */
 uint32 nge_get_tick();

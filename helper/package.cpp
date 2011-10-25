@@ -14,8 +14,8 @@
 extern "C" {
 #endif
 
-static	int		fd		=	-1;		// PSPÓÃ±äÁ¿
-static	char*	name	=	NULL;	// PSPÓÃ±äÁ¿
+static	int		fd		=	-1;		// PSPç”¨å˜é‡
+static	char*	name	=	NULL;	// PSPç”¨å˜é‡
 
 extern packInfo* fileInfo;
 extern packItem* fileItem;
@@ -197,7 +197,7 @@ void save_itemTofile(char* filename,char* filetype)
 	if(fp==NULL) return;
 	if(packInit(filename)==-1) {
 		printf("------------------------------------------------------------\n");
-		printf("½â°üÊ§°Ü,Õâ²»ÊÇÒ»¸ö·ûºÏ¹æ¸ñµÄ´ò°üÎÄ¼ş...\n\n");
+		printf("è§£åŒ…å¤±è´¥,è¿™ä¸æ˜¯ä¸€ä¸ªç¬¦åˆè§„æ ¼çš„æ‰“åŒ…æ–‡ä»¶...\n\n");
 		return;
 	}
 	temp = fileItem;
@@ -227,7 +227,7 @@ void save_itemTofile(char* filename,char* filetype)
 				fwrite(buf,temp->date.size,1,out);
 				safe_free(buf);
 				fclose(out);
-				printf("½â°üÎÄ¼ş <%s> ³É¹¦...\n",temp->date.name);
+				printf("è§£åŒ…æ–‡ä»¶ <%s> æˆåŠŸ...\n",temp->date.name);
 			}
 			if(type != temp->date.name)
 				if(!strcmp((char*)temp->date.name,(char*)type)) break;
@@ -249,7 +249,7 @@ void save_itemTofile(char* filename,char* filetype)
 				fwrite(buf,temp->date.size,1,out);
 				safe_free(buf);
 				fclose(out);
-				printf("½â°üÎÄ¼ş <%s> ³É¹¦...\n",temp->date.name);
+				printf("è§£åŒ…æ–‡ä»¶ <%s> æˆåŠŸ...\n",temp->date.name);
 			}
 			if(type != temp->date.name)
 				if(!strcmp((char*)temp->date.name,(char*)type)) break;
@@ -269,7 +269,7 @@ void save_itemTofile(char* filename,char* filetype)
 				fwrite(buf,temp->date.size,1,out);
 				safe_free(buf);
 				fclose(out);
-				printf("½â°üÎÄ¼ş <%s> ³É¹¦...\n",temp->date.name);
+				printf("è§£åŒ…æ–‡ä»¶ <%s> æˆåŠŸ...\n",temp->date.name);
 			}
 			if(type != temp->date.name)
 				if(!strcmp((char*)temp->date.name,(char*)type)) break;
@@ -277,7 +277,7 @@ void save_itemTofile(char* filename,char* filetype)
 		temp = temp->next;
 	}
 	printf("------------------------------------------------------------\n");
-	printf("½â°üÍê±Ï!\n\n");
+	printf("è§£åŒ…å®Œæ¯•!\n\n");
 	packFini();
 #endif
 }
@@ -316,25 +316,25 @@ void printf_allDate()
 	packItem* temp = fileItem;
 	if(fileItem==NULL || fileInfo==NULL) {
 		printf("------------------------------------------------------------\n");
-		printf("ÎÄ¼şÃûÎŞĞ§»òÎÄ¼şÓĞÆÆËğ,ÎŞ·¨Õı³£´ò¿ª...\n\n");
+		printf("æ–‡ä»¶åæ— æ•ˆæˆ–æ–‡ä»¶æœ‰ç ´æŸ,æ— æ³•æ­£å¸¸æ‰“å¼€...\n\n");
 		return;
 	}
 	if(get_fileID()<=0)
 		return;
 	for(int i=0;i<get_fileID();i++) {
 		printf("------------------------------------------------------------\n");
-		printf("NO.%d Ãû×Ö:     <%s>\n",i+1,temp->date.name);
-		printf("NO.%d ´óĞ¡:     <%d>\n",i+1,temp->date.size);
-		printf("NO.%d Î»ÒÆÁ¿:   <%d>\n",i+1,temp->date.offset);
+		printf("NO.%d åå­—:     <%s>\n",i+1,temp->date.name);
+		printf("NO.%d å¤§å°:     <%d>\n",i+1,temp->date.size);
+		printf("NO.%d ä½ç§»é‡:   <%d>\n",i+1,temp->date.offset);
 		temp = temp->next; }
-	printf("ÎÄ¼şÊıÁ¿: %-4d\n",get_fileID());
+	printf("æ–‡ä»¶æ•°é‡: %-4d\n",get_fileID());
 	if(fileInfo!=NULL)
-		printf("ÎÄ¼şÍ·ĞÅÏ¢: %s\n",fileInfo->info);
+		printf("æ–‡ä»¶å¤´ä¿¡æ¯: %s\n",fileInfo->info);
 	printf("------------------------------------------------------------\n\n");
 #endif
 }
 
-//  -------PSPÓÃº¯Êı--------
+//  -------PSPç”¨å‡½æ•°--------
 
 #ifndef __HIDE_PSP_FUNC_
 
@@ -360,7 +360,7 @@ int packInit(const char* filename)
 	fileInfo = (packInfo*) safe_malloc (sizeof(packInfo));
 	io_fseek(fd,(int)(-sizeof(packInfo)),IO_SEEK_END);
 	io_fread(fileInfo,sizeof(packInfo),1,fd);
-	if(fileInfo->VER!=0x01000000) {	// Èç¹û²»ÊÇpackÑ¹Ëõ°üÔòÈ¡Ïû¶ÁÈ¡
+	if(fileInfo->VER!=0x01000000) {	// å¦‚æœä¸æ˜¯packå‹ç¼©åŒ…åˆ™å–æ¶ˆè¯»å–
 		packCleanRes();
 		return -1; }
 	io_fseek(fd,(int)(-(sizeof(packInfo)+sizeof(packDate)*fileInfo->nums)),IO_SEEK_END);

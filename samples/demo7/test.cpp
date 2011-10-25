@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 /**
- * nge_test:nge³ÌÐò:ÏÔÊ¾Á£×Ó
+ * nge_test:ngeç¨‹åº:æ˜¾ç¤ºç²’å­
  */
-//ÍË³ö±êÊ¶
+//é€€å‡ºæ ‡è¯†
 int game_quit = 0;
-//±³¾°Í¼Æ¬
+//èƒŒæ™¯å›¾ç‰‡
 image_p p_logo = NULL;
 image_p p_par = NULL;
 hgeParticleSystem*	mParticleSys;
@@ -16,7 +16,7 @@ sprite_p mParticle = NULL;
 nge_timer* timer;
 //last tick;
 int mlast = 0;
-//dtÃëÎªµ¥Î»
+//dtç§’ä¸ºå•ä½
 float dt = 0;
 
 
@@ -41,11 +41,11 @@ void btn_down(int keycode)
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//°´ÏÂÑ¡Ôñ¼üÍË³ö
+		//æŒ‰ä¸‹é€‰æ‹©é”®é€€å‡º
 		game_quit = 1;
 		break;
 	case PSP_BUTTON_START:
-		//°´ÏÂ¿ªÊ¼¼üÍË³ö
+		//æŒ‰ä¸‹å¼€å§‹é”®é€€å‡º
 		game_quit = 1;
 		break;
     }
@@ -53,7 +53,7 @@ void btn_down(int keycode)
 
 void Update()
 {
-	//×¢Òâ,´«¸ø£»Á£×ÓÏµÍ³updateµÄÊÇÃë.ËùÒÔÐèÒª³ý1000
+	//æ³¨æ„,ä¼ ç»™ï¼›ç²’å­ç³»ç»Ÿupdateçš„æ˜¯ç§’.æ‰€ä»¥éœ€è¦é™¤1000
 	float dt = (float)((timer->get_ticks(timer)-mlast)/1000.0);
 	mlast = timer->get_ticks(timer);
 	mParticleSys->Update(dt);
@@ -70,19 +70,19 @@ void DrawScene()
 extern "C"
 int main(int argc, char* argv[])
 {
-	//³õÊ¼»¯NGE·ÖÎªVIDEO,AUDIO£¬ÕâÀïÊÇÖ»³õÊ¼»¯VIDEO£¬Èç¹û³õÊ¼»¯ËùÓÐÓÃINIT_VIDEO|INIT_AUDIO,»òÕßINIT_ALL
+	//åˆå§‹åŒ–NGEåˆ†ä¸ºVIDEO,AUDIOï¼Œè¿™é‡Œæ˜¯åªåˆå§‹åŒ–VIDEOï¼Œå¦‚æžœåˆå§‹åŒ–æ‰€æœ‰ç”¨INIT_VIDEO|INIT_AUDIO,æˆ–è€…INIT_ALL
 	NGE_Init(INIT_VIDEO);
-	//³õÊ¼»¯°´¼ü´¦Àíbtn_downÊÇ°´ÏÂÏìÓ¦,ºóÃæÊÇµ¯ÆðÊ±µÄÏìÓ¦£¬0ÊÇÈÃnge´¦ÀíhomeÏûÏ¢(Ö±½ÓÍË³ö),Ìî1¾ÍÊÇÈÃPSPÏµÍ³´¦Àí
-	//homeÏûÏ¢,Í¨³£Ìî1Õý³£ÍË³ö£¨1.50°æµÄ×ÔÖÆ³ÌÐòÐèÒªÌî0£©
+	//åˆå§‹åŒ–æŒ‰é”®å¤„ç†btn_downæ˜¯æŒ‰ä¸‹å“åº”,åŽé¢æ˜¯å¼¹èµ·æ—¶çš„å“åº”ï¼Œ0æ˜¯è®©ngeå¤„ç†homeæ¶ˆæ¯(ç›´æŽ¥é€€å‡º),å¡«1å°±æ˜¯è®©PSPç³»ç»Ÿå¤„ç†
+	//homeæ¶ˆæ¯,é€šå¸¸å¡«1æ­£å¸¸é€€å‡ºï¼ˆ1.50ç‰ˆçš„è‡ªåˆ¶ç¨‹åºéœ€è¦å¡«0ï¼‰
 	InitInput(btn_down,NULL,1);
-	//×îºóÒ»¸ö²ÎÊýÊÇpsp swizzleÓÅ»¯£¬Í¨³£Ìî1
+	//æœ€åŽä¸€ä¸ªå‚æ•°æ˜¯psp swizzleä¼˜åŒ–ï¼Œé€šå¸¸å¡«1
 	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_logo == NULL)
 		printf("can not open file\n");
 	p_par = image_load("par/particles.png",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_par == NULL)
 		printf("can not open file\n");
-	//ÉèÖÃsprite×ÓÍ¼
+	//è®¾ç½®spriteå­å›¾
 	mParticle = (sprite_p)malloc(sizeof(sprite_t));
 	memset(mParticle,0,sizeof(sprite_t));
 	mParticle->sprite_image = p_par;

@@ -3,7 +3,7 @@
 
 #include "nge_common.h"
 
-//PSPÓëwin32ÎÄ¼ş¶ÁĞ´Í³Ò»½Ó¿Ú
+//PSPä¸win32æ–‡ä»¶è¯»å†™ç»Ÿä¸€æ¥å£
 #ifdef _PSP
 #include <pspiofilemgr.h>
 #define IO_RDONLY PSP_O_RDONLY
@@ -28,76 +28,76 @@ extern "C"{
 #endif
 
 /**
- *ÔØÈë´ò°üÎÄ¼ş
- *@param const char*,ÎÄ¼şÃû
- *@param int, Ò»Ğ©Ñ¡Ïî£¨¿ÉÑ¡£©
- *@return int, ·µ»Ø°üÎÄ¼ş¾ä±ú£¬Îª0Ê±ÎªÊ§°Ü
+ *è½½å…¥æ‰“åŒ…æ–‡ä»¶
+ *@param const char*,æ–‡ä»¶å
+ *@param int, ä¸€äº›é€‰é¡¹ï¼ˆå¯é€‰ï¼‰
+ *@return int, è¿”å›åŒ…æ–‡ä»¶å¥æŸ„ï¼Œä¸º0æ—¶ä¸ºå¤±è´¥
  */
 int io_load_package(const char* fname, int option);
 
 /**
- *ÇĞ»»io´ò¿ªµÄÄ£Ê½£¬Ê¹ÓÃio_load_packageµÃµ½µÄ°ü¾ä±úÀ´ÇĞ»»io_fopenµÈÆäËûapi²Ù×÷µÄ¶ÔÏó£¬
-  ÓÃ0×÷Îª²ÎÊıÊ±ÇĞ»»»ØÕı³£µÄÎÄ¼şÏµÍ³¡£
- *@param int, °ü¾ä±ú
- *@return int, Îª0Ê±ÎªÊ§°Ü
+ *åˆ‡æ¢ioæ‰“å¼€çš„æ¨¡å¼ï¼Œä½¿ç”¨io_load_packageå¾—åˆ°çš„åŒ…å¥æŸ„æ¥åˆ‡æ¢io_fopenç­‰å…¶ä»–apiæ“ä½œçš„å¯¹è±¡ï¼Œ
+  ç”¨0ä½œä¸ºå‚æ•°æ—¶åˆ‡æ¢å›æ­£å¸¸çš„æ–‡ä»¶ç³»ç»Ÿã€‚
+ *@param int, åŒ…å¥æŸ„
+ *@return int, ä¸º0æ—¶ä¸ºå¤±è´¥
  */
 int io_change_package(int pack_handle);
 
 /**
- *´ò¿ªÎÄ¼ş
- *@param const char*,ÎÄ¼şÃû
- *@param int,´ò¿ª±êÖ¾(IO_RDONLY,IO_WRONLY,IO_APPENDµÄÒ»ÖÖ)
- *@return int,ÎÄ¼ş¾ä±ú,¶ÁĞ´¾ùÓÃ´ËÎÄ¼ş¾ä±ú½øĞĞ²Ù×÷
+ *æ‰“å¼€æ–‡ä»¶
+ *@param const char*,æ–‡ä»¶å
+ *@param int,æ‰“å¼€æ ‡å¿—(IO_RDONLY,IO_WRONLY,IO_APPENDçš„ä¸€ç§)
+ *@return int,æ–‡ä»¶å¥æŸ„,è¯»å†™å‡ç”¨æ­¤æ–‡ä»¶å¥æŸ„è¿›è¡Œæ“ä½œ
  */
 int io_fopen(const char* fname,int flag);
 
 /**
- *¶ÁÎÄ¼ş,ÓëfreadÀàËÆ
- *@param void*,±£´æ¶ÁÈ¡Êı¾İµÄ»º´æ
- *@param int,¶ÁÈ¡¸öÊı
- *@param int,¶ÁÈ¡´óĞ¡
- *@param int,ÎÄ¼ş¾ä±ú
- *@return,Êµ¼Ê¶ÁÈ¡ÊıÁ¿
+ *è¯»æ–‡ä»¶,ä¸freadç±»ä¼¼
+ *@param void*,ä¿å­˜è¯»å–æ•°æ®çš„ç¼“å­˜
+ *@param int,è¯»å–ä¸ªæ•°
+ *@param int,è¯»å–å¤§å°
+ *@param int,æ–‡ä»¶å¥æŸ„
+ *@return,å®é™…è¯»å–æ•°é‡
  */
 int io_fread(void* buffer,int count,int size,int handle);
 
 /**
- *Ğ´ÎÄ¼ş,ÓëfwriteÀàËÆ
- *@param void*,´ıĞ´Êı¾İµÄ»º´æ
- *@param int,´ıĞ´¿é¸öÊı
- *@param int,´ıĞ´¿é´óĞ¡
- *@param int,ÎÄ¼ş¾ä±ú
- *@return,Êµ¼ÊĞ´ÈëÊıÁ¿
+ *å†™æ–‡ä»¶,ä¸fwriteç±»ä¼¼
+ *@param void*,å¾…å†™æ•°æ®çš„ç¼“å­˜
+ *@param int,å¾…å†™å—ä¸ªæ•°
+ *@param int,å¾…å†™å—å¤§å°
+ *@param int,æ–‡ä»¶å¥æŸ„
+ *@return,å®é™…å†™å…¥æ•°é‡
  */
 int io_fwrite(void* buffer,int count,int size,int handle);
 
 /**
- *ÎÄ¼şÖ¸ÕëÆ«ÒÆÉèÖÃ,ÓëfseekÀàËÆ
- *@param int,ÎÄ¼ş¾ä±ú
- *@param int offset,Æ«ÒÆÁ¿
- *@param int flag,seek±êÖ¾,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
- *@return int,·µ»Ø0³É¹¦,-1Ê§°Ü
+ *æ–‡ä»¶æŒ‡é’ˆåç§»è®¾ç½®,ä¸fseekç±»ä¼¼
+ *@param int,æ–‡ä»¶å¥æŸ„
+ *@param int offset,åç§»é‡
+ *@param int flag,seekæ ‡å¿—,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
+ *@return int,è¿”å›0æˆåŠŸ,-1å¤±è´¥
  */
 int io_fseek(int handle,int offset,int flag);
 
 /**
- *»ñµÃµ±Ç°ÎÄ¼şÆ«ÒÆÖµ
- *@param int handle,ÎÄ¼ş¾ä±ú
- *@return int,ÎÄ¼şÆ«ÒÆÖµ
+ *è·å¾—å½“å‰æ–‡ä»¶åç§»å€¼
+ *@param int handle,æ–‡ä»¶å¥æŸ„
+ *@return int,æ–‡ä»¶åç§»å€¼
  */
 int io_ftell(int handle);
 
 /**
- *¹Ø±ÕÎÄ¼ş
- *@param int handle,ÎÄ¼ş¾ä±ú
- *@return int,-1Ê§°Ü
+ *å…³é—­æ–‡ä»¶
+ *@param int handle,æ–‡ä»¶å¥æŸ„
+ *@return int,-1å¤±è´¥
  */
 int io_fclose(int handle);
 
 /**
- *ÎÄ¼ş´óĞ¡
- *@param int handle,ÎÄ¼ş¾ä±ú
- *@return int,ÎÄ¼ş´óĞ¡
+ *æ–‡ä»¶å¤§å°
+ *@param int handle,æ–‡ä»¶å¥æŸ„
+ *@return int,æ–‡ä»¶å¤§å°
  */
 int io_fsize(int handle);
 

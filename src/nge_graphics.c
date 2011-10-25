@@ -675,7 +675,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
 
-//¶¥µãcolorË³ĞòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
+//é¡¶ç‚¹coloré¡ºåºä¸ºé€†æ—¶é’ˆæ–¹å‘0->3è®¾ç½®
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -695,13 +695,13 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 	FillRectGrad(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,colors,dtype);
 }
 
-/** Ìî³äÈı½ÇĞÍ(µ¥É«)
- *@param pointf v0,¶¥µã×ø±êv1
- *@param pointf v2,¶¥µã×ø±êv2
- *@param pointf v2,¶¥µã×ø±êv3
- *@param int color,Ìî³äÉ«
- *@param int dtype,ÏÔÊ¾Ä£Ê½,Ìî³äÉ«ÒªÓëÖ®Ïà¶ÔÓ¦
- *@return void ,ÎŞ
+/** å¡«å……ä¸‰è§’å‹(å•è‰²)
+ *@param pointf v0,é¡¶ç‚¹åæ ‡v1
+ *@param pointf v2,é¡¶ç‚¹åæ ‡v2
+ *@param pointf v2,é¡¶ç‚¹åæ ‡v3
+ *@param int color,å¡«å……è‰²
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼,å¡«å……è‰²è¦ä¸ä¹‹ç›¸å¯¹åº”
+ *@return void ,æ— 
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {

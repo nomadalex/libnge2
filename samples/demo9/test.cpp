@@ -15,18 +15,18 @@ char filename[1024][256];
 int filenum=0;
 
 
-//txtÎÄ¼ş
+//txtæ–‡ä»¶
 char txtfilename[256];
 char txt[1024]={0};
 int txtsize = 0;
 
-//imgÎÄ¼ş
+//imgæ–‡ä»¶
 char imagefilename[256];
 	char *imagebuf;
 	int imagesize;
 
 
-//»ñÈ¡zip ÄÚÎÄ¼ş Ä¿Â¼
+//è·å–zip å†…æ–‡ä»¶ ç›®å½•
 int open_zip_filename(char* zipfile)
 {
 	unzFile unzf = unzOpen(zipfile);
@@ -58,7 +58,7 @@ int open_zip_filename(char* zipfile)
 
 	unzClose(unzf);
 
-	//ÏÔÊ¾ÎÄ¼şÃû
+	//æ˜¾ç¤ºæ–‡ä»¶å
 	for	(int i =0;i<filenum;i++)
 	{
 		font_drawtext(pf[0],filename[i],strlen(filename[i]),pimage_text,0,0+i*20,FONT_SHOW_NORMAL);
@@ -69,7 +69,7 @@ int open_zip_filename(char* zipfile)
 	return 1;
 }
 
-//»ñÈ¡zip ÄÚtxtÎÄ¼ş
+//è·å–zip å†…txtæ–‡ä»¶
 int open_zip_file(char* zipfile,char *zipfilename)
 {
 
@@ -109,7 +109,7 @@ int open_zip_file(char* zipfile,char *zipfilename)
 }
 
 
-//»ñÈ¡zip ÄÚimageÎÄ¼ş
+//è·å–zip å†…imageæ–‡ä»¶
 int open_zip_image(char* zipfile,char *zipimagename)
 {
 
@@ -181,7 +181,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
-		//¿ªÊ¼¼üÍË³ö
+		//å¼€å§‹é”®é€€å‡º
 		game_quit = 1;
 		break;
 	}
@@ -233,13 +233,13 @@ int main(int argc, char* argv[])
 
 	InitInput(btn_down,btn_up,1);
 
-	//´´½¨Ò»¸öÏÔÊ¾image,×Ö¾ÍÏÔÊ¾ÔÚÕâ¸öÉÏÃæ×¢ÒâDISPLAY_PIXEL_FORMAT±ØĞëÓë´´½¨×ÖÌåµÄDISPLAY_PIXEL_FORMATÒ»ÖÂ
+	//åˆ›å»ºä¸€ä¸ªæ˜¾ç¤ºimage,å­—å°±æ˜¾ç¤ºåœ¨è¿™ä¸ªä¸Šé¢æ³¨æ„DISPLAY_PIXEL_FORMATå¿…é¡»ä¸åˆ›å»ºå­—ä½“çš„DISPLAY_PIXEL_FORMATä¸€è‡´
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
 
-	//´´½¨×ÖÌå
+	//åˆ›å»ºå­—ä½“
 	pf[0] = create_font_hzk("fonts/GBK12","fonts/ASC12",12,DISPLAY_PIXEL_FORMAT_4444);
 
-	//ÏÔÊ¾GBK Font
+	//æ˜¾ç¤ºGBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(0,0,0,255));
 
 	open_zip_filename("database/data.zip");

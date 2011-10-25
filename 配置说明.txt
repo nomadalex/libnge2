@@ -1,27 +1,27 @@
 ///////////////////////Windows/////////////////////////////////////////
 VC6 
-1 ½«includeºÍlibÉèÖÃ³ÉVC6µÄ°üº¬ºÍ¿âÄ¿Â¼
-2 ½«win32depends/includeºÍwin32depends/libÉèÖÃ³ÉVC6µÄ°üº¬ºÍ¿âÄ¿Â¼
-3 ´ò¿ªwin32builds/libnge2.dsw±àÒë¼´¿É
+1 å°†includeå’Œlibè®¾ç½®æˆVC6çš„åŒ…å«å’Œåº“ç›®å½•
+2 å°†win32depends/includeå’Œwin32depends/libè®¾ç½®æˆVC6çš„åŒ…å«å’Œåº“ç›®å½•
+3 æ‰“å¼€win32builds/libnge2.dswç¼–è¯‘å³å¯
 
 
 vs2003,vs2005,vs2008:
-0 ½«libjpeg_vc7ÀïµÄlibjpeg.libÌæ»»win32depends/libÏÂµÄvc6°æ±¾µÄlibjpeg.lib
-1 ½«includeºÍlibÉèÖÃ³ÉVS200xµÄ°üº¬ºÍ¿âÄ¿Â¼
-2 ½«win32depends/includeºÍwin32depends/libÉèÖÃ³ÉVS200xµÄ°üº¬ºÍ¿âÄ¿Â¼
-3 ´ò¿ªwin32builds/libnge2.dsw±àÒë×ª»»Ñ¡È«ÊÇ¼´¿É
+0 å°†libjpeg_vc7é‡Œçš„libjpeg.libæ›¿æ¢win32depends/libä¸‹çš„vc6ç‰ˆæœ¬çš„libjpeg.lib
+1 å°†includeå’Œlibè®¾ç½®æˆVS200xçš„åŒ…å«å’Œåº“ç›®å½•
+2 å°†win32depends/includeå’Œwin32depends/libè®¾ç½®æˆVS200xçš„åŒ…å«å’Œåº“ç›®å½•
+3 æ‰“å¼€win32builds/libnge2.dswç¼–è¯‘è½¬æ¢é€‰å…¨æ˜¯å³å¯
 
-//Èç¹û²»×ö0»áÁ´½ÓÊ±³öÏÖÏÂÃæ
-Á´½ÓÊ±»á³öÏÖÕâ¸ö´íÎó£º
+//å¦‚æœä¸åš0ä¼šé“¾æ¥æ—¶å‡ºç°ä¸‹é¢
+é“¾æ¥æ—¶ä¼šå‡ºç°è¿™ä¸ªé”™è¯¯ï¼š
 libjpeg.lib(jerror.obj) : error LNK2019: unresolved external symbol __iob referenced in function _output_message
-//¸Ã´íÎóÖ÷ÒªÊÇÓÉÓÚ¾²Ì¬¿âÔÚVC6±àÒë¶øÖ÷³ÌĞòÔÚVC2005±àÒë£¬´ó¼ÒÓÃµÄCRT²»Í¬¡£½â¾ö°ì·¨£¬´úÂëÖĞÔö¼Ó
+//è¯¥é”™è¯¯ä¸»è¦æ˜¯ç”±äºé™æ€åº“åœ¨VC6ç¼–è¯‘è€Œä¸»ç¨‹åºåœ¨VC2005ç¼–è¯‘ï¼Œå¤§å®¶ç”¨çš„CRTä¸åŒã€‚è§£å†³åŠæ³•ï¼Œä»£ç ä¸­å¢åŠ 
 #ifdef __cplusplus
 extern "C" 
 #endif
 FILE _iob[3] = {__iob_func()[0], __iob_func()[1], __iob_func()[2]}; 
-ÉÏÊö·½·¨Ò²¿ÉÒÔ½â¾ö£¬µ«ÊÇÃ¿´ÎĞÂ½¨Ò»¸öÎÄ¼ş¶¼ÒªÌæ»»Õâ²¿·Ö´úÂë£¬»¹²»Èç»»lib
+ä¸Šè¿°æ–¹æ³•ä¹Ÿå¯ä»¥è§£å†³ï¼Œä½†æ˜¯æ¯æ¬¡æ–°å»ºä¸€ä¸ªæ–‡ä»¶éƒ½è¦æ›¿æ¢è¿™éƒ¨åˆ†ä»£ç ï¼Œè¿˜ä¸å¦‚æ¢lib
 
-WINDOWSÏÂÄ¬ÈÏ°´¼ü¶ÔÓ¦
+WINDOWSä¸‹é»˜è®¤æŒ‰é”®å¯¹åº”
 #define PSP_BUTTON_UP            SDLK_w
 #define PSP_BUTTON_DOWN          SDLK_s
 #define PSP_BUTTON_LEFT          SDLK_a
@@ -37,20 +37,20 @@ WINDOWSÏÂÄ¬ÈÏ°´¼ü¶ÔÓ¦
 #define PSP_BUTTON_HOME          SDLK_n
 #define PSP_BUTTON_HOLD          SDLK_m  
 //////////////////////    PSP   ////////////////////////////////////////////////////
-1 ÏÂÔØTOPOCÉµ¹Ï°ü
+1 ä¸‹è½½TOPOCå‚»ç“œåŒ…
 2 cd src
 3 make
 4 make install
-5 ½øÈëdemo0Ä¿Â¼make£¬È»ºó²âÊÔ¼´¿É¡£
+5 è¿›å…¥demo0ç›®å½•makeï¼Œç„¶åæµ‹è¯•å³å¯ã€‚
 
 //////////////////////   XCODER   //////////////////////////////////////
-½øÈëxcodeÄ¿Â¼Ö±½Ó´ò¿ª±àÒë¼´¿É¡£2.21 iPod²âÊÔÍ¨¹ı¡£
+è¿›å…¥xcodeç›®å½•ç›´æ¥æ‰“å¼€ç¼–è¯‘å³å¯ã€‚2.21 iPodæµ‹è¯•é€šè¿‡ã€‚
 
-Libnge2 ×ñÕÕLGPLv2·¢²¼Ô´´úÂë
-ÁªÏµ£º
+Libnge2 éµç…§LGPLv2å‘å¸ƒæºä»£ç 
+è”ç³»ï¼š
 newcreat newcreat@sina.com
 cooleyes cooleyes@263.com
 yl_ls    yl_ls@yeah.net
  
-¸ü¶àÄÚÈİÇë·ÃÎÊ£º
+æ›´å¤šå†…å®¹è¯·è®¿é—®ï¼š
 http://www.libnge.org

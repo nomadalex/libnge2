@@ -72,10 +72,10 @@ int get_gray_color(int dtype, int scol, int gray)
 }
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄ»Ò¶È°æ±¾
+ * å»ºç«‹ src å›¾åƒçš„ç°åº¦ç‰ˆæœ¬
  *
- * @param src Ô´Í¼Ïñ
- * @param gray »Ò¶È 0 µ½ 100, 0 ÎªÔ´Í¼Ïñ, 100 Îª´¿»ÒÉ«Í¼Ïñ
+ * @param src æºå›¾åƒ
+ * @param gray ç°åº¦ 0 åˆ° 100, 0 ä¸ºæºå›¾åƒ, 100 ä¸ºçº¯ç°è‰²å›¾åƒ
  */
 image_p create_gray_image(image_p src, int gray)
 {
@@ -87,7 +87,7 @@ image_p create_gray_image(image_p src, int gray)
 
 	if(gray<0 || gray>100)
 	{
-		nge_print("create_gray_image arg 'gray' must between 0 to 100£¡");
+		nge_print("create_gray_image arg 'gray' must between 0 to 100ï¼");
 		return NULL;
 	}
 	if(src->swizzle ==1){
@@ -146,7 +146,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 		GET_RGBA_565(scol, r, g, b, a);
 		break;
 	}
-	// ´¦Àí±¥ºÍ¶È
+	// å¤„ç†é¥±å’Œåº¦
 	if(saturation!=0)
 	{
 		gcol = ((r + g + b) / 3) & 0xff;
@@ -183,7 +183,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 		if(b<0)b=0;
 	}
 cont001:
-	// ´¦ÀíÁÁ¶È
+	// å¤„ç†äº®åº¦
 	if(brightness!=0)
 	{
 		//gcol = ((r + g + b) / 3) & 0xff;
@@ -200,7 +200,7 @@ cont001:
 		if(b<0)b=0;
 	}
 
-	// Êä³ö
+	// è¾“å‡º
 	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_8888:
@@ -221,11 +221,11 @@ cont001:
 }
 
 /**
- * ½¨Á¢ src Í¼ÏñµÄÁÁ¶È£¬±¥ºÍ¶È°æ±¾
+ * å»ºç«‹ src å›¾åƒçš„äº®åº¦ï¼Œé¥±å’Œåº¦ç‰ˆæœ¬
  *
- * @param src Ô´Í¼Ïñ
- * @param saturation ±¥ºÏ¶È -100(»Ò¶ÈÍ¼Ïñ) ÖÁ 100(¸ß²ÊÉ«±ÈÍ¼Ïñ)
- * @param brightness ÁÁ¶È -100(È«ºÚ) ÖÁ 100(È«°×)
+ * @param src æºå›¾åƒ
+ * @param saturation é¥±åˆåº¦ -100(ç°åº¦å›¾åƒ) è‡³ 100(é«˜å½©è‰²æ¯”å›¾åƒ)
+ * @param brightness äº®åº¦ -100(å…¨é»‘) è‡³ 100(å…¨ç™½)
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {
@@ -237,13 +237,13 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 	if(saturation<-100 || saturation>100)
 	{
-		nge_print("create_gray_image arg 'saturation' must between -100 to 100£¡");
+		nge_print("create_gray_image arg 'saturation' must between -100 to 100ï¼");
 		return NULL;
 	}
 
 	if(brightness<-100 || brightness>100)
 	{
-		nge_print("create_gray_image arg 'brightness' must between -100 to 100£¡");
+		nge_print("create_gray_image arg 'brightness' must between -100 to 100ï¼");
 		return NULL;
 	}
 	if(src->swizzle ==1){

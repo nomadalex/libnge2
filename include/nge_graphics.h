@@ -65,385 +65,385 @@ extern "C"{
 #endif
 
 /**
- *µÃµ½ÆÁÄ»ĞÅÏ¢
- *@return ÆÁÄ»ĞÅÏ¢
+ *å¾—åˆ°å±å¹•ä¿¡æ¯
+ *@return å±å¹•ä¿¡æ¯
  */
 screen_context_p GetScreenContext();
 /**
- * ³õÊ¼»¯º¯Êı,ÓÉnge2ÏµÍ³µ÷ÓÃ,ÓÃ»§ÎŞĞëÏÔÊ½µ÷ÓÃ
+ * åˆå§‹åŒ–å‡½æ•°,ç”±nge2ç³»ç»Ÿè°ƒç”¨,ç”¨æˆ·æ— é¡»æ˜¾å¼è°ƒç”¨
  */
 void InitGrahics();
 /**
- * ½áÊøº¯Êı,ÓÉnge2ÏµÍ³µ÷ÓÃ,ÓÃ»§ÎŞĞëÏÔÊ½µ÷ÓÃ
+ * ç»“æŸå‡½æ•°,ç”±nge2ç³»ç»Ÿè°ƒç”¨,ç”¨æˆ·æ— é¡»æ˜¾å¼è°ƒç”¨
  */
 void FiniGrahics();
 /**
- * ÆÁÄ»»æÖÆ¿ªÊ¼º¯Êı,ËùÓĞ»æÖÆµ½ÆÁÄ»¾ùÔÚBeginScene,EndSceneÖ®¼äµ÷ÓÃ
- *@param uint8 clear,ÇåÆÁ±êÖ¾£¬Ä¬ÈÏÎª1ÇåÆÁ
- *@return ÎŞ
+ * å±å¹•ç»˜åˆ¶å¼€å§‹å‡½æ•°,æ‰€æœ‰ç»˜åˆ¶åˆ°å±å¹•å‡åœ¨BeginScene,EndSceneä¹‹é—´è°ƒç”¨
+ *@param uint8 clear,æ¸…å±æ ‡å¿—ï¼Œé»˜è®¤ä¸º1æ¸…å±
+ *@return æ— 
  */
 void BeginScene(uint8 clear);
 /**
- * ÆÁÄ»»æÖÆ½áÊøº¯Êı,ËùÓĞ»æÖÆµ½ÆÁÄ»¾ùÔÚBeginScene,EndSceneÖ®¼äµ÷ÓÃ
- *@return ÎŞ
+ * å±å¹•ç»˜åˆ¶ç»“æŸå‡½æ•°,æ‰€æœ‰ç»˜åˆ¶åˆ°å±å¹•å‡åœ¨BeginScene,EndSceneä¹‹é—´è°ƒç”¨
+ *@return æ— 
  */
 void EndScene();
 /**
- * ÉèÖÃÊÇ·ñÏÔÊ¾FPSºÍµ÷ÊÔĞÅÏ¢
- *@return ÎŞ
+ * è®¾ç½®æ˜¯å¦æ˜¾ç¤ºFPSå’Œè°ƒè¯•ä¿¡æ¯
+ *@return æ— 
  */
 void ShowFps();
 /**
- * ÏŞÖÆÖ¡Êı
- *@param int fps,Ä¿±êÖ¡Êı
- *@return ÎŞ
+ * é™åˆ¶å¸§æ•°
+ *@param int fps,ç›®æ ‡å¸§æ•°
+ *@return æ— 
  */
 void LimitFps(uint32 fps);
 /**
- * ÉèÖÃ²Ã¼ôÇøÓò£¬ÔÚÄ¿±êÇøÓòÄÚµÄ²ÅÏÔÊ¾£¬Í¬J2MEµÄSetClip
- *@param int x,Ä¿±êÇøÓòx×ø±ê
- *@param int y,Ä¿±êÇøÓòy×ø±ê
- *@param int w,Ä¿±êÇøÓò²Ã¼ôµÄwidth
- *@param int h,Ä¿±êÇøÓò²Ã¼ôµÄheight
- *@return ÎŞ
+ * è®¾ç½®è£å‰ªåŒºåŸŸï¼Œåœ¨ç›®æ ‡åŒºåŸŸå†…çš„æ‰æ˜¾ç¤ºï¼ŒåŒJ2MEçš„SetClip
+ *@param int x,ç›®æ ‡åŒºåŸŸxåæ ‡
+ *@param int y,ç›®æ ‡åŒºåŸŸyåæ ‡
+ *@param int w,ç›®æ ‡åŒºåŸŸè£å‰ªçš„width
+ *@param int h,ç›®æ ‡åŒºåŸŸè£å‰ªçš„height
+ *@return æ— 
  */
 void SetClip(int x,int y,int w,int h);
 /**
- * ÖØÖÃÖÃ²Ã¼ôÇøÓò£¬µÈÍ¬ÓÚµ÷ÓÃSetClip(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
- *@return ÎŞ
+ * é‡ç½®ç½®è£å‰ªåŒºåŸŸï¼Œç­‰åŒäºè°ƒç”¨SetClip(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
+ *@return æ— 
  */
 void ResetClip();
 /**
- * »­Ïßº¯Êı1£¬ÊäÈë×ø±êµã
- *@param float x1,µÚÒ»¸öµãx×ø±ê
- *@param float y1,µÚÒ»¸öµãy×ø±ê
- *@param float x2,µÚ¶ş¸öµãx×ø±ê
- *@param float y2,µÚ¶ş¸öµãy×ø±ê
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»çº¿å‡½æ•°1ï¼Œè¾“å…¥åæ ‡ç‚¹
+ *@param float x1,ç¬¬ä¸€ä¸ªç‚¹xåæ ‡
+ *@param float y1,ç¬¬ä¸€ä¸ªç‚¹yåæ ‡
+ *@param float x2,ç¬¬äºŒä¸ªç‚¹xåæ ‡
+ *@param float y2,ç¬¬äºŒä¸ªç‚¹yåæ ‡
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype);
 /**
- * »­Ïßº¯Êı2£¬ÊäÈë×ø±êµÄpointf
- *@param pointf p1,µÚÒ»¸öµãxy×ø±ê
- *@param pointf p2,µÚ¶ş¸öµãxy×ø±ê
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»çº¿å‡½æ•°2ï¼Œè¾“å…¥åæ ‡çš„pointf
+ *@param pointf p1,ç¬¬ä¸€ä¸ªç‚¹xyåæ ‡
+ *@param pointf p2,ç¬¬äºŒä¸ªç‚¹xyåæ ‡
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void DrawLineEx(pointf p1,pointf p2, int color,int dtype);
 /**
- * »­¾ØĞÎÏß¿òµÄº¯Êı1£¬ÊäÈëÎªÎ»ÖÃºÍ¿í¸ß
- *@param float dx,¾ØĞÎ×óÉÏ½ÇµÄx×ø±ê
- *@param float dy,¾ØĞÎ×óÉÏ½ÇµÄy×ø±ê
- *@param float width,¾ØĞÎµÄ¿í
- *@param float height,¾ØĞÎµÄ¸ß
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»çŸ©å½¢çº¿æ¡†çš„å‡½æ•°1ï¼Œè¾“å…¥ä¸ºä½ç½®å’Œå®½é«˜
+ *@param float dx,çŸ©å½¢å·¦ä¸Šè§’çš„xåæ ‡
+ *@param float dy,çŸ©å½¢å·¦ä¸Šè§’çš„yåæ ‡
+ *@param float width,çŸ©å½¢çš„å®½
+ *@param float height,çŸ©å½¢çš„é«˜
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype);
 /**
- * »­¾ØĞÎÏß¿òµÄº¯Êı2£¬ÊäÈëÎª¾ØĞÎÎ»ÖÃ×ø±ê
- *@param rectf rect,¾ØĞÎÎ»ÖÃ×ø±ê
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»çŸ©å½¢çº¿æ¡†çš„å‡½æ•°2ï¼Œè¾“å…¥ä¸ºçŸ©å½¢ä½ç½®åæ ‡
+ *@param rectf rect,çŸ©å½¢ä½ç½®åæ ‡
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void DrawRectEx(rectf rect,int color,int dtype);
 /**
- * »­Ìî³ä¾ØĞÎµÄº¯Êı1£¬ÊäÈëÎªÎ»ÖÃºÍ¿í¸ß
- *@param float dx,¾ØĞÎ×óÉÏ½ÇµÄx×ø±ê
- *@param float dy,¾ØĞÎ×óÉÏ½ÇµÄy×ø±ê
- *@param float width,¾ØĞÎµÄ¿í
- *@param float height,¾ØĞÎµÄ¸ß
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»å¡«å……çŸ©å½¢çš„å‡½æ•°1ï¼Œè¾“å…¥ä¸ºä½ç½®å’Œå®½é«˜
+ *@param float dx,çŸ©å½¢å·¦ä¸Šè§’çš„xåæ ‡
+ *@param float dy,çŸ©å½¢å·¦ä¸Šè§’çš„yåæ ‡
+ *@param float width,çŸ©å½¢çš„å®½
+ *@param float height,çŸ©å½¢çš„é«˜
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void FillRect(float dx, float dy, float width, float height,int color,int dtype);
 /**
- * »­Ìî³ä¾ØĞÎµÄº¯Êı2£¬ÊäÈëÎª¾ØĞÎÎ»ÖÃ×ø±ê
- *@param rectf rect,¾ØĞÎÎ»ÖÃ×ø±ê
- *@param int color,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»å¡«å……çŸ©å½¢çš„å‡½æ•°2ï¼Œè¾“å…¥ä¸ºçŸ©å½¢ä½ç½®åæ ‡
+ *@param rectf rect,çŸ©å½¢ä½ç½®åæ ‡
+ *@param int color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void FillRectEx(rectf rect,int color,int dtype);
 /**
- * »­Ìî³ä½¥±ä¾ØĞÎµÄº¯Êı1£¬ÊäÈëÎªÎ»ÖÃºÍ¿í¸ß
- *@param float dx,¾ØĞÎ×óÉÏ½ÇµÄx×ø±ê
- *@param float dy,¾ØĞÎ×óÉÏ½ÇµÄy×ø±ê
- *@param float width,¾ØĞÎµÄ¿í
- *@param float height,¾ØĞÎµÄ¸ß
- *@param int* colors,4¸ö¶¥µãµÄcolor,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»å¡«å……æ¸å˜çŸ©å½¢çš„å‡½æ•°1ï¼Œè¾“å…¥ä¸ºä½ç½®å’Œå®½é«˜
+ *@param float dx,çŸ©å½¢å·¦ä¸Šè§’çš„xåæ ‡
+ *@param float dy,çŸ©å½¢å·¦ä¸Šè§’çš„yåæ ‡
+ *@param float width,çŸ©å½¢çš„å®½
+ *@param float height,çŸ©å½¢çš„é«˜
+ *@param int* colors,4ä¸ªé¡¶ç‚¹çš„color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype);
 /**
- * »­Ìî³ä¾ØĞÎµÄº¯Êı2£¬ÊäÈëÎª¾ØĞÎÎ»ÖÃ×ø±ê
- *@param rectf rect,¾ØĞÎÎ»ÖÃ×ø±ê
- *@param int* colors,4¸ö¶¥µãµÄcolor,ÑÕÉ«ÓëÏÂÃæ¶ÔÓ¦£¬ÀıÈçÏÂÃæÓÃµÄ5551£¬ÕâÀï¾ÍÓÃMAKE_RGBA5551
- *@param int dtype,ÏÔÊ¾Ä£Ê½£¬ÓëÉÏÃæµÄ¶ÔÓ¦
- *@return ÎŞ
+ * ç”»å¡«å……çŸ©å½¢çš„å‡½æ•°2ï¼Œè¾“å…¥ä¸ºçŸ©å½¢ä½ç½®åæ ‡
+ *@param rectf rect,çŸ©å½¢ä½ç½®åæ ‡
+ *@param int* colors,4ä¸ªé¡¶ç‚¹çš„color,é¢œè‰²ä¸ä¸‹é¢å¯¹åº”ï¼Œä¾‹å¦‚ä¸‹é¢ç”¨çš„5551ï¼Œè¿™é‡Œå°±ç”¨MAKE_RGBA5551
+ *@param int dtype,æ˜¾ç¤ºæ¨¡å¼ï¼Œä¸ä¸Šé¢çš„å¯¹åº”
+ *@return æ— 
  */
 void FillRectGradEx(rectf rect,int* colors,int dtype);
 /**
- * »­Í¼º¯Êı1£¬Ğ§ÂÊÒÀ´ÎÊÇImageToScreen>DrawImage>DrawImageMask>RenderQuad;
- * sx,sy,sw,sh,¹¹³É´ıÏÔÊ¾µÄÍ¼Æ¬·¶Î§£¬ÀıÈçÒªÏÔÊ¾Ò»ÕÅÍ¼Æ¬200*200µÄÍ¼Æ¬µÄ
- * 20£¬20µ½50¿í50¸ßµÄ×ÓÍ¼¿é£¬ÕâÀï¾ÍÌîÒÀ´Î20,20,50,50¡£Èç¹ûÒªÏÔÊ¾Ô­Í¼,¶¼ÌîÉÏ0
- * ¼´¿É.¶¼Ìî0ÊÇÏÔÊ¾0,0,tex->w,tex->h¡£xscale,yscaleÊÇ·Å´óËõĞ¡Òò×Ó1ÊÇÔ­Ê¼±ÈÀı£¬
- * Èç¹û·Å´óÒ»±¶£¬¶¼Ìî2£¬ËõĞ¡1±¶Ìî0.5¡£maskÊÇÑÕÉ«ÕÚÕÖ£¬ÓÃÓÚ¶ÔÍ¼Æ¬½øĞĞ»ìÉ«£¬
- * ÀıÈç°ëÍ¸Ã÷Ğ§¹ûµÈ£¬Ä¬ÈÏÊÇÏÔÊ¾Ô­É«£¬ÕâÀïÓÃtexture->mask¼´¿É
- * Àı×Ó1:½«200*200µÄÍ¼Æ¬texÏÔÊ¾ÔÚÆÁÄ»100£¬0´¦£¬²¢·Å´óÒ»±¶ÏÔÊ¾
+ * ç”»å›¾å‡½æ•°1ï¼Œæ•ˆç‡ä¾æ¬¡æ˜¯ImageToScreen>DrawImage>DrawImageMask>RenderQuad;
+ * sx,sy,sw,sh,æ„æˆå¾…æ˜¾ç¤ºçš„å›¾ç‰‡èŒƒå›´ï¼Œä¾‹å¦‚è¦æ˜¾ç¤ºä¸€å¼ å›¾ç‰‡200*200çš„å›¾ç‰‡çš„
+ * 20ï¼Œ20åˆ°50å®½50é«˜çš„å­å›¾å—ï¼Œè¿™é‡Œå°±å¡«ä¾æ¬¡20,20,50,50ã€‚å¦‚æœè¦æ˜¾ç¤ºåŸå›¾,éƒ½å¡«ä¸Š0
+ * å³å¯.éƒ½å¡«0æ˜¯æ˜¾ç¤º0,0,tex->w,tex->hã€‚xscale,yscaleæ˜¯æ”¾å¤§ç¼©å°å› å­1æ˜¯åŸå§‹æ¯”ä¾‹ï¼Œ
+ * å¦‚æœæ”¾å¤§ä¸€å€ï¼Œéƒ½å¡«2ï¼Œç¼©å°1å€å¡«0.5ã€‚maskæ˜¯é¢œè‰²é®ç½©ï¼Œç”¨äºå¯¹å›¾ç‰‡è¿›è¡Œæ··è‰²ï¼Œ
+ * ä¾‹å¦‚åŠé€æ˜æ•ˆæœç­‰ï¼Œé»˜è®¤æ˜¯æ˜¾ç¤ºåŸè‰²ï¼Œè¿™é‡Œç”¨texture->maskå³å¯
+ * ä¾‹å­1:å°†200*200çš„å›¾ç‰‡texæ˜¾ç¤ºåœ¨å±å¹•100ï¼Œ0å¤„ï¼Œå¹¶æ”¾å¤§ä¸€å€æ˜¾ç¤º
  * RenderQuad(tex,0,0,0,0,100,0,2,2,0,tex->mask);
- * Àı×Ó2:½«Í¼Æ¬texµÄ32£¬32¿ªÊ¼µÄ64¿í,64¸ßµÄ²¿·ÖÏÔÊ¾ÔÚ40£¬80´¦²¢Ğı×ª90¶È
+ * ä¾‹å­2:å°†å›¾ç‰‡texçš„32ï¼Œ32å¼€å§‹çš„64å®½,64é«˜çš„éƒ¨åˆ†æ˜¾ç¤ºåœ¨40ï¼Œ80å¤„å¹¶æ—‹è½¬90åº¦
  * RenderQuad(tex,32,32,64,64,40,80,1,1,90,tex->mask);
- * Àı×Ó3:½«Í¼Æ¬tex(texÏÔÊ¾Ä£Ê½ÊÇ8888)µÄ80£¬80¿ªÊ¼µÄ64¿í,64¸ßµÄ²¿·ÖÏÔÊ¾ÔÚ100£¬100´¦²¢°ëÍ¸Ã÷ÏÔÊ¾
+ * ä¾‹å­3:å°†å›¾ç‰‡tex(texæ˜¾ç¤ºæ¨¡å¼æ˜¯8888)çš„80ï¼Œ80å¼€å§‹çš„64å®½,64é«˜çš„éƒ¨åˆ†æ˜¾ç¤ºåœ¨100ï¼Œ100å¤„å¹¶åŠé€æ˜æ˜¾ç¤º
  * RenderQuad(tex,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß,
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float xscale,Í¼Æ¬x·½Ïò·Å´óËõĞ¡Òò×Ó
- *@param float yscale,Í¼Æ¬y·½Ïò·Å´óËõĞ¡Òò×Ó
- *@param float angle,Ğı×ª½Ç¶È
- *@param int mask,ÑÕÉ«ÕÚÕÖ
- *@return ÎŞ
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜,
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float xscale,å›¾ç‰‡xæ–¹å‘æ”¾å¤§ç¼©å°å› å­
+ *@param float yscale,å›¾ç‰‡yæ–¹å‘æ”¾å¤§ç¼©å°å› å­
+ *@param float angle,æ—‹è½¬è§’åº¦
+ *@param int mask,é¢œè‰²é®ç½©
+ *@return æ— 
  */
 void RenderQuad(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
 /**
- * »­Í¼º¯Êı2,sw,shÎª0ÊÇ»­Ô­Í¼£¬dw£¬dhÎª0ÊÇÏÔÊ¾swºÍdh´óĞ¡
- * Àı×Ó1:½«200*200µÄÍ¼Æ¬texÏÔÊ¾ÔÚÆÁÄ»100£¬0´¦
+ * ç”»å›¾å‡½æ•°2,sw,shä¸º0æ˜¯ç”»åŸå›¾ï¼Œdwï¼Œdhä¸º0æ˜¯æ˜¾ç¤ºswå’Œdhå¤§å°
+ * ä¾‹å­1:å°†200*200çš„å›¾ç‰‡texæ˜¾ç¤ºåœ¨å±å¹•100ï¼Œ0å¤„
  * DrawImage(tex,0,0,0,0,100,0,0,0);
- * »òÕßÓÃÑÏ¸ñ·½Ê½£ºDrawImage(tex,0,0,200,200,100,0,200,200);
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float dw,ÆÁÄ»¿í
- *@param float dh,ÆÁÄ»¸ß
- *@return ÎŞ
+ * æˆ–è€…ç”¨ä¸¥æ ¼æ–¹å¼ï¼šDrawImage(tex,0,0,200,200,100,0,200,200);
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float dw,å±å¹•å®½
+ *@param float dh,å±å¹•é«˜
+ *@return æ— 
  */
 void DrawImage(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
 /**
- * »­Í¼º¯Êı3
- * Í¬ÉÏ£¬Ö»ÊÇ¶àÁË¸öMASK
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float dw,ÆÁÄ»¿í
- *@param float dh,ÆÁÄ»¸ß
- *@param int mask,ÑÕÉ«ÕÚÕÖ
- *@return ÎŞ
+ * ç”»å›¾å‡½æ•°3
+ * åŒä¸Šï¼Œåªæ˜¯å¤šäº†ä¸ªMASK
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float dw,å±å¹•å®½
+ *@param float dh,å±å¹•é«˜
+ *@param int mask,é¢œè‰²é®ç½©
+ *@return æ— 
  */
 void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask);
 /**
- * »­Í¼º¯Êı4£¬×î¼òµ¥µÄ»­Í¼º¯Êı,½«Í¼Æ¬»­µ½dx,dy
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@return ÎŞ
+ * ç”»å›¾å‡½æ•°4ï¼Œæœ€ç®€å•çš„ç”»å›¾å‡½æ•°,å°†å›¾ç‰‡ç”»åˆ°dx,dy
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@return æ— 
  */
 void ImageToScreen(image_p texture,float dx,float dy);
 
 /**
- *Í¬RenderQuad,Ôö¼ÓÒ»¸ötrans²ÎÊı
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß,
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float xscale,Í¼Æ¬x·½Ïò·Å´óËõĞ¡Òò×Ó
- *@param float yscale,Í¼Æ¬y·½Ïò·Å´óËõĞ¡Òò×Ó
- *@param float angle,Ğı×ª½Ç¶È
- *@param int mask,ÑÕÉ«ÕÚÕÖ
- *@param int trans,Ä¿Ç°Ö§³ÖµÄNGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return ÎŞ
+ *åŒRenderQuad,å¢åŠ ä¸€ä¸ªtranså‚æ•°
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜,
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float xscale,å›¾ç‰‡xæ–¹å‘æ”¾å¤§ç¼©å°å› å­
+ *@param float yscale,å›¾ç‰‡yæ–¹å‘æ”¾å¤§ç¼©å°å› å­
+ *@param float angle,æ—‹è½¬è§’åº¦
+ *@param int mask,é¢œè‰²é®ç½©
+ *@param int trans,ç›®å‰æ”¯æŒçš„NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return æ— 
  */
 void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans);
 /**
- *Í¬DrawImage,Ôö¼ÓÒ»¸ötrans²ÎÊı
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float dw,ÆÁÄ»¿í
- *@param float dh,ÆÁÄ»¸ß
- *@param int trans,Ä¿Ç°Ö§³ÖµÄNGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return ÎŞ
+ *åŒDrawImage,å¢åŠ ä¸€ä¸ªtranså‚æ•°
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float dw,å±å¹•å®½
+ *@param float dh,å±å¹•é«˜
+ *@param int trans,ç›®å‰æ”¯æŒçš„NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return æ— 
  */
 void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans);
 /**
- *Í¬DrawImageMask,Ôö¼ÓÒ»¸ötrans²ÎÊı
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float sx,Í¼Æ¬x×ø±ê
- *@param float sy,Í¼Æ¬y×ø±ê
- *@param float sw,Í¼Æ¬¿í
- *@param float sh,Í¼Æ¬¸ß
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param float dw,ÆÁÄ»¿í
- *@param float dh,ÆÁÄ»¸ß
- *@param int mask,ÑÕÉ«ÕÚÕÖ
- *@param int trans,Ä¿Ç°Ö§³ÖµÄNGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return ÎŞ
+ *åŒDrawImageMask,å¢åŠ ä¸€ä¸ªtranså‚æ•°
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float sx,å›¾ç‰‡xåæ ‡
+ *@param float sy,å›¾ç‰‡yåæ ‡
+ *@param float sw,å›¾ç‰‡å®½
+ *@param float sh,å›¾ç‰‡é«˜
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param float dw,å±å¹•å®½
+ *@param float dh,å±å¹•é«˜
+ *@param int mask,é¢œè‰²é®ç½©
+ *@param int trans,ç›®å‰æ”¯æŒçš„NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return æ— 
  */
 void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans);
 /**
- *Í¬ImageToScreen,Ôö¼ÓÒ»¸ötrans²ÎÊı
- *@param image_p texture,Í¼Æ¬Ö¸Õë
- *@param float dx,ÆÁÄ»x×ø±ê
- *@param float dy,ÆÁÄ»y×ø±ê
- *@param int trans,Ä¿Ç°Ö§³ÖµÄNGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return ÎŞ
+ *åŒImageToScreen,å¢åŠ ä¸€ä¸ªtranså‚æ•°
+ *@param image_p texture,å›¾ç‰‡æŒ‡é’ˆ
+ *@param float dx,å±å¹•xåæ ‡
+ *@param float dy,å±å¹•yåæ ‡
+ *@param int trans,ç›®å‰æ”¯æŒçš„NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@return æ— 
  */
 void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
 
 /**
- *½«ÆÁÄ»ÄÚÈİ±£´æÔÚimage_pÖĞ
- *@return image_p,·µ»Øimage_pÖ¸Õë,³ö´í·µ»ØNULL
+ *å°†å±å¹•å†…å®¹ä¿å­˜åœ¨image_pä¸­
+ *@return image_p,è¿”å›image_pæŒ‡é’ˆ,å‡ºé”™è¿”å›NULL
  */
 image_p ScreenToImage();
 /**
- * ±£´æÒ»¸ösnapshotÍ¼Æ¬´òÎÄ¼ş,Õâ¸öÍ¼Æ¬ÊÇpng¸ñÊ½µÄ
- *@param const char* filename,±£´æÍ¼Æ¬ÎÄ¼şÃû
- *@return ÎŞ
+ * ä¿å­˜ä¸€ä¸ªsnapshotå›¾ç‰‡æ‰“æ–‡ä»¶,è¿™ä¸ªå›¾ç‰‡æ˜¯pngæ ¼å¼çš„
+ *@param const char* filename,ä¿å­˜å›¾ç‰‡æ–‡ä»¶å
+ *@return æ— 
  */
 void ScreenShot(const char* filename);
 /**
- *ÉèÖÃÆÁÄ»ÑÕÉ«£¬r,g,b,a
- *@param uint8 r,ÉèÖÃr·ÖÁ¿(0-255)
- *@param uint8 g,ÉèÖÃg·ÖÁ¿(0-255)
- *@param uint8 b,ÉèÖÃb·ÖÁ¿(0-255)
- *@param uint8 a,ÉèÖÃa·ÖÁ¿(0-255)
- *@return uint32,ÉÏÒ»¸öÆÁÄ»ÑÕÉ«Öµ,¿ÉÓÃºêGET_RGBA_8888·ÖÀë³ö¸÷¸öÑÕÉ«·ÖÁ¿
+ *è®¾ç½®å±å¹•é¢œè‰²ï¼Œr,g,b,a
+ *@param uint8 r,è®¾ç½®råˆ†é‡(0-255)
+ *@param uint8 g,è®¾ç½®gåˆ†é‡(0-255)
+ *@param uint8 b,è®¾ç½®båˆ†é‡(0-255)
+ *@param uint8 a,è®¾ç½®aåˆ†é‡(0-255)
+ *@return uint32,ä¸Šä¸€ä¸ªå±å¹•é¢œè‰²å€¼,å¯ç”¨å®GET_RGBA_8888åˆ†ç¦»å‡ºå„ä¸ªé¢œè‰²åˆ†é‡
  */
 uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a);
 /**
- * ÉèÖÃµ±Ç°µÄ»ìºÏ·½Ê½
+ * è®¾ç½®å½“å‰çš„æ··åˆæ–¹å¼
  *@param int src_blend,
  *@param int des_blend,
  *@return
  */
 void SetTexBlend(int src_blend, int des_blend);
 /**
- *½«»ìºÏ·½Ê½»Ö¸´ÎªÄ¬ÈÏ·½Ê½
+ *å°†æ··åˆæ–¹å¼æ¢å¤ä¸ºé»˜è®¤æ–¹å¼
  *@return
  */
 void ResetTexBlend();
 
 /**
- * ÔÚÆÁÄ»ÉÏ»­Ò»¸öµãµÄº¯Êı
- *@param float x,ºá×ø±ê
- *@param float y,×İ×ø±ê
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * åœ¨å±å¹•ä¸Šç”»ä¸€ä¸ªç‚¹çš„å‡½æ•°
+ *@param float x,æ¨ªåæ ‡
+ *@param float y,çºµåæ ‡
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void PutPix(float x,float y ,int color,int dtype);
 
 /**
- * »­Ô²ĞÎÏß¿òº¯Êı
- *@param float x,Ô²ĞÄºá×ø±ê
- *@param float y,Ô²ĞÄ×İ×ø±ê
- *@param float radius,Ô²°ë¾¶
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»åœ†å½¢çº¿æ¡†å‡½æ•°
+ *@param float x,åœ†å¿ƒæ¨ªåæ ‡
+ *@param float y,åœ†å¿ƒçºµåæ ‡
+ *@param float radius,åœ†åŠå¾„
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void DrawCircle(float x, float y, float radius, int color,int dtype);
 
 /**
- * »­ÊµĞÄÔ²º¯Êı
- *@param float x,Ô²ĞÄºá×ø±ê
- *@param float y,Ô²ĞÄ×İ×ø±ê
- *@param float radius,Ô²°ë¾¶
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»å®å¿ƒåœ†å‡½æ•°
+ *@param float x,åœ†å¿ƒæ¨ªåæ ‡
+ *@param float y,åœ†å¿ƒçºµåæ ‡
+ *@param float radius,åœ†åŠå¾„
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void FillCircle(float x, float y, float radius, int color,int dtype);
 
 /**
- * »­ÍÖÔ²Ïß¿òº¯Êı
- *@param float x,Ô²ĞÄºá×ø±ê
- *@param float y,Ô²ĞÄ×İ×ø±ê
- *@param float xradius,ÍÖÔ²x°ë¾¶
- *@param float yradius,ÍÖÔ²y°ë¾¶
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»æ¤­åœ†çº¿æ¡†å‡½æ•°
+ *@param float x,åœ†å¿ƒæ¨ªåæ ‡
+ *@param float y,åœ†å¿ƒçºµåæ ‡
+ *@param float xradius,æ¤­åœ†xåŠå¾„
+ *@param float yradius,æ¤­åœ†yåŠå¾„
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
 
 /**
- * »­ÊµĞÄÍÖÔ²º¯Êı
- *@param float x,Ô²ĞÄºá×ø±ê
- *@param float y,Ô²ĞÄ×İ×ø±ê
- *@param float xradius,ÍÖÔ²x°ë¾¶
- *@param float yradius,ÍÖÔ²y°ë¾¶
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»å®å¿ƒæ¤­åœ†å‡½æ•°
+ *@param float x,åœ†å¿ƒæ¨ªåæ ‡
+ *@param float y,åœ†å¿ƒçºµåæ ‡
+ *@param float xradius,æ¤­åœ†xåŠå¾„
+ *@param float yradius,æ¤­åœ†yåŠå¾„
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
 
 /**
- * »­ÈÎÒâ¶à±ßĞÎÏß¿òº¯Êı
- * ×¢Òâ¶¥µãË³ĞòÊÇË³Ê±Õë·½Ïò
- *@param float* x,¶¥µãºá×ø±êÊı×é
- *@param float* y,¶¥µã×İ×ø±êÊı×é
- *@param int count ,¶¥µã¸öÊı
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»ä»»æ„å¤šè¾¹å½¢çº¿æ¡†å‡½æ•°
+ * æ³¨æ„é¡¶ç‚¹é¡ºåºæ˜¯é¡ºæ—¶é’ˆæ–¹å‘
+ *@param float* x,é¡¶ç‚¹æ¨ªåæ ‡æ•°ç»„
+ *@param float* y,é¡¶ç‚¹çºµåæ ‡æ•°ç»„
+ *@param int count ,é¡¶ç‚¹ä¸ªæ•°
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void DrawPolygon(float* x, float* y, int count, int color,int dtype);
 
 /**
- * »­ÈÎÒâÊµĞÄ¶à±ßĞÎº¯Êı
- * ×¢Òâ¶¥µãË³ĞòÊÇË³Ê±Õë·½Ïò
- *@param float* x,¶¥µãºá×ø±êÊı×é
- *@param float* y,¶¥µã×İ×ø±êÊı×é
- *@param int count ,¶¥µã¸öÊı
- *@param int color,ÑÕÉ«
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»ä»»æ„å®å¿ƒå¤šè¾¹å½¢å‡½æ•°
+ * æ³¨æ„é¡¶ç‚¹é¡ºåºæ˜¯é¡ºæ—¶é’ˆæ–¹å‘
+ *@param float* x,é¡¶ç‚¹æ¨ªåæ ‡æ•°ç»„
+ *@param float* y,é¡¶ç‚¹çºµåæ ‡æ•°ç»„
+ *@param int count ,é¡¶ç‚¹ä¸ªæ•°
+ *@param int color,é¢œè‰²
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void FillPolygon(float* x, float* y, int count, int color,int dtype);
 
 /**
- * »­½¥½øÑÕÉ«ÈÎÒâÊµĞÄ¶à±ßĞÎº¯Êı
- * ×¢Òâ¶¥µãË³ĞòÊÇË³Ê±Õë·½Ïò
- *@param float* x,¶¥µãºá×ø±êÊı×é
- *@param float* y,¶¥µã×İ×ø±êÊı×é
- *@param int count ,¶¥µã¸öÊı
- *@param int* colors,ÑÕÉ«Êı×é×¢ÒâÓë¶¥µã¸öÊıÏàÍ¬
- *@param int dtype,ÑÕÉ«ÀàĞÍ
+ * ç”»æ¸è¿›é¢œè‰²ä»»æ„å®å¿ƒå¤šè¾¹å½¢å‡½æ•°
+ * æ³¨æ„é¡¶ç‚¹é¡ºåºæ˜¯é¡ºæ—¶é’ˆæ–¹å‘
+ *@param float* x,é¡¶ç‚¹æ¨ªåæ ‡æ•°ç»„
+ *@param float* y,é¡¶ç‚¹çºµåæ ‡æ•°ç»„
+ *@param int count ,é¡¶ç‚¹ä¸ªæ•°
+ *@param int* colors,é¢œè‰²æ•°ç»„æ³¨æ„ä¸é¡¶ç‚¹ä¸ªæ•°ç›¸åŒ
+ *@param int dtype,é¢œè‰²ç±»å‹
  *@return
  */
 void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
 
 /**
- *ÉèÖÃÆÁÄ»ÀàĞÍ0Í¨³£1È«ÆÁ,2·­×ªºáÆÁ(ip)
+ *è®¾ç½®å±å¹•ç±»å‹0é€šå¸¸1å…¨å±,2ç¿»è½¬æ¨ªå±(ip)
  */
 void SetScreenType(int type);
 

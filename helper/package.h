@@ -1,9 +1,9 @@
 
 /*
  *	2009-04-09
- *	×÷Õß: °×·ã
- *	ËµÃ÷: ´ò°üĞ¡¹¤¾ß,²¿·Ö´úÂë²Î¿¼×Ô"sijiu"µÄ×÷Æ·"MpkPackage",±àÒë²»Í¨¹ıÊÇÓÉÓÚNGE2ÒıÇæÎ´ÅäÖÃÕıÈ·,
- *	Ö»ĞèÒª°Ñ#define __HIDE_PSP_FUNC_µÄ×¢ÊÍÈ¥µô¼´¿ÉÈÃ´úÂëÍ¨¹ı±àÒë,²»¹ı»áÒıÆğ³ÌĞò²¿·Ö¹¦ÄÜÈ±Ê§
+ *	ä½œè€…: ç™½æ«
+ *	è¯´æ˜: æ‰“åŒ…å°å·¥å…·,éƒ¨åˆ†ä»£ç å‚è€ƒè‡ª"sijiu"çš„ä½œå“"MpkPackage",ç¼–è¯‘ä¸é€šè¿‡æ˜¯ç”±äºNGE2å¼•æ“æœªé…ç½®æ­£ç¡®,
+ *	åªéœ€è¦æŠŠ#define __HIDE_PSP_FUNC_çš„æ³¨é‡Šå»æ‰å³å¯è®©ä»£ç é€šè¿‡ç¼–è¯‘,ä¸è¿‡ä¼šå¼•èµ·ç¨‹åºéƒ¨åˆ†åŠŸèƒ½ç¼ºå¤±
  */
 #ifndef _PACKAGE_H_
 #define _PACKAGE_H_
@@ -15,23 +15,23 @@
 #include <stdio.h>
 #include <string.h>
 
-//#define __HIDE_PSP_FUNC_	// È¥µô×¢ÊÍÔòÒş²ØËùÓĞPSPÓÃº¯Êı
+//#define __HIDE_PSP_FUNC_	// å»æ‰æ³¨é‡Šåˆ™éšè—æ‰€æœ‰PSPç”¨å‡½æ•°
 
-typedef struct packDate	{	/* ÎÄ¼şË÷Òı±íÊı¾İ */
-	unsigned char name[64-8];		/* ÎÄ¼şÃû */
-	long offset;			/* ÎÄ¼şÎ»ÒÆ */
-	long size;				/* ÎÄ¼ş´óĞ¡ */
+typedef struct packDate	{	/* æ–‡ä»¶ç´¢å¼•è¡¨æ•°æ® */
+	unsigned char name[64-8];		/* æ–‡ä»¶å */
+	long offset;			/* æ–‡ä»¶ä½ç§» */
+	long size;				/* æ–‡ä»¶å¤§å° */
 } packDate;
 
-typedef struct packInfo	{	/* ÎÄ¼şÍ· */
-	int VER;				/* ¿â°æ±¾ */
-	int nums;				/* ÎÄ¼şÊıÄ¿ */
-	char info[128-8];		/* ´ò°üĞÅÏ¢ */
+typedef struct packInfo	{	/* æ–‡ä»¶å¤´ */
+	int VER;				/* åº“ç‰ˆæœ¬ */
+	int nums;				/* æ–‡ä»¶æ•°ç›® */
+	char info[128-8];		/* æ‰“åŒ…ä¿¡æ¯ */
 } packInfo;
 
-typedef struct packItem	{	/* Ë÷Òı±íÁ´±í */
-	packDate date;			/* Êı¾İ */
-	struct packItem* next;	/* Á´±í */
+typedef struct packItem	{	/* ç´¢å¼•è¡¨é“¾è¡¨ */
+	packDate date;			/* æ•°æ® */
+	struct packItem* next;	/* é“¾è¡¨ */
 }  packItem;
 
 #ifdef __cplusplus
@@ -42,41 +42,41 @@ extern "C" {
 	static packItem* fileItem = NULL;
 	static packItem* fileItem_temp = NULL;
 
-void packageInit();		// ³õÊ¼»¯Ë÷Òı±íºÍÎÄ¼şÍ·ĞÅÏ¢Îª0
+void packageInit();		// åˆå§‹åŒ–ç´¢å¼•è¡¨å’Œæ–‡ä»¶å¤´ä¿¡æ¯ä¸º0
 void packageFini();
-void add_fileItem();	// Ìí¼ÓÒ»¸öË÷Òı,Èç¹ûË÷ÒıÍ·Îª¿ÕÔò½¨Á¢Ò»¸ö
-void del_fileItem();	// ´ÓË÷ÒıÁ´µÄÎ²²¿É¾³ıÒ»¸öË÷Òı
-void add_fileInfo();	// ´´½¨Ò»¸öÎÄ¼şÍ·Êı¾İ,²»¹Üµ÷ÓÃ¼¸´ÎÖ»ÄÜ´´ÔìÒ»¸ö
-void del_fileInfo();	// É¾³ıÎÄ¼şÍ·Êı¾İ
+void add_fileItem();	// æ·»åŠ ä¸€ä¸ªç´¢å¼•,å¦‚æœç´¢å¼•å¤´ä¸ºç©ºåˆ™å»ºç«‹ä¸€ä¸ª
+void del_fileItem();	// ä»ç´¢å¼•é“¾çš„å°¾éƒ¨åˆ é™¤ä¸€ä¸ªç´¢å¼•
+void add_fileInfo();	// åˆ›å»ºä¸€ä¸ªæ–‡ä»¶å¤´æ•°æ®,ä¸ç®¡è°ƒç”¨å‡ æ¬¡åªèƒ½åˆ›é€ ä¸€ä¸ª
+void del_fileInfo();	// åˆ é™¤æ–‡ä»¶å¤´æ•°æ®
 void save_fileName(const char* filename);
 void save_fileSize(const long size);
-void save_fileOffset(const int fileID);	// °ÑĞÅÏ¢±£´æµ½µ±Ç°Ë÷Òı±í
-void save_fileItem(FILE* fp);	// ±£´æË÷Òı±íÊı¾İµ½ÎÄ¼şÎ²²¿
-void save_fileInfo(FILE* fp);	// ±£´æÎÄ¼şÍ·Êı¾İµ½ÎÄ¼şÎ²²¿
+void save_fileOffset(const int fileID);	// æŠŠä¿¡æ¯ä¿å­˜åˆ°å½“å‰ç´¢å¼•è¡¨
+void save_fileItem(FILE* fp);	// ä¿å­˜ç´¢å¼•è¡¨æ•°æ®åˆ°æ–‡ä»¶å°¾éƒ¨
+void save_fileInfo(FILE* fp);	// ä¿å­˜æ–‡ä»¶å¤´æ•°æ®åˆ°æ–‡ä»¶å°¾éƒ¨
 void set_fileInfo(const char* text);
-void save_fileAddfile(const char* filename1,const char* filename2);	// ÎÄ¼ş2Ìí¼Óµ½ÎÄ¼ş1Î²²¿
-void save_itemTofile(char* filename,char* filetype);	// ´ÓÑ¹Ëõ°üÖĞ½âÑ¹ÎÄ¼ş
-int get_fileID();		// µÃµ½Ë÷Òı±í¸öÊı
-long get_fileSize(const char* filename);	// µÃµ½´ÅÅÌÉÏÒ»¸öÎÄ¼şµÄ´óĞ¡
-void printf_allDate();			// µ÷ÊÔĞÅÏ¢
+void save_fileAddfile(const char* filename1,const char* filename2);	// æ–‡ä»¶2æ·»åŠ åˆ°æ–‡ä»¶1å°¾éƒ¨
+void save_itemTofile(char* filename,char* filetype);	// ä»å‹ç¼©åŒ…ä¸­è§£å‹æ–‡ä»¶
+int get_fileID();		// å¾—åˆ°ç´¢å¼•è¡¨ä¸ªæ•°
+long get_fileSize(const char* filename);	// å¾—åˆ°ç£ç›˜ä¸Šä¸€ä¸ªæ–‡ä»¶çš„å¤§å°
+void printf_allDate();			// è°ƒè¯•ä¿¡æ¯
 void* safe_malloc(const long size);
 void safe_free(void* p);
 
 #ifndef __HIDE_PSP_FUNC_
 /*
- *	ÒÔÏÂPSPÓÃº¯Êı -- ±àÒë²»Í¨¹ıÊ±°ÑPSPÓÃº¯ÊıÈ«²¿×¢ÊÍµô¾ÍĞĞ
+ *	ä»¥ä¸‹PSPç”¨å‡½æ•° -- ç¼–è¯‘ä¸é€šè¿‡æ—¶æŠŠPSPç”¨å‡½æ•°å…¨éƒ¨æ³¨é‡Šæ‰å°±è¡Œ
  *-------------------------------------------------------------------
  */
 
 /*
- *	¹¦ÄÜ:³õÊ¼»¯ÏµÍ³²¢¼ÓÔØ×ÊÔ´µ½»º³å,±ØĞë²Ù×÷
- *	const char* filename ĞèÒª¼ÓÔØµÄ´ò°üÎÄ¼ş
- *	return ÎÄ¼ş¼ÓÔØÊ§°Ü·µ»Ø-1,³É¹¦·µ»ØÎÄ¼şÖ¸Õëfd
+ *	åŠŸèƒ½:åˆå§‹åŒ–ç³»ç»Ÿå¹¶åŠ è½½èµ„æºåˆ°ç¼“å†²,å¿…é¡»æ“ä½œ
+ *	const char* filename éœ€è¦åŠ è½½çš„æ‰“åŒ…æ–‡ä»¶
+ *	return æ–‡ä»¶åŠ è½½å¤±è´¥è¿”å›-1,æˆåŠŸè¿”å›æ–‡ä»¶æŒ‡é’ˆfd
  */
 int		packInit		(const char* filename);
 /*
- *	¹¦ÄÜ:´ò¿ª´ò°üÎÄ¼şÖĞÃûÎªfilenameµÄÎÄ¼ş,²»¿É½øĞĞÎÄ¼ş¹Ø±Õ²Ù×÷
- *			ÎÄ¼ş¹Ø±Õ²Ù×÷ÓÉÏµÍ³Íê³É,Ö»ÊÇµ¥´¿ÏëµÃµ½Ä³¸öÎÄ¼ş½¨ÒéÓÃ´Ëº¯Êı
+ *	åŠŸèƒ½:æ‰“å¼€æ‰“åŒ…æ–‡ä»¶ä¸­åä¸ºfilenameçš„æ–‡ä»¶,ä¸å¯è¿›è¡Œæ–‡ä»¶å…³é—­æ“ä½œ
+ *			æ–‡ä»¶å…³é—­æ“ä½œç”±ç³»ç»Ÿå®Œæˆ,åªæ˜¯å•çº¯æƒ³å¾—åˆ°æŸä¸ªæ–‡ä»¶å»ºè®®ç”¨æ­¤å‡½æ•°
  *	{
  *		packInit("DATA.BIN");
  *		int fd = packOpen("image001.jpg");
@@ -84,13 +84,13 @@ int		packInit		(const char* filename);
  *		.....;
  *		packFini();
  *	}
- *	const char* filename ĞèÒª´ò¿ªµÄÎÄ¼şÃû
- *	return ´ò¿ªÊ§°Ü·µ»Ø-1,´ò¿ª³É¹¦·µ»ØÎÄ¼şÖ¸Õëfd
+ *	const char* filename éœ€è¦æ‰“å¼€çš„æ–‡ä»¶å
+ *	return æ‰“å¼€å¤±è´¥è¿”å›-1,æ‰“å¼€æˆåŠŸè¿”å›æ–‡ä»¶æŒ‡é’ˆfd
  */
 int		packOpen		(const char* filename);
 /*
- *	¹¦ÄÜ:Òì²½´ò¿ª´ò°üÎÄ¼şÖĞÃûÎªfilenameµÄÎÄ¼ş,Á÷¶ÁÈ¡½¨ÒéÓÃ´Ëº¯Êı,
- *			Ê¹ÓÃÍê±ÏĞèÒª×ÔĞĞ½øĞĞÎÄ¼ş¹Ø±Õ²Ù×÷,ÀıÈç:
+ *	åŠŸèƒ½:å¼‚æ­¥æ‰“å¼€æ‰“åŒ…æ–‡ä»¶ä¸­åä¸ºfilenameçš„æ–‡ä»¶,æµè¯»å–å»ºè®®ç”¨æ­¤å‡½æ•°,
+ *			ä½¿ç”¨å®Œæ¯•éœ€è¦è‡ªè¡Œè¿›è¡Œæ–‡ä»¶å…³é—­æ“ä½œ,ä¾‹å¦‚:
  *	{
  *		packInit("DATA.BIN");
  *		int fd = packOpenAsync("bgmusic.mp3");
@@ -99,25 +99,25 @@ int		packOpen		(const char* filename);
  *		io_fclose(fd);
  *		packFini();
  *	}
- *	const char* filenmae ĞèÒª´ò¿ªµÄÎÄ¼şÃû
- *	return ´ò¿ªÊ§°Ü·µ»Ø-1,´ò¿ª³É¹¦·µ»ØÎÄ¼şÖ¸Õëfd
+ *	const char* filenmae éœ€è¦æ‰“å¼€çš„æ–‡ä»¶å
+ *	return æ‰“å¼€å¤±è´¥è¿”å›-1,æ‰“å¼€æˆåŠŸè¿”å›æ–‡ä»¶æŒ‡é’ˆfd
  */
 int		packOpenAsync	(const char* filename);
 /*
- *	¹¦ÄÜ:µÃµ½´ò°üÎÄ¼şÖĞÃûÎªfilenameµÄÎÄ¼ş´óĞ¡
- *	const char* filename ĞèÒª´ò¿ªµÄÎÄ¼şÃû
- *	return ´ò¿ªÊ§°Ü·µ»Ø-1,´ò¿ª³É¹¦·µ»ØÎÄ¼ş´óĞ¡
+ *	åŠŸèƒ½:å¾—åˆ°æ‰“åŒ…æ–‡ä»¶ä¸­åä¸ºfilenameçš„æ–‡ä»¶å¤§å°
+ *	const char* filename éœ€è¦æ‰“å¼€çš„æ–‡ä»¶å
+ *	return æ‰“å¼€å¤±è´¥è¿”å›-1,æ‰“å¼€æˆåŠŸè¿”å›æ–‡ä»¶å¤§å°
  */
 long	packSize		(const char* filename);
 /*
- *	¹¦ÄÜ:µÃµ½´ò°üÎÄ¼şÖĞÃûÎªfilenameµÄÎÄ¼şÆ«ÒÆÁ¿
- *	const char* filename ĞèÒª´ò¿ªµÄÎÄ¼şÃû
- *	return ´ò¿ªÊ§°Ü·µ»Ø-1,´ò¿ª³É¹¦·µ»ØÎÄ¼şÆ«ÒÆÁ¿offset
+ *	åŠŸèƒ½:å¾—åˆ°æ‰“åŒ…æ–‡ä»¶ä¸­åä¸ºfilenameçš„æ–‡ä»¶åç§»é‡
+ *	const char* filename éœ€è¦æ‰“å¼€çš„æ–‡ä»¶å
+ *	return æ‰“å¼€å¤±è´¥è¿”å›-1,æ‰“å¼€æˆåŠŸè¿”å›æ–‡ä»¶åç§»é‡offset
  */
 long	packOffset		(const char* filename);
 /*
- *	¹¦ÄÜ:¹Ø±ÕÏµÍ³²¢Çå¿Õ×ÊÔ´
- *	return ÎŞ
+ *	åŠŸèƒ½:å…³é—­ç³»ç»Ÿå¹¶æ¸…ç©ºèµ„æº
+ *	return æ— 
  */
 void	packFini		(void);
 

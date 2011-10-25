@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
-/*ÒÔÏÂº¯ÊıÎªÄÚ²¿Ê¹ÓÃ,Í¨³£ÎŞĞèµ÷ÓÃ*/
+/*ä»¥ä¸‹å‡½æ•°ä¸ºå†…éƒ¨ä½¿ç”¨,é€šå¸¸æ— éœ€è°ƒç”¨*/
 uint32 charsets_ucs_conv(const uint8 *uni, uint8 *cjk);
 void charsets_big5_conv(const uint8 *big5, uint8 *cjk);
 void charsets_sjis_conv(const uint8 *jis, uint8 **cjk, uint32 * newsize);

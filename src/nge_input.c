@@ -74,7 +74,7 @@ void InitAnalog(AnalogProc analogproc)
 		analog_proc = analogproc;
 }
 
-//Ä£ÄâÒ¡¸Ë
+//æ¨¡æ‹Ÿæ‘‡æ†
 #if defined NGE_WIN || defined NGE_LINUX
 #define ANALOG_LEFT  0
 #define ANALOG_RIGHT 1

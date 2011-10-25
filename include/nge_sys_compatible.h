@@ -30,40 +30,40 @@ extern "C"{
 #endif
 
 /**
- *»ñÈ¡ÏµÍ³µÄ±¾µØÊ±¼ä
- *@param sys_time_p tm,ÏµÍ³Ê±¼ä½á¹¹
- *@return int,³É¹¦·µ»Ø1,Ê§°Ü·µ»Ø0
+ *è·å–ç³»ç»Ÿçš„æœ¬åœ°æ—¶é—´
+ *@param sys_time_p tm,ç³»ç»Ÿæ—¶é—´ç»“æ„
+ *@return int,æˆåŠŸè¿”å›1,å¤±è´¥è¿”å›0
  */
 int sys_localtime(sys_time_p tm);
 
 /**
- *»ñÈ¡ÏµÍ³µÄÎ¨Ò»µÄ30Î»ĞòÁĞºÅ.
- *@return char*,30Î»ĞòÁĞºÅµÄ×Ö·û´®.
+ *è·å–ç³»ç»Ÿçš„å”¯ä¸€çš„30ä½åºåˆ—å·.
+ *@return char*,30ä½åºåˆ—å·çš„å­—ç¬¦ä¸².
  */
 char* sys_get_idstorage();
 
 /**
- *»ñÈ¡ÏµÍ³µÄMACµØÖ·×Ö·û´®.
- *@return char*,·µ»Ø×Ö·û´®,XX:XX:XX:XX:XX:XX.
+ *è·å–ç³»ç»Ÿçš„MACåœ°å€å­—ç¬¦ä¸².
+ *@return char*,è¿”å›å­—ç¬¦ä¸²,XX:XX:XX:XX:XX:XX.
  */
 char* sys_get_mac();
 
 /**
- *»ñÈ¡ÏµÍ³µÄÓÃ»§Ãû.
- *@return char*,·µ»Ø×Ö·û´®.
+ *è·å–ç³»ç»Ÿçš„ç”¨æˆ·å.
+ *@return char*,è¿”å›å­—ç¬¦ä¸².
  */
 char* sys_get_nickname();
 
 /**
- *ÉèÖÃCPUµÄÆµÂÊÀàĞÍ.
- *@param int,ÀàĞÍÎªCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
- *@return int,1ÉèÖÃ³É¹¦,0ÉèÖÃÊ§°Ü.
+ *è®¾ç½®CPUçš„é¢‘ç‡ç±»å‹.
+ *@param int,ç±»å‹ä¸ºCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
+ *@return int,1è®¾ç½®æˆåŠŸ,0è®¾ç½®å¤±è´¥.
  */
 int sys_set_frequency_type(int type);
 
 /**
- *È¡µÃCPUµÄÆµÂÊÀàĞÍ.
- *@return int,ÀàĞÍÎªCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
+ *å–å¾—CPUçš„é¢‘ç‡ç±»å‹.
+ *@return int,ç±»å‹ä¸ºCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
  */
 int sys_get_frequency_type();
 

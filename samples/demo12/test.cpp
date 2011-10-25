@@ -3,16 +3,16 @@
 #include <stdio.h>
 // #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
 /**
- * nge_test:×î¼òµ¥µÄnge³ÌÐò:ÏÔÊ¾Ò»ÕÅÍ¼Æ¬
+ * nge_test:æœ€ç®€å•çš„ngeç¨‹åº:æ˜¾ç¤ºä¸€å¼ å›¾ç‰‡
  */
 
-//ÍË³ö±êÊ¶
+//é€€å‡ºæ ‡è¯†
 int game_quit = 0;
-//±³¾°Í¼Æ¬
+//èƒŒæ™¯å›¾ç‰‡
 image_p p_bg = NULL;
-//logoÍ¼Æ¬
+//logoå›¾ç‰‡
 image_p p_logo  = NULL;
-//logoÍ¼Æ¬µÄÍ¼Æ¬ÕÚÕÖ
+//logoå›¾ç‰‡çš„å›¾ç‰‡é®ç½©
 int logomask1,logomask2;
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
@@ -37,11 +37,11 @@ void btn_down(int keycode)
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//°´ÏÂÑ¡Ôñ¼üÍË³ö
+		//æŒ‰ä¸‹é€‰æ‹©é”®é€€å‡º
 		game_quit = 1;
 		break;
 	case PSP_BUTTON_START:
-		//°´ÏÂ¿ªÊ¼¼üÍË³ö
+		//æŒ‰ä¸‹å¼€å§‹é”®é€€å‡º
 		game_quit = 1;
 		break;
     }
@@ -67,23 +67,23 @@ void DrawScene()
 #endif
 
 int init() {
-	//³õÊ¼»¯NGE·ÖÎªVIDEO,AUDIO£¬ÕâÀïÊÇÖ»³õÊ¼»¯VIDEO£¬Èç¹û³õÊ¼»¯ËùÓÐÓÃINIT_VIDEO|INIT_AUDIO,»òÕßINIT_ALL
+	//åˆå§‹åŒ–NGEåˆ†ä¸ºVIDEO,AUDIOï¼Œè¿™é‡Œæ˜¯åªåˆå§‹åŒ–VIDEOï¼Œå¦‚æžœåˆå§‹åŒ–æ‰€æœ‰ç”¨INIT_VIDEO|INIT_AUDIO,æˆ–è€…INIT_ALL
 	NGE_Init(INIT_VIDEO);
-	//³õÊ¼»¯°´¼ü´¦Àíbtn_downÊÇ°´ÏÂÏìÓ¦,ºóÃæÊÇµ¯ÆðÊ±µÄÏìÓ¦£¬0ÊÇÈÃnge´¦ÀíhomeÏûÏ¢(Ö±½ÓÍË³ö),Ìî1¾ÍÊÇÈÃPSPÏµÍ³´¦Àí
-	//homeÏûÏ¢,Í¨³£Ìî1Õý³£ÍË³ö£¨1.50°æµÄ×ÔÖÆ³ÌÐòÐèÒªÌî0£©
+	//åˆå§‹åŒ–æŒ‰é”®å¤„ç†btn_downæ˜¯æŒ‰ä¸‹å“åº”,åŽé¢æ˜¯å¼¹èµ·æ—¶çš„å“åº”ï¼Œ0æ˜¯è®©ngeå¤„ç†homeæ¶ˆæ¯(ç›´æŽ¥é€€å‡º),å¡«1å°±æ˜¯è®©PSPç³»ç»Ÿå¤„ç†
+	//homeæ¶ˆæ¯,é€šå¸¸å¡«1æ­£å¸¸é€€å‡ºï¼ˆ1.50ç‰ˆçš„è‡ªåˆ¶ç¨‹åºéœ€è¦å¡«0ï¼‰
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 	InitInput(btn_down,NULL,1);
 #endif
-	//×îºóÒ»¸ö²ÎÊýÊÇpsp swizzleÓÅ»¯£¬Í¨³£Ìî1
+	//æœ€åŽä¸€ä¸ªå‚æ•°æ˜¯psp swizzleä¼˜åŒ–ï¼Œé€šå¸¸å¡«1
 	p_bg = image_load(RES_PATH("images/demo0.jpg"),DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_bg == NULL)
 		nge_print("can not open file\n");
 	p_logo = image_load(RES_PATH("images/nge2logo.png"),DISPLAY_PIXEL_FORMAT_4444,1);
 	if(p_logo == NULL)
 		nge_print("can not open file\n");
-	//´´½¨Ò»¸ö°ëÍ¸Ã÷µÄÍ¼Æ¬ÕÚÕÖcolor
+	//åˆ›å»ºä¸€ä¸ªåŠé€æ˜Žçš„å›¾ç‰‡é®ç½©color
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
-	//Ëæ±ã´´½¨Ò»¸öÍ¼Æ¬ÕÚÕÖcolor
+	//éšä¾¿åˆ›å»ºä¸€ä¸ªå›¾ç‰‡é®ç½©color
 	logomask2 = CreateColor(100,100,100,255,p_logo->dtype);
 	return 0;
 }

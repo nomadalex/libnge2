@@ -4,7 +4,7 @@
 #include "nge_image.h"
 #include "nge_timer.h"
 
-//Ö§³ÖµÄÐ§¹ûÆ÷
+//æ”¯æŒçš„æ•ˆæžœå™¨
 enum{
 	IMAGE_EFFECT_FADEIN = 0,
 	IMAGE_EFFECT_FADEOUT,
@@ -14,25 +14,25 @@ enum{
 	IMAGE_EFFECT_BLUR,
 	IMAGE_EFFECT_TRANSITIONS
 };
-//Ð§¹ûÆ÷µÄ×´Ì¬
+//æ•ˆæžœå™¨çš„çŠ¶æ€
 enum{
-	EFFECT_INIT = 0,//<<³õÊ¼»¯
-    EFFECT_PLAY,    //<<½øÐÐÖÐ
-	EFFECT_STOP     //<<Ð§¹ûÆ÷Íê³É
+	EFFECT_INIT = 0,//<<åˆå§‹åŒ–
+    EFFECT_PLAY,    //<<è¿›è¡Œä¸­
+	EFFECT_STOP     //<<æ•ˆæžœå™¨å®Œæˆ
 };
 
-//seteffectµÄ²ÎÊý£¬·ÖÎª¹«¹²²ÎÊýµÄË½ÓÐ²ÎÊý
-//Ë½ÓÐ²ÎÊýÇë×ÔÐÐ¶¨ÒåÑÚÂë
+//seteffectçš„å‚æ•°ï¼Œåˆ†ä¸ºå…¬å…±å‚æ•°çš„ç§æœ‰å‚æ•°
+//ç§æœ‰å‚æ•°è¯·è‡ªè¡Œå®šä¹‰æŽ©ç 
 enum{
-	//¹«¹²²ÎÊý
+	//å…¬å…±å‚æ•°
 	SET_EFFECT_FPS = 0,
 	SET_EFFECT_TIMETICKS,
-	//Ë½ÓÐ²ÎÊýfor fade in/out
+	//ç§æœ‰å‚æ•°for fade in/out
     SET_EFFECT_FADE_SRC,
 	SET_EFFECT_FADE_DES,
 	SET_EFFECT_SHAKE_X,
 	SET_EFFECT_SHAKE_Y,
-	//Ë½ÓÐ²ÎÊýfor blur
+	//ç§æœ‰å‚æ•°for blur
 	SET_EFFECT_BLUR_SRC,
 	SET_EFFECT_BLUR_DES,
 	SET_EFFECT_BLUR_OPTIMIZATION
@@ -40,25 +40,25 @@ enum{
 
 struct tag_image_effect;
 
-//¹«¹²º¯ÊýdrawÓÃÓÚÏÔÊ¾
+//å…¬å…±å‡½æ•°drawç”¨äºŽæ˜¾ç¤º
 typedef void (*effect_draw)(struct tag_image_effect* effector,image_p pimg,float dx,float dy);
-//¹«¹²º¯ÊýsetparamÓÃÓÚÉèÖÃ²ÎÊý,²ÎÊýÓÃfloat²»ÓÃintÔÚÓÚ±£³Ö¾«¶È
+//å…¬å…±å‡½æ•°setparamç”¨äºŽè®¾ç½®å‚æ•°,å‚æ•°ç”¨floatä¸ç”¨intåœ¨äºŽä¿æŒç²¾åº¦
 typedef float (*effect_setparam)(struct tag_image_effect* effector,float param,int flags);
-//¹«¹²º¯ÊýgetparamÓÃÓÚÈ¡µÃ²ÎÊý¡£
+//å…¬å…±å‡½æ•°getparamç”¨äºŽå–å¾—å‚æ•°ã€‚
 typedef float (*effect_getparam)(struct tag_image_effect* effector,int flags);
-//¹«¹²º¯ÊýgetstatusÓÃÓÚÈ¡µÃÐ§¹ûÆ÷µÄ×´Ì¬¡£
+//å…¬å…±å‡½æ•°getstatusç”¨äºŽå–å¾—æ•ˆæžœå™¨çš„çŠ¶æ€ã€‚
 typedef int (*effect_getstatus)(struct tag_image_effect* effector);
-//Ïú»Ùº¯Êý
+//é”€æ¯å‡½æ•°
 typedef void (*effect_destroy)(struct tag_image_effect* effector);
 
-//Ð§¹ûÆ÷µÄ"»ùÀà"£¬×¢ÒâË½ÓÐµÄ±ØÐëÔÚÕâ¸ö»ùÀàºóÃæ¼Ó
+//æ•ˆæžœå™¨çš„"åŸºç±»"ï¼Œæ³¨æ„ç§æœ‰çš„å¿…é¡»åœ¨è¿™ä¸ªåŸºç±»åŽé¢åŠ 
 typedef struct tag_image_effect{
 	int m_type;
 	int m_status;
 	int m_effect_fps;
 	int m_timeticks;
     nge_timer* m_ptimer;
-	//¹«¹²º¯Êý
+	//å…¬å…±å‡½æ•°
 	effect_draw draw;
 	effect_setparam set_param;
 	effect_getparam get_param;
@@ -71,50 +71,50 @@ extern "C"{
 #endif
 
 /**
- *´´½¨Ò»¸ö½¥ÈëµÄÐ§¹ûÆ÷,½¥ÈëÊÇalpha´ÓÒ»¸öÐ¡Öµ±ä»¯µ½Ò»¸ö´óÖµ
- *@param int src_alpha,¿ªÊ¼µÄalphaÖµ0-255
- *@param int des_alpha,½áÊøµÄalphaÖµ0-255
- *@param int timeticks,Íê³ÉÊ±¼äÒÔºÁÃë¼Ç,1000ÊÇ1Ãë
- *@return image_effect_p,·µ»ØÐ§¹ûÆ÷µÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªæ¸å…¥çš„æ•ˆæžœå™¨,æ¸å…¥æ˜¯alphaä»Žä¸€ä¸ªå°å€¼å˜åŒ–åˆ°ä¸€ä¸ªå¤§å€¼
+ *@param int src_alpha,å¼€å§‹çš„alphaå€¼0-255
+ *@param int des_alpha,ç»“æŸçš„alphaå€¼0-255
+ *@param int timeticks,å®Œæˆæ—¶é—´ä»¥æ¯«ç§’è®°,1000æ˜¯1ç§’
+ *@return image_effect_p,è¿”å›žæ•ˆæžœå™¨çš„æŒ‡é’ˆ
  */
 image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
 
 /**
- *´´½¨Ò»¸ö½¥³öµÄÐ§¹ûÆ÷,½¥ÈëÊÇalpha´ÓÒ»¸ö´óÖµ±ä»¯µ½Ò»¸öÐ¡Öµ
- *@param int src_alpha,¿ªÊ¼µÄalphaÖµ0-255
- *@param int des_alpha,½áÊøµÄalphaÖµ0-255
- *@param int timeticks,Íê³ÉÊ±¼äÒÔºÁÃë¼Ç,1000ÊÇ1Ãë
- *@return image_effect_p,·µ»ØÐ§¹ûÆ÷µÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªæ¸å‡ºçš„æ•ˆæžœå™¨,æ¸å…¥æ˜¯alphaä»Žä¸€ä¸ªå¤§å€¼å˜åŒ–åˆ°ä¸€ä¸ªå°å€¼
+ *@param int src_alpha,å¼€å§‹çš„alphaå€¼0-255
+ *@param int des_alpha,ç»“æŸçš„alphaå€¼0-255
+ *@param int timeticks,å®Œæˆæ—¶é—´ä»¥æ¯«ç§’è®°,1000æ˜¯1ç§’
+ *@return image_effect_p,è¿”å›žæ•ˆæžœå™¨çš„æŒ‡é’ˆ
  */
 image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
 
 /**
- *´´½¨Ò»¸ö¶¶¶¯µÄÐ§¹ûÆ÷
- *@param float shake_x,x·½ÏòÉÏµÄ¶¶¶¯·¶Î§
- *@param float shake_y,y·½ÏòÉÏµÄ¶¶¶¯·¶Î§
- *@param int timeticks,Íê³ÉÊ±¼äÒÔºÁÃë¼Ç,1000ÊÇ1Ãë
- *@return image_effect_p,·µ»ØÐ§¹ûÆ÷µÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªæŠ–åŠ¨çš„æ•ˆæžœå™¨
+ *@param float shake_x,xæ–¹å‘ä¸Šçš„æŠ–åŠ¨èŒƒå›´
+ *@param float shake_y,yæ–¹å‘ä¸Šçš„æŠ–åŠ¨èŒƒå›´
+ *@param int timeticks,å®Œæˆæ—¶é—´ä»¥æ¯«ç§’è®°,1000æ˜¯1ç§’
+ *@return image_effect_p,è¿”å›žæ•ˆæžœå™¨çš„æŒ‡é’ˆ
  */
 image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
 
 /**
- *´´½¨Ò»¸öÄ£ºýµÄÐ§¹ûÆ÷
- *@param float src_blur,¿ªÊ¼Ê±µÄÄ£ºý¶È 0 Îª²»Ä£ºý
- *@param float shake_y,½áÊøÊ±µÄÄ£ºý¶È 0 Îª²»Ä£ºý
- *@param int timeticks,Íê³ÉÊ±¼äÒÔºÁÃë¼Ç,1000ÊÇ1Ãë
- *@param int optimization,ËÙ¶ÈÓÅ»¯Ñ¡Ïî£¬0Îª²»ÓÅ»¯£¬Ð§¹ûºÃËÙ¶ÈÂý£¬1ÎªÒ»°ãÓÅ»¯£¬ËÙ¶ÈÐ§¹ûÒ»°ã£¬2Îª×î´óÓÅ»¯£¬ËÙ¶È×î¿ì£¬µ«Ð§¹û×î²î£¬Ò»°ãÇé¿öÏÂÊ¹ÓÃ 1
- *@return image_effect_p,·µ»ØÐ§¹ûÆ÷µÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªæ¨¡ç³Šçš„æ•ˆæžœå™¨
+ *@param float src_blur,å¼€å§‹æ—¶çš„æ¨¡ç³Šåº¦ 0 ä¸ºä¸æ¨¡ç³Š
+ *@param float shake_y,ç»“æŸæ—¶çš„æ¨¡ç³Šåº¦ 0 ä¸ºä¸æ¨¡ç³Š
+ *@param int timeticks,å®Œæˆæ—¶é—´ä»¥æ¯«ç§’è®°,1000æ˜¯1ç§’
+ *@param int optimization,é€Ÿåº¦ä¼˜åŒ–é€‰é¡¹ï¼Œ0ä¸ºä¸ä¼˜åŒ–ï¼Œæ•ˆæžœå¥½é€Ÿåº¦æ…¢ï¼Œ1ä¸ºä¸€èˆ¬ä¼˜åŒ–ï¼Œé€Ÿåº¦æ•ˆæžœä¸€èˆ¬ï¼Œ2ä¸ºæœ€å¤§ä¼˜åŒ–ï¼Œé€Ÿåº¦æœ€å¿«ï¼Œä½†æ•ˆæžœæœ€å·®ï¼Œä¸€èˆ¬æƒ…å†µä¸‹ä½¿ç”¨ 1
+ *@return image_effect_p,è¿”å›žæ•ˆæžœå™¨çš„æŒ‡é’ˆ
  */
 image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int optimization);
 
 /**
- *´´½¨Ò»¸ö×ª³¡Ð§¹ûÆ÷
- *@param image_p effect_img, Ð§¹ûÍ¼£¬Ð§¹ûÆ÷Ê¹ÓÃ´ËÍ¼Æ¬µÄÏñËØÁÁ¶È²úÉúÖÐ¼äÐ§¹û
- *@param image_p src_img, Ô­Í¼
- *@param image_p dst_img, Ä¿±êÍ¼
- *@param int reversed, ·´×ªÐ§¹û
- *@param int timeticks, Íê³ÉÊ±¼äÒÔºÁÃë¼Ç,1000ÊÇ1Ãë
- *@return image_effect_p,·µ»ØÐ§¹ûÆ÷µÄÖ¸Õë
+ *åˆ›å»ºä¸€ä¸ªè½¬åœºæ•ˆæžœå™¨
+ *@param image_p effect_img, æ•ˆæžœå›¾ï¼Œæ•ˆæžœå™¨ä½¿ç”¨æ­¤å›¾ç‰‡çš„åƒç´ äº®åº¦äº§ç”Ÿä¸­é—´æ•ˆæžœ
+ *@param image_p src_img, åŽŸå›¾
+ *@param image_p dst_img, ç›®æ ‡å›¾
+ *@param int reversed, åè½¬æ•ˆæžœ
+ *@param int timeticks, å®Œæˆæ—¶é—´ä»¥æ¯«ç§’è®°,1000æ˜¯1ç§’
+ *@return image_effect_p,è¿”å›žæ•ˆæžœå™¨çš„æŒ‡é’ˆ
  */
 image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, int reversed, int timeticks);
 
