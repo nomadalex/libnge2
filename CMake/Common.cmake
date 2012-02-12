@@ -95,13 +95,6 @@ macro(add_our_library target type)
   SET(${name}_TYPE ${type})
   add_library(${target} ${${name}_TYPE} ${ARGN})
   IF(${${name}_TYPE} STREQUAL STATIC)
-
-	if(${CMAKE_CURRENT_LIST_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-	  SET(${name}_LIBS ${${name}_LIBS})
-	else()
-	  SET(${name}_LIBS ${${name}_LIBS} PARENT_SCOPE)
-	endif()
-
 	foreach(lib ${${name}_LIBS})
 	  if(TARGET ${lib})
 		add_dependencies(${target} ${lib})
