@@ -3,7 +3,7 @@
 
 #include "nge_common.h"
 
-//PSP与win32文件读写统一接口
+/* PSP与win32文件读写统一接口 */
 #ifdef _PSP
 #include <pspiofilemgr.h>
 #define IO_RDONLY PSP_O_RDONLY

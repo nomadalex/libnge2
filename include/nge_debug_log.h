@@ -1,4 +1,4 @@
-//kid ! do not modify this file if you do not know what to do! X:D
+/* kid ! do not modify this file if you do not know what to do! X:D */
 #ifndef	__NGE_DEBUG_LOG_H__
 #define	__NGE_DEBUG_LOG_H__
 
@@ -31,7 +31,7 @@ void nge_mem_log();
 #ifdef __cplusplus
 }
 #endif
-#else // defined NDEBUG
+#else /*  defined NDEBUG */
 #ifndef NGE_NEED_PRINTF
 #include <stdio.h>
 #ifdef WIN32
@@ -55,6 +55,6 @@ void nge_mem_log();
 #define nge_debug_quitgame(...);
 #define nge_line(...)
 #endif
-#endif // _DEBUG_LOG
+#endif /*  _DEBUG_LOG */
 
-#endif // __NGELOG_H__
+#endif /*  __NGELOG_H__ */

@@ -1,3 +1,7 @@
+/*
+ * 本文件定义了audio的公共接口
+ */
+
 #ifndef AUDIO_INTERFACE_H_
 #define AUDIO_INTERFACE_H_
 
@@ -5,9 +9,6 @@
 #define AUDIO_SEEK_CUR	1
 #define	AUDIO_SEEK_END	2
 
-/*
- * 本文件定义了audio的公共接口
- */
 struct audio_play;
 /**
  *从文件加载一个audio文件到内存
@@ -34,37 +35,53 @@ typedef int (*fd_play) (struct audio_play* This,int times,int free_when_stop);
  */
 typedef int (*fd_playstop) (struct audio_play* This);
 
-//暂停播放一个声音,用resume可以恢复。
+/**
+   暂停播放一个声音,用resume可以恢复。
+*/
 typedef void (*fd_pause) (struct audio_play* This);
 
-//停止声音并释放内存和资源。只有再次load才能重新加载声音。
+/**
+   停止声音并释放内存和资源。只有再次load才能重新加载声音。
+*/
 typedef int (*fd_stop) (struct audio_play* This);
 
-//恢复播放一个pause的声音。
+/**
+   恢复播放一个pause的声音。
+ */
 typedef void (*fd_resume)(struct audio_play* This);
 
-
-//设置音量
+/**
+   设置音量
+*/
 typedef int (*fd_volume) (struct audio_play* This,int volume);
 
-
-
-//回到声音开头。同于seek(this,0,SEEK_BEGIN);
+/**
+   回到声音开头。同于seek(this,0,SEEK_BEGIN);
+*/
 typedef void (*fd_rewind)(struct audio_play* This);
 
-//ms，相对于flag的时间单位为ms，flag是Begin，end，例如：
-//seek(this,0,Begin);就是回到开头，等价于rewind。
+/**
+   ms，相对于flag的时间单位为ms，flag是Begin，end，例如：
+   seek(this,0,Begin);就是回到开头，等价于rewind。
+*/
 typedef void (*fd_seek) (struct audio_play* This,int ms,int flag);
 
-//判定函数：是否到达声音尾部
+/**
+   判定函数：是否到达声音尾部
+*/
 typedef int (*fd_iseof) (struct audio_play* This);
-//判定函数：是否暂停：
+/**
+   判定函数：是否暂停：
+*/
 typedef int (*fd_ispaused)(struct audio_play* This);
 
-//释放函数，释放这个播放器的公有资源
-//包括player本身.以后此player不能再使用了,
-//player变为一个无效指针，要再使用必须重新create
+/**
+   释放函数，释放这个播放器的公有资源
+   包括player本身.以后此player不能再使用了,
+   player变为一个无效指针，要再使用必须重新create
+*/
 typedef int (*fd_destroy)(struct audio_play* This);
+
 /*
  * 外部接口.
  */
@@ -85,19 +102,19 @@ typedef struct audio_play{
 	fd_destroy    destroy;
 }audio_play_t,*audio_play_p;
 
-//the interface
+/* the interface */
 #ifdef __cplusplus
 extern "C"{
 #endif
-//init and finish
+/* init and finish */
 void CoolAudioDefaultInit();
 void CoolAudioDefaultFini();
 
-//MP3
+/* MP3 */
 audio_play_p CreateMp3Player();
-//wav
+/* wav */
 audio_play_p CreateWavPlayer();
-//ogg
+/* ogg */
 audio_play_p CreateOggPlayer();
 
 #ifdef __cplusplus
