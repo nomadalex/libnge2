@@ -26,6 +26,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/*
+// mov not support on x64
 // for get argc and argv outside of main
 char** get_main_argv(int* pargc)
 {
@@ -53,14 +55,17 @@ char** get_main_argv(int* pargc)
 	*pargc = argc;
 	return preset_argv;
 }
+*/
 
 void CoolAudioDefaultInit()
 {
 	int argc = 0;
-	char** argv=0;
+	char* argv[1] = { (char*)0 };
 
-	argv = get_main_argv(&argc);
-	gst_init(&argc, &argv);
+	/* argv = get_main_argv(&argc); */
+
+	gst_init(0, (char***)&argv);
+	/* gst_init(&argc, &argv); */
 }
 
 void CoolAudioDefaultFini()
@@ -202,7 +207,7 @@ static int audio_ispaused(linux_audio_t* p)
 
 	GstState state = 0;
 	gst_element_get_state(p->m_play, &state, NULL, 3 * GST_SECOND) ;
-	
+
 	if(state == GST_STATE_PAUSED)
 		return TRUE;
 
