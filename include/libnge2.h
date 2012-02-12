@@ -25,5 +25,6 @@
 
 #include "libnge2pure.h"
 #include "audio_interface.h"
+#include "nge_main.h"
 
 #endif /* _LIBNGE2_H */
