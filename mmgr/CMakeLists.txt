@@ -2,7 +2,6 @@ set(MMGR_SRCS
   mmgr.cpp
   )
 
-add_our_library(mmgr STATIC ${MMGR_SRCS})
+add_addon_srcs(NGE2_SRCS MMGR_SRCS mmgr)
 
-install(TARGETS mmgr DESTINATION lib)
 install(FILES mmgr.h nommgr.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

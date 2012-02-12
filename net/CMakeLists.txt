@@ -6,7 +6,6 @@ set(NET_SRCS
   )
 
 add_definitions(-DNGE2_NET)
-add_our_library(nge_net STATIC ${NET_SRCS})
+add_addon_srcs(NGE2_SRCS NET_SRCS net)
 
-install(TARGETS nge_net DESTINATION lib)
 install(FILES event.h nge_net_common.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

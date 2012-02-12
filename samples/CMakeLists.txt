@@ -22,7 +22,7 @@ function(add_nge_executable nm)
 	add_executable(${nm} WIN32 ${_ARGS})
   endif()
 
-  set(_LIBS nge2 ${_LIBS} ${NGE2_LIBS})
+  set(_LIBS nge2_main nge2 ${_LIBS} ${NGE2_LIBS})
 
   rm_dup_lib(_LIBS)
   target_link_libraries(${nm} ${_LIBS})

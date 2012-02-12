@@ -24,24 +24,21 @@ elseif(${BUILD_FOR} STREQUAL Android)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
 endif()
 
+option(BUILD_SAMPLES "Whether build samples" ON)
+option(BUILD_SHARED "Whether build shared library" OFF)
+
 # Set the project name.
 project(NGE2)
 set(NGE2_SRCS)
 set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
 
-option(BUILD_SAMPLES "Whether build samples" ON)
-
-if(ANDROID)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
-endif()
-
 include(Common)
 include(SetupDepends)
 
-set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
-  "Real variable for buile." FORCE)
+if(BUILD_SHARED)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+endif()
 
 # Put libraries into `lib'.
 if(ANDROID)
@@ -49,6 +46,14 @@ if(ANDROID)
 else()
   set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 endif()
+
+if(ANDROID)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+endif()
+
+set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
+  "Real variable for build." FORCE)
 
 # Search for C header files in these directories.
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -70,7 +75,7 @@ list(APPEND NGE2_SRCS
   src/nge_io_dir.c
   src/nge_io_file.c
   src/nge_jpg.c
-  src/nge_main.c
+  src/nge.c
   src/nge_misc.c
   src/nge_png.c
   src/nge_rbtree.c
@@ -101,19 +106,6 @@ if(PSP)
 endif()
 
 # depends
-set(_pack_libs)
-
-if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
-  option(USE_MMGR "Useful for debug." off)
-  if(USE_MMGR)
-	include_directories(mmgr)
-	add_subdirectory(mmgr)
-	add_definitions(-DMMGR)
-	list(APPEND NGE2_LIBS mmgr)
-	list(APPEND _pack_libs mmgr)
-  endif()
-endif()
-
 include_directories(coolaudio)
 add_subdirectory(coolaudio)
 if(WIN32)
@@ -121,9 +113,9 @@ if(WIN32)
 else()
   LIST(APPEND NGE2_LIBS coolaudio)
 endif()
-IF(COOLAUDIO_LIBS)
-  LIST(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
-ENDIF()
+if(COOLAUDIO_LIBS)
+  list(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
+endif()
 
 if(COMPILER_GCC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
@@ -164,33 +156,50 @@ if(ANDROID)
   set(NGE_ANDROID_JNI_FILE ${CMAKE_SOURCE_DIR}/src/android/nge_jni.cpp)
 endif()
 
-set(NGE2_ORIG_LIBS ${NGE2_LIBS})
-add_our_library(nge2_orig STATIC ${NGE2_SRCS})
-
 # addons
-macro(add_addon subdir target)
-  include_directories(${subdir})
-  add_subdirectory(${subdir})
-  list(APPEND _pack_libs ${target})
+macro(add_addon_srcs var src_var subdir)
+  foreach(s ${${src_var}})
+	list(APPEND ${var} ${subdir}/${s})
+  endforeach()
 endmacro()
 
+macro(add_addon subdir)
+  include_directories(${subdir})
+  include(${subdir}/CMakeLists.txt)
+endmacro()
+
+# mmgr
+if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+  option(USE_MMGR "Useful for debug." off)
+  if(USE_MMGR)
+	add_definitions(-DMMGR)
+	add_addon(mmgr)
+  endif()
+endif()
+
 # hge particle system
-add_addon(hge hge)
+add_addon(hge)
 
 # helpers
-add_addon(helper nge_helper)
+add_addon(helper)
 
 if(PSP)
-  add_addon(dirent nge_dirent)
-  add_addon(movie nge_movie)
+  add_addon(dirent)
+  add_addon(movie)
 endif()
 
 if(PSP)
-  add_addon(net nge_net)
+  add_addon(net)
 endif()
 
-include(LibUtils)
-merge_static_libs(nge2 LIBRARIES ${_pack_libs} nge2_orig)
+if(BUILD_SHARED)
+  add_our_library(nge2 SHARED ${NGE2_SRCS})
+else()
+  add_our_library(nge2 STATIC ${NGE2_SRCS})
+endif()
+
+add_our_library(nge2_main STATIC src/nge_main.c)
+
 install(TARGETS nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 

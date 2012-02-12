@@ -13,14 +13,17 @@ if(ANDROID)
   include(CopyFile)
   set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
   function(copy_coolaudio_android_java_files target dir)
-	set(fromfile "${COOLAUDIO_DIR}/LibCoolAudio.java")
-	set(tofile "${dir}/src/org/libnge/nge2/LibCoolAudio.java")
-	copy_file("LibCoolAudio.java for ${nm}" ${fromfile} ${tofile})
-	add_custom_target(${target}_audio_java DEPENDS "LibCoolAudio.java for ${nm}")
+	set(fromfile "${COOLAUDIO_DIR}/android/AudioMgr.java")
+	set(tofile "${dir}/src/org/libnge/nge2/AudioMgr.java")
+	copy_file("AudioMgr.java for ${nm}" ${fromfile} ${tofile})
+	add_custom_target(${target}_audio_java DEPENDS "AudioMgr.java for ${nm}")
 	add_dependencies(${target} ${target}_audio_java)
   endfunction()
   list(APPEND COOLAUDIO_SRCS
-	audio_android.c)
+	android/audio_track_jni.c
+	android/audio_track_mgr.c
+	android/android_audio.c
+	android/wav_decoder.c)
 elseif(PSP)
   list(APPEND COOLAUDIO_SRCS
 	audio_codec.cpp
@@ -33,7 +36,7 @@ elseif(PSP)
 	parsers/pcm_parser.cpp
 	nge_io_mem.c
 	)
-elseif(IPHONE) # IPHONESO?
+elseif(IPHONE) # IPHONEOS?
   list(APPEND COOLAUDIO_SRCS
 	LSAudioDeleCall.m
 	libLSAudio.m
@@ -48,13 +51,14 @@ if(PSP)
   ADD_PSPSDK_LIBS(COOLAUDIO_LIBS)
 endif()
 
-if(PSP OR LINUX)
+if(PSP OR LINUX OR ANDROID)
   add_our_library(coolaudio STATIC ${COOLAUDIO_SRCS})
   install(TARGETS coolaudio DESTINATION lib)
 elseif(WIN32)
   find_library(COOLAUDIO_LOC NAMES coolaudio libcoolaudio PATHS "${CMAKE_SOURCE_DIR}/Win32Depends" ${NGE2_DEPENDENCIES_DIR} PATH_SUFFIXES lib)
   set(COOLAUDIO_LIBRARY ${COOLAUDIO_LOC} PARENT_SCOPE)
-  set(COOLAUDIO_LIBS ${COOLAUDIO_LIBS} PARENT_SCOPE)
 endif()
+
+set(COOLAUDIO_LIBS ${COOLAUDIO_LIBS} PARENT_SCOPE)
 
 install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

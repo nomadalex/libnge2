@@ -5,7 +5,10 @@ set(HELPER_SRCS
   package.cpp
   )
 
-add_our_library(nge_helper STATIC ${HELPER_SRCS})
+if(SQLITE3_FOUND)
+  include_directories(${SQLITE3_INCLUDE_DIR})
+  add_addon_srcs(NGE2_SRCS HELPER_SRCS helper)
+  list(APPEND NGE2_LIBS ${SQLITE3_LIBRARIES})
+endif()
 
-install(TARGETS nge_helper DESTINATION lib)
 install(FILES CppSQLite3.h dictionary.h iniparser.h package.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
