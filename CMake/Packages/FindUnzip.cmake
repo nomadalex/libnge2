@@ -10,7 +10,7 @@ if(NOT UNZIP_FOUND)
   findpkg_begin(UNZIP)
 
   define_find_pkg(UNZIP
-	LIBRARY_HINTS unzip libunzip
+	LIBRARY_HINTS libunzip unzip
 	HEADER_HINTS unzip.h)
 
   findpkg_finish(UNZIP)

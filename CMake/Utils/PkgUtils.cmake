@@ -84,7 +84,7 @@ macro(make_debug_names PREFIX)
   endforeach(i)
 endmacro()
 
-# Add the parent dir from DIR to VAR 
+# Add the parent dir from DIR to VAR
 macro(add_parent_dir VAR DIR)
   get_filename_component(${DIR}_TEMP "${${DIR}}/.." ABSOLUTE)
   set(${VAR} ${${VAR}} ${${DIR}_TEMP})
@@ -130,7 +130,7 @@ ENDMACRO(findpkg_framework)
 macro(prepare_dep_search PREFIX)
   set(${PREFIX}_DEPENDENCIES_DIR "" CACHE PATH "Path to prebuilt dependencies")
   getenv_path(${PREFIX}_DEPENDENCIES_DIR)
-  set(${PREFIX}_DEP_SEARCH_PATH 
+  set(${PREFIX}_DEP_SEARCH_PATH
 	${${PREFIX}_DEPENDENCIES_DIR}
 	${ENV_${PREFIX}_DEPENDENCIES_DIR}
 	)
@@ -235,14 +235,14 @@ macro(define_find_pkg PKG)
   else()
 	set(_suffixes)
   endif()
-  find_path(${PKG}_INCLUDE_DIR NAMES ${${PKG}_ARG_HEADER_HINTS} HINTS ${${PKG}_INC_SEARCH_PATH} ${${PKG}_PKGC_INCLUDE_DIRS} PATH_SUFFIXES "" ${_suffixes})
+  find_path(${PKG}_INCLUDE_DIR NAMES ${${PKG}_ARG_HEADER_HINTS} HINTS ${${PKG}_INC_SEARCH_PATH} ${${PKG}_PKGC_INCLUDE_DIRS} PATH_SUFFIXES ${_suffixes} "")
 
   if(${PKG}_ARG_LIBRARY_SUFFIXES)
 	set(_suffixes ${${PKG}_ARG_LIBRARY_SUFFIXES})
   else()
 	set(_suffixes)
   endif()
-  find_library(${PKG}_LIBRARY_REL NAMES ${${PKG}_LIBRARY_NAMES} HINTS ${${PKG}_LIB_SEARCH_PATH} ${${PKG}_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel ${_suffixes})
-  find_library(${PKG}_LIBRARY_DBG NAMES ${${PKG}_LIBRARY_NAMES_DBG} HINTS ${${PKG}_LIB_SEARCH_PATH} ${${PKG}_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug ${_suffixes})
+  find_library(${PKG}_LIBRARY_REL NAMES ${${PKG}_LIBRARY_NAMES} HINTS ${${PKG}_LIB_SEARCH_PATH} ${${PKG}_PKGC_LIBRARY_DIRS} PATH_SUFFIXES ${_suffixes} "")
+  find_library(${PKG}_LIBRARY_DBG NAMES ${${PKG}_LIBRARY_NAMES_DBG} HINTS ${${PKG}_LIB_SEARCH_PATH} ${${PKG}_PKGC_LIBRARY_DIRS} PATH_SUFFIXES ${_suffixes} "")
   make_library_set(${PKG}_LIBRARY)
 endmacro()
