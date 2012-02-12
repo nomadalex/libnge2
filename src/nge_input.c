@@ -9,8 +9,8 @@
 #include <pspdebug.h>
 #include <pspctrl.h>
 
-//define in nge_main.c
-extern int cbid;
+//define in nge.c
+extern int psp_exit_callback_id;
 
 #elif defined NGE_LINUX
 #include <X11/Xlib.h>
@@ -335,7 +335,7 @@ void InputProc()
 			}
 			else{
 				if(!suspended){
-					sceKernelSuspendThread(cbid);
+					sceKernelSuspendThread(psp_exit_callback_id);
 					suspended = 1;
 				}
 			}

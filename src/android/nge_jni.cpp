@@ -15,7 +15,7 @@
 // #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
 
 // forward declare
-/* from nge_main.c */
+/* from nge.c */
 extern char *NGE_OP_Path;
 extern "C" int main(int argc, char *argv[]);
 /* from nge_graphics.c */
@@ -24,7 +24,7 @@ extern "C" void nge_graphics_reset(void);
 extern MouseMoveProc mouse_move_proc;
 extern MouseButtonProc mouse_btn_proc;
 
-/* in nge_main.c */
+/* in nge.c */
 extern NotifyCallback _notifyCallback;
 extern void* _notifyCookie;
 

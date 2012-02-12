@@ -10,7 +10,7 @@
 #include "nge_graphics.h"
 #include "nge_image_ext.h"
 #include "nge_input.h"
-#include "nge_main.h"
+#include "nge.h"
 #include "nge_misc.h"
 #include "nge_timer.h"
 #include "nge_gif.h"

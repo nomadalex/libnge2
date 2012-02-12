@@ -6,13 +6,19 @@
  *  Copyright  2012  Kun Wang <ifreedom.cn@gmail.com>
  *
  */
-#include "nge_platform.h"
 #include "nge_debug_log.h"
-#include "nge_main.h"
+#include "nge.h"
 #include "nge_graphics.h"
 #include "nge_input.h" // SDL.h is in it
 #include "audio_interface.h"
 #include <string.h>
+
+#ifdef NGE_PSP
+int psp_exit_callback_id = 0;
+void NGE_RegisterPSPExitCallback(int cb_id) {
+	psp_exit_callback_id = cb_id;
+}
+#endif
 
 NotifyCallback _notifyCallback = NULL;
 void* _notifyCookie = NULL;
