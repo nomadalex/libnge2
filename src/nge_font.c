@@ -1,10 +1,10 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_font.h"
 
 void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int dy,int flags)
 {
 	PFontProcs procs;
-	
+
 	if(pf == NULL || text == NULL || textarea ==NULL || len == 0)
 		return;
 	procs = pf->procs;

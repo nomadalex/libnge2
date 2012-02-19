@@ -1,4 +1,4 @@
-/* kid ! do not modify this file if you do not know what to do! X:D */
+﻿/* kid ! do not modify this file if you do not know what to do! X:D */
 #ifndef	__NGE_DEBUG_LOG_H__
 #define	__NGE_DEBUG_LOG_H__
 

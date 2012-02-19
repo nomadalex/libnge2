@@ -1,4 +1,4 @@
-/*
+﻿/*
 PMP Mod - mini lib
 Copyright (C) 2006 jonny
 Copyright (C) 2007 Raphael <raphael@fx-world.org>

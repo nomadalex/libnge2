@@ -1,12 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // CppSQLite3 - A C++ wrapper around the SQLite3 embedded database library.
 //
 // Copyright (c) 2004 Rob Groves. All Rights Reserved. rob.groves@btinternet.com
-// 
+//
 // Permission to use, copy, modify, and distribute this software and its
 // documentation for any purpose, without fee, and without a written
-// agreement, is hereby granted, provided that the above copyright notice, 
-// this paragraph and the following two paragraphs appear in all copies, 
+// agreement, is hereby granted, provided that the above copyright notice,
+// this paragraph and the following two paragraphs appear in all copies,
 // modifications, and distributions.
 //
 // IN NO EVENT SHALL THE AUTHOR BE LIABLE TO ANY PARTY FOR DIRECT,
@@ -59,7 +59,7 @@ CppSQLite3Exception::CppSQLite3Exception(const int nErrCode,
 	}
 }
 
-									
+
 CppSQLite3Exception::CppSQLite3Exception(const CppSQLite3Exception&  e) :
 									mnErrCode(e.mnErrCode)
 {
@@ -1018,7 +1018,7 @@ void CppSQLite3Statement::bind(int nParam, const unsigned char* blobValue, int n
 	}
 }
 
-	
+
 void CppSQLite3Statement::bindNull(int nParam)
 {
 	checkVM();
@@ -1289,7 +1289,7 @@ sqlite3_stmt* CppSQLite3DB::compile(const char* szSQL)
 
 ////////////////////////////////////////////////////////////////////////////////
 // SQLite encode.c reproduced here, containing implementation notes and source
-// for sqlite3_encode_binary() and sqlite3_decode_binary() 
+// for sqlite3_encode_binary() and sqlite3_decode_binary()
 ////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -1336,7 +1336,7 @@ sqlite3_stmt* CppSQLite3DB::compile(const char* szSQL)
 ** We would prefer to keep the size of the encoded string smaller than
 ** this.
 **
-** To minimize the encoding size, we first add a fixed offset value to each 
+** To minimize the encoding size, we first add a fixed offset value to each
 ** byte in the sequence.  The addition is modulo 256.  (That is to say, if
 ** the sum of the original character value and the offset exceeds 256, then
 ** the higher order bits are truncated.)  The offset is chosen to minimize
@@ -1345,7 +1345,7 @@ sqlite3_stmt* CppSQLite3DB::compile(const char* szSQL)
 ** characters, the offset might be 0x01.  Each of the 0x27 characters would
 ** then be converted into an 0x28 character which would not need to be
 ** escaped at all and so the 100 character input string would be converted
-** into just 100 characters of output.  Actually 101 characters of output - 
+** into just 100 characters of output.  Actually 101 characters of output -
 ** we have to record the offset used as the first byte in the sequence so
 ** that the string can be decoded.  Since the offset value is stored as
 ** part of the output string and the output string is not allowed to contain
@@ -1368,7 +1368,7 @@ sqlite3_stmt* CppSQLite3DB::compile(const char* szSQL)
 **
 ** Decoding is obvious:
 **
-**     (5)   Copy encoded characters except the first into the decode 
+**     (5)   Copy encoded characters except the first into the decode
 **           buffer.  Set the first encoded character aside for use as
 **           the offset in step 7 below.
 **
@@ -1394,7 +1394,7 @@ sqlite3_stmt* CppSQLite3DB::compile(const char* szSQL)
 
 /*
 ** Encode a binary buffer "in" of size n bytes so that it contains
-** no instances of characters '\'' or '\000'.  The output is 
+** no instances of characters '\'' or '\000'.  The output is
 ** null-terminated and can be used as a string value in an INSERT
 ** or UPDATE statement.  Use sqlite3_decode_binary() to convert the
 ** string back into its original binary.

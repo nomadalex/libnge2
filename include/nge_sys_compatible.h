@@ -1,4 +1,4 @@
-#ifndef NGE_SYS_COMPATIBLE_H_
+﻿#ifndef NGE_SYS_COMPATIBLE_H_
 #define NGE_SYS_COMPATIBLE_H_
 
 #include "nge_common.h"

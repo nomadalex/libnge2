@@ -1,4 +1,4 @@
-#ifndef __NGE_RLE_H__
+﻿#ifndef __NGE_RLE_H__
 #define __NGE_RLE_H__
 
 //#define assembler_decode__

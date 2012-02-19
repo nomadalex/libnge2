@@ -1,4 +1,4 @@
-#include "libnge2.h"
+﻿#include "libnge2.h"
 #include <stdio.h>
 /**
  * nge_gif:显示一张gif图片
@@ -30,7 +30,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		display_flag = SCREEN_2X;

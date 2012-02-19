@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
 ** hge.relishgames.com
@@ -43,7 +43,7 @@ public:
 	float		Dot(const hgeVector *v) const { return x*v->x + y*v->y; }
 	float		Length() const { return sqrtf(Dot(this)); }
 	float		Angle(const hgeVector *v = 0) const;
-	
+
 	void		Clamp(const float max) { if(Length() > max)	{ Normalize(); x *= max; y *= max; } }
 	hgeVector*	Normalize() { float rc=InvSqrt(Dot(this)); x*=rc; y*=rc; return this; }
 	hgeVector*	Rotate(float a);

@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
  *            nge_image.h
  *
  *  2011/03/25 04:56:54
@@ -118,7 +118,7 @@ image_p image_create_ex(int w,int h,int color,int displaymode);
  *@return int,返回0(加载失败)或1(加载成功)
  */
 int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
-	
+
 /**
  *释放一个image
  *@param image_p pimage,待释放的image指针
@@ -219,7 +219,7 @@ int image_fliph(image_p pimage);
  *@param image_p pimage,待翻转图像
  *@return int,成功1,失败0
  */
-int image_flipv(image_p pimage); 
+int image_flipv(image_p pimage);
 
 //以下函数为内部使用
 int GET_PSM_COLOR_MODE(int dtype);

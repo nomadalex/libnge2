@@ -1,4 +1,4 @@
-#include "libnge2.h"
+﻿#include "libnge2.h"
 #include "nge_app.h"
 #include <stdio.h>
 // #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
@@ -26,7 +26,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		break;

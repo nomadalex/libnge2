@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file  nge_app.hpp
  * @author Kun Wang <ifreedom.cn@gmail.com>
  * @date 2011/08/08 13:25:02
@@ -27,7 +27,7 @@
 
 class CNgeApp
 {
-public:	
+public:
 	CNgeApp() { mFps = 60; };
 	~CNgeApp() {};
 	virtual	int Init() = 0;

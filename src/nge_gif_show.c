@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_gif.h"
 #include "nge_graphics.h"
 
@@ -29,7 +29,7 @@ void GifAnimationToScreen(gif_desc_p pgif,float x,float y)
 		}
 	}
 	if(pgif->gif_current_frame)
-		ImageToScreen(pgif->gif_current_frame,x,y);	
+		ImageToScreen(pgif->gif_current_frame,x,y);
 }
 
 void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask)
@@ -59,7 +59,7 @@ void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,
 		}
 	}
 	if(pgif->gif_current_frame)
-		RenderQuad(pgif->gif_current_frame,sx,sy,sw,sh,dx,dy,xscale,yscale,angle,mask);	
+		RenderQuad(pgif->gif_current_frame,sx,sy,sw,sh,dx,dy,xscale,yscale,angle,mask);
 }
 
 void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask)
@@ -89,7 +89,7 @@ void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,fl
 		}
 	}
 	if(pgif->gif_current_frame)
-		DrawImageMask(pgif->gif_current_frame,sx,sy,sw,sh,dx,dy,dw,dh,mask);	
+		DrawImageMask(pgif->gif_current_frame,sx,sy,sw,sh,dx,dy,dw,dh,mask);
 }
 
 void DrawGifAnimation(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh)

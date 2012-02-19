@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_gif.h"
 #include "gif_lib.h"
 #include "stdlib.h"
@@ -77,21 +77,21 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 	 ColorMapObject* ColorMap = NULL;
 	 GifPixelType* Gifdata = NULL;
 	 GifWord left,top,Width,Height,i,j;
-	 gif_desc_p  pgif = NULL; 
+	 gif_desc_p  pgif = NULL;
 	 image_chains_p ptail = NULL,pitem = NULL;
 	 image_p pimage = NULL;
-	 
+
 	 GifFileIn =  DGifOpenFileName(filename);
 	 pgif = (gif_desc_p)malloc(sizeof(gif_desc_t));
 	 if(GifFileIn == NULL || pgif == NULL)
 		 return NULL;
-	 
+
 	 memset(pgif,0,sizeof(gif_desc_t));
 	 pgif->gif_inner_timer = timer_create();
 	 pgif->gif_delay = 10;
 	 pgif->gif_dispose = 0;
 	 pgif->gif_transparent = GIF_NOT_TRANSPARENT;
-       
+
      cxScreen =  GifFileIn->SWidth;
      cyScreen =  GifFileIn->SHeight;
 	 Size = cxScreen*cyScreen*sizeof(GifPixelType);
@@ -123,12 +123,12 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
                  top = GifFileIn->Image.Top;
                  Width = GifFileIn->Image.Width;
                  Height = GifFileIn->Image.Height;
- 
+
                  pLine = (GifPixelType*)malloc((uint16)(Width * sizeof(GifPixelType)));
 				 memset(pLine,0,Width * sizeof(GifPixelType));
                  pgif->gif_framecount++;
                  memcpy(m_current_frame_buf, m_next_frame_buf, dwScreen);
- 
+
                  if (GifFileIn->Image.Interlace)
                  {
                      /* Need to perform 4 passes on the images: */
@@ -142,25 +142,25 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
                                  return 0;
                              }
                              gif_copy_frame_line(m_current_frame_buf+XYOFFSET(left,j),pLine,Width,pgif->gif_transparent);
- 
+
                          }
                      }
- 
+
                  }
                  else
                  {
                      for (i = 0; i < Height; i++)
                      {
- 
+
                          if (DGifGetLine(GifFileIn, pLine,Width) == GIF_ERROR)
                          {
                                  SAFE_FREE(pLine);
                                  return 0;
                          }
                          gif_copy_frame_line(m_current_frame_buf+XYOFFSET(left,(top+i)),pLine,Width,pgif->gif_transparent);
- 
+
                      }
- 
+
                  }
 				 if(displaymode == DISPLAY_PIXEL_FORMAT_8888){
 					 pimage = image_create(pgif->gif_w,pgif->gif_h,DISPLAY_PIXEL_FORMAT_8888);
@@ -169,9 +169,9 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 					 Gifdata = m_current_frame_buf;
 					 for(m = 0; m < pgif->gif_h;m++ ){
 						 for(n = 0;n <pgif->gif_w;n++){
-							 if(Gifdata[m*pgif->gif_w+n]!=pgif->gif_transparent)	
+							 if(Gifdata[m*pgif->gif_w+n]!=pgif->gif_transparent)
 								 pdata32[m*pimage->texw+n]= MAKE_RGBA_8888(ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Red,ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Green,ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Blue,0xff) ;
-						 } 
+						 }
 					 }
 				 }
 				 else{
@@ -181,9 +181,9 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 					 Gifdata = m_current_frame_buf;
 					 for(m = 0; m < pgif->gif_h;m++ ){
 						 for(n = 0;n <pgif->gif_w;n++){
-							 if(Gifdata[m*pgif->gif_w+n]!=pgif->gif_transparent)	
+							 if(Gifdata[m*pgif->gif_w+n]!=pgif->gif_transparent)
 								 pdata16[m*pimage->texw+n]= CreateColor(ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Red,ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Green,ColorMap->Colors[Gifdata[m*pgif->gif_w+n]].Blue,0xff,displaymode) ;
-						 } 
+						 }
 					 }
 				 }
 				 pitem = (image_chains_p)malloc(sizeof(image_chains_t));
@@ -195,14 +195,14 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 					 ptail = pitem;
 				 }
 				 ptail->next = pitem;
-				 ptail = pitem;		 
+				 ptail = pitem;
                  if (pgif->gif_dispose == GIF_DISPOSE_BACKGND)
                  {
- 
+
                      // Clear next image to background index
                      // Note: if transparent restore to transparent color (else use GIF background color)
                      rgbFill = (pgif->gif_transparent == GIF_NOT_TRANSPARENT) ? pgif->gif_rgbbackgnd : pgif->gif_rgbtransparent;
-				
+
                      for (i = 0; i < Height; ++i)
                          gif_fill_frame_line(m_next_frame_buf + XYOFFSET(left,top+i), rgbFill, Width);
                  }
@@ -213,7 +213,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
                  }
                  pgif->gif_dispose = 0;
                  SAFE_FREE(pLine);
-                 
+
              }
              break;
          case EXTENSION_RECORD_TYPE:
@@ -230,7 +230,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
              {
                  flag = pExtension[1];
                  pgif->gif_delay  = MAKEWORD(pExtension[2], pExtension[3]);
-				 if(pgif->gif_delay == 0) 
+				 if(pgif->gif_delay == 0)
 					pgif->gif_delay = 10;
 				 //pgif->gif_delay = 13;
 				 //printf("pgif->delay=%d\n",pgif->gif_delay);
@@ -249,15 +249,15 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
                  break;
              }
              default:
- 
+
                  break;
              }
-       
+
              do
              {
                  if (DGifGetExtensionNext(GifFileIn, &pExtension) == GIF_ERROR)
                  {
-     
+
                      return 0;
                  }
                  // Process Netscape 2.0 extension (GIF looping)
@@ -282,7 +282,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
      while (RecordType != TERMINATE_RECORD_TYPE);
      return pgif;
  }
- 
+
 void gif_animation_free(gif_desc_p pgif)
 {
 	image_chains_p pchain = NULL;

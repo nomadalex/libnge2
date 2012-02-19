@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_image_ext.h"
 #include <math.h>
 #include <assert.h>

@@ -1,4 +1,4 @@
-#ifndef CANIMATION_H_
+﻿#ifndef CANIMATION_H_
 #define CANIMATION_H_
 #include "libnge2.h"
 extern int game_quit;
@@ -20,11 +20,11 @@ typedef struct  {
 class CAnimation
 {
 public:
-	
+
 	CAnimation(const char* filename);
 	~CAnimation();
     //Moves the stick figure
-    void Update();    
+    void Update();
     void Input();
     //Shows the stick figure
     void Show();
@@ -36,7 +36,7 @@ protected:
 	static void btn_down(int keycode);
 	static void btn_up(int keycode);
 private:
-	   
+
     //Its current frame
     int frame;
 
@@ -51,7 +51,7 @@ private:
 	rect clipsDown[ 4 ];
 	image_p resouce;
 	//Its rate of movement
-	
+
 };
 
 

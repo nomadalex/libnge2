@@ -1,4 +1,4 @@
-#include "libnge2.h"
+﻿#include "libnge2.h"
 #include "cAnimation.h"
 #include <stdio.h>
 /**
@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL
 	NGE_Init(INIT_VIDEO);
-	
+
 	//最后一个参数是psp swizzle优化，通常填1
 	p_bg = image_load("images/demo4_bg.png",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_bg == NULL)

@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_misc.h"
 #include "nge_charsets.h"
 #include <time.h>

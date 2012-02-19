@@ -1,12 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // CppSQLite3 - A C++ wrapper around the SQLite3 embedded database library.
 //
 // Copyright (c) 2004 Rob Groves. All Rights Reserved. rob.groves@btinternet.com
-// 
+//
 // Permission to use, copy, modify, and distribute this software and its
 // documentation for any purpose, without fee, and without a written
-// agreement, is hereby granted, provided that the above copyright notice, 
-// this paragraph and the following two paragraphs appear in all copies, 
+// agreement, is hereby granted, provided that the above copyright notice,
+// this paragraph and the following two paragraphs appear in all copies,
 // modifications, and distributions.
 //
 // IN NO EVENT SHALL THE AUTHOR BE LIABLE TO ANY PARTY FOR DIRECT,

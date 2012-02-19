@@ -1,4 +1,4 @@
-#include "libnge2.h"
+﻿#include "libnge2.h"
 /**
  * nge_test:最简单的nge程序:播放一个动画
  */
@@ -24,7 +24,7 @@ void btn_down(int keycode)
 		break;
 	case PSP_BUTTON_LEFT:
 		break;
-	case PSP_BUTTON_RIGHT: 
+	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
 		break;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
 	//随便创建一个图片遮罩color
 	logomask2 = CreateColor(100,100,100,255,p_logo->dtype);
-	
+
 	MoviePlayInit(&movie);
 	movie.load("movies/test.pmp");
 	movie.play();

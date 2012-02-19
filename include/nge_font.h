@@ -1,4 +1,4 @@
-#ifndef NGE_FONT_H_
+﻿#ifndef NGE_FONT_H_
 #define NGE_FONT_H_
 
 #include "nge_image.h"

@@ -1,4 +1,4 @@
-#ifndef NGE_TIMER_H_
+﻿#ifndef NGE_TIMER_H_
 #define NGE_TIMER_H_
 
 #include "nge_common.h"
@@ -30,7 +30,7 @@ extern "C"{
 /**
  *创建一个timer
  *@return nge_timer*,返回timer的指针
- */	
+ */
 nge_timer* timer_create();
 
 /**

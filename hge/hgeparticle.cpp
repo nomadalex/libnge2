@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Thanks to Dr.Watson JGE++!
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
@@ -47,7 +47,7 @@ hgeParticleSystem::hgeParticleSystem(const char *filename, sprite_p sprite)
 		info.sprite->sprite_src_blend = BLEND_SRC_ALPHA;
 	if(info.sprite->sprite_des_blend == 0)
 		info.sprite->sprite_des_blend = BLEND_ONE;
-	
+
 	vecLocation.x=vecPrevLocation.x=0.0f;
 	vecLocation.y=vecPrevLocation.y=0.0f;
 	fTx=fTy=0;
@@ -249,7 +249,7 @@ void hgeParticleSystem::Fire()
 void hgeParticleSystem::Stop(BOOL bKillParticles)
 {
 	fAge=-2.0f;
-	if(bKillParticles) 
+	if(bKillParticles)
 	{
 		nParticlesAlive=0;
 		rectBoundingBox.Clear();

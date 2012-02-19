@@ -1,4 +1,4 @@
-#include "nge_platform.h"
+﻿#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_image_effect.h"
 #include "nge_graphics.h"

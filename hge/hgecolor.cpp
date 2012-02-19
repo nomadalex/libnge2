@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Thanks to Dr.Watson JGE++!
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
@@ -51,7 +51,7 @@ void hgeColorHSV::SetHWColor(uint32 col)
 		if      (r == maxv) {h = del_B - del_G;}
 		else if (g == maxv) {h = (1 / 3) + del_R - del_B;}
 		else if (b == maxv) {h = (2 / 3) + del_G - del_R;}
-		
+
 		if (h < 0) h += 1;
 		if (h > 1) h -= 1;
 	}

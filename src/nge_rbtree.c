@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_rbtree.h"
 
 #define SENTINEL &sentinel      // all leafs are sentinels
@@ -148,7 +148,7 @@ RbtStatus rbtInsert(rbtree_p rb,KeyType key, ValType val) {
     current = rb->root;
     parent = 0;
     while (current != &rb->sentinel) {
-        if (compEQ(key, current->key)) 
+        if (compEQ(key, current->key))
             return RBT_STATUS_DUPLICATE_KEY;
         parent = current;
         current = compLT(key, current->key) ?

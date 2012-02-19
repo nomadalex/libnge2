@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
 ** hge.relishgames.com
@@ -93,7 +93,7 @@ class hgeParticleSystem
 {
 public:
 	hgeParticleSystemInfo info;
-	
+
 	hgeParticleSystem(const char *filename, sprite_p sprite);
 	hgeParticleSystem(hgeParticleSystemInfo *psi);
 	hgeParticleSystem(const hgeParticleSystem &ps);

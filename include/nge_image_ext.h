@@ -1,4 +1,4 @@
-#ifndef NGE_GRAPHICS_EXT_H
+﻿#ifndef NGE_GRAPHICS_EXT_H
 #define NGE_GRAPHICS_EXT_H
 
 #include "nge_image.h"

@@ -1,4 +1,4 @@
-/*
+﻿/*
 	RLE encoder/decoder for 4,8,16,24 and 32bit
 	written by alexander berl, 2004/2007
 */
@@ -77,8 +77,8 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
 		 }
        }
       } while ((count<srcLen) && (count2<dstLen));
- 
- 
+
+
     } else if (bits==8) {
       do {
        c = *(s+count++);
@@ -118,7 +118,7 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
       do {
        c = *(s+count++);
        if (c & 0x80) {
-         
+
          t[0] = *(s+count++);
          t[1] = *(s+count++);
          t[2] = *(s+count++);
@@ -142,7 +142,7 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
       do {
        c = *(s+count++);
        if (c & 0x80) {
-	    
+
          w[0] = *(s+count++);
          w[1] = *(s+count++);
          w[2] = *(s+count++);
@@ -164,7 +164,7 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
        }
       } while ((count<srcLen) && (count2<dstLen));
     }
-    
+
     #else
     #ifdef NGE_PSP
     if (bits==8) {
@@ -173,14 +173,14 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
 			"__loop8:\n"
 			"addiu $9, $0, $0\n"		// eax = 0
 			"addiu $8, $8, 1\n"			// edx += 1
-			
+
 			"lb $10, (%1)\n"			// lb al
 			"addiu %1, %1, 1\n"
-			
+
 			"and $12, $10, 0x80\n"
 			"cmp EZ, $12\n"
 			"bt __lower8f\n"
-			
+
 			"addiu $10, $10, 1\n"
 			"move $11, $10\n"
 			"addiu $9, $9, $10\n"
@@ -192,14 +192,14 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
 			"addiu $11, $11, -1\n"
 			"cmp EZ, $11\n"
 			"bf __copy8b\n"
-			
+
 			"cmp BT,$9, %2\n"
 			"bt __loop8b\n"
 			"b __done8f\n"
-			
+
 			"__lower8:\n"
 			"and $10, $10, 127\n"
-		
+
 		:"=r"(dst):"r"(src),"r"(srcLen),"r"(dstLen));
 	#else
 	// only on x86-architecture
@@ -363,7 +363,7 @@ void decodeRLE( void* src, int srcLen, void* dst, int dstLen, int bits )
                          cmp edx, ebx
                          jb __loop32
                          //jmp __done32
-                         
+
                        __done32:
                   }
        }
@@ -397,7 +397,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
        if (maxrun>(srcLen-count)*2) maxrun = (srcLen-count)*2;
        if (maxrun>128) maxrun = 128;
 
-       
+
        if (sswap)
        {
 	     c = (*(s+count) >> 4) | (*(s+count+1) << 4);
@@ -491,7 +491,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
         maxrun = linesz-((count/2) % linesz);
        if (maxrun>(srcLen-count)/2) maxrun = (srcLen-count)/2;
        if (maxrun>128) maxrun = 128;
-    
+
        c1 = *(s+count++);
        c2 = *(s+count++);
        if (count2>=dstLen-2) break;
@@ -521,7 +521,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
        maxrun = linesz-((count/3) % linesz);
        if (maxrun>(srcLen-count)/3) maxrun = (srcLen-count)/3;
        if (maxrun>128) maxrun = 128;
-           
+
        c1 = *(s+count++);
        c2 = *(s+count++);
        c3 = *(s+count++);
@@ -555,7 +555,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
        if (maxrun>(srcLen-count)/4) maxrun = (srcLen-count)/4;
        if (maxrun>128) maxrun = 128;
        run;
-       
+
        c1 = *(s+count++);
        c2 = *(s+count++);
        c3 = *(s+count++);
@@ -585,7 +585,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
 	   }
       } while ((count<srcLen) && (count2<dstLen));
     }
-    
+
     return count2;
 }
 

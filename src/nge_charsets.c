@@ -1,4 +1,4 @@
-// charset.cpp: implementation of the charset class.
+﻿// charset.cpp: implementation of the charset class.
 //
 //////////////////////////////////////////////////////////////////////
 

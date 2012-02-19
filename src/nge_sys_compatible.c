@@ -1,4 +1,4 @@
-#include "nge_common.h"
+﻿#include "nge_common.h"
 #include "nge_debug_log.h"
 #include "nge_sys_compatible.h"
 #include <stdio.h>

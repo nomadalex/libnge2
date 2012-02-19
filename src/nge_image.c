@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_tga.h"
 #include "nge_bmp.h"
 #include "nge_png.h"

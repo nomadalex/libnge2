@@ -1,4 +1,4 @@
-#ifndef NDEBUG
+﻿#ifndef NDEBUG
 
 #include "nge_platform.h"
 #include "nge_debug_log.h"

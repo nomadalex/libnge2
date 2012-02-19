@@ -1,4 +1,4 @@
-#include "libnge2.h"
+﻿#include "libnge2.h"
 #include "hgeparticle.h"
 #include <stdlib.h>
 #include <stdio.h>

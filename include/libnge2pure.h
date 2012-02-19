@@ -1,4 +1,4 @@
-#ifndef LIBNGE2PURE_H_
+﻿#ifndef LIBNGE2PURE_H_
 #define LIBNGE2PURE_H_
 
 #include "nge_debug_log.h"

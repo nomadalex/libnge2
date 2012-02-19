@@ -1,4 +1,4 @@
-#include "nge_debug_log.h"
+﻿#include "nge_debug_log.h"
 #include "nge_font.h"
 #include "nge_io_file.h"
 #include "stdlib.h"
@@ -105,7 +105,7 @@ PFont create_font_nfont(const char* name,int disp)
 		pf = create_font_nfont_buf(nfbuf,nsize,disp);
 		SAFE_FREE(nfbuf);
 	}
-	
+
 	return pf;
 }
 
@@ -138,7 +138,7 @@ PFont create_font_nfont_buf(const char *nfbuf,int nsize,int disp)
 	pf->bitbuf.datalen = 2048;
 	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
 	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
-	
+
 	switch(disp)
 	{
 		case DISPLAY_PIXEL_FORMAT_4444:
@@ -209,11 +209,11 @@ BOOL nfont_getfontinfo(PFont pfont, PFontInfo pfontinfo)
 	pfontinfo->descent = pfontinfo->height - pfontinfo->baseline;
 	pfontinfo->maxascent = pfontinfo->baseline;
 	pfontinfo->maxdescent = pfontinfo->descent;
-	
+
 	pfontinfo->firstchar = 0;
 	pfontinfo->lastchar = 0;
 	pfontinfo->fixed = 1;
-	
+
 	return 1;
 }
 
@@ -221,10 +221,10 @@ BOOL nfont_getfontinfo(PFont pfont, PFontInfo pfontinfo)
 int getnextchar(char* s, unsigned char* cc)
 {
 	if( s[0] == '\0') return 0;
-	
+
 	cc[0] = (unsigned char)(*s);
 	cc[1] = (unsigned char)(*(s + 1));
-	
+
 	if( ((unsigned char)cc[0]>0x80) )
 			return 1;
 	cc[1] = '\0';
@@ -237,7 +237,7 @@ void nfont_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwi
    	unsigned char c[2];
 	char *s,*sbegin;
 	unsigned char s1[3];
-	
+
 	int ax=0;
 	s=(char *)text;
 	if(cc==0)
@@ -245,7 +245,7 @@ void nfont_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwi
 		*pwidth = 0;
 		*pheight = pf->size;
 		*pbase = pf->size-2;
-		
+
 	}
 	if(cc==1)
 	{
@@ -257,12 +257,12 @@ void nfont_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwi
 	sbegin=s;
 	while( getnextchar(s, c) )
 	{
-		if( c[1] != '\0') 
+		if( c[1] != '\0')
 		{
 			s += 2;
 			ax += pf->size;
 		}
-		else 
+		else
 		{
 			s += 1;
 			ax += pf->size/2;
@@ -270,7 +270,7 @@ void nfont_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwi
 		if(s>=sbegin+cc) {
 			break;
 		}
-		
+
 	}
 	*pwidth = ax;
 	*pheight = pf->size;
@@ -300,11 +300,11 @@ static void copy_rawdata_image_custom_16(void* data,const image_p des,int x,int 
 				if(j+x>des->texw||i+y>des->texh)
 					continue;
 				cpbegin16[j] = bmp16[i*w+j];
-				
+
 		}
 		cpbegin16 += des->texw;
 	}
-	
+
 	if(color_sh!=0xffff){
 		bmp16 = (uint16*)data;
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -352,7 +352,7 @@ static void copy_rawdata_image_custom_32(void* data,const image_p des,int x,int 
 			cpbegin32 += des->texw;
 		}
 	}
-	
+
 }
 
 
@@ -363,7 +363,7 @@ void expandcchar_16(PFontNfont pf, int bg, int fg, unsigned char* c, uint16* bit
 	int x,y,pixelsize;
 	unsigned char width = 0;
 	unsigned char *font;
-	
+
 	pixelsize=sizeof(uint16);
    	c1 = c[0];
 	c2 = c[1];
@@ -375,14 +375,14 @@ void expandcchar_16(PFontNfont pf, int bg, int fg, unsigned char* c, uint16* bit
 	pf->font_left   =  (char)font[2];
 	pf->font_top    =  (char)font[3];
 	font += 4;
-	
+
 	for (y = 0; y < pf->size; y++){
-		for (x = 0; x < pf->font_width; x++) 
+		for (x = 0; x < pf->font_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
-			
-			if (b & (128 >> (x % 8))){  
+
+			if (b & (128 >> (x % 8))){
 				bitmap[i++]=(uint16)fg;
 			}
 			else{
@@ -397,7 +397,7 @@ void expandchar_16(PFontNfont pf, int bg, int fg, int c, uint16* bitmap)
 	int i=0,b = 0;
 	int x,y;
 	unsigned char *font;
-	
+
 	font = pf->p_ascraw + c * (pf->alignsize+4);
 	pf->font_width  =  font[0];
 	pf->font_height =  font[1];
@@ -405,12 +405,12 @@ void expandchar_16(PFontNfont pf, int bg, int fg, int c, uint16* bitmap)
 	pf->font_top    =  (char)font[3];
 	font += 4;
 	for (y = 0; y < pf->size; y++){
-		for (x = 0; x < pf->font_width; x++) 
+		for (x = 0; x < pf->font_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
-			
-			if (b & (128 >> (x % 8))){  
+
+			if (b & (128 >> (x % 8))){
 				bitmap[i++]=(uint16)fg;
 			}
 			else{
@@ -436,7 +436,7 @@ void nfont_drawtext_16(PFontNfont pf, image_p pimage, int ax, int ay,const void 
 		s1[2]=0x0;
 		s=(char*)s1;
 	}
-	
+
 	sbegin=s;
 
 	size = 2*pf->font_width*pf->size*sizeof(uint16);
@@ -468,10 +468,10 @@ void nfont_drawtext_16(PFontNfont pf, image_p pimage, int ax, int ay,const void 
 			ax += pf->font_width+1;
 			printf("pf->font_left=%d\n",pf->font_left);
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
-	
+
 	SAFE_FREE(bitmap);
 }
 
@@ -482,30 +482,30 @@ void expandcchar_32(PFontNfont pf, int bg, int fg, unsigned char* c, uint32* bit
 	int x,y;
 	uint8 width = 0;
 	unsigned char *font;
-	int b = 0;	
-	
+	int b = 0;
+
 	int pixelsize;
 	pixelsize=sizeof(uint32);
-	
+
    	c1 = c[0];
 	c2 = c[1];
-	
+
 	seq = ( 0xbf*(c1-0x81) + (c2-0x40) ) ;
-	
+
 	font = pf->p_gbkraw + seq*(pf->alignsize+4);
 	pf->font_width  =  font[0];
 	pf->font_height =  font[1];
 	pf->font_left   =  (char)font[2];
 	pf->font_top    =  (char)font[3];
 	font += 4;
-	
+
 	for (y = 0; y < pf->size; y++){
-		for (x = 0; x < pf->font_width; x++) 
+		for (x = 0; x < pf->font_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
-			
-			if (b & (128 >> (x % 8)))  
+
+			if (b & (128 >> (x % 8)))
 				bitmap[i++]=(uint32)fg;
 			else
 				bitmap[i++]=(uint32)bg;
@@ -518,7 +518,7 @@ void expandchar_32(PFontNfont pf, int bg, int fg, int c, uint32* bitmap)
 	int i=0;
 	int x,y;
 	unsigned char *font;
-	int b = 0;		
+	int b = 0;
 	font = pf->p_ascraw + c * (pf->alignsize+4);
 	pf->font_width  =  font[0];
 	pf->font_height =  font[1];
@@ -527,7 +527,7 @@ void expandchar_32(PFontNfont pf, int bg, int fg, int c, uint32* bitmap)
 	font += 4;
 
 	for (y = 0; y < pf->size; y++){
-		for (x = 0; x < pf->font_width; x++) 
+		for (x = 0; x < pf->font_width; x++)
 		{
 			if (x % 8 == 0)
 				b = *font++;
@@ -565,7 +565,7 @@ void nfont_drawtext_32(PFontNfont pf, image_p pimage, int ax, int ay,const void 
 	}
 	bitmap = (uint32*)pf->bitbuf.data;
 	memset(bitmap,0,size);
-	
+
 	while( getnextchar(s, c) )
 	{
 		if( c[1] != '\0'){
@@ -584,10 +584,10 @@ void nfont_drawtext_32(PFontNfont pf, image_p pimage, int ax, int ay,const void 
 			s += 1;
 			ax += pf->font_width +1;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
-	
+
 	SAFE_FREE(bitmap);
 }
 
@@ -607,7 +607,7 @@ void nfont_drawtext(PFont pfont, image_p pimage, int ax, int ay,const void *text
 			nfont_drawtext_16(pf,pimage,ax,ay,text,cc, flags);
 		}
 	}
-	
+
 }
 
 
@@ -626,7 +626,7 @@ void nfont_drawtext_shadow_16(PFontNfont pf, image_p pimage, int ax, int ay,cons
 		s1[2]=0x0;
 		s=(char*)s1;
 	}
-	
+
 	sbegin=s;
 	size = 2*pf->font_width*pf->size*sizeof(uint16);
 	if( size > pf->bitbuf.datalen){
@@ -656,7 +656,7 @@ void nfont_drawtext_shadow_16(PFontNfont pf, image_p pimage, int ax, int ay,cons
 			s += 1;
 			ax += pf->font_width+1;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
 	SAFE_FREE(bitmap);
@@ -688,7 +688,7 @@ void nfont_drawtext_shadow_32(PFontNfont pf, image_p pimage, int ax, int ay,cons
 	}
 	bitmap = (uint32*)pf->bitbuf.data;
 	memset(bitmap,0,size);
-	
+
 	while( getnextchar(s, c) )
 	{
 		if( c[1] != '\0'){
@@ -707,7 +707,7 @@ void nfont_drawtext_shadow_32(PFontNfont pf, image_p pimage, int ax, int ay,cons
 			s += 1;
 			ax += pf->font_width +1;
 		}
-		
+
 		if(s>=sbegin+cc) break;
 	}
 	SAFE_FREE(bitmap);

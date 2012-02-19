@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------------------------
 // Copyright 2000, Paul Nettle. All rights reserved.
 // patched for ANSI C usage by Alexander Berl
 //
@@ -37,7 +37,7 @@
 // 4. With MFC applications, you will need to comment out any occurance of "#define new DEBUG_NEW" from all source files.
 //
 // 5. Include file dependencies are _very_important_ for getting the MMGR to integrate nicely into your application. Be careful if
-//    you're including standard includes from within your own project inclues; that will break this very specific dependency order. 
+//    you're including standard includes from within your own project inclues; that will break this very specific dependency order.
 //    It should look like this:
 //
 //		#include <stdio.h>   // Standard includes MUST come first
@@ -77,7 +77,7 @@
 //
 // Whether this software causes your application to crash, or if it reports errors, you need to be able to TRUST this software. To
 // this end, you are given some very simple debugging tools.
-// 
+//
 // The quickest way to locate problems is to enable the STRESS_TEST macro (below.) This should catch 95% of the crashes before they
 // occur by validating every allocation each time this memory manager performs an allocation function. If that doesn't work, keep
 // reading...
@@ -462,7 +462,7 @@ static	void	dumpLeakReport()
 {
 	// Open the report file
 	m_log( "Creating Leak Report..." );
-	
+
 	FILE	*fp = fopen("memleaks.log", "ab");
 
 	if (!fp) { m_log( "Error opening file for Memory Report." ); return; }
@@ -1264,10 +1264,10 @@ void	m_dumpMemoryReport()
 	// Open the report file
 
 	FILE	*fp = NULL;
-	
-	
+
+
 	char filename[] = "memreport.log";
-	
+
 	fp = fopen(filename, "w+b");
 
 	if (!fp) { m_log( "Error opening file for Memory Report." ); return; }
@@ -1322,7 +1322,7 @@ void	m_dumpMemoryReport()
 	dumpAllocations(fp);
 
 	fclose(fp);
-	
+
 	dumpLeakReport();
 }
 
