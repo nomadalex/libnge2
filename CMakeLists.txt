@@ -36,15 +36,17 @@ set(NGE2_VERSION 2.1)
 include(Common)
 include(SetupDepends)
 
-if(BUILD_SHARED)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+# Put libraries into `lib'.
+if(NOT WIN32)
+  if(ANDROID)
+	set_output_root(${CMAKE_SOURCE_DIR}/Android)
+  else()
+	set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+  endif()
 endif()
 
-# Put libraries into `lib'.
-if(ANDROID)
-  set_output_root(${CMAKE_SOURCE_DIR}/Android)
-else()
-  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+if(BUILD_SHARED AND LINUX)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
 endif()
 
 if(ANDROID)
@@ -52,8 +54,12 @@ if(ANDROID)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
 endif()
 
-set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INITERNAL
+set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INTERNAL
   "Real variable for build." FORCE)
+
+if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+  set(NGE2_IS_DEBUG 1)
+endif()
 
 # Search for C header files in these directories.
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -199,6 +205,14 @@ else()
 endif()
 
 add_our_library(nge2_main STATIC src/nge_main.c)
+
+if(MSVC)
+  if(NGE2_IS_DEBUG)
+	msvc_force_link_runtime(nge2 MDd)
+  else()
+	msvc_force_link_runtime(nge2 MD)
+  endif()
+endif()
 
 install(TARGETS nge2 DESTINATION lib)
 install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
