@@ -14,6 +14,9 @@ set(CMAKE_RELEASE_POSTFIX "" CACHE STRING "postfix for release version")
 set(CMAKE_RELWITHDEBINFO_POSTFIX "_rd" CACHE STRING "postfix for release with debug info version")
 set(CMAKE_MINSIZEREL_POSTFIX "_s" CACHE STRING "postfix for minsize release version")
 
+mark_as_advanced(CMAKE_DEBUG_POSTFIX CMAKE_RELEASE_POSTFIX CMAKE_RELWITHDEBINFO_POSTFIX
+  CMAKE_MINSIZEREL_POSTFIX)
+
 set(INSTALL_PREFIX "")
 
 option(STRICT_WARN "Halt at warnings" off)
@@ -89,6 +92,18 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 #-----------------------------------------------------------------------------#
 # Custom functions
+
+function(msvc_force_link_runtime target type)
+  if(${type} STREQUAL "MT")
+	set_target_properties(${target} PROPERTIES LINK_FLAGS "/nodefaultlib libcmt.lib")
+  elseif(${type} STREQUAL "MD")
+	set_target_properties(${target} PROPERTIES LINK_FLAGS "/nodefaultlib msvcrt.lib")
+  elseif(${type} STREQUAL "MTd")
+	set_target_properties(${target} PROPERTIES LINK_FLAGS "/nodefaultlib libcmtd.lib")
+  elseif(${type} STREQUAL "MDd")
+	set_target_properties(${target} PROPERTIES LINK_FLAGS "/nodefaultlib msvcrtd.lib")
+  endif()
+endfunction()
 
 macro(add_our_library target type)
   string(TOUPPER ${target} name)
