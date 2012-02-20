@@ -96,6 +96,10 @@ list(APPEND NGE2_SRCS
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
 
+if(MSVC AND NOT MSVC10)
+  include_directories(SYSTEM include/msvc)
+endif()
+
 if(NOT ANDROID)
   list(APPEND NGE2_SRCS
 	src/nge_gif_animation.c
