@@ -4,6 +4,9 @@
 
 #ifdef WIN32
 #include <direct.h>
+#else
+#include <sys/stat.h>
+#define _mkdir(name) mkdir(name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
 #endif
 
 #include <stdlib.h>
@@ -215,9 +218,7 @@ void save_itemTofile(char* filename,char* filetype)
 			strstr((char*)type,"tag") || strstr((char*)type,"TAG") ) {
 			if( strstr((char*)temp->date.name,(char*)type) ) {
 				strcpy(path,"images");
-#ifdef WIN32
-				mkdir(path);
-#endif
+				_mkdir(path);
 				buf = (unsigned char*) safe_malloc (temp->date.size);
 				fseek(fp,temp->date.offset,SEEK_SET);
 				fread(buf,temp->date.size,1,fp);
@@ -237,9 +238,7 @@ void save_itemTofile(char* filename,char* filetype)
 			strstr((char*)type,"ogg") || strstr((char*)type,"OGG") ) {
 			if( strstr((char*)temp->date.name,(char*)type) ) {
 				strcpy(path,"sounds");
-#ifdef WIN32
-				mkdir(path);
-#endif
+				_mkdir(path);
 				buf = (unsigned char*) safe_malloc (temp->date.size);
 				fseek(fp,temp->date.offset,SEEK_SET);
 				fread(buf,temp->date.size,1,fp);
@@ -257,9 +256,7 @@ void save_itemTofile(char* filename,char* filetype)
 		if( strstr((char*)type,"pmp") || strstr((char*)type,"PMP") ) {
 			if( strstr((char*)temp->date.name,(char*)type) ) {
 				strcpy(path,"videos");
-#ifdef WIN32
-				mkdir(path);
-#endif
+				_mkdir(path);
 				buf = (unsigned char*) safe_malloc (temp->date.size);
 				fseek(fp,temp->date.offset,SEEK_SET);
 				fread(buf,temp->date.size,1,fp);
