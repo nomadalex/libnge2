@@ -33,7 +33,7 @@ extern "C"{
  *@param int, 一些选项（可选）
  *@return int, 返回包文件句柄，为0时为失败
  */
-int io_load_package(const char* fname, int option);
+	NGE_API int io_load_package(const char* fname, int option);
 
 /**
  *切换io打开的模式，使用io_load_package得到的包句柄来切换io_fopen等其他api操作的对象，
@@ -41,7 +41,7 @@ int io_load_package(const char* fname, int option);
  *@param int, 包句柄
  *@return int, 为0时为失败
  */
-int io_change_package(int pack_handle);
+	NGE_API int io_change_package(int pack_handle);
 
 /**
  *打开文件
@@ -49,7 +49,7 @@ int io_change_package(int pack_handle);
  *@param int,打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
  *@return int,文件句柄,读写均用此文件句柄进行操作
  */
-int io_fopen(const char* fname,int flag);
+	NGE_API int io_fopen(const char* fname,int flag);
 
 /**
  *读文件,与fread类似
@@ -59,7 +59,7 @@ int io_fopen(const char* fname,int flag);
  *@param int,文件句柄
  *@return,实际读取数量
  */
-int io_fread(void* buffer,int count,int size,int handle);
+	NGE_API int io_fread(void* buffer,int count,int size,int handle);
 
 /**
  *写文件,与fwrite类似
@@ -69,7 +69,7 @@ int io_fread(void* buffer,int count,int size,int handle);
  *@param int,文件句柄
  *@return,实际写入数量
  */
-int io_fwrite(void* buffer,int count,int size,int handle);
+	NGE_API int io_fwrite(void* buffer,int count,int size,int handle);
 
 /**
  *文件指针偏移设置,与fseek类似
@@ -78,28 +78,28 @@ int io_fwrite(void* buffer,int count,int size,int handle);
  *@param int flag,seek标志,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
  *@return int,返回0成功,-1失败
  */
-int io_fseek(int handle,int offset,int flag);
+	NGE_API int io_fseek(int handle,int offset,int flag);
 
 /**
  *获得当前文件偏移值
  *@param int handle,文件句柄
  *@return int,文件偏移值
  */
-int io_ftell(int handle);
+	NGE_API int io_ftell(int handle);
 
 /**
  *关闭文件
  *@param int handle,文件句柄
  *@return int,-1失败
  */
-int io_fclose(int handle);
+	NGE_API int io_fclose(int handle);
 
 /**
  *文件大小
  *@param int handle,文件句柄
  *@return int,文件大小
  */
-int io_fsize(int handle);
+	NGE_API int io_fsize(int handle);
 
 #ifdef __cplusplus
 }

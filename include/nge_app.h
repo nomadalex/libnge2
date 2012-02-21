@@ -24,6 +24,8 @@
 #ifndef _NGE_APP_H
 #define _NGE_APP_H
 
+#include "nge_common.h"
+
 enum{
 	NGE_APP_NORMAL = 0,
 	NGE_APP_QUIT,
@@ -39,8 +41,8 @@ typedef struct nge_app {
 extern "C" {
 #endif
 
-	void nge_register_app(nge_app_t *app);
-	nge_app_t* nge_get_app();
+	NGE_API void nge_register_app(nge_app_t *app);
+	NGE_API nge_app_t* nge_get_app();
 
 #ifdef __cplusplus
 }

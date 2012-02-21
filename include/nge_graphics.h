@@ -68,37 +68,37 @@ extern "C"{
  *得到屏幕信息
  *@return 屏幕信息
  */
-screen_context_p GetScreenContext();
+	NGE_API screen_context_p GetScreenContext();
 /**
  * 初始化函数,由nge2系统调用,用户无须显式调用
  */
-void InitGrahics();
+	NGE_API void InitGrahics();
 /**
  * 结束函数,由nge2系统调用,用户无须显式调用
  */
-void FiniGrahics();
+	NGE_API void FiniGrahics();
 /**
  * 屏幕绘制开始函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
  *@param uint8 clear,清屏标志，默认为1清屏
  *@return 无
  */
-void BeginScene(uint8 clear);
+	NGE_API void BeginScene(uint8 clear);
 /**
  * 屏幕绘制结束函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
  *@return 无
  */
-void EndScene();
+	NGE_API void EndScene();
 /**
  * 设置是否显示FPS和调试信息
  *@return 无
  */
-void ShowFps();
+	NGE_API void ShowFps();
 /**
  * 限制帧数
  *@param int fps,目标帧数
  *@return 无
  */
-void LimitFps(uint32 fps);
+	NGE_API void LimitFps(uint32 fps);
 /**
  * 设置裁剪区域，在目标区域内的才显示，同J2ME的SetClip
  *@param int x,目标区域x坐标
@@ -107,12 +107,12 @@ void LimitFps(uint32 fps);
  *@param int h,目标区域裁剪的height
  *@return 无
  */
-void SetClip(int x,int y,int w,int h);
+	NGE_API void SetClip(int x,int y,int w,int h);
 /**
  * 重置置裁剪区域，等同于调用SetClip(0,0,SCREEN_WIDTH,SCREEN_HEIGHT)
  *@return 无
  */
-void ResetClip();
+	NGE_API void ResetClip();
 /**
  * 画线函数1，输入坐标点
  *@param float x1,第一个点x坐标
@@ -123,7 +123,7 @@ void ResetClip();
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype);
+	NGE_API void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype);
 /**
  * 画线函数2，输入坐标的pointf
  *@param pointf p1,第一个点xy坐标
@@ -132,7 +132,7 @@ void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype);
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void DrawLineEx(pointf p1,pointf p2, int color,int dtype);
+	NGE_API void DrawLineEx(pointf p1,pointf p2, int color,int dtype);
 /**
  * 画矩形线框的函数1，输入为位置和宽高
  *@param float dx,矩形左上角的x坐标
@@ -143,7 +143,7 @@ void DrawLineEx(pointf p1,pointf p2, int color,int dtype);
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void DrawRect(float dx, float dy, float width, float height,int color,int dtype);
+	NGE_API void DrawRect(float dx, float dy, float width, float height,int color,int dtype);
 /**
  * 画矩形线框的函数2，输入为矩形位置坐标
  *@param rectf rect,矩形位置坐标
@@ -151,7 +151,7 @@ void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void DrawRectEx(rectf rect,int color,int dtype);
+	NGE_API void DrawRectEx(rectf rect,int color,int dtype);
 /**
  * 画填充矩形的函数1，输入为位置和宽高
  *@param float dx,矩形左上角的x坐标
@@ -162,7 +162,7 @@ void DrawRectEx(rectf rect,int color,int dtype);
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void FillRect(float dx, float dy, float width, float height,int color,int dtype);
+	NGE_API void FillRect(float dx, float dy, float width, float height,int color,int dtype);
 /**
  * 画填充矩形的函数2，输入为矩形位置坐标
  *@param rectf rect,矩形位置坐标
@@ -170,7 +170,7 @@ void FillRect(float dx, float dy, float width, float height,int color,int dtype)
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void FillRectEx(rectf rect,int color,int dtype);
+	NGE_API void FillRectEx(rectf rect,int color,int dtype);
 /**
  * 画填充渐变矩形的函数1，输入为位置和宽高
  *@param float dx,矩形左上角的x坐标
@@ -181,7 +181,7 @@ void FillRectEx(rectf rect,int color,int dtype);
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype);
+	NGE_API void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype);
 /**
  * 画填充矩形的函数2，输入为矩形位置坐标
  *@param rectf rect,矩形位置坐标
@@ -189,7 +189,7 @@ void FillRectGrad(float dx, float dy, float width, float height,int* colors,int 
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-void FillRectGradEx(rectf rect,int* colors,int dtype);
+	NGE_API void FillRectGradEx(rectf rect,int* colors,int dtype);
 /**
  * 画图函数1，效率依次是ImageToScreen>DrawImage>DrawImageMask>RenderQuad;
  * sx,sy,sw,sh,构成待显示的图片范围，例如要显示一张图片200*200的图片的
@@ -216,7 +216,7 @@ void FillRectGradEx(rectf rect,int* colors,int dtype);
  *@param int mask,颜色遮罩
  *@return 无
  */
-void RenderQuad(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
+	NGE_API void RenderQuad(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
 /**
  * 画图函数2,sw,sh为0是画原图，dw，dh为0是显示sw和dh大小
  * 例子1:将200*200的图片tex显示在屏幕100，0处
@@ -233,7 +233,7 @@ void RenderQuad(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx
  *@param float dh,屏幕高
  *@return 无
  */
-void DrawImage(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
+	NGE_API void DrawImage(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
 /**
  * 画图函数3
  * 同上，只是多了个MASK
@@ -249,7 +249,7 @@ void DrawImage(image_p texture,float sx,float sy,float sw,float sh,float dx,floa
  *@param int mask,颜色遮罩
  *@return 无
  */
-void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask);
+	NGE_API void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask);
 /**
  * 画图函数4，最简单的画图函数,将图片画到dx,dy
  *@param image_p texture,图片指针
@@ -257,7 +257,7 @@ void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx
  *@param float dy,屏幕y坐标
  *@return 无
  */
-void ImageToScreen(image_p texture,float dx,float dy);
+	NGE_API void ImageToScreen(image_p texture,float dx,float dy);
 
 /**
  *同RenderQuad,增加一个trans参数
@@ -275,7 +275,7 @@ void ImageToScreen(image_p texture,float dx,float dy);
  *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
  *@return 无
  */
-void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans);
+	NGE_API void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans);
 /**
  *同DrawImage,增加一个trans参数
  *@param image_p texture,图片指针
@@ -290,7 +290,7 @@ void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,flo
  *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
  *@return 无
  */
-void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans);
+	NGE_API void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans);
 /**
  *同DrawImageMask,增加一个trans参数
  *@param image_p texture,图片指针
@@ -306,7 +306,7 @@ void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx
  *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
  *@return 无
  */
-void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans);
+	NGE_API void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans);
 /**
  *同ImageToScreen,增加一个trans参数
  *@param image_p texture,图片指针
@@ -315,19 +315,19 @@ void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, flo
  *@param int trans,目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
  *@return 无
  */
-void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
+	NGE_API void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
 
 /**
  *将屏幕内容保存在image_p中
  *@return image_p,返回image_p指针,出错返回NULL
  */
-image_p ScreenToImage();
+	NGE_API image_p ScreenToImage();
 /**
  * 保存一个snapshot图片打文件,这个图片是png格式的
  *@param const char* filename,保存图片文件名
  *@return 无
  */
-void ScreenShot(const char* filename);
+	NGE_API void ScreenShot(const char* filename);
 /**
  *设置屏幕颜色，r,g,b,a
  *@param uint8 r,设置r分量(0-255)
@@ -336,19 +336,19 @@ void ScreenShot(const char* filename);
  *@param uint8 a,设置a分量(0-255)
  *@return uint32,上一个屏幕颜色值,可用宏GET_RGBA_8888分离出各个颜色分量
  */
-uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a);
+	NGE_API uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a);
 /**
  * 设置当前的混合方式
  *@param int src_blend,
  *@param int des_blend,
  *@return
  */
-void SetTexBlend(int src_blend, int des_blend);
+	NGE_API void SetTexBlend(int src_blend, int des_blend);
 /**
  *将混合方式恢复为默认方式
  *@return
  */
-void ResetTexBlend();
+	NGE_API void ResetTexBlend();
 
 /**
  * 在屏幕上画一个点的函数
@@ -358,7 +358,7 @@ void ResetTexBlend();
  *@param int dtype,颜色类型
  *@return
  */
-void PutPix(float x,float y ,int color,int dtype);
+	NGE_API void PutPix(float x,float y ,int color,int dtype);
 
 /**
  * 画圆形线框函数
@@ -369,7 +369,7 @@ void PutPix(float x,float y ,int color,int dtype);
  *@param int dtype,颜色类型
  *@return
  */
-void DrawCircle(float x, float y, float radius, int color,int dtype);
+	NGE_API void DrawCircle(float x, float y, float radius, int color,int dtype);
 
 /**
  * 画实心圆函数
@@ -380,7 +380,7 @@ void DrawCircle(float x, float y, float radius, int color,int dtype);
  *@param int dtype,颜色类型
  *@return
  */
-void FillCircle(float x, float y, float radius, int color,int dtype);
+	NGE_API void FillCircle(float x, float y, float radius, int color,int dtype);
 
 /**
  * 画椭圆线框函数
@@ -392,7 +392,7 @@ void FillCircle(float x, float y, float radius, int color,int dtype);
  *@param int dtype,颜色类型
  *@return
  */
-void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
+	NGE_API void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
 
 /**
  * 画实心椭圆函数
@@ -404,7 +404,7 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@param int dtype,颜色类型
  *@return
  */
-void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
+	NGE_API void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype);
 
 /**
  * 画任意多边形线框函数
@@ -416,7 +416,7 @@ void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
  *@param int dtype,颜色类型
  *@return
  */
-void DrawPolygon(float* x, float* y, int count, int color,int dtype);
+	NGE_API void DrawPolygon(float* x, float* y, int count, int color,int dtype);
 
 /**
  * 画任意实心多边形函数
@@ -428,7 +428,7 @@ void DrawPolygon(float* x, float* y, int count, int color,int dtype);
  *@param int dtype,颜色类型
  *@return
  */
-void FillPolygon(float* x, float* y, int count, int color,int dtype);
+	NGE_API void FillPolygon(float* x, float* y, int count, int color,int dtype);
 
 /**
  * 画渐进颜色任意实心多边形函数
@@ -440,12 +440,12 @@ void FillPolygon(float* x, float* y, int count, int color,int dtype);
  *@param int dtype,颜色类型
  *@return
  */
-void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
+	NGE_API void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
 
 /**
  *设置屏幕类型0通常1全屏,2翻转横屏(ip)
  */
-void SetScreenType(int type);
+	NGE_API void SetScreenType(int type);
 
 #ifdef __cplusplus
 }

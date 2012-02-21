@@ -23,6 +23,7 @@
 #ifndef _NGE_BMP_H
 #define _NGE_BMP_H
 
+#include "nge_common.h"
 #include "nge_image.h"
 
 #ifdef __cplusplus
@@ -35,7 +36,7 @@ extern "C" {
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_bmp(const char* filename, int displaymode);
+	NGE_API image_p image_load_bmp(const char* filename, int displaymode);
 /**
  *加载bmp图片,从内存加载
  *@param const char* mbuf,内存地址
@@ -43,7 +44,7 @@ image_p image_load_bmp(const char* filename, int displaymode);
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode);
+	NGE_API image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode);
 /**
  *加载bmp图片,从文件指针加载
  *@param int handle,文件指针
@@ -52,19 +53,19 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode);
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_bmp_fp(int handle,int fsize, int autoclose,int displaymode);
+	NGE_API image_p image_load_bmp_fp(int handle,int fsize, int autoclose,int displaymode);
 /**
  * 同image_load_bmp函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colorkey);
+	NGE_API image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colorkey);
 /**
  * 同image_load_bmp_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
+	NGE_API image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
 /**
  * 同image_load_bmp_fp函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
+	NGE_API image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 
 #ifdef __cplusplus
 }

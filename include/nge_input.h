@@ -110,7 +110,7 @@ extern "C" {
  *@param int doneflag,是否自行处理退出消息(HOME键按下时),0(否),1(是)
  *@return 无
  */
-void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
+	NGE_API void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
 #endif
 
 #ifdef NGE_INPUT_ANALOG_SUPPORT
@@ -119,17 +119,17 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
  *@param AnalogProc,摇杆的回调函数
  *@return
  */
-void InitAnalog(AnalogProc analogproc);
+	NGE_API void InitAnalog(AnalogProc analogproc);
 #endif
 
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 /**
  *初始化mouse-touch
  */
-void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
+	NGE_API void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 #endif
 
-void SetSwapXY(int flag);
+	NGE_API void SetSwapXY(int flag);
 
 #if !defined NGE_IPHONE || !defined NGE_ANDROID
 #define NGE_INPUT_HAS_PROC
@@ -137,7 +137,7 @@ void SetSwapXY(int flag);
  *输入响应,具体使用请看例子test/input_test.cpp
  *@return 无
  */
-void InputProc();
+	NGE_API void InputProc();
 #endif
 
 /**

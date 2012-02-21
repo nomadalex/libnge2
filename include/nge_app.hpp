@@ -23,6 +23,7 @@
 #ifndef _NGE_APP_HPP
 #define _NGE_APP_HPP
 
+#include "nge_common.h"
 #include "nge_app.h"
 
 class CNgeApp
@@ -37,6 +38,6 @@ public:
 	int mFps;
 };
 
-extern "C" void nge_registerApp(CNgeApp *app);
+extern "C" NGE_API void nge_registerApp(CNgeApp *app);
 
 #endif /* _NGE_APP_HPP */

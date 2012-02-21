@@ -1,6 +1,7 @@
 ﻿#ifndef NGE_IMAGE_EFFECT_H_
 #define NGE_IMAGE_EFFECT_H_
 
+#include "nge_common.h"
 #include "nge_image.h"
 #include "nge_timer.h"
 
@@ -77,7 +78,7 @@ extern "C"{
  *@param int timeticks,完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
-image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
+	NGE_API image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
 
 /**
  *创建一个渐出的效果器,渐入是alpha从一个大值变化到一个小值
@@ -86,7 +87,7 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
  *@param int timeticks,完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
-image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
+	NGE_API image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
 
 /**
  *创建一个抖动的效果器
@@ -95,7 +96,7 @@ image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
  *@param int timeticks,完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
-image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
+	NGE_API image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
 
 /**
  *创建一个模糊的效果器
@@ -105,7 +106,7 @@ image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
  *@param int optimization,速度优化选项，0为不优化，效果好速度慢，1为一般优化，速度效果一般，2为最大优化，速度最快，但效果最差，一般情况下使用 1
  *@return image_effect_p,返回效果器的指针
  */
-image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int optimization);
+	NGE_API image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int optimization);
 
 /**
  *创建一个转场效果器
@@ -116,7 +117,7 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int o
  *@param int timeticks, 完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
-image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, int reversed, int timeticks);
+	NGE_API image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, int reversed, int timeticks);
 
 #ifdef __cplusplus
 }

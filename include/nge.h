@@ -11,7 +11,6 @@
 #define _NGE_H
 
 #include "nge_common.h"
-#include "nge_platform.h"
 
 #define INIT_VIDEO 1
 #define INIT_AUDIO 2
@@ -41,13 +40,13 @@ extern "C"{
  *@param int flags,初始化标志位,INIT_VIDEO(视频),INIT_AUDIO(音频)或者INIT_ALL
  *@return 无
  */
-	void NGE_Init(int flags);
+	NGE_API void NGE_Init(int flags);
 
 /**
  *NGE退出函数
  *@return 无
  */
-	void NGE_Quit();
+	NGE_API void NGE_Quit();
 
 /**
  *设置屏幕窗口
@@ -58,33 +57,33 @@ extern "C"{
  *@param int screen_full,是否全屏0-窗口,1-全屏
  *@return
  */
-	void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
+	NGE_API void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
 /**
  *设置系统原生屏幕分辨率
  *@param int width,宽度
  *@param int height,高度
  */
-	void NGE_SetNativeResolution(int width,int height);
+	NGE_API void NGE_SetNativeResolution(int width,int height);
 
 /**
  *设置片头动画地址
  *@param const char* path,地址
  */
-	void NGE_SetOPMoviePath(const char* path);
+	NGE_API void NGE_SetOPMoviePath(const char* path);
 
 /**
  *注册通知回调函数
  *@param NotifyCallback cb, 回调函数
  */
-	void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
+	NGE_API void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
 
 #ifdef NGE_PSP
 /**
  *注册PSP的退出回调
  *@param int cb_id, 回调标识号
  */
-	void NGE_RegisterPSPExitCallback(int cb_id);
+	NGE_API void NGE_RegisterPSPExitCallback(int cb_id);
 #endif
 
 #ifdef __cplusplus

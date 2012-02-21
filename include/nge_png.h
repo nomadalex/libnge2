@@ -36,7 +36,7 @@ extern "C" {
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,加载图片填充此结构
  */
-image_p image_load_png(const char* filename, int displaymode);
+	NGE_API image_p image_load_png(const char* filename, int displaymode);
 
 /**
  *加载png图片,从内存加载
@@ -45,7 +45,7 @@ image_p image_load_png(const char* filename, int displaymode);
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_png_buf(const char* mbuf,int bsize, int displaymode);
+	NGE_API image_p image_load_png_buf(const char* mbuf,int bsize, int displaymode);
 
 /**
  *加载png图片,从文件指针加载
@@ -55,22 +55,22 @@ image_p image_load_png_buf(const char* mbuf,int bsize, int displaymode);
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode);
+	NGE_API image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode);
 
 /**
  * 同image_load_png函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_png_colorkey(const char* filename, int displaymode,int colorkey);
+	NGE_API image_p image_load_png_colorkey(const char* filename, int displaymode,int colorkey);
 
 /**
  * 同image_load_png_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode,int colorkey);
+	NGE_API image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode,int colorkey);
 
 /**
  * 同image_load_png_fp函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
+	NGE_API image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 
 /**
  *存储png图片,将image_p结构内容存储为png文件
@@ -79,7 +79,7 @@ image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displ
  *@param uint8,是否保存为含alpha通道的图片
  *@return int,返回0(加载失败)或1(加载成功)
  */
-int image_save_png(image_p pimage,const char* filename,uint8 alpha);
+	NGE_API int image_save_png(image_p pimage,const char* filename,uint8 alpha);
 
 #ifdef __cplusplus
 }

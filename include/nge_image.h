@@ -57,7 +57,7 @@ extern "C" {
  *@param int swizzle,是否做优化,填0不做优化,通常填1
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load(const char* filename, int displaymode,int swizzle);
+	NGE_API image_p image_load(const char* filename, int displaymode,int swizzle);
 
 /**
  *加载图片,从内存加载
@@ -67,7 +67,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle);
  *@param int swizzle,是否做优化,填0不做优化,通常填1
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
+	NGE_API image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
 
 /**
  *加载图片,从文件指针加载
@@ -78,17 +78,17 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
  *@param int swizzle,是否做优化,填0不做优化,通常填1
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
-image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int swizzle);
+	NGE_API image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int swizzle);
 
 /**
  * 同image_load函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,int swizzle);
+	NGE_API image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,int swizzle);
 
 /**
  * 同image_load_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
  */
-image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey,int swizzle);
+	NGE_API image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey,int swizzle);
 
 /**
  *创建一个image结构,显示模式是displaymode
@@ -97,7 +97,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
  *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p pimage,返回image指针
  */
-image_p image_create(int w,int h,int displaymode);
+	NGE_API image_p image_create(int w,int h,int displaymode);
 
 /**
  *创建一个image结构,显示模式是displaymode
@@ -107,7 +107,7 @@ image_p image_create(int w,int h,int displaymode);
  *@param int displaymode,显示模式,与颜色一致,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p pimage,返回image指针
  */
-image_p image_create_ex(int w,int h,int color,int displaymode);
+	NGE_API image_p image_create_ex(int w,int h,int color,int displaymode);
 
 /**
  *将image保存，根据文件名判断保存的格式，目前支持png和tga格式
@@ -117,28 +117,28 @@ image_p image_create_ex(int w,int h,int color,int displaymode);
  *@param uint8 rle,是否保存为rle压缩格式的图片
  *@return int,返回0(加载失败)或1(加载成功)
  */
-int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
+	NGE_API int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
 
 /**
  *释放一个image
  *@param image_p pimage,待释放的image指针
  *@return void,无返回
  */
-void image_free(image_p pimage);
+	NGE_API void image_free(image_p pimage);
 
 /**
  *clone一个image,并把image_p返回一个pimage的深拷贝
  *@param image_p pimage,待clone的image指针
  *@return image_p,pimage的深拷贝
  */
-image_p image_clone(image_p pimage);
+	NGE_API image_p image_clone(image_p pimage);
 
 /**
  *将数据清空,图像变为无色透明
  *@param image_p pimage,待清除的image指针
  *@return void,无返回
  */
-void image_clear(image_p pimage);
+	NGE_API void image_clear(image_p pimage);
 
 /**
  *将源image_p src拷贝到image_p des.注意此函数通常只用作兼容其他使用
@@ -149,7 +149,7 @@ void image_clear(image_p pimage);
  *@param uint32 dy,目的内存图的y坐标
  *@return
  */
-void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
+	NGE_API void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.注意此函数通常只用作兼容其他使用
@@ -164,7 +164,7 @@ void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
  *@param uint32 dy,目的内存图的y坐标
  *@return
  */
-void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy);
+	NGE_API void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy);
 
 /**
  *将源image_p src拷贝到image_p des 的alpha混合.注意此函数通常只用作兼容其他使用
@@ -176,7 +176,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
  *@param int alpha,alpha混合值,0-255(透明->不透明),例如128就是半透明
  *@return
  */
-void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 dy,int alpha);
+	NGE_API void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 dy,int alpha);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.注意此函数通常只用作兼容其他使用
@@ -192,7 +192,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 d
  *@param int alpha,alpha混合值,0-255(透明->不透明),例如128就是半透明
  *@return
  */
-void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha);
+	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha);
 
 /**
  *将原始位图格式数据拷贝到image,考虑到效率问题,只支持同种displaymode,
@@ -205,21 +205,21 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
  *@param int h,data的h
  *@return void,无返回
  */
-void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,uint32 h);
+	NGE_API void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,uint32 h);
 
 /**
  * 将图像做水平翻转，图像坐标x不变
  *@param image_p pimage,待翻转图像
  *@return int,成功1,失败0
  */
-int image_fliph(image_p pimage);
+	NGE_API int image_fliph(image_p pimage);
 
 /**
  * 将图像做垂直翻转，翻转后x轴对称
  *@param image_p pimage,待翻转图像
  *@return int,成功1,失败0
  */
-int image_flipv(image_p pimage);
+	NGE_API int image_flipv(image_p pimage);
 
 //以下函数为内部使用
 int GET_PSM_COLOR_MODE(int dtype);

@@ -1,6 +1,9 @@
 ﻿#ifndef NGE_RBTREE_H_
 #define NGE_RBTREE_H_
 // red-black tree
+
+#include "nge_common.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,24 +51,20 @@ typedef struct{
 	NodeType  sentinel;
 }rbtree_t,*rbtree_p;
 
-
 typedef void (*travelcall)(rbtree_p rb,NodeType *);
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	RbtStatus rbtInsert(rbtree_p rb,KeyType key, ValType val);
-	RbtStatus rbtErase(rbtree_p rb,NodeType * z);
-	NodeType* rbtFind(rbtree_p rb,KeyType key);
-	void rbtInorder(rbtree_p rb,NodeType *p, travelcall callback);
-	void rbtDelete(rbtree_p rb,NodeType *p);
-	rbtree_p createTree();
-	void destoryTree(rbtree_p rb);
+	NGE_API RbtStatus rbtInsert(rbtree_p rb,KeyType key, ValType val);
+	NGE_API RbtStatus rbtErase(rbtree_p rb,NodeType * z);
+	NGE_API NodeType* rbtFind(rbtree_p rb,KeyType key);
+	NGE_API void rbtInorder(rbtree_p rb,NodeType *p, travelcall callback);
+	NGE_API void rbtDelete(rbtree_p rb,NodeType *p);
+	NGE_API rbtree_p createTree();
+	NGE_API void destoryTree(rbtree_p rb);
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #endif

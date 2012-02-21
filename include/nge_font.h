@@ -1,6 +1,7 @@
 ﻿#ifndef NGE_FONT_H_
 #define NGE_FONT_H_
 
+#include "nge_common.h"
 #include "nge_image.h"
 
 //encoding flags
@@ -131,7 +132,7 @@ extern "C"{
  *@param int disp,显示模式,4种显示模式之一,推荐使用5551,4444
  *@return PFont pfont,返回font指针
  */
-PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
+	NGE_API PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
 
 /**
  *从一个内存buf上创建一个GBK(hzk)font,默认为GBK的点阵
@@ -143,7 +144,7 @@ PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
  *@param int disp,显示模式,4种显示模式之一,推荐使用5551,4444
  *@return PFont pfont,返回font指针
  */
-PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asize, int height,int disp);
+	NGE_API PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asize, int height,int disp);
 
 /**
  *创建一个ttf(freetype)font
@@ -152,7 +153,7 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
  *@param int disp,显示模式,4种显示模式之一,推荐使用8888,4444
  *@return PFont pfont,返回font指针
  */
-PFont create_font_freetype(const char* ttfname, int height,int disp);
+	NGE_API PFont create_font_freetype(const char* ttfname, int height,int disp);
 
 /**
  *从一个内存buf上创建一个ttf(freetype)font
@@ -162,7 +163,7 @@ PFont create_font_freetype(const char* ttfname, int height,int disp);
  *@param int disp,显示模式,4种显示模式之一,推荐使用8888,4444
  *@return PFont pfont,返回font指针
  */
-PFont create_font_freetype_buf(const char *cfbuf,int csize, int height,int disp);
+	NGE_API PFont create_font_freetype_buf(const char *cfbuf,int csize, int height,int disp);
 
 /**
  * 显示一行字到内存图textarea,注意必须用create_image建立内存图textarea
@@ -175,7 +176,7 @@ PFont create_font_freetype_buf(const char *cfbuf,int csize, int height,int disp)
  *@param int flag,显示标志,目前只有0(正常),1(阴影)
  *@return 无
  */
-void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int dy,int flags);
+	NGE_API void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int dy,int flags);
 /**
  *设置字体的属性
  *@param PFont pf,字体指针
@@ -183,20 +184,20 @@ void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int
  *@param int setflag,需要设置的属性标志
  *@return 无
  */
-void font_setattr(PFont pf,int attr,int setflag);
+	NGE_API void font_setattr(PFont pf,int attr,int setflag);
 /**
  *释放一个字体
  *@param PFont pf,待释放的字体指针
  *@return 无
  */
-void font_destory(PFont pf);
+	NGE_API void font_destory(PFont pf);
 /**
  *设置字体颜色
  *@param PFont pf,字体指针
  *@param uint32 color,字体颜色，颜色值与建立字体的dtype对应,例如建立是16位5551,这里就是MAKE_RGBA5551设置
  *@return int,上一个颜色
  */
-int font_setcolor(PFont pf,uint32 color);
+	NGE_API int font_setcolor(PFont pf,uint32 color);
 /**
  *增强型设置字体颜色,视支持而定
  *@param PFont pf,字体指针
@@ -205,7 +206,7 @@ int font_setcolor(PFont pf,uint32 color);
  *@param uint32 color_sh,字体阴影色，颜色值与建立字体的dtype对应
  *@return int,无
  */
-void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color_sh );
+	NGE_API void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color_sh );
 /**
  *得到一段文字的范围
  *@param PFont pf,字体指针
@@ -216,11 +217,11 @@ void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color
  *@param int *pbase   基线
  *@return
  */
-void font_textsize(PFont pfont, const void *text, int cc,int *pwidth, int *pheight,int *pbase);
+	NGE_API void font_textsize(PFont pfont, const void *text, int cc,int *pwidth, int *pheight,int *pbase);
 
 
-PFont create_font_nfont_buf(const char *nfbuf,int nsize,int disp);
-PFont create_font_nfont(const char* name,int disp);
+	NGE_API PFont create_font_nfont_buf(const char *nfbuf,int nsize,int disp);
+	NGE_API PFont create_font_nfont(const char* name,int disp);
 
 #ifdef __cplusplus
 }
