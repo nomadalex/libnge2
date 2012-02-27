@@ -29,21 +29,20 @@
 #define NGE_INPUT_BUTTON_SUPPORT
 #define NGE_INPUT_ANALOG_SUPPORT
 #if defined NGE_WIN
-#include "SDL.h"
-#define PSP_BUTTON_UP            SDLK_w
-#define PSP_BUTTON_DOWN          SDLK_s
-#define PSP_BUTTON_LEFT          SDLK_a
-#define PSP_BUTTON_RIGHT         SDLK_d
-#define PSP_BUTTON_TRIANGLE      SDLK_i
-#define PSP_BUTTON_CIRCLE        SDLK_l
-#define PSP_BUTTON_CROSS         SDLK_k
-#define PSP_BUTTON_SQUARE        SDLK_j
-#define PSP_BUTTON_LEFT_TRIGGER  SDLK_e
-#define PSP_BUTTON_RIGHT_TRIGGER SDLK_u
-#define PSP_BUTTON_SELECT        SDLK_v
-#define PSP_BUTTON_START         SDLK_b
-#define PSP_BUTTON_HOME          SDLK_n
-#define PSP_BUTTON_HOLD          SDLK_m
+#define PSP_BUTTON_UP            'W'
+#define PSP_BUTTON_DOWN          'S'
+#define PSP_BUTTON_LEFT          'A'
+#define PSP_BUTTON_RIGHT         'D'
+#define PSP_BUTTON_TRIANGLE      'I'
+#define PSP_BUTTON_CIRCLE        'L'
+#define PSP_BUTTON_CROSS         'K'
+#define PSP_BUTTON_SQUARE        'J'
+#define PSP_BUTTON_LEFT_TRIGGER  'E'
+#define PSP_BUTTON_RIGHT_TRIGGER 'U'
+#define PSP_BUTTON_SELECT        'V'
+#define PSP_BUTTON_START         'B'
+#define PSP_BUTTON_HOME          'N'
+#define PSP_BUTTON_HOLD          'M'
 #elif defined NGE_LINUX
 #include <X11/keysym.h>
 #define PSP_BUTTON_UP            XK_w

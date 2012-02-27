@@ -1,23 +1,25 @@
-﻿#include "nge_platform.h"
+﻿#include "nge_common.h"
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_input.h"
-#include "nge_common.h"
 #include <stdlib.h>
 
-#if defined NGE_PSP
+#if defined NGE_WIN
+#include <winuser.h>
+
+#elif defined NGE_PSP
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
 
 //define in nge.c
 extern int psp_exit_callback_id;
+static int game_quit = 0;
 
 #elif defined NGE_LINUX
 #include <X11/Xlib.h>
 
 #endif
-
-static int game_quit = 0;
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 static void btn_down_default(int keycode) { }
@@ -40,7 +42,9 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 		btn_down  = downproc;
 	if(upproc != NULL)
 		btn_up = upproc;
+#ifdef NGE_PSP
 	game_quit = doneflag;
+#endif
 }
 #endif
 
@@ -104,7 +108,7 @@ static int SetAnalog(int key,char flag)
 	switch(key)
 	{
 #if defined NGE_WIN
-	case SDLK_UP:
+	case VK_UP:
 #elif defined(NGE_LINUX)
 	case XK_Up:
 #endif
@@ -112,7 +116,7 @@ static int SetAnalog(int key,char flag)
 		ret = 1;
 		break;
 #if defined(NGE_WIN)
-	case SDLK_DOWN:
+	case VK_DOWN:
 #elif defined(NGE_LINUX)
 	case XK_Down:
 #endif
@@ -120,7 +124,7 @@ static int SetAnalog(int key,char flag)
 		ret = 1;
 		break;
 #if defined(NGE_WIN)
-	case SDLK_LEFT:
+	case VK_LEFT:
 #elif defined(NGE_LINUX)
 	case XK_Left:
 #endif
@@ -128,7 +132,7 @@ static int SetAnalog(int key,char flag)
 		ret = 1;
 		break;
 #if defined(NGE_WIN)
-	case SDLK_RIGHT:
+	case VK_RIGHT:
 #elif defined(NGE_LINUX)
 	case XK_Right:
 #endif
@@ -218,13 +222,123 @@ key_states nge_keymap[]={
 int key_num = 14;
 #endif
 
+static int ana_ret = 0;
+
+#ifdef NGE_WIN
+
+#define MOUSE_BUTTON_HANDLE(type)					\
+	int mouse_btn_type = 0;							\
+	int xPos = GET_X_LPARAM(lParam);				\
+	int yPos = GET_Y_LPARAM(lParam);				\
+													\
+	switch (wParam) {								\
+	case VK_LBUTTON:								\
+		mouse_btn_type = MOUSE_LBUTTON_##type;		\
+		break;										\
+													\
+	case VK_RBUTTON:								\
+		mouse_btn_type = MOUSE_RBUTTON_##type;		\
+		break;										\
+													\
+	case VK_MBUTTON:								\
+		mouse_btn_type = MOUSE_MBUTTON_##type;		\
+		break;										\
+	}												\
+	if (mouse_btn_proc != NULL)						\
+		mouse_btn_proc(mouse_btn_type, xPos, yPos);	\
+	return 0
+
+int nge_win_mouse_btn_down_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	MOUSE_BUTTON_HANDLE(DOWN);
+}
+
+int nge_win_mouse_btn_up_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	MOUSE_BUTTON_HANDLE(UP);
+}
+
+int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	if (mouse_move_proc != NULL)
+		mouse_move_proc(xPos, yPos);
+	return 0;
+}
+
+int nge_win_key_down_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	btn_down(wParam);
+	ana_ret = SetAnalog(wParam,1);
+	return 0;
+}
+
+int nge_win_key_up_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	btn_up(wParam);
+	ana_ret = SetAnalog(wParam,0);
+	return 0;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_QUIT:
+		exit(0);
+		break;
+
+	case WM_CREATE:
+		return 0;
+
+	case WM_CLOSE:
+		PostQuitMessage( 0 );
+		return 0;
+
+	case WM_DESTROY:
+		PostQuitMessage( 0 );
+		return 0;
+
+	case WM_KEYDOWN:
+		return nge_win_key_down_handle(hWnd, wParam, lParam);
+
+	case WM_KEYUP:
+		return nge_win_key_up_handle(hWnd, wParam, lParam);
+
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_MBUTTONDOWN:
+		return nge_win_mouse_btn_down_handle(hWnd, wParam, lParam);
+
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONUP:
+		return nge_win_mouse_btn_up_handle(hWnd, wParam, lParam);
+
+	case WM_MOUSEMOVE:
+		return nge_win_mouse_move_handle(hWnd, wParam, lParam);
+
+	default:
+		return DefWindowProc( hWnd, message, wParam, lParam );
+	}
+}
+#endif
+
 void InputProc()
 {
-#if defined(NGE_LINUX) || defined(NGE_WIN)
-	int ana_ret = 0;
 #if defined(NGE_LINUX)
 	static long mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | PointerMotionMask | StructureNotifyMask;
 	static XEvent event;
+#elif defined NGE_WIN
+	MSG msg;
+#endif
+
+#if defined NGE_WIN || defined NGE_LINUX
+	ana_ret = 0;
+#endif
+
+#if defined(NGE_LINUX)
 	while (XCheckWindowEvent(g_dpy, g_win,
 							 mask, &event)) {
 		if (event.xany.window == g_win) {
@@ -254,69 +368,21 @@ void InputProc()
 	}
 #elif defined(NGE_WIN)
 	int x,y,dx,dy,state,tmp;
-	int mouse_btn_type = 0;
-	static SDL_Event event;
 
-	while( SDL_PollEvent( &event ) )
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
-		switch(event.type)
-		{
-		case SDL_QUIT:
-			exit(0);
-			break;
-		case SDL_KEYDOWN:
-			btn_down(event.key.keysym.sym);
-			ana_ret = SetAnalog(event.key.keysym.sym,1);
-			break;
-		case SDL_KEYUP:
-			btn_up(event.key.keysym.sym);
-			ana_ret = SetAnalog(event.key.keysym.sym,0);
-			break;
-		case SDL_MOUSEMOTION:
-			dx = event.button.x;
-			dy = event.button.y;
-			if(mouse_move_proc){
-				mouse_move_proc(dx,dy);
-			}
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			x = event.button.x;
-			y = event.button.y;
-
-			if(event.button.button == SDL_BUTTON_LEFT){
-				mouse_btn_type = MOUSE_LBUTTON_DOWN;
-			}
-			else if(event.button.button == SDL_BUTTON_RIGHT)
-				mouse_btn_type = MOUSE_RBUTTON_DOWN;
-			else
-				mouse_btn_type = MOUSE_MBUTTON_DOWN;
-
-			if(mouse_btn_proc){
-				mouse_btn_proc(mouse_btn_type,x,y);
-			}
-			break;
-		case SDL_MOUSEBUTTONUP:
-			x = event.button.x;
-			y = event.button.y;
-
-			if(event.button.button == SDL_BUTTON_LEFT){
-				mouse_btn_type = MOUSE_LBUTTON_UP;
-			}
-			else if(event.button.button == SDL_BUTTON_RIGHT)
-				mouse_btn_type = MOUSE_RBUTTON_UP;
-			else
-				mouse_btn_type = MOUSE_MBUTTON_UP;
-			if(mouse_btn_proc){
-				mouse_btn_proc(mouse_btn_type,x,y);
-			}
-			break;
-		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 #endif
+
+#if defined NGE_WIN || defined NGE_LINUX
 	if(analog_proc!=NULL&&ana_ret){
 		analog_proc(GetAnalogX(),GetAnalogY());
 	}
-#elif defined(NGE_PSP)
+#endif
+
+#if defined(NGE_PSP)
 	static SceCtrlData pad;
 	uint32 Buttons;
 	int i;
