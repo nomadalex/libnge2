@@ -34,10 +34,8 @@
 #if defined NGE_LINUX
 #include <X11/Xlib.h>
 #include <GL/glx.h>
-
-#else
-#include <SDL.h>
 #endif
+
 #endif
 
 #define ___Max(x, y) (x>y?x:y)
