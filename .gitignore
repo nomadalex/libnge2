@@ -1,8 +1,7 @@
 build*/
 temp/
 samples/res/
-samples/res.7z
-res.7z
+samples/res.*
 *Depends/
 *Depends.7z
 Android/foreign/
