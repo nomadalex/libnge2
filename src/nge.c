@@ -9,7 +9,7 @@
 #include "nge_debug_log.h"
 #include "nge.h"
 #include "nge_graphics.h"
-#include "nge_input.h" // SDL.h is in it
+#include "nge_input.h"
 #include "audio_interface.h"
 #include <string.h>
 
@@ -78,10 +78,6 @@ void NGE_Quit()
 			CoolAudioDefaultFini();
 #endif
 		initFlags = 0;
-
-#if defined NGE_WIN
-		SDL_Quit();
-#endif
 
 #ifdef MMGR
 		m_dumpMemoryReport();
