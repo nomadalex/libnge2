@@ -5,8 +5,8 @@
 
 //休眠毫秒数
 #if defined WIN32
-#include "SDL.h"
-#define nge_sleep(tick) SDL_Delay(tick)
+#include <winbase.h>
+#define nge_sleep(tick) Sleep(tick)
 
 #elif defined _PSP
 #include <pspthreadman.h>
