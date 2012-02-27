@@ -106,7 +106,7 @@ static void TM_unpause(nge_timer* timer)
 #include <psprtc.h>
 static u64 mTickFrequency = 0;
 #elif defined NGE_WIN
-#include "SDL.h"
+#include <winbase.h>
 #elif defined NGE_UNIX
 #include <sys/time.h>
 #endif
@@ -127,7 +127,9 @@ uint32 nge_get_tick()
 	ticks=(now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000;
 	return(ticks);
 #elif defined NGE_WIN
-	return SDL_GetTicks();
+	DWORD now;
+	now = GetTickCount();
+	return now;
 #elif defined NGE_PSP
 	u64 ticks;
 	uint32 tick32;
