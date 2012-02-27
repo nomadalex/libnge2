@@ -31,20 +31,20 @@ extern "C"{
  *创建一个timer
  *@return nge_timer*,返回timer的指针
  */
-nge_timer* timer_create();
+	NGE_API nge_timer* timer_create();
 
 /**
  *释放一个timer
  *@param nge_timer* timer,待释放的timer指针
  *@return 无
  */
-void timer_free(nge_timer* timer);
+	NGE_API void timer_free(nge_timer* timer);
 
 /**
  * 得到系统当前ticks
  *@return ticks
  */
-uint32 nge_get_tick();
+	NGE_API uint32 nge_get_tick();
 
 #ifdef __cplusplus
 }

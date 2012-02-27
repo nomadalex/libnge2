@@ -96,6 +96,10 @@ list(APPEND NGE2_SRCS
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
 
+if(MSVC AND NOT MSVC10)
+  include_directories(SYSTEM include/msvc)
+endif()
+
 if(NOT ANDROID)
   list(APPEND NGE2_SRCS
 	src/nge_gif_animation.c
@@ -207,11 +211,11 @@ endif()
 add_our_library(nge2_main STATIC src/nge_main.c)
 
 if(MSVC)
-  if(NGE2_IS_DEBUG)
-	msvc_force_link_runtime(nge2 MDd)
-  else()
+#  if(NGE2_IS_DEBUG)
+#	msvc_force_link_runtime(nge2 MDd)
+#  else()
 	msvc_force_link_runtime(nge2 MD)
-  endif()
+#  endif()
 endif()
 
 install(TARGETS nge2 DESTINATION lib)

@@ -254,10 +254,11 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	float rate_w_ori = 1/nge_screen.rate_w;
-	float rate_h_ori = 1/nge_screen.rate_h;
-	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori* (y-h)),
-			  ceil(w*rate_w_ori),ceil(h*rate_h_ori));
+	/* float rate_w_ori = 1/nge_screen.rate_w; */
+	/* float rate_h_ori = 1/nge_screen.rate_h; */
+	/* glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori* (y-h)), */
+	/* 		  ceil(w*rate_w_ori),ceil(h*rate_h_ori)); */
+	glScissor(x,nge_screen.height-y-h,w,h);
 }
 
 void ResetClip()

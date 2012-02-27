@@ -210,7 +210,7 @@ typedef struct{
  *@param int dtype,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return int ,颜色值
  */
-int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype); // it is in nge_image.c
+NGE_API int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype); // it is in nge_image.c
 
 #ifdef __cplusplus
 }

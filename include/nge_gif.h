@@ -73,19 +73,19 @@ extern "C" {
  *@param int swizzle,优化标志,通常填1
  *@return gif_desc_p,gif绘图文件句柄,供显示函数调用
  */
-gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle);
+	NGE_API gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle);
 
 /**
  * 释放一个gif动画资源
  *@param gif_desc_p pgif,由gif_animation_load加载的描述符
  *@return
  */
-void gif_animation_free(gif_desc_p pgif);
+	NGE_API void gif_animation_free(gif_desc_p pgif);
 
-void GifAnimationToScreen(gif_desc_p pgif,float x,float y);
-void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
-void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask);
-void DrawGifAnimation(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
+	NGE_API void GifAnimationToScreen(gif_desc_p pgif,float x,float y);
+	NGE_API void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
+	NGE_API void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask);
+	NGE_API void DrawGifAnimation(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
 
 #ifdef __cplusplus
 }

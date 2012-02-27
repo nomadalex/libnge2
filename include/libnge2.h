@@ -23,6 +23,7 @@
 #ifndef _LIBNGE2_H
 #define _LIBNGE2_H
 
+#include "nge_common.h"
 #include "libnge2pure.h"
 #include "audio_interface.h"
 #include "nge_main.h"

@@ -2,6 +2,10 @@
 #include "nge_app.h"
 #include "nge.h"
 
+#ifdef NGE_WIN
+#include "SDL_main.h"
+#endif
+
 extern int NGE_main(int argc, char *argv[]);
 
 #ifdef NGE_PSP

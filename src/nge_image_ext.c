@@ -87,7 +87,7 @@ image_p create_gray_image(image_p src, int gray)
 
 	if(gray<0 || gray>100)
 	{
-		nge_print("create_gray_image arg 'gray' must between 0 to 100！");
+		nge_print("create_gray_image arg 'gray' must between 0 to 100!");
 		return NULL;
 	}
 	if(src->swizzle ==1){
@@ -237,13 +237,13 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 	if(saturation<-100 || saturation>100)
 	{
-		nge_print("create_gray_image arg 'saturation' must between -100 to 100！");
+		nge_print("create_gray_image arg 'saturation' must between -100 to 100!");
 		return NULL;
 	}
 
 	if(brightness<-100 || brightness>100)
 	{
-		nge_print("create_gray_image arg 'brightness' must between -100 to 100！");
+		nge_print("create_gray_image arg 'brightness' must between -100 to 100!");
 		return NULL;
 	}
 	if(src->swizzle ==1){

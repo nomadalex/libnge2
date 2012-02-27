@@ -24,11 +24,11 @@ extern "C"{
 /**
  *生成一个min---max的浮点数
  */
-float rand_float(float min, float max);
+	NGE_API float rand_float(float min, float max);
 /**
  *生成一个(min,max)的整数
  */
-int rand_int(int min, int max);
+	NGE_API int rand_int(int min, int max);
 
 /**
  *将GBK编码的字符转化为unicode字符
@@ -38,7 +38,7 @@ int rand_int(int min, int max);
  *@param int n,GBK字符个数以字节记,strlen计算的个数(例如一个汉字为2个字符)
  *@return int n,转换的unicode字符个数
  */
-int gbk_to_unicode(unsigned short* out,const char* in,int n);
+	NGE_API int gbk_to_unicode(unsigned short* out,const char* in,int n);
 
 #ifdef __cplusplus
 }

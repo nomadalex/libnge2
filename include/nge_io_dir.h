@@ -28,7 +28,7 @@ extern "C"{
  *@param void* user_data,用户参数
  *@return int ,返回值0,1
  */
-int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data);
+	NGE_API int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data);
 
 #ifdef __cplusplus
 }

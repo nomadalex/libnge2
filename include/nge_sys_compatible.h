@@ -34,38 +34,38 @@ extern "C"{
  *@param sys_time_p tm,系统时间结构
  *@return int,成功返回1,失败返回0
  */
-int sys_localtime(sys_time_p tm);
+	NGE_API int sys_localtime(sys_time_p tm);
 
 /**
  *获取系统的唯一的30位序列号.
  *@return char*,30位序列号的字符串.
  */
-char* sys_get_idstorage();
+	NGE_API char* sys_get_idstorage();
 
 /**
  *获取系统的MAC地址字符串.
  *@return char*,返回字符串,XX:XX:XX:XX:XX:XX.
  */
-char* sys_get_mac();
+	NGE_API char* sys_get_mac();
 
 /**
  *获取系统的用户名.
  *@return char*,返回字符串.
  */
-char* sys_get_nickname();
+	NGE_API char* sys_get_nickname();
 
 /**
  *设置CPU的频率类型.
  *@param int,类型为CPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
  *@return int,1设置成功,0设置失败.
  */
-int sys_set_frequency_type(int type);
+	NGE_API int sys_set_frequency_type(int type);
 
 /**
  *取得CPU的频率类型.
  *@return int,类型为CPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
  */
-int sys_get_frequency_type();
+	NGE_API int sys_get_frequency_type();
 
 #ifdef __cplusplus
 }

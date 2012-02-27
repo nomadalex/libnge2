@@ -21,10 +21,10 @@
 extern "C" {
 #endif
 
-void nge_log(const char* pMessage, ...);
-void nge_error(const char* pMessage, ...);
-void nge_debug_quitgame();
-void nge_mem_log();
+	NGE_API void nge_log(const char* pMessage, ...);
+	NGE_API void nge_error(const char* pMessage, ...);
+	NGE_API void nge_debug_quitgame();
+	NGE_API void nge_mem_log();
 #define nge_line() nge_log("%s(line:%d): ",__FILE__,__LINE__)
 #define nge_print nge_log
 

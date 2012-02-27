@@ -179,7 +179,7 @@ int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data
 #else
 int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data)
 {
-	nge_log("%s not support!\n");
+	nge_log("%s not support!\n", __FUNCTION__);
 	return 0;
 }
 
