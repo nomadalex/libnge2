@@ -27,7 +27,7 @@
 #define SCREEN_BPP    32
 #define DEFAULT_FPS 60
 
-//NGE_TRANS_x
+/* NGE_TRANS_x */
 enum{
 	NGE_TRANS_NONE = 0,
 	NGE_TRANS_V,
@@ -35,6 +35,7 @@ enum{
 	NGE_TRANS_HV
 };
 
+/* note: bpp and fullscreen are not used on windows at current */
 typedef struct {
 	char *name;
 	int width;

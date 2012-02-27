@@ -54,7 +54,8 @@
 #include <GL/glx.h>
 
 #else
-#include <SDL.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 #endif
 
@@ -364,24 +365,81 @@ void nge_graphics_reset(void)
 	glTexCoordPointer(2,GL_FLOAT,sizeof(TexCoord_t),gl_tex_uvs);
 }
 
+#ifdef NGE_WIN
+// decl from nge_input.c
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
+{
+	PIXELFORMATDESCRIPTOR pfd;
+	int format;
+
+	/* get the device context (DC) */
+	*hDC = GetDC( hWnd );
+
+	/* set the pixel format for the DC */
+	ZeroMemory( &pfd, sizeof( pfd ) );
+	pfd.nSize = sizeof( pfd );
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 24;
+	pfd.cDepthBits = 16;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+	format = ChoosePixelFormat( *hDC, &pfd );
+	SetPixelFormat( *hDC, format, &pfd );
+
+	/* create and enable the render context (RC) */
+	*hRC = wglCreateContext( *hDC );
+	wglMakeCurrent( *hDC, *hRC );
+}
+
+void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
+{
+	wglMakeCurrent( NULL, NULL );
+	wglDeleteContext( hRC );
+	ReleaseDC( hWnd, hDC );
+}
+
+static HWND hWnd;
+static HDC hDC;
+static HGLRC hRC;
+
+void makeWindow(const char *name, int x, int y, int width, int height)
+{
+	HINSTANCE hInstance;
+	WNDCLASS wc;
+
+	hInstance = GetModuleHandle(NULL);
+	// register window class
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = WndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon( NULL, IDI_APPLICATION );
+	wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+	wc.hbrBackground = (HBRUSH)GetStockObject( BLACK_BRUSH );
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "Nge2App";
+	RegisterClass( &wc );
+
+	// create main window
+	hWnd = CreateWindow(
+		"Nge2App", name,
+		WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
+		x, y, width, height,
+		NULL, NULL, hInstance, NULL );
+}
+#endif
+
 void InitGrahics()
 {
 	int i = 0;
 #if defined NGE_WIN
-	int screen_flag = 0;
-	if ( SDL_Init(SDL_INIT_VIDEO) < 0 )
-		exit(1);
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1);
-	SDL_WM_SetCaption(nge_screen.name,NULL);
-
-	screen_flag = SDL_OPENGL|SDL_HWSURFACE|SDL_DOUBLEBUF;
-	if(nge_screen.fullscreen != 0)
-		screen_flag |= SDL_FULLSCREEN;
-	SDL_SetVideoMode( nge_screen.width, nge_screen.height, nge_screen.bpp,screen_flag);
+	makeWindow(nge_screen.name, 0, 0, nge_screen.width, nge_screen.height);
+	// enable OpenGL for the window
+	EnableOpenGL( hWnd, &hDC, &hRC );
 #elif defined NGE_LINUX
 	g_dpy = XOpenDisplay(NULL);
 	if (!g_dpy) {
@@ -423,6 +481,14 @@ void FiniGrahics()
 	SAFE_FREE(gl_tex_uvs);
 	gl_tex_uvs = NULL;
 	max_tex_uvs = 0;
+
+#if defined NGE_WIN
+	// shutdown OpenGL
+	DisableOpenGL( hWnd, hDC, hRC );
+
+	// destroy the window explicitly
+	DestroyWindow( hWnd );
+#endif
 
 #if defined NGE_LINUX
 	glXDestroyContext(g_dpy, g_ctx);
@@ -483,7 +549,7 @@ void EndScene()
 #if defined NGE_LINUX
 	glXSwapBuffers(g_dpy, g_win);
 #elif defined NGE_WIN
-	SDL_GL_SwapBuffers();
+	SwapBuffers( hDC );
 #elif defined NGE_ANDROID
 	glFlush();
 #endif
