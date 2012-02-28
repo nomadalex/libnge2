@@ -106,7 +106,8 @@ static void TM_unpause(nge_timer* timer)
 #include <psprtc.h>
 static u64 mTickFrequency = 0;
 #elif defined NGE_WIN
-#include <winbase.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #elif defined NGE_UNIX
 #include <sys/time.h>
 #endif

@@ -5,7 +5,8 @@
 
 //休眠毫秒数
 #if defined WIN32
-#include <winbase.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #define nge_sleep(tick) Sleep(tick)
 
 #elif defined _PSP

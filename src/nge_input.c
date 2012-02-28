@@ -1,13 +1,17 @@
 ﻿#include "nge_common.h"
 #include "nge_platform.h"
+
+#if defined NGE_WIN
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <windowsx.h>
+#endif
+
 #include "nge_debug_log.h"
 #include "nge_input.h"
 #include <stdlib.h>
 
-#if defined NGE_WIN
-#include <winuser.h>
-
-#elif defined NGE_PSP
+#if defined NGE_PSP
 #include <pspkernel.h>
 #include <pspdebug.h>
 #include <pspctrl.h>
@@ -367,8 +371,6 @@ void InputProc()
 		}
 	}
 #elif defined(NGE_WIN)
-	int x,y,dx,dy,state,tmp;
-
 	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
