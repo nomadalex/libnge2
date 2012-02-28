@@ -226,7 +226,9 @@ key_states nge_keymap[]={
 int key_num = 14;
 #endif
 
+#if defined NGE_WIN || defined NGE_LINUX
 static int ana_ret = 0;
+#endif
 
 #ifdef NGE_WIN
 
@@ -289,10 +291,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
-	case WM_QUIT:
-		exit(0);
-		break;
-
 	case WM_CREATE:
 		return 0;
 
@@ -373,8 +371,15 @@ void InputProc()
 #elif defined(NGE_WIN)
 	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if ( msg.message == WM_QUIT )
+		{
+			exit(0);
+		}
+		else
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 #endif
 
