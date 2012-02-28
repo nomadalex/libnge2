@@ -3,7 +3,8 @@
 #include "nge.h"
 
 #ifdef NGE_WIN
-#include "SDL_main.h"
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 
 extern int NGE_main(int argc, char *argv[]);
@@ -47,10 +48,20 @@ int nge_psp_setup_callbacks(void)
 }
 #endif
 
+#ifdef NGE_WIN
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+				   LPSTR lpCmdLine, int iCmdShow)
+#else
 int main(int argc, char *argv[])
+#endif
 {
 	nge_app_t *app;
 	int ret = 0;
+
+#ifdef NGE_WIN
+	static int argc = 0;
+	static char* argv[] = { NULL };
+#endif
 
 #ifdef NGE_PSP
 #ifndef NDEBUG
