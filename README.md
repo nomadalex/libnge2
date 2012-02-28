@@ -27,13 +27,13 @@ nge2使用 CMake 进行构建。
 在类UNIX平台下（psp、android、linux）推荐使用项目根目录下提供的
 脚本，例：
 
-PSP: 
+PSP:
 ./script/make-psp.sh
 
-linux: 
+linux:
 ./script/make-linux.sh
 
-android: 
+android:
 ./script/make-android.sh
 
 更详细的用法请通过--help选项查看，例：
@@ -58,45 +58,43 @@ VS2003，VS2005，VS2008编译环境请自行尝试，不会有太大问题的�
 依赖
 ---------
 你可以直接下载由我们打包好的压缩包解压到项目根目录即可。
+* [Win32Depends.7z](https://open.ge.tt/1/files/7Th6r3E/0/blob)
+* [AndroidDepends.7z](https://github.com/downloads/ifreedom/libnge2/AndroidDepends.7z)
 
-* zlib 
-Simple data compression library 
+* zlib
+Simple data compression library
 http://www.zlib.net
 
-* libjpeg 
-Library for JPEG image compression 
+* libjpeg
+Library for JPEG image compression
 http://sourceforge.net/projects/libjpeg
 
-* libpng 
-Official PNG reference library 
+* libpng
+Official PNG reference library
 http://www.libpng.org/pub/png/libpng.html
 
-* giflib 
-A library for processing GIF 
+* giflib
+A library for processing GIF
 http://sourceforge.net/projects/giflib
 
-* freetype 
-Portable font engine 
+* freetype
+Portable font engine
 http://www.freetype.org
 
-* SDL (only need on win32) 
-Simple DirectMedia Layer 
-http://www.libsdl.org/
-
-* OpenGL (need on win32 and linux) 
-OpenGL render system 
+* OpenGL (need on win32 and linux)
+OpenGL render system
 http://www.opengl.org/
 
-* Gstreamer (need on linux) 
-Open source multimedia framework 
+* Gstreamer (need on linux)
+Open source multimedia framework
 http://gstreamer.freedesktop.org/
 
-* sqlite3 (need for demo5) 
-a self-contained, serverless, zero-configuration, transactional SQL database engine 
-http://www.sqlite.org/ 
+* sqlite3 (need for demo5)
+a self-contained, serverless, zero-configuration, transactional SQL database engine
+http://www.sqlite.org/
 
-* unzip (need for demo9) 
-a library to uncompress .zip files 
+* unzip (need for demo9)
+a library to uncompress .zip files
 on linux, you can download it from download page.
 
 附： PSP SDK
