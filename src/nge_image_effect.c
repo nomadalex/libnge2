@@ -1,7 +1,8 @@
-﻿#include "nge_platform.h"
+﻿#include "nge_common.h"
+#include "nge_platform.h"
 #include "nge_debug_log.h"
-#include "nge_image_effect.h"
 #include "nge_graphics.h"
+#include "nge_image_effect.h"
 #include "nge_misc.h"
 #include <string.h>
 #include <stdio.h>
@@ -22,12 +23,6 @@
 
 #define glOrtho glOrthof
 #elif defined NGE_WIN || defined NGE_LINUX
-
-#if defined(WIN32) // on WIN32, gl need it
-#define WINGDIAPI
-#define APIENTRY WINAPI
-#define WINAPI __stdcall
-#endif
 
 #include <GL/gl.h>
 
