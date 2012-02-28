@@ -2,6 +2,13 @@
 #define NGE_GRAPHICS_H_
 
 #include "nge_common.h"
+#include "nge_platform.h"
+
+#ifdef NGE_WIN
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #include "nge_image.h"
 
 #define SCREEN_WIDTH_PSP  480
@@ -163,7 +170,8 @@ extern "C"{
  *@param int dtype,显示模式，与上面的对应
  *@return 无
  */
-	NGE_API void FillRect(float dx, float dy, float width, float height,int color,int dtype);
+	NGE_API void NGE_FillRect(float dx, float dy, float width, float height,int color,int dtype);
+#define FillRect NGE_FillRect
 /**
  * 画填充矩形的函数2，输入为矩形位置坐标
  *@param rectf rect,矩形位置坐标
