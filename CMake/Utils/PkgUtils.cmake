@@ -150,12 +150,15 @@ macro(prepare_dep_search PREFIX)
   set(CMAKE_FRAMEWORK_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FRAMEWORK_PATH})
 endmacro()
 
-macro(add_package PKG_FIX LIBS_VAR)
+macro(add_package_include PKG_FIX)
   if(${PKG_FIX}_INCLUDE_DIRS)
 	include_directories(${${PKG_FIX}_INCLUDE_DIRS})
   elseif(${PKG_FIX}_INCLUDE_DIR)
 	include_directories(${${PKG_FIX}_INCLUDE_DIR})
   endif()
+endmacro()
+
+macro(add_package_lib PKG_FIX LIBS_VAR)
   if(${PKG_FIX}_LIBRARY_DIRS)
 	link_directories(${${PKG_FIX}_LIBRARY_DIRS})
   elseif(${PKG_FIX}_LIBRARY_DIR)
@@ -166,6 +169,11 @@ macro(add_package PKG_FIX LIBS_VAR)
   elseif(${PKG_FIX}_LIBRARY)
 	list(APPEND ${LIBS_VAR} ${${PKG_FIX}_LIBRARY})
   endif()
+endmacro()
+
+macro(add_package PKG_FIX LIBS_VAR)
+  add_package_include(${PKG_FIX})
+  add_package_lib(${PKG_FIX} ${LIBS_VAR})
 endmacro()
 
 # Begin processing of package
