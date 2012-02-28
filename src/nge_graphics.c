@@ -21,13 +21,13 @@
  */
 #include "nge_platform.h"
 #include "nge_debug_log.h"
-#include "nge_graphics.h"
 #include "nge_timer.h"
 #include "nge_misc.h"
 #include "nge_tex_cache.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "nge_graphics.h"
 
 #if defined NGE_IPHONE || defined NGE_ANDROID
 #define NGE_GLES
@@ -40,12 +40,6 @@
 
 #define glOrtho glOrthof
 #elif defined NGE_WIN || defined NGE_LINUX
-
-#if defined NGE_WIN // on WIN32, gl need it
-#define WINGDIAPI
-#define APIENTRY WINAPI
-#define WINAPI __stdcall
-#endif
 
 #include <GL/gl.h>
 
@@ -193,7 +187,7 @@ static inline void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8*
 	}
 }
 
-char* GetVersion()
+char* NGE_GetVersion()
 {
 	static char version[] = {
 #ifdef NGE_IPHONE
