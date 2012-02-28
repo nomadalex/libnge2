@@ -404,6 +404,7 @@ void makeWindow(const char *name, int x, int y, int width, int height)
 {
 	HINSTANCE hInstance;
 	WNDCLASS wc;
+	RECT rect;
 
 	hInstance = GetModuleHandle(NULL);
 	// register window class
@@ -425,6 +426,11 @@ void makeWindow(const char *name, int x, int y, int width, int height)
 		WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
 		x, y, width, height,
 		NULL, NULL, hInstance, NULL );
+
+	GetClientRect(hWnd, &rect);
+	width = width + width - rect.right;
+	height = height + height - rect.bottom;
+	SetWindowPos(hWnd, HWND_TOP, 0, 0, width, height, SWP_NOMOVE);
 }
 #endif
 
