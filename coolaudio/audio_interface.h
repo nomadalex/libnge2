@@ -5,6 +5,8 @@
 #ifndef AUDIO_INTERFACE_H_
 #define AUDIO_INTERFACE_H_
 
+#include "nge_common.h"
+
 #define AUDIO_SEEK_SET	0
 #define AUDIO_SEEK_CUR	1
 #define	AUDIO_SEEK_END	2
@@ -107,15 +109,15 @@ typedef struct audio_play{
 extern "C"{
 #endif
 /* init and finish */
-void CoolAudioDefaultInit();
-void CoolAudioDefaultFini();
+	NGE_API void CoolAudioDefaultInit();
+	NGE_API void CoolAudioDefaultFini();
 
 /* MP3 */
-audio_play_p CreateMp3Player();
+	NGE_API audio_play_p CreateMp3Player();
 /* wav */
-audio_play_p CreateWavPlayer();
+	NGE_API audio_play_p CreateWavPlayer();
 /* ogg */
-audio_play_p CreateOggPlayer();
+	NGE_API audio_play_p CreateOggPlayer();
 
 #ifdef __cplusplus
 }

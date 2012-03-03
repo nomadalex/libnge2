@@ -93,3 +93,16 @@ void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie)
 	_notifyCallback = cb;
 	_notifyCookie = pCookie;
 }
+
+#ifdef NGE_WIN
+/* just for export dll symbol */
+void _______fake_CreateMp3Player() {
+	CreateMp3Player();
+}
+void _______fake_CreateWavPlayer() {
+	CreateWavPlayer();
+}
+void _______fake_CreateOggPlayer() {
+	CreateOggPlayer();
+}
+#endif
