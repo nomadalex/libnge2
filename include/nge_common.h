@@ -65,15 +65,6 @@ typedef uint8 BOOL;
 #endif
 
 #include "nge_platform.h"
-
-#ifdef WIN32
-#ifdef NGE2_EXPORTS
-#define NGE_API __declspec(dllexport)
-#else
-#define NGE_API __declspec(dllimport)
-#endif
-#else
-#define NGE_API
-#endif
+#include "nge_dll_export.h"
 
 #endif /* _NGE_COMMON_H */

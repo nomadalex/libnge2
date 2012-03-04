@@ -5,7 +5,7 @@
 #ifndef AUDIO_INTERFACE_H_
 #define AUDIO_INTERFACE_H_
 
-#include "nge_common.h"
+#include "nge_dll_export.h"
 
 #define AUDIO_SEEK_SET	0
 #define AUDIO_SEEK_CUR	1
