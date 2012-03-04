@@ -26,8 +26,19 @@ void* _notifyCookie = NULL;
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full)
 {
 	screen_context_p screen = GetScreenContext();
-	if(winname!=NULL)
-		strncpy(screen->name,winname,256);
+	int len;
+
+	if (screen->name != NULL)
+		free(screen->name);
+
+	if(winname == NULL)
+		screen->name = NULL;
+	else {
+		len = strlen(winname) + 1;
+		screen->name = malloc(len);
+		strncpy(screen->name,winname,len);
+	}
+
 	screen->width = screen_width;
 	screen->height = screen_height;
 	screen->bpp = screen_bpp;

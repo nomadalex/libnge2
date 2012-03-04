@@ -70,7 +70,7 @@ GLuint m_texcache[MAX_TEX_CACHE_SIZE];
 
 // nge_screen *************************
 static screen_context_t nge_screen = {
-	"NGE2",
+	NULL,
 	SCREEN_WIDTH,
 	SCREEN_HEIGHT,
 	SCREEN_BPP,
@@ -437,6 +437,12 @@ void makeWindow(const char *name, int x, int y, int width, int height)
 void InitGrahics()
 {
 	int i = 0;
+
+	if (nge_screen.name == NULL) {
+		nge_screen.name = malloc(5);
+		strncpy(nge_screen.name, "NGE2", 5);
+	}
+
 #if defined NGE_WIN
 	makeWindow(nge_screen.name, 0, 0, nge_screen.width, nge_screen.height);
 	// enable OpenGL for the window
