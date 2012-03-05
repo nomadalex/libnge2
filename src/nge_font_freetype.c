@@ -6,6 +6,7 @@
 #include FT_STROKER_H
 #include FT_SYNTHESIS_H
 #include "nge_font.h"
+#include "nge_font_internal.h"
 #include "nge_misc.h"
 
 typedef struct{
@@ -46,7 +47,6 @@ static void freetype2_setfontattr(PFont pfont, int setflags, int clrflags);
 static PFont freetype2_duplicate(PFont psrcfont, int fontsize);
 static uint32  freetype2_setfontcolor(PFont pfont, uint32 color);
 static FontProcs freetype2_procs = {
-	ENCODING_GBK,		/* routines expect unicode 16 */
 	freetype2_getfontinfo,
 	freetype2_gettextsize,
 	NULL,			/* gettextbits */
@@ -164,6 +164,28 @@ static FT_Error freetype2_get_glyph_size(PFontFreetype pf,
 		return 0;
 }
 
+inline static uint16* _nge_ft_conv_encoding(PFontFreetype pfont, const void *text, int * pCC) {
+	uint16 *value;
+
+	len = strlen((char*)text);
+
+	if( len > pf->bitbuf.datalen){
+		pf->bitbuf.datalen = len*2;
+		free(pf->bitbuf.data);
+		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
+		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	}
+	value = (uint16*)pf->bitbuf.data;
+	memset(value,0,len);
+
+	if(nge_font_encoding == NGE_ENCODING_GBK){
+		*pCC = gbk_to_unicode(value,(char*)text,len);
+	}
+	else if (nge_font_encoding == NGE_ENCODING_UTF_8) {
+		*pCC = utf8_to_unicode(value,(char*)text,len);
+	}
+	return value;
+}
 
 static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 								  int flags, int *pwidth, int *pheight,
@@ -184,22 +206,9 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	int cur_glyph_code;
 	int last_glyph_code = 0;	/* Used for kerning */
 	PFontFreetype pf = (PFontFreetype) pfont;
-	if(((PFontProcs)(pf->procs))->encoding== ENCODING_GBK){
-		len = strlen((char*)text);
 
-		if( len > pf->bitbuf.datalen){
-			pf->bitbuf.datalen = len*2;
-			free(pf->bitbuf.data);
-			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
-			memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
-		}
-		value = (uint16*)pf->bitbuf.data;
-		memset(value,0,len);
-		cc = gbk_to_unicode(value,(char*)text,len);
-	}
-	else{
-		value = (uint16*)text;
-	}
+	value = _nge_ft_conv_encoding(pfont, text, &cc);
+
 	face = pf->face;
 	size = face->size;
 	/*
@@ -230,6 +239,7 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	*pbase = max_ascent;
 
 }
+
 static void freetype2_destroyfont(PFont pfont)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
@@ -304,21 +314,8 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	FT_BitmapGlyph bitmap_glyph;
 	FT_Bitmap* bitmap;
 
-	if(((PFontProcs)(pf->procs))->encoding== ENCODING_GBK){
-		len = strlen((char*)text);
-		if( len > pf->bitbuf.datalen){
-			pf->bitbuf.datalen = len*2;
-			free(pf->bitbuf.data);
-			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
-			memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
-		}
-		value = (uint16*)pf->bitbuf.data;
-		memset(value,0,len);
-		cc = gbk_to_unicode(value,(char*)text,len);
-	}
-	else{
-		value = (uint16*)text;
-	}
+	value = _nge_ft_conv_encoding(pfont, text, &cc);
+
 	if(pimage->swizzle ==1){
 		unswizzle_swap(pimage);
 		pimage->dontswizzle = 1;
@@ -339,13 +336,13 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	}
 }
 
-
 static void freetype2_setfontsize(PFont pfont, int fontsize)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
 	pf->size = fontsize;
 	FT_Set_Char_Size( pf->face,pf->size<< 6, pf->size << 6, 96, 96);
 }
+
 static void freetype2_setfontrotation(PFont pfont, int rot)
 {
 }
