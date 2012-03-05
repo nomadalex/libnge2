@@ -1,5 +1,12 @@
 ﻿#include "nge_debug_log.h"
 #include "nge_font.h"
+#include "nge_font_internal.h"
+
+uint8 nge_font_encoding = NGE_ENCODING_GBK;
+
+void NGE_SetFontEncoding(uint8 encoding) {
+	nge_font_encoding = encoding;
+}
 
 void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int dy,int flags)
 {
