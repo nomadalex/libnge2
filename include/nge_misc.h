@@ -31,16 +31,6 @@ extern "C"{
  */
 	NGE_API int rand_int(int min, int max);
 
-/**
- *将GBK编码的字符转化为unicode字符
- *注意outbuffer需要预先分配足够大小.
- *@param unsigned short* out,转换后unicode字符保存在这里,注意需要预先分配足够大小
- *@param const char* in,输入字符缓存
- *@param int n,GBK字符个数以字节记,strlen计算的个数(例如一个汉字为2个字符)
- *@return int n,转换的unicode字符个数
- */
-	NGE_API int gbk_to_unicode(unsigned short* out,const char* in,int n);
-
 #ifdef __cplusplus
 }
 #endif
