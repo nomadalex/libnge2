@@ -106,11 +106,19 @@ struct _fontproc{
 typedef struct _fontproc FontProcs;
 typedef struct _fontproc *PFontProcs;
 
-struct _pfont{		/* common hdr for all font structures*/
-	struct _fontproc*		procs;	/* font-specific rendering routines*/
-	int			size;	/* font height in pixels*/
-	int			rotation;	/* font rotation*/
-	uint32			disp;	/* font attributes: kerning/antialias*/
+typedef struct{
+	char*       data;
+	int         datalen;
+} workbuf;
+
+struct _pfont { /* common hdr for all font structures*/
+	struct _fontproc* procs; /* font-specific rendering routines*/
+	int	size; /* font height in pixels*/
+	int	rotation; /* font rotation*/
+	uint32 disp; /* font attributes: kerning/antialias*/
+	int flags;
+	workbuf	encodingBuf;
+
 	/* font-specific rendering data here*/
 };
 
