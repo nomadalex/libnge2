@@ -7,20 +7,18 @@
 #include FT_SYNTHESIS_H
 #include "nge_font.h"
 #include "nge_font_internal.h"
-#include "nge_misc.h"
-
-typedef struct{
-	char*       data;
-	int         datalen;
-}workbuf;
+#include "nge_charsets.h"
 
 typedef struct
 {
-	void*		procs;	/* font-specific rendering routines*/
-	int			size;	/* font height in pixels*/
-	int			rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
-	/* freetype stuff */
+	void* procs;	/* font-specific rendering routines*/
+	int	size;	/* font height in pixels*/
+	int	rotation;	/* font rotation*/
+	uint32 disp;	/* diplaymode*/
+	int flags;
+	workbuf	encodingBuf;
+
+/* freetype stuff */
 	//color
 	uint8  r;
 	uint8  g;
@@ -30,8 +28,6 @@ typedef struct
 	FT_Face face;
 	FT_Matrix matrix;
 	FT_Library library;
-	int flags;
-	workbuf			bitbuf;
 }FontFreetype,*PFontFreetype;
 
 static BOOL freetype2_getfontinfo(PFont pfont, PFontInfo pfontinfo);
@@ -89,9 +85,9 @@ PFont create_font_freetype(const char* fname, int height,int disp)
 	pf->g = 0;
 	pf->a = 0;
 
-	pf->bitbuf.datalen = 2048;
-	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
-	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	pf->encodingBuf.datalen = 2048;
+	pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
+	memset(pf->encodingBuf.data,0,pf->encodingBuf.datalen);
 	return (PFont)pf;
 }
 
@@ -116,9 +112,9 @@ PFont create_font_freetype_buf(const char* buf,int bsize, int height,int disp)
 	pf->g = 0;
 	pf->a = 0;
 
-	pf->bitbuf.datalen = 2048;
-	pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
-	memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	pf->encodingBuf.datalen = 2048;
+	pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
+	memset(pf->encodingBuf.data,0,pf->encodingBuf.datalen);
 	return (PFont)pf;
 }
 
@@ -164,25 +160,22 @@ static FT_Error freetype2_get_glyph_size(PFontFreetype pf,
 		return 0;
 }
 
-inline static uint16* _nge_ft_conv_encoding(PFontFreetype pfont, const void *text, int * pCC) {
+inline static uint16* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
 	uint16 *value;
+	int len = *pCC;
 
-	len = strlen((char*)text);
-
-	if( len > pf->bitbuf.datalen){
-		pf->bitbuf.datalen = len*2;
-		free(pf->bitbuf.data);
-		pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);
-		memset(pf->bitbuf.data,0,pf->bitbuf.datalen);
+	if( len > pf->encodingBuf.datalen){
+		pf->encodingBuf.datalen = len*2;
+		free(pf->encodingBuf.data);
+		pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
 	}
-	value = (uint16*)pf->bitbuf.data;
-	memset(value,0,len);
+	value = (uint16*)pf->encodingBuf.data;
 
 	if(nge_font_encoding == NGE_ENCODING_GBK){
-		*pCC = gbk_to_unicode(value,(char*)text,len);
+		*pCC = nge_charset_gbk_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
 	}
 	else if (nge_font_encoding == NGE_ENCODING_UTF_8) {
-		*pCC = utf8_to_unicode(value,(char*)text,len);
+		*pCC = nge_charset_utf8_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
 	}
 	return value;
 }
@@ -193,7 +186,6 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 {
 	FT_Face face;
 	FT_Size size;
-	int len;
 	uint16* value;
 	int char_index;
 	int total_advance;
@@ -207,7 +199,9 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	int last_glyph_code = 0;	/* Used for kerning */
 	PFontFreetype pf = (PFontFreetype) pfont;
 
-	value = _nge_ft_conv_encoding(pfont, text, &cc);
+	value = _nge_ft_conv_encoding(pf, text, &cc);
+	if (cc <= 0)
+		return;
 
 	face = pf->face;
 	size = face->size;
@@ -244,8 +238,8 @@ static void freetype2_destroyfont(PFont pfont)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
 	FT_Done_Face(pf->face);
-	FT_Done_FreeType( pf->library );
-	SAFE_FREE(pf->bitbuf.data);
+	FT_Done_FreeType(pf->library);
+	SAFE_FREE(pf->encodingBuf.data);
 	SAFE_FREE(pf);
 }
 
@@ -305,7 +299,6 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 							   const void *text, int cc, int flags)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	int len;
 	uint16* value;
 	FT_Glyph glyph;
 	int pen_x = x;
@@ -314,7 +307,9 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	FT_BitmapGlyph bitmap_glyph;
 	FT_Bitmap* bitmap;
 
-	value = _nge_ft_conv_encoding(pfont, text, &cc);
+	value = _nge_ft_conv_encoding(pf, text, &cc);
+	if (cc <= 0)
+		return;
 
 	if(pimage->swizzle ==1){
 		unswizzle_swap(pimage);
