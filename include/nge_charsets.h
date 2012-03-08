@@ -1,17 +1,46 @@
 ﻿#ifndef __NGE_CHARSET__H
 #define __NGE_CHARSET__H
 
+#define NGE_RET_BUFFER_SMALL -1
+
 #ifdef __cplusplus
 extern "C"{
 #endif
+
 /*以下函数为内部使用,通常无需调用*/
-uint32 charsets_ucs_conv(const uint8 *uni, uint8 *cjk);
-void charsets_big5_conv(const uint8 *big5, uint8 *cjk);
-void charsets_sjis_conv(const uint8 *jis, uint8 **cjk, uint32 * newsize);
-uint32 charsets_utf8_conv(const uint8 *ucs, uint8 *cjk);
-uint32 charsets_utf16_conv(const uint8 *ucs, uint8 *cjk);
-uint32 charsets_utf16be_conv(const uint8 *ucs, uint8 *cjk);
-uint16 charsets_gbk_to_ucs(const uint8 * cjk);
+
+/**
+ *将GBK编码的字符转化为unicode(ucs-2)字符
+ *注意out buffer需要预先分配足够大小.
+ *@param const uint8* in,输入字符串
+ *@param uint8* out,转换后unicode字符保存在这里,注意需要预先分配足够大小
+ *@param int len,in字符串个数，以字节记，即strlen计算的个数
+ *@param int n,out buffer的大小，以字节记
+ *@return int,转换后的字符个数，以字节计，0与负数即为error
+ */
+	int nge_charset_gbk_to_ucs2(const uint8* in, uint8* out, int len, int n);
+
+/**
+ *将utf8编码的字符转化为unicode(ucs-2)字符
+ *注意out buffer需要预先分配足够大小.
+ *@param const uint8* in,输入字符串
+ *@param uint8* out,转换后unicode字符保存在这里,注意需要预先分配足够大小
+ *@param int len,in字符串个数，以字节记，即strlen计算的个数
+ *@param int n,out buffer的大小，以字节记
+ *@return int,转换后的字符个数，以字节计，0与负数即为error
+ */
+	int nge_charset_utf8_to_ucs2(const uint8* in, uint8* out, int len, int n);
+
+/**
+ *将utf8编码的字符转化为gbk字符
+ *注意out buffer需要预先分配足够大小.
+ *@param const uint8* in,输入字符串
+ *@param uint8* out,转换后unicode字符保存在这里,注意需要预先分配足够大小
+ *@param int len,in字符串个数，以字节记，即strlen计算的个数
+ *@param int n,out buffer的大小，以字节记
+ *@return int,转换后的字符个数，以字节计，0与负数即为error
+ */
+	int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n);
 
 #ifdef __cplusplus
 }
