@@ -81,7 +81,10 @@ static int use_big5 = 0;
 				seq=(((c1-161)*157)+c2)+13094;							\
 		}																\
 		else{															\
-			seq=((c1 - 161)*94 + c2 - 161);								\
+			if(pf->flags == FONT_TYPE_HZK)								\
+				seq=((c1 - 161)*94 + c2 - 161);							\
+			else														\
+				seq = ( 0xbf*(c1-0x81) + (c2-0x40) ) ;					\
 		}																\
 		font = pf->cfont_raw + ((seq) *									\
 								(pf->font_height * ((pf->cfont_width + 7) / 8))); \
@@ -136,11 +139,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 																		\
 		sbegin=s;														\
 		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
-		if( size > pf->bitbuf.datalen){									\
-			pf->bitbuf.datalen = size * 2;								\
-			free(pf->bitbuf.data);										\
-			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);		\
-		}																\
+		EXPAND_WORKBUF(pf, size, bitbuf);								\
 		bitmap = (uint##bits*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
@@ -183,13 +182,10 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 																		\
 		sbegin=s;														\
 		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
-		if( size > pf->bitbuf.datalen){									\
-			pf->bitbuf.datalen = size * 2;								\
-			free(pf->bitbuf.data);										\
-			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);		\
-		}																\
+		EXPAND_WORKBUF(pf, size, bitbuf);								\
 		bitmap = (uint##bits*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
+																		\
 		while( getnextchar(s, c) )										\
 		{																\
 			if( c[1] != '\0'){											\

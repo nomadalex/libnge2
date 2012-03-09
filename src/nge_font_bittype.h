@@ -56,17 +56,20 @@ inline static int getnextchar(char* s, unsigned char* cc)
 }
 /* utils end */
 
+#define EXPAND_WORKBUF(pf, size, buf)					\
+	if( size > pf->buf.datalen){						\
+		pf->buf.datalen = size * 2;						\
+		free(pf->buf.data);								\
+		pf->buf.data = (char*)malloc(pf->buf.datalen);	\
+	}
+
 inline static uint8* _nge_ft_conv_encoding(PFontBit pf, const void *text, int * pCC) {
 	uint16 *value;
 
 	if (nge_font_encoding == NGE_ENCODING_UTF_8) {
 		int len = *pCC;
 
-		if( len > pf->encodingBuf.datalen){
-			pf->encodingBuf.datalen = len*2;
-			free(pf->encodingBuf.data);
-			pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
-		}
+		EXPAND_WORKBUF(pf, len, encodingBuf);
 		value = (uint16*)pf->encodingBuf.data;
 
 		*pCC = nge_charsets_utf8_to_gbk((const uint8*)text, value, len, pf->encodingBuf.datalen);
@@ -138,11 +141,9 @@ inline static uint8* _nge_ft_conv_encoding(PFontBit pf, const void *text, int * 
 		int ax=0;														\
 		uint8* value;													\
 																		\
+		value = _nge_ft_conv_encoding(pfont, text, &cc);				\
 		if(cc > 0)														\
 		{																\
-			value = _nge_ft_conv_encoding(pfont, text, &cc);			\
-			if (cc <= 0)												\
-				return;													\
 			s = (char*)value;											\
 																		\
 			if(cc==1)													\
@@ -153,7 +154,7 @@ inline static uint8* _nge_ft_conv_encoding(PFontBit pf, const void *text, int * 
 				s=(char*)s1;											\
 			}															\
 			sbegin=s;													\
-			while( getnextchar(s, c) )									\
+			while(getnextchar(s, c))									\
 			{															\
 				if( c[1] == '\0') /* ascii */							\
 				{														\
