@@ -42,6 +42,7 @@
  * added new mappings to CP936...
  */
 
+#include "gb2312.h"
 #include "gbkext1.h"
 #include "gbkext2.h"
 #include "gbkext_inv.h"
