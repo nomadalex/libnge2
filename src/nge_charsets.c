@@ -37,7 +37,7 @@ typedef struct {
 int nge_charset_gbk_to_ucs2(const uint8* in, uint8* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint16 *pOut = (uint16*)out, *pEnd = (uint16*)(out+n);
+	uint16 *pOut = out, *pEnd = out+n/2;
 
 	while (cur < len) {
 		ret = ces_gbk_mbtowc(&wc, in+cur, len-cur);
@@ -50,13 +50,13 @@ int nge_charset_gbk_to_ucs2(const uint8* in, uint8* out, int len, int n) {
 			return NGE_RET_BUFFER_SMALL;
 	}
 	*pOut = 0x0;
-	return (uint8*)pOut - out - 2;
+	return pOut - (uint16*)out;
 }
 
-int nge_charset_utf8_to_ucs2(const uint8* in, uint8* out, int len, int n) {
+int nge_charset_utf8_to_ucs2(const uint8* in, uint16* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint16 *pOut = (uint16*)out, *pEnd = (uint16*)(out+n);
+	uint16 *pOut = out, *pEnd = out+n/2;
 
 	while (cur < len) {
 		ret = utf8_mbtowc(&wc, in+cur, len-cur);
@@ -69,7 +69,7 @@ int nge_charset_utf8_to_ucs2(const uint8* in, uint8* out, int len, int n) {
 			return NGE_RET_BUFFER_SMALL;
 	}
 	*pOut = 0x0;
-	return (uint8*)pOut - out - 2;
+	return pOut - (uint16*)out;
 }
 
 int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n) {
