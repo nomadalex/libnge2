@@ -95,3 +95,27 @@ int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n) {
 	*pOut = 0x0;
 	return pOut - out - 1;
 }
+
+int nge_charsets_gbk_to_utf8(const uint8* in, uint8* out, int len, int n) {
+	ucs4_t wc = 0;
+	int cur = 0, ret;
+	uint8 *pOut = out, *pEnd = out+n;
+
+	while (cur < len) {
+		ret = ces_gbk_mbtowc(&wc, in+cur, len-cur);
+		if (ret < 0)
+			return 0;
+		cur += ret;
+
+		ret = utf8_wctomb(pOut, wc, n);
+		if (ret < 0)
+			return 0;
+		pOut += ret;
+		n -= ret;
+
+		if (pOut > pEnd)
+			return NGE_RET_BUFFER_SMALL;
+	}
+	*pOut = 0x0;
+	return pOut - out - 1;
+}
