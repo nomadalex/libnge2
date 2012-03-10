@@ -1,6 +1,8 @@
 ﻿#include "libnge2.h"
 #include "CppSQLite3.h"
-#include<stdlib.h>
+#include <stdlib.h>
+#include "nge_charsets.h"
+
 /**
  * nge_test:测试 sqlite3
  */
@@ -20,6 +22,8 @@ char* CreateInfoByid(int id)
 {
 	static char buffer[1024]={0};
 	static char querybuf[1024]={0};
+	char* str = "%s  体力%s 武力%s 智力%s 魅力%s 年龄%s 类型 %s";
+
 	memset(querybuf,0,1024);
 	try
 	{	db.open("database/infodata.db");
@@ -27,9 +31,11 @@ char* CreateInfoByid(int id)
 			" heroinfo,herotype where heroinfo.id=%d and heroinfo.type=herotype.id;",id);
 		CppSQLite3Query q = db.execQuery(querybuf);
 
+		nge_charsets_utf8_to_gbk((uint8*)str, (uint8*)querybuf, strlen(str), 1024);
+
 		if (!q.eof())
 	{
-		sprintf(buffer,"%s  体力%s 武力%s 智力%s 魅力%s 年龄%s 类型 %s", q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
+		sprintf(buffer,querybuf, q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
 				q.fieldValue(4),q.fieldValue(5),q.fieldValue(6));
 	}
 		db.close();
@@ -154,6 +160,7 @@ int main(int argc, char* argv[])
 	//显示GBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[0],str[0],strlen(str[0]),pimage_text,100,195,FONT_SHOW_NORMAL);
+	NGE_SetFontEncoding(NGE_ENCODING_GBK);
 	for(i = 0;i<maxid;i++){
 		font_drawtext(pf[0],CreateInfoByid(i),strlen(CreateInfoByid(i)),pimage_text,120,200+i*20,FONT_SHOW_SHADOW);
 		font_setcolor(pf[0],MAKE_RGBA_4444(255,0,0,255));
@@ -161,6 +168,7 @@ int main(int argc, char* argv[])
 
 	//显示freetype
 	font_setcolor(pf[1],MAKE_RGBA_4444(128,0,0,255));
+	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	font_drawtext(pf[1],str[0],strlen(str[0]),pimage_text,100,30,FONT_SHOW_NORMAL);
 	//for(i =1;i<3;i++){
 	//	font_drawtext(pf[1],str[i],strlen(str[i]),pimage_text,120,35+i*20,FONT_SHOW_NORMAL);
