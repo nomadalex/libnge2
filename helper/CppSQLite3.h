@@ -36,15 +36,15 @@
 
 #define CPPSQLITE_ERROR 1000
 
-#ifndef BOOL
-#define BOOL int
-#endif
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
+/* #ifndef BOOL */
+/* #define BOOL int */
+/* #endif */
+/* #ifndef TRUE */
+/* #define TRUE 1 */
+/* #endif */
+/* #ifndef FALSE */
+/* #define FALSE 0 */
+/* #endif */
 
 
 class NGE_API CppSQLite3Exception
@@ -165,7 +165,7 @@ public:
     BOOL fieldIsNull(int nField);
     BOOL fieldIsNull(const char* szField);
 
-    int eof();
+	bool eof();
 
     void nextRow();
 

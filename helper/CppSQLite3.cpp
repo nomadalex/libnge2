@@ -539,13 +539,11 @@ int CppSQLite3Query::fieldDataType(int nCol)
 	return sqlite3_column_type(mpVM, nCol);
 }
 
-
-int CppSQLite3Query::eof()
+bool CppSQLite3Query::eof()
 {
 	checkVM();
 	return mbEof;
 }
-
 
 void CppSQLite3Query::nextRow()
 {
