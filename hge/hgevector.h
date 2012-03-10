@@ -10,17 +10,15 @@
 #ifndef HGEVECTOR_H
 #define HGEVECTOR_H
 
-
-//#include "hge.h"
+#include "nge_common.h"
 #include <math.h>
-
 
 /*
 ** Fast 1.0/sqrtf(float) routine
 */
 float InvSqrt(float x);
 
-class hgeVector
+class NGE_API hgeVector
 {
 public:
 	float	x,y;

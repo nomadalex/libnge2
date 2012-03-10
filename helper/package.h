@@ -8,6 +8,13 @@
 #ifndef _PACKAGE_H_
 #define _PACKAGE_H_
 
+#include "nge_common.h"
+#include "nge_platform.h"
+
+#ifndef NGE_PSP
+#define __HIDE_PSP_FUNC_
+#endif
+
 #ifdef WIN32
 	#include <io.h>
 #endif
@@ -42,25 +49,25 @@ extern "C" {
 	static packItem* fileItem = NULL;
 	static packItem* fileItem_temp = NULL;
 
-void packageInit();		// 初始化索引表和文件头信息为0
-void packageFini();
-void add_fileItem();	// 添加一个索引,如果索引头为空则建立一个
-void del_fileItem();	// 从索引链的尾部删除一个索引
-void add_fileInfo();	// 创建一个文件头数据,不管调用几次只能创造一个
-void del_fileInfo();	// 删除文件头数据
-void save_fileName(const char* filename);
-void save_fileSize(const long size);
-void save_fileOffset(const int fileID);	// 把信息保存到当前索引表
-void save_fileItem(FILE* fp);	// 保存索引表数据到文件尾部
-void save_fileInfo(FILE* fp);	// 保存文件头数据到文件尾部
-void set_fileInfo(const char* text);
-void save_fileAddfile(const char* filename1,const char* filename2);	// 文件2添加到文件1尾部
-void save_itemTofile(char* filename,char* filetype);	// 从压缩包中解压文件
-int get_fileID();		// 得到索引表个数
-long get_fileSize(const char* filename);	// 得到磁盘上一个文件的大小
-void printf_allDate();			// 调试信息
-void* safe_malloc(const long size);
-void safe_free(void* p);
+	NGE_API void packageInit();		// 初始化索引表和文件头信息为0
+	NGE_API void packageFini();
+	NGE_API void add_fileItem();	// 添加一个索引,如果索引头为空则建立一个
+	NGE_API void del_fileItem();	// 从索引链的尾部删除一个索引
+	NGE_API void add_fileInfo();	// 创建一个文件头数据,不管调用几次只能创造一个
+	NGE_API void del_fileInfo();	// 删除文件头数据
+	NGE_API void save_fileName(const char* filename);
+	NGE_API void save_fileSize(const long size);
+	NGE_API void save_fileOffset(const int fileID);	// 把信息保存到当前索引表
+	NGE_API void save_fileItem(FILE* fp);	// 保存索引表数据到文件尾部
+	NGE_API void save_fileInfo(FILE* fp);	// 保存文件头数据到文件尾部
+	NGE_API void set_fileInfo(const char* text);
+	NGE_API void save_fileAddfile(const char* filename1,const char* filename2);	// 文件2添加到文件1尾部
+	NGE_API void save_itemTofile(char* filename,char* filetype);	// 从压缩包中解压文件
+	NGE_API int get_fileID();		// 得到索引表个数
+	NGE_API long get_fileSize(const char* filename);	// 得到磁盘上一个文件的大小
+	NGE_API void printf_allDate();			// 调试信息
+	NGE_API void* safe_malloc(const long size);
+	NGE_API void safe_free(void* p);
 
 #ifndef __HIDE_PSP_FUNC_
 /*

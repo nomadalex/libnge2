@@ -28,6 +28,7 @@
 #ifndef _CppSQLite3_H_
 #define _CppSQLite3_H_
 
+#include "nge_common.h"
 #include "sqlite3.h"
 #include <stdio.h>
 #include <string.h>
@@ -46,7 +47,7 @@
 #endif
 
 
-class CppSQLite3Exception
+class NGE_API CppSQLite3Exception
 {
 public:
 
@@ -71,7 +72,7 @@ private:
 };
 
 
-class CppSQLite3Buffer
+class NGE_API CppSQLite3Buffer
 {
 public:
 
@@ -91,7 +92,7 @@ private:
 };
 
 
-class CppSQLite3Binary
+class NGE_API CppSQLite3Binary
 {
 public:
 
@@ -121,7 +122,7 @@ private:
 };
 
 
-class CppSQLite3Query
+class NGE_API CppSQLite3Query
 {
 public:
 
@@ -182,7 +183,7 @@ private:
 };
 
 
-class CppSQLite3Table
+class NGE_API CppSQLite3Table
 {
 public:
 
@@ -232,7 +233,7 @@ private:
 };
 
 
-class CppSQLite3Statement
+class NGE_API CppSQLite3Statement
 {
 public:
 
@@ -270,7 +271,7 @@ private:
 };
 
 
-class CppSQLite3DB
+class NGE_API CppSQLite3DB
 {
 public:
 

@@ -27,6 +27,7 @@
    								Includes
  ---------------------------------------------------------------------------*/
 
+#include "nge_common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,7 +73,7 @@ typedef struct _dictionary_ {
   by comparing the key itself in last resort.
  */
 /*--------------------------------------------------------------------------*/
-unsigned dictionary_hash(char * key);
+NGE_API unsigned dictionary_hash(char * key);
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -85,7 +86,7 @@ unsigned dictionary_hash(char * key);
   dictionary, give size=0.
  */
 /*--------------------------------------------------------------------------*/
-dictionary * dictionary_new(int size);
+NGE_API dictionary * dictionary_new(int size);
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -96,7 +97,7 @@ dictionary * dictionary_new(int size);
   Deallocate a dictionary object and all memory associated to it.
  */
 /*--------------------------------------------------------------------------*/
-void dictionary_del(dictionary * vd);
+NGE_API void dictionary_del(dictionary * vd);
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -112,7 +113,7 @@ void dictionary_del(dictionary * vd);
   dictionary object, you should not try to free it or modify it.
  */
 /*--------------------------------------------------------------------------*/
-char * dictionary_get(dictionary * d, char * key, char * def);
+NGE_API char * dictionary_get(dictionary * d, char * key, char * def);
 
 
 /*-------------------------------------------------------------------------*/
@@ -141,7 +142,7 @@ char * dictionary_get(dictionary * d, char * key, char * def);
   This function returns non-zero in case of failure.
  */
 /*--------------------------------------------------------------------------*/
-int dictionary_set(dictionary * vd, char * key, char * val);
+NGE_API int dictionary_set(dictionary * vd, char * key, char * val);
 
 /*-------------------------------------------------------------------------*/
 /**
@@ -154,7 +155,7 @@ int dictionary_set(dictionary * vd, char * key, char * val);
   key cannot be found.
  */
 /*--------------------------------------------------------------------------*/
-void dictionary_unset(dictionary * d, char * key);
+NGE_API void dictionary_unset(dictionary * d, char * key);
 
 
 /*-------------------------------------------------------------------------*/
@@ -169,6 +170,6 @@ void dictionary_unset(dictionary * d, char * key);
   output file pointers.
  */
 /*--------------------------------------------------------------------------*/
-void dictionary_dump(dictionary * d, FILE * out);
+NGE_API void dictionary_dump(dictionary * d, FILE * out);
 
 #endif

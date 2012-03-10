@@ -8,6 +8,7 @@
 #ifndef HGEPARTICLE_H
 #define HGEPARTICLE_H
 
+#include "nge_common.h"
 #include "hgevector.h"
 #include "hgecolor.h"
 #include "hgerect.h"
@@ -89,7 +90,7 @@ struct hgeParticleSystemInfo
 	float		fAlphaVar;
 };
 
-class hgeParticleSystem
+class NGE_API hgeParticleSystem
 {
 public:
 	hgeParticleSystemInfo info;
@@ -135,7 +136,7 @@ private:
 	float				mTimer;
 };
 
-class hgeParticleManager
+class NGE_API hgeParticleManager
 {
 public:
 	hgeParticleManager();
