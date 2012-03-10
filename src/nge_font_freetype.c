@@ -185,7 +185,6 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 								  int *pbase)
 {
 	FT_Face face;
-	FT_Size size;
 	uint16* value;
 	int char_index;
 	int total_advance;
@@ -196,15 +195,13 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	int descent;
 	FT_Error error;
 	int cur_glyph_code;
-	int last_glyph_code = 0;	/* Used for kerning */
 	PFontFreetype pf = (PFontFreetype) pfont;
 
-	value = _nge_ft_conv_encoding(pf, text, &cc);
+	value = _nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 
 	face = pf->face;
-	size = face->size;
 	/*
 	* Starting point
 	*/
@@ -214,8 +211,6 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 
 	for (char_index = 0; char_index < cc; char_index++) {
 		cur_glyph_code = FT_Get_Char_Index( pf->face, value[char_index] );//LOOKUP_CHAR(pf, face, str[char_index]);
-
-		last_glyph_code = cur_glyph_code;
 
 		error = freetype2_get_glyph_size(pf, face, cur_glyph_code, &advance, &ascent, &descent);
 		if (error)
@@ -231,7 +226,6 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 	*pwidth = total_advance;
 	*pheight = max_ascent + max_descent;
 	*pbase = max_ascent;
-
 }
 
 static void freetype2_destroyfont(PFont pfont)
@@ -307,7 +301,7 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	FT_BitmapGlyph bitmap_glyph;
 	FT_Bitmap* bitmap;
 
-	value = _nge_ft_conv_encoding(pf, text, &cc);
+	value = _nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 

@@ -27,6 +27,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "nge_graphics.h"
 
 #if defined NGE_IPHONE || defined NGE_ANDROID
@@ -506,9 +507,9 @@ void FiniGrahics()
 
 void ShowFps()
 {
+#ifndef NDEBUG
 	int t;
 	float seconds;
-
 	m_frame++;
 	t = nge_get_tick();
 	if ( (t - m_t0) >= 1000) {
@@ -517,6 +518,7 @@ void ShowFps()
 		m_t0 = t;
 		m_frame = 0;
 	}
+#endif
 }
 
 void LimitFps(uint32 limit)

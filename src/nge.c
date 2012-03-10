@@ -12,6 +12,7 @@
 #include "nge_input.h"
 #include "audio_interface.h"
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef NGE_PSP
 int psp_exit_callback_id = 0;
@@ -60,7 +61,7 @@ void NGE_SetNativeResolution(int width,int height)
 
 char *NGE_OP_Path = NULL;
 void NGE_SetOPMoviePath(const char* path) {
-	NGE_OP_Path = path;
+	NGE_OP_Path = (char*)path;
 }
 
 static int initFlags = 0;

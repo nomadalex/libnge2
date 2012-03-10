@@ -94,7 +94,7 @@ static  FontProcs nfont_procs = {
 		c2 = c[1];														\
 		seq = ( 0xbf*(c1-0x81) + (c2-0x40) ) ;							\
 																		\
-		font = pf->cfont_raw + seq*(pf->alignsize+4);					\
+		font = (unsigned char*)(pf->cfont_raw + seq*(pf->alignsize+4));	\
 		POP_PROPS_FROM_FONT(pf, font);									\
 																		\
 		for (y = 0; y < pf->size; y++){									\
@@ -109,7 +109,7 @@ static  FontProcs nfont_procs = {
 		int x,y;														\
 		unsigned char *font;											\
 																		\
-		font = pf->afont_raw + c * (pf->alignsize+4);					\
+		font = (unsigned char*)(pf->afont_raw + c * (pf->alignsize+4));	\
 		POP_PROPS_FROM_FONT(pf, font);									\
 																		\
 		for (y = 0; y < pf->size; y++){									\
@@ -326,7 +326,7 @@ MAKE_DRAWTEXT_FUNC(32)
 void nfont_drawtext(PFont pfont, image_p pimage, int ax, int ay,const void *text, int cc, int flags)
 {
 	PFontNfont pf = (PFontNfont)pfont;
-	text = (void*)_nge_ft_conv_encoding(pf, text, &cc);
+	text = (void*)_nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 
@@ -352,7 +352,7 @@ MAKE_DRAWTEXT_SHADOW_FUNC(32)
 void nfont_drawtext_shadow(PFont pfont, image_p pimage, int ax, int ay,const void *text, int cc, int flags)
 {
 	PFontNfont pf = (PFontNfont)pfont;
-	text = (void*)_nge_ft_conv_encoding(pf, text, &cc);
+	text = (void*)_nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 

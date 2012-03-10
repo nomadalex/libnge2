@@ -133,11 +133,13 @@ int main(int argc, char* argv[])
 	}
 
 	pimage_bg = image_load("images/demo2_bg.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(pimage_bg == NULL)
+	if(pimage_bg == NULL) {
 		printf("can not open file\n");
+	}
 	pimage_box = image_load("images/demo2_box.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(pimage_box == NULL)
+	if(pimage_box == NULL) {
 		printf("can not open file\n");
+	}
 	pimage_icon[0] = image_load_colorkey("images/demo2_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
     	pimage_icon[1] = image_load_colorkey("images/demo2_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 

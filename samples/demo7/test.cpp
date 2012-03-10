@@ -77,11 +77,13 @@ int main(int argc, char* argv[])
 	InitInput(btn_down,NULL,1);
 	//最后一个参数是psp swizzle优化，通常填1
 	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_logo == NULL)
+	if(p_logo == NULL) {
 		printf("can not open file\n");
+	}
 	p_par = image_load("par/particles.png",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_par == NULL)
+	if(p_par == NULL) {
 		printf("can not open file\n");
+	}
 	//设置sprite子图
 	mParticle = (sprite_p)malloc(sizeof(sprite_t));
 	memset(mParticle,0,sizeof(sprite_t));

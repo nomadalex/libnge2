@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 #include "png.h"
-#if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 33
+#if PNG_LIBPNG_VER_MAJOR > 1 || PNG_LIBPNG_VER_MINOR > 2 || PNG_LIBPNG_VER_RELEASE > 46
 #define USE_HIGH_LIBPNG
 #endif
 
@@ -423,7 +423,7 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 	uint8* line;
 	uint32 col_type;
 	int handle;
-	uint8 *src,*src8;
+	uint8 *src;
 	uint16 *src16 ;
 	uint32 *src32 ;
 	uint32 x,y,i;
@@ -473,13 +473,11 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 	}
 
 	src = (uint8*)pimage->data;
-	src8 = (uint8*)src;
 	src16 = (uint16*)src;
 	src32 = (uint32*)src;
 	for (y = 0; y < pimage->h; y++)
 	{
 		//uint32 swap = 0;
-		src8 = (uint8*)src;
 		src16 = (uint16*)src;
 		src32 = (uint32*)src;
 		for (i = 0, x = 0; x < pimage->w; x++)

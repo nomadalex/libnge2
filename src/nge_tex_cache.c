@@ -114,8 +114,9 @@ int  tex_cache_getid(int imgid,int* cacheid)
 		val.node  = get_free_node();
 		key = imgid;
 		status = rbtInsert(rb,key, val);
-		if (status)
+		if (status) {
 			printf("fail: status = %d\n", status);
+		}
 		*cacheid  = ((tex_node_p)(val.node))->texid;
 	}
 

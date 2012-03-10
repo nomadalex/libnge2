@@ -298,7 +298,7 @@ void hzk_drawtext(PFont pfont, image_p pimage, int ax, int ay,const void *text, 
 {
 	PFontHzk pf = (PFontHzk)pfont;
 
-	text = (void*)_nge_ft_conv_encoding(pf, text, &cc);
+	text = (void*)_nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 
@@ -324,7 +324,7 @@ void hzk_drawtext_shadow(PFont pfont, image_p pimage, int ax, int ay,const void 
 {
 	PFontHzk pf = (PFontHzk)pfont;
 
-	text = (void*)_nge_ft_conv_encoding(pf, text, &cc);
+	text = (void*)_nge_ft_conv_encoding(pfont, text, &cc);
 	if (cc <= 0)
 		return;
 

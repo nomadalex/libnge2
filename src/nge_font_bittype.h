@@ -63,14 +63,14 @@ inline static int getnextchar(char* s, unsigned char* cc)
 		pf->buf.data = (char*)malloc(pf->buf.datalen);	\
 	}
 
-inline static uint8* _nge_ft_conv_encoding(PFontBit pf, const void *text, int * pCC) {
-	uint16 *value;
+inline static uint8* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
+	uint8 *value;
 
 	if (nge_font_encoding == NGE_ENCODING_UTF_8) {
 		int len = *pCC;
 
 		EXPAND_WORKBUF(pf, len, encodingBuf);
-		value = (uint16*)pf->encodingBuf.data;
+		value = (uint8*)pf->encodingBuf.data;
 
 		*pCC = nge_charsets_utf8_to_gbk((const uint8*)text, value, len, pf->encodingBuf.datalen);
 
@@ -134,7 +134,7 @@ inline static uint8* _nge_ft_conv_encoding(PFontBit pf, const void *text, int * 
 #define MAKE_BIT_GETTEXTSIZE(prefix, type, afont_width, cfont_width, font_height) \
 	void prefix##_gettextsize(PFont pfont, const void *text, int cc,int flags, int *pwidth, int *pheight,int *pbase) \
 	{																	\
-		type pf = (type)pfont;									\
+		type pf = (type)pfont;											\
 		unsigned char c[2];												\
 		char *s,*sbegin;												\
 		unsigned char s1[3];											\

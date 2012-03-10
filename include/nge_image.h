@@ -233,6 +233,20 @@ void unswizzle_swap(image_p pimage);
 #define unswizzle_swap(p)
 #endif
 
+#define CHECK_AND_UNSWIZZLE(img)				\
+	if(img->swizzle ==1) {						\
+		unswizzle_swap(img);					\
+	}
+
+#define CHECK_AND_SWIZZLE(img)					\
+	if(img->swizzle ==1) {						\
+		swizzle_swap(img);						\
+	}
+
+#define CHECK_AND_UNSWIZZLE_ALL(src, des)		\
+	CHECK_AND_UNSWIZZLE(src);					\
+	CHECK_AND_UNSWIZZLE(des)
+
 #ifdef __cplusplus
 }
 #endif

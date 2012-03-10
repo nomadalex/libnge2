@@ -554,7 +554,7 @@ long encodeRLE( void* src, int srcLen, int linesz, void* dst, int dstLen, int bi
        maxrun = linesz-((count/4) % linesz);
        if (maxrun>(srcLen-count)/4) maxrun = (srcLen-count)/4;
        if (maxrun>128) maxrun = 128;
-       run;
+       /* run; */
 
        c1 = *(s+count++);
        c2 = *(s+count++);

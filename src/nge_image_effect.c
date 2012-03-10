@@ -859,9 +859,10 @@ static uint32 effect_draw_blur_op2_transition(int dtype, int color1,int color2,i
 static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
 	// 以单关键点差补方式绘制模糊效果
-	int by,col,coll,colt,collt;
-	uint32 x,y,bx;
-	for(y=0;y<pimg->h;y+=s)
+	int by,col = 0,coll = 0,colt = 0,collt;
+	int x,y;
+	int bx;
+	for(y=0;y<(int)pimg->h;y+=s)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
@@ -873,7 +874,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 			p16 = ((uint16*)pimg->data) + pimg->texw * y;
 			pdes16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
-		for(x=0;x<pimg->w;x+=s)
+		for(x=0;x<(int)pimg->w;x+=s)
 		{
 			switch(pimg->dtype)
 			{
@@ -933,7 +934,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 		// 绘制超出的 x
 		if(y>0)
 		{
-			for(bx=0;bx<(pimg->w-(x-s));bx++)
+			for(bx=0;bx<(int)(pimg->w-(x-s));bx++)
 			{
 				for(by=0;by<s;by++)
 				{
@@ -959,7 +960,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	else
 		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
-	for(y-=s;y<pimg->h;y++)
+	for(y-=s;y<(int)pimg->h;y++)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
@@ -969,7 +970,7 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 		{
 			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
 		}
-		for(x=0;x<pimg->w;x++)
+		for(x=0;x<(int)pimg->w;x++)
 		{
 			switch(pimg->dtype)
 			{
@@ -988,7 +989,8 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
 {
 	// 以单关键点方式绘制模糊效果
-	uint32 x,y,bx,by,col;
+	uint32 x,y,col = 0;
+	int bx = 0,by = 0;
 
 	for(y=0;y<pimg->h;y+=s)
 	{
@@ -1046,7 +1048,7 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 		// 绘制超出的 x
 		if(y>0)
 		{
-			for(bx=0;bx<(pimg->w-(x-s));bx++)
+			for(bx=0;bx<(int)(pimg->w-(x-s));bx++)
 			{
 				for(by=0;by<s;by++)
 				{
@@ -1399,17 +1401,17 @@ static void effect_destroy_transitions(image_effect_p effector)
 
 void HandleR2A(image_p bp)
 {
-	int x = 0,y = 0;
+	uint32 x = 0,y = 0;
 	int r,a,b,g;
 	uint32 *p32 = NULL;
-	if(bp->swizzle)
-		unswizzle_swap(bp);
+	CHECK_AND_UNSWIZZLE(bp);
 	for(y = 0; y < bp->texh; y++)
 	{
 		p32 = (uint32 *)bp->data + y * bp->texw;
 		for(x = 0; x < bp->texw; x ++)
 		{
 			GET_RGBA_8888(*(p32 + x), r, g, b, a);
+			(void)a;
 			*(p32 + x) = MAKE_RGBA_8888(r,g,b,r);
 		}
 	}

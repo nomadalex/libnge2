@@ -87,11 +87,13 @@ int main(int argc, char* argv[])
 	InitInput(btn_down,NULL,1);
 	//最后一个参数是psp swizzle优化，通常填1
 	p_bg = image_load("images/demo0.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_bg == NULL)
+	if(p_bg == NULL) {
 		printf("can not open file\n");
+	}
 	pgif = gif_animation_load("images/simple.gif",DISPLAY_PIXEL_FORMAT_5551,1);
-	if(pgif == NULL)
+	if(pgif == NULL) {
 		printf("can not open file\n");
+	}
 	while ( !game_quit )
 	{
 		ShowFps();

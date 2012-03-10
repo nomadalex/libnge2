@@ -10,12 +10,6 @@ int game_quit = 0;
 //背景图片
 image_p p_bg = NULL;
 
-
-
-
-
-
-
 extern "C"
 int main(int argc, char* argv[])
 {
@@ -24,8 +18,9 @@ int main(int argc, char* argv[])
 
 	//最后一个参数是psp swizzle优化，通常填1
 	p_bg = image_load("images/demo4_bg.png",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_bg == NULL)
+	if(p_bg == NULL) {
 		printf("can not open file!\n");
+	}
 	CAnimation* ani = new CAnimation("images/demo4_man.png");
 	while ( !game_quit )
 	{

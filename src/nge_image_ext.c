@@ -80,7 +80,6 @@ int get_gray_color(int dtype, int scol, int gray)
 image_p create_gray_image(image_p src, int gray)
 {
 	uint32 y,x;
-	uint8 recover = 0;
 	image_p pimg;
 	uint16 *p16 = NULL,*psrc16 = NULL;
 	uint32 *p32 = NULL,*psrc32 = NULL;
@@ -90,10 +89,7 @@ image_p create_gray_image(image_p src, int gray)
 		nge_print("create_gray_image arg 'gray' must between 0 to 100!");
 		return NULL;
 	}
-	if(src->swizzle ==1){
-		unswizzle_swap(src);
-		recover = 1;
-	}
+	CHECK_AND_UNSWIZZLE(src);
 	pimg = image_create(src->w, src->h, src->dtype);
 
 	for(y=0;y<src->h;y++)
@@ -121,16 +117,14 @@ image_p create_gray_image(image_p src, int gray)
 			}
 		}
 	}
-	if(recover)
-		swizzle_swap(src);
+	CHECK_AND_SWIZZLE(src);
 
 	return pimg;
 }
 
 int get_saturation_brightness_color(int dtype, int scol,int saturation, int brightness)
 {
-	int gcol, r, g, b, a, mincol, maxcol;
-	float D;
+	int r, g, b, a, mincol, maxcol;
 	switch(dtype)
 	{
 	case DISPLAY_PIXEL_FORMAT_8888:
@@ -145,19 +139,14 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 	case DISPLAY_PIXEL_FORMAT_565:
 		GET_RGBA_565(scol, r, g, b, a);
 		break;
+	default:
+		return 0;
 	}
 	// 处理饱和度
 	if(saturation!=0)
 	{
-		gcol = ((r + g + b) / 3) & 0xff;
 		maxcol = r>g ? (r>b?r:b):g;
 		mincol = r>g ? (g>b?b:g):r;
-		//gcol = maxcol - mincol;
-		D = (maxcol - mincol)*1.0f;
-		if(maxcol==mincol)
-		{
-
-		}
 		if(saturation>0)
 		{
 			if(maxcol == 0xff)
@@ -230,7 +219,6 @@ cont001:
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {
 	uint32 y,x;
-	uint8 recover = 0;
 	image_p pimg;
 	uint16 *p16,*psrc16;
 	uint32 *p32,*psrc32;
@@ -246,39 +234,43 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 		nge_print("create_gray_image arg 'brightness' must between -100 to 100!");
 		return NULL;
 	}
-	if(src->swizzle ==1){
-		unswizzle_swap(src);
-		recover = 1;
-	}
+	CHECK_AND_UNSWIZZLE(src);
 	pimg = image_create(src->w, src->h, src->dtype);
 
-	for(y=0;y<src->h;y++)
+	if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 	{
-		if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
-		{
-			p32 = (uint32 *)pimg->data + y*src->texw;
-			psrc32 = (uint32 *)src->data + y*src->texw;
-		}
-		else
-		{
-			p16 = (uint16 *)pimg->data + y*src->texw;
-			psrc16 = (uint16 *)src->data + y*src->texw;
-		}
+		p32 = (uint32 *)pimg->data;
+		psrc32 = (uint32 *)src->data;
 
-		for(x=0;x<src->w;x++)
+		for(y=0;y<src->h;y++)
 		{
-			if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
+			p32 += src->texw;
+			psrc32 += src->texw;
+
+			for(x=0;x<src->w;x++)
 			{
 				*(p32 + x) = (uint32)get_saturation_brightness_color(pimg->dtype, *(psrc32 + x), saturation, brightness);
 			}
-			else
+		}
+	}
+	else if (src->dtype == DISPLAY_PIXEL_FORMAT_4444)
+	{
+		p16 = (uint16 *)pimg->data;
+		psrc16 = (uint16 *)src->data;
+
+		for(y=0;y<src->h;y++)
+		{
+			p16 += src->texw;
+			psrc16 += src->texw;
+
+			for(x=0;x<src->w;x++)
 			{
 				*(p16 + x) = (uint16)get_saturation_brightness_color(pimg->dtype, *(psrc16 + x), saturation, brightness);
 			}
 		}
 	}
-	if(recover)
-		swizzle_swap(src);
+
+	CHECK_AND_SWIZZLE(src);
 
 	return pimg;
 }
@@ -287,19 +279,15 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 image_p image_conv(image_p src, int dtype)
 {
 	image_p dst;
-	uint8 recover = 0;
 	uint32 i,j;
 	uint32 *src32, *dst32;
 	uint16 *src16, *dst16;
 	uint8 r,g,b,a;
 
-	if(src->dtype == dtype)
+	if(src->dtype == (uint32)dtype)
 		return image_clone(src);
 
-	if(src->swizzle ==1){
-		unswizzle_swap(src);
-		recover = 1;
-	}
+	CHECK_AND_UNSWIZZLE(src);
 	dst = image_create(src->w, src->h, dtype);
 
 	src32 = (uint32*)src->data;
@@ -369,9 +357,9 @@ image_p image_conv(image_p src, int dtype)
 			}
 		}
 	}
+	dst->swizzle = 1;
 	swizzle_swap(dst);
-	if(recover)
-		swizzle_swap(src);
+	CHECK_AND_SWIZZLE(src);
 	return dst;
 }
 
@@ -609,8 +597,8 @@ void free_contributions (Line_c10n *p)
 Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, uint32 src_size, double scale)
 {
 	//FilterClass CurFilter;
-	uint32 u, i;
-	int left, right , window_size;
+	uint32 u;
+	int left, right , window_size, i;
 	double width, center, total_weight;
 	double fscale = 1.0;
 	double fwidth;
@@ -671,6 +659,26 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
    return res;
 }
 
+#define __SCALE_LOOP(type, bit, dw_or_dh, _src_n, _dst_n)				\
+	for (ii = 0; ii < dw_or_dh; ii++)									\
+	{																	\
+		left  = contrib->row[ii].left;									\
+		right = contrib->row[ii].right;									\
+		r = 0,g = 0,b = 0,a = 0;										\
+		for (i = left; i <= right; i++)									\
+		{																\
+																		\
+			GET_RGBA_##type(src##bit[ _src_n ],sr,sg,sb,sa);			\
+			if(sa==0)													\
+				continue;												\
+			r += (uint8)(contrib->row[ii].weights[i-left] * (double)(sr)); \
+			g += (uint8)(contrib->row[ii].weights[i-left] * (double)(sg)); \
+			b += (uint8)(contrib->row[ii].weights[i-left] * (double)(sb)); \
+			a += (uint8)(contrib->row[ii].weights[i-left] * (double)(sa)); \
+		}																\
+		dst##bit[ _dst_n ] = MAKE_RGBA_##type(r,g,b,a);					\
+	}
+
 #define SCALE_FUN_IMP(type, dw_or_dh, _sdata, _ddata, _src_n, _dst_n)	\
 	void scale_##type (uint8 *sdata, uint32 sw, uint8 *ddata, uint32 dw_or_dh, uint32 u, Line_c10n *contrib,uint32 pitch,uint32 dtype) \
 	{																	\
@@ -683,41 +691,17 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 		dst32 = (uint32*) _ddata;										\
 		src16 = (uint16*) _sdata;										\
 		dst16 = (uint16*) _ddata;										\
-		for (ii = 0; ii < dw_or_dh; ii++)								\
-		{																\
-			left  = contrib->row[ii].left;								\
-			right = contrib->row[ii].right;								\
-			r = 0,g = 0,b = 0,a = 0;									\
-			for (i = left; i <= right; i++)								\
-			{															\
-																		\
-				if(dtype == DISPLAY_PIXEL_FORMAT_8888){					\
-					GET_RGBA_8888(src32[ _src_n ],sr,sg,sb,sa);			\
-				}														\
-				else if(dtype == DISPLAY_PIXEL_FORMAT_4444){			\
-					GET_RGBA_4444(src16[ _src_n ],sr,sg,sb,sa);			\
-				}														\
-				else if(dtype == DISPLAY_PIXEL_FORMAT_5551){			\
-					GET_RGBA_5551(src16[ _src_n ],sr,sg,sb,sa);			\
-				}														\
-				else if(dtype == DISPLAY_PIXEL_FORMAT_565){				\
-					GET_RGBA_565(src16[ _src_n ],sr,sg,sb,sa);			\
-				}														\
-				if(sa==0)												\
-					continue;											\
-				r += (uint8)(contrib->row[ii].weights[i-left] * (double)(sr)); \
-				g += (uint8)(contrib->row[ii].weights[i-left] * (double)(sg)); \
-				b += (uint8)(contrib->row[ii].weights[i-left] * (double)(sb)); \
-				a += (uint8)(contrib->row[ii].weights[i-left] * (double)(sa)); \
-			}															\
-			if(dtype == DISPLAY_PIXEL_FORMAT_8888)						\
-				dst32[ _dst_n ] = MAKE_RGBA_8888(r,g,b,a);			\
-			else if(dtype == DISPLAY_PIXEL_FORMAT_4444)					\
-				dst16[ _dst_n ] = MAKE_RGBA_4444(r,g,b,a);			\
-			else if(dtype == DISPLAY_PIXEL_FORMAT_5551)					\
-				dst16[ _dst_n ] = MAKE_RGBA_5551(r,g,b,a);			\
-			else if(dtype == DISPLAY_PIXEL_FORMAT_565)					\
-				dst16[ _dst_n ] = MAKE_RGBA_565(r,g,b,a);				\
+		if(dtype == DISPLAY_PIXEL_FORMAT_8888){							\
+			__SCALE_LOOP(8888, 32, dw_or_dh, _src_n, _dst_n);			\
+		}																\
+		else if(dtype == DISPLAY_PIXEL_FORMAT_4444){					\
+			__SCALE_LOOP(4444, 16, dw_or_dh, _src_n, _dst_n);			\
+		}																\
+		else if(dtype == DISPLAY_PIXEL_FORMAT_5551){					\
+			__SCALE_LOOP(5551, 16, dw_or_dh, _src_n, _dst_n);			\
+		}																\
+		else if(dtype == DISPLAY_PIXEL_FORMAT_565){						\
+			__SCALE_LOOP(565, 16, dw_or_dh, _src_n, _dst_n);			\
 		}																\
 	}
 
@@ -753,15 +737,11 @@ image_p image_scale(image_p src, int w, int h,int mode)
 {
 	image_p dst;
 	uint8 * temp;
-	uint8 recover = 0;
 	uint32 spitch, dpitch;
 	void* filter = filter_create_funs[mode]();
 	dst = image_create(w,h,src->dtype);
 	dst->dontswizzle = 1;
-	if(src->swizzle ==1){
-		unswizzle_swap(src);
-		recover = 1;
-	}
+	CHECK_AND_UNSWIZZLE(src);
 	temp = malloc(dst->w*src->h*src->bpb);
 	memset(temp,0,dst->w*src->h*src->bpb);
 	spitch = src->texw;
@@ -770,7 +750,6 @@ image_p image_scale(image_p src, int w, int h,int mode)
 	vert_scale (filter, mode, temp,dst->w,src->h,dst->data,dst->w,dst->h,dpitch,src->dtype);
 	free(temp);
 	filter_destroy(filter);
-	if(recover)
-		swizzle_swap(src);
+	CHECK_AND_SWIZZLE(src);
 	return dst;
 }

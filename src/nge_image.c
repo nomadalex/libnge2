@@ -468,7 +468,8 @@ image_p image_create(int w,int h,int displaymode)
 image_p image_create_ex(int w,int h,int color,int displaymode)
 {
 	image_p pimage = (image_p)malloc(sizeof(image_t));
-	int size,i,j;
+	int size;
+	uint32 i,j;
 	uint16* img16;
 	uint32* img32;
 	memset(pimage,0,sizeof(image_t));
@@ -547,10 +548,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 	uint16 *bmp16;
 
 	uint32 *cpbegin32,*bmp32;
-	if(src->swizzle ==1)
-		unswizzle_swap(src);
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
 	if(sw == 0 && sh == 0){
 		sw = src->w;
@@ -666,10 +664,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 	uint32 h = src->h;
 	uint32 *cpbegin32,*bmp32;
 
-	if(src->swizzle ==1)
-		unswizzle_swap(src);
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -775,10 +770,7 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 		sw = src->w;
 		sh = src->h;
 	}
-	if(src->swizzle ==1)
-		unswizzle_swap(src);
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
@@ -816,10 +808,7 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 	uint16 *cpbegin16,*bmp16;
 	uint32 i,j;
 	uint32 *cpbegin32,*bmp32;
-	if(src->swizzle ==1)
-		unswizzle_swap(src);
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -853,8 +842,7 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 	uint16 *cpbegin16,*bmp16;
 	uint32 *cpbegin32,*bmp32;
 	uint32 i,j;
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE(des);
 	des->modified = 1;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data+y*des->texw+x;
@@ -889,8 +877,7 @@ int image_fliph(image_p pimage)
 	uint8 *new_bits,*bits;
 	uint32 y,c;
 	if (!pimage) return 0;
-	if(pimage->swizzle ==1)
-		unswizzle_swap(pimage);
+	CHECK_AND_UNSWIZZLE(pimage);
 	pimage->modified = 1;
 	line   = pimage->texw*pimage->bpb;
 	width = pimage->w*pimage->bpb;
@@ -917,8 +904,7 @@ int image_flipv(image_p pimage)
 	uint32 y;
 
 	if (!pimage) return 0;
-	if(pimage->swizzle ==1)
-		unswizzle_swap(pimage);
+	CHECK_AND_UNSWIZZLE(pimage);
 	pimage->modified = 1;
 	// swap the buffer
 	pitch  = pimage->texw*pimage->bpb;

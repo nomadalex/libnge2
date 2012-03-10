@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
 	NGE_Init(INIT_VIDEO);
 	InitInput(btn_down,btn_up,1);
 
+	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
 	//创建字体
@@ -118,11 +119,13 @@ int main(int argc, char* argv[])
 		font_setcolor(pf[1],MAKE_RGBA_4444(255,0,0,255));
 	}
 	pimage_bg = image_load("images/demo1_bg.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(pimage_bg == NULL)
+	if(pimage_bg == NULL) {
 		printf("can not open file\n");
+	}
 	pimage_box = image_load("images/demo1_box.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(pimage_box == NULL)
+	if(pimage_box == NULL) {
 		printf("can not open file\n");
+	}
 	pimage_icon[0] = image_load_colorkey("images/demo1_icon0.bmp",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
     pimage_icon[1] = image_load_colorkey("images/demo1_icon1.png",DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	while ( !game_quit )

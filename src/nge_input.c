@@ -188,6 +188,8 @@ _DEF_INPUT_PROC(mouse_move)
 		button = MOUSE_MBUTTON_##type;							\
 	else if (event->xbutton.button == Button3)					\
 		button = MOUSE_RBUTTON_##type;							\
+	else														\
+		return;													\
 	mouse_btn_proc(button, event->xbutton.x, event->xbutton.y)
 
 _DEF_INPUT_PROC(mouse_down)

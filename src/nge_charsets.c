@@ -34,7 +34,7 @@ typedef struct {
 #include "gbk.h"
 #include "ces_gbk.h"
 
-int nge_charset_gbk_to_ucs2(const uint8* in, uint8* out, int len, int n) {
+int nge_charset_gbk_to_ucs2(const uint8* in, uint16* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
 	uint16 *pOut = out, *pEnd = out+n/2;

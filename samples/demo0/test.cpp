@@ -68,11 +68,13 @@ int main(int argc, char* argv[])
 	InitInput(btn_down,NULL,1);
 	//最后一个参数是psp swizzle优化，通常填1
 	p_bg = image_load("images/demo0.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_bg == NULL)
+	if(p_bg == NULL) {
 		printf("can not open file\n");
+	}
 	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_4444,1);
-	if(p_logo == NULL)
+	if(p_logo == NULL) {
 		printf("can not open file\n");
+	}
 	//创建一个半透明的图片遮罩color
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
 	//随便创建一个图片遮罩color
