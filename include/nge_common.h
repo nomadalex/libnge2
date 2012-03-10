@@ -58,7 +58,7 @@ typedef int BOOL;
 typedef uint8 BOOL;
 #endif
 
-#define SAFE_FREE(ptr) free(ptr)
+#define SAFE_FREE(ptr) free(ptr);ptr = NULL
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
