@@ -108,7 +108,7 @@ bool hgeParticleSystem::ReadInfoFromBuf(hgeParticleSystemInfo& info, const uint8
 
 	SET_ENDIAN(OP_LITTLEENDIAN);
 
-	if (len < infoSize)
+	if (len < (uint32)infoSize)
 		return false;
 	memset(&info, 0, sizeof(hgeParticleSystemInfo));
 
@@ -147,7 +147,7 @@ uint32 hgeParticleSystem::SaveInfoToBuf(const hgeParticleSystemInfo& info, uint8
 
 	SET_ENDIAN(OP_LITTLEENDIAN);
 
-	if (len < infoSize)
+	if (len < (uint32)infoSize)
 		return 0;
 
 	PUSH_UINT8('P', mem);
