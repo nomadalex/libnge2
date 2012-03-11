@@ -228,3 +228,5 @@ install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 if(BUILD_SAMPLES)
   add_subdirectory(samples)
 endif()
+
+add_subdirectory(particle-conv)
