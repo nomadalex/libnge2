@@ -126,6 +126,7 @@ extern "C" {
  *初始化mouse-touch
  */
 	NGE_API void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
+	NGE_API void EmulateTouchMove(int flag);
 #endif
 
 	NGE_API void SetSwapXY(int flag);
