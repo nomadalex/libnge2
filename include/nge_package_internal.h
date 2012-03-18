@@ -22,7 +22,7 @@ typedef struct {
 struct ngePackageOperation {
 	ngePackage* (*Open)(const char* fname,int option);
 	void (*Close)(ngePackage* pkg);
-	int (*OpenFile)(const char* fname,int flag);
+	int (*OpenFile)(ngePackage* pkg, const char* fname,int flag);
 };
 
 struct ngePackage

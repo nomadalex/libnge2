@@ -50,7 +50,7 @@ void ngeClosePackage(ngePackage* pkg) {
 }
 
 int ngeOpenInPackage(ngePackage* pkg, const char* fname, int flag) {
-	return pkg->op->OpenFile(fname, flag);
+	return pkg->op->OpenFile(pkg, fname, flag);
 }
 
 ngeRefHandle ngeCreatePackageHandle(ngePackage* pkg) {

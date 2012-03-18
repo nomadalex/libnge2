@@ -10,8 +10,9 @@
 #ifndef _NGE_PACKAGE_H
 #define _NGE_PACKAGE_H
 
-#include "nge_io_file.h"
+#include "nge_common.h"
 #include "nge_ref_handle.h"
+#include "nge_io_file.h"
 
 typedef struct ngePackage ngePackage;
 
