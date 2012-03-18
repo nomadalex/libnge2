@@ -10,11 +10,15 @@
 #ifndef _NGE_PACKAGE_ZIP_H
 #define _NGE_PACKAGE_ZIP_H
 
+#include "nge_common.h"
+#include "nge_package.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 	NGE_API void ngePackageZipInit();
+	NGE_API void ngePackageZipSetPassword(ngePackage* pkg, const char* passwd);
 
 #ifdef __cplusplus
 }
