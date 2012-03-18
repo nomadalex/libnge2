@@ -19,7 +19,7 @@ static ngeVFBlock firstBlock = { 1, {NULL}, NULL, NULL, 0 };
 static ngeVFBlock *currentBlock = &firstBlock;
 static int nextHandle = 0;
 
-int ngeVFRegister(ngeVF* f) {
+int ngeVFAdd(ngeVF* f) {
 	ngeVFBlock *b = currentBlock;
 	while (1) { /* find last */
 		if (b->next == NULL)
@@ -28,7 +28,10 @@ int ngeVFRegister(ngeVF* f) {
 	}
 
 	nextHandle++;
-	if (b->len == 10) { /* full */
+	if (b->len == 0) { /* empty, so reset start */
+		b->start = nextHandle;
+	}
+	else if (b->len == 10) { /* full */
 		ngeVFBlock* next = (ngeVFBlock*)malloc(sizeof(ngeVFBlock));
 		memset(next, 0, sizeof(ngeVFBlock));
 		next->start = nextHandle;
@@ -116,7 +119,7 @@ int io_fread(void* buf,int count,int size,int handle)
 	GET_VF(f, handle);
 
 	TEST_F(f, -1);
-	TEST_OP(f, Read, 0);
+	TEST_OP(f, Read, -1);
 	return f->op->Read(buf, size, count, f);
 }
 
@@ -126,7 +129,7 @@ int io_fwrite(void* buffer,int count,int size,int handle)
 	GET_VF(f, handle);
 
 	TEST_F(f, -1);
-	TEST_OP(f, Write, 0);
+	TEST_OP(f, Write, -1);
 	return f->op->Write(buffer, size, count, f);
 }
 
@@ -136,6 +139,7 @@ int io_fseek(int handle,int offset,int flag)
 	GET_VF(f, handle);
 
 	TEST_F(f, -1);
+	TEST_OP(f, Seek, -1);
 	return f->op->Seek(f, offset, flag);
 }
 
@@ -145,6 +149,7 @@ int io_ftell(int handle)
 	GET_VF(f, handle);
 
 	TEST_F(f, -1);
+	TEST_OP(f, Tell, -1);
 	return f->op->Tell(f);
 }
 
@@ -159,69 +164,89 @@ int io_fsize(int handle)
 }
 
 /* local disk operation */
-static int Close(ngeVF* f) {
-#if defined NGE_PSP
-	if (f->ptr >= 0)
-		return sceIoClose((int)(f->ptr));
+typedef struct {
+	ngeVFOperation* op;
+#ifdef NGE_PSP
+	int handle;
 #else
-	if (f->ptr != 0)
-		return fclose((FILE*)(f->ptr));
+	FILE* handle;
+#endif
+} ngeVFDisk;
+
+static int Close(ngeVF* f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
+
+#if defined NGE_PSP
+	if (df->handle >= 0)
+		return sceIoClose(df->handle);
+#else
+	if (df->handle != 0)
+		return fclose(df->handle);
 #endif
 
-	free(f);
+	free(df);
 	return -1;
 }
 
 static int Read(void *buf, size_t size, size_t n, ngeVF* f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
+
 #if defined NGE_PSP
-	return sceIoRead((int)(f->ptr), buf, size*n);
+	return sceIoRead(df->handle, buf, size*n);
 #else
-	return fread(buf, size, n,(FILE*)(f->ptr));
+	return fread(buf, size, n,df->handle);
 #endif
 }
 
 static int Write(const void *buf, size_t size, size_t n, ngeVF* f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
+
 #if defined NGE_PSP
-	return sceIoWrite((int)(f->ptr), buf, size*n);
+	return sceIoWrite(df->handle, buf, size*n);
 #else
-	return fwrite(buf, size, n, (FILE*)(f->ptr));
+	return fwrite(buf, size, n, df->handle);
 #endif
 }
 
 static int Seek(ngeVF *f, int offset, int whence) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
+
 #if defined NGE_PSP
-	int ret = sceIoLseek((int)(f->ptr), offset, whence);
+	int ret = sceIoLseek(df->handle, offset, whence);
 	if(ret >= 0)
 		return 0;
 	else
 		return -1;
 #else
-	return fseek((FILE*)(f->ptr), offset, whence);
+	return fseek(df->handle, offset, whence);
 #endif
 }
 
 static int Tell(ngeVF *f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
+
 #if defined NGE_PSP
-	int ret = sceIoLseek((int)(f->ptr), 0, IO_SEEK_CUR);
+	int ret = sceIoLseek(df->handle, 0, IO_SEEK_CUR);
 	return ret;
 #else
-	return ftell((FILE*)(f->ptr));
+	return ftell(df->handle);
 #endif
 }
 
 static int Eof(ngeVF *f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
 	int size,cur;
 #if defined NGE_PSP
-	int handle = (int)(f->ptr);
+	int handle = df->handle;
 	cur = sceIoLseek(handle, 0, IO_SEEK_CUR);
 	size = sceIoLseek(handle, 0, IO_SEEK_END);
 	sceIoLseek(handle, cur, IO_SEEK_SET);
 #else
-	FILE* handle = (FILE*)(f->ptr);
-	cur = ftell((FILE*)handle);
-	fseek((FILE*)handle,0,IO_SEEK_END);
-	size = ftell((FILE*)handle);
-	fseek((FILE*)handle,cur,IO_SEEK_SET);
+	FILE* handle = df->handle;
+	cur = ftell(handle);
+	fseek(handle,0,IO_SEEK_END);
+	size = ftell(handle);
+	fseek(handle,cur,IO_SEEK_SET);
 #endif
 	if (size == cur)
 		return 1;
@@ -229,20 +254,21 @@ static int Eof(ngeVF *f) {
 }
 
 static int Size(ngeVF* f) {
+	ngeVFDisk* df = (ngeVFDisk*)f;
  	int size,cur;
 
 #if defined NGE_PSP
-	int handle = (int)(f->ptr);
+	int handle = df->handle;
 	cur = sceIoLseek(handle, 0, IO_SEEK_CUR);
 	size = sceIoLseek(handle, 0, IO_SEEK_END);
 	sceIoLseek(handle, cur, IO_SEEK_SET);
 	return size;
 #else
-	FILE* handle = (FILE*)(f->ptr);
-	cur = ftell((FILE*)handle);
-	fseek((FILE*)handle,0,IO_SEEK_END);
-	size = ftell((FILE*)handle);
-	fseek((FILE*)handle,cur,IO_SEEK_SET);
+	FILE* handle = df->handle;
+	cur = ftell(handle);
+	fseek(handle,0,IO_SEEK_END);
+	size = ftell(handle);
+	fseek(handle,cur,IO_SEEK_SET);
 #endif
 
 	return size;
@@ -260,27 +286,30 @@ static ngeVFOperation disk_operations = {
 
 int io_fopen(const char* fname,int flag)
 {
-	void* ptr = NULL;
-	ngeVF* f;
+	ngeVFDisk* f;
 #if defined NGE_PSP
-	int fd = 0;
+	int handle = 0;
 	if(flag == IO_RDONLY)
-		fd = sceIoOpen(fname, PSP_O_RDONLY, 0777);
+		handle = sceIoOpen(fname, PSP_O_RDONLY, 0777);
 	else
-		fd = sceIoOpen(fname, PSP_O_RDWR|PSP_O_CREAT, 0777);
-	ptr = fd <=0 ? NULL: (void*)fd;
+		handle = sceIoOpen(fname, PSP_O_RDWR|PSP_O_CREAT, 0777);
+	handle = handle <=0 ? 0: handle;
+	if (handle <= 0)
+		return 0;
 #else
 	char io_array[][4]={"rb","wb","ab"};
-	FILE* fp;
+	FILE* handle;
 	if(flag > 3){
 		flag = 0;
 	}
-	fp = fopen(fname,io_array[flag]);
-	ptr = (void*)fp;
+	handle = fopen(fname,io_array[flag]);
+	if (handle == NULL)
+		return 0;
 #endif
-	f = (ngeVF*)malloc(sizeof(ngeVF));
-	f->ptr = ptr;
+
+	f = (ngeVFDisk*)malloc(sizeof(ngeVFDisk));
+	f->handle = handle;
 	f->op = &disk_operations;
 
-	return ngeVFRegister(f);
+	return ngeVFAdd((ngeVF*)f);
 }

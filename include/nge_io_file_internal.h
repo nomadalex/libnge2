@@ -12,9 +12,7 @@
 
 typedef struct ngeVFOperation_s ngeVFOperation;
 
-typedef struct
-{
-	void* ptr;
+typedef struct {
 	ngeVFOperation* op;
 } ngeVF;
 
@@ -42,14 +40,14 @@ struct ngeVFOperation_s
 	int (*Write)(const void *buf, size_t size, size_t n, ngeVF* f);
 
 	/**
-	   Moving in the file
+	   Moving in the file (optional)
 
 	   Sets the current file position and returns the old one. The flag parameter uses the same values as stdio (IO_SEEK_SET, IO_SEEK_CUR, IO_SEEK_END).
 	*/
 	int (*Seek)(ngeVF *f, int offset, int flag);
 
 	/**
-	   Get current file position
+	   Get current file position (optional)
 
 	   Returns the current pointer position in the file.
 	*/
@@ -72,7 +70,7 @@ struct ngeVFOperation_s
 extern "C" {
 #endif
 
-	NGE_API int ngeVFRegister(ngeVF* f);
+	NGE_API int ngeVFAdd(ngeVF* f);
 
 #ifdef __cplusplus
 }
