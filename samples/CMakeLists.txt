@@ -101,7 +101,7 @@ if(NOT ANDROID)
   endforeach()
 endif()
 
-foreach(i 10 11 12 13)
+foreach(i 10 11 12 13 14)
   add_subdirectory(demo${i})
 endforeach()
 
