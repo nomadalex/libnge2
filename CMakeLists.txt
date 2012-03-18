@@ -208,6 +208,7 @@ endif()
 if(BUILD_SHARED)
   add_our_library(nge2 SHARED ${NGE2_SRCS})
 else()
+  add_definitions(-DNGE_LIBTYPE_STATIC)
   add_our_library(nge2 STATIC ${NGE2_SRCS})
 endif()
 
