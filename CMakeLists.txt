@@ -93,8 +93,11 @@ list(APPEND NGE2_SRCS
   src/nge_graphics.c
   src/nge_app.c
   src/nge_app.cpp
+  src/nge_ref_handle.c
+  src/nge_package.c
+  src/nge_package_zip.c
   )
-list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
+list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS} ${UNZIP_LIBRARIES})
 
 if(MSVC AND NOT MSVC10)
   include_directories(SYSTEM include/msvc)

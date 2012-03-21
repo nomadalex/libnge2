@@ -32,6 +32,18 @@ static void btn_up_default(int keycode) { }
 static ButtonProc btn_down = btn_down_default;
 static ButtonProc btn_up   = btn_up_default;
 
+static touch_mode = 0;
+static istouched  = 0;
+
+void EmulateTouchMove(int flag)
+{
+	if(flag == 1)
+		touch_mode  = 1;
+	else
+		touch_mode  = 0;
+}
+
+
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {
 #ifdef NGE_PSP
@@ -270,7 +282,7 @@ int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if (mouse_move_proc != NULL)
+	if (mouse_move_proc != NULL && (istouched&&touch_mode == 1)||(touch_mode == 0))
 		mouse_move_proc(xPos, yPos);
 	return 0;
 }
@@ -311,14 +323,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return nge_win_key_up_handle(hWnd, wParam, lParam);
 
 	case WM_LBUTTONDOWN:
+		 istouched = 1;
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_LBUTTON, lParam);
 	case WM_RBUTTONDOWN:
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_RBUTTON, lParam);
 	case WM_MBUTTONDOWN:
-		return nge_win_mouse_btn_down_handle(hWnd, wParam, lParam);
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_MBUTTON, lParam);
 
 	case WM_LBUTTONUP:
+		 istouched = 0;
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_LBUTTON, lParam);
 	case WM_RBUTTONUP:
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_RBUTTON, lParam);
 	case WM_MBUTTONUP:
-		return nge_win_mouse_btn_up_handle(hWnd, wParam, lParam);
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_MBUTTON, lParam);
 
 	case WM_MOUSEMOVE:
 		return nge_win_mouse_move_handle(hWnd, wParam, lParam);
