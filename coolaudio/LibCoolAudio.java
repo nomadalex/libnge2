@@ -37,6 +37,11 @@ public class LibCoolAudio extends Object
 	{
 	}
 
+	static {
+		System.loadLibrary("openal");
+		System.loadLibrary("coolaudio");
+	}
+
 	private static final String TAG = "LibCoolAudio";
 	private MediaPlayer mplayer = null;
 	private Object mplayer_lock = new Object();
