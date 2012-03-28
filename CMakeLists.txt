@@ -45,8 +45,9 @@ if(NOT WIN32)
   endif()
 endif()
 
-if(BUILD_SHARED AND LINUX)
+if(LINUX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
 if(ANDROID)
@@ -58,7 +59,7 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INTERNAL
   "Real variable for build." FORCE)
 
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
-  set(NGE2_IS_DEBUG 1)
+  set(NGE_IS_DEBUG 1)
 endif()
 
 # Search for C header files in these directories.
@@ -134,7 +135,7 @@ if(COMPILER_GCC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
 
-if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+if(NGE_IS_DEBUG)
   option(USE_STDOUT_DEBUG "debug logs use stdout." on)
   if(USE_STDOUT_DEBUG)
 	add_definitions(-D_DEBUG_STDOUT)
@@ -182,7 +183,7 @@ macro(add_addon subdir)
 endmacro()
 
 # mmgr
-if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+if(NGE_IS_DEBUG)
   option(USE_MMGR "Useful for debug." off)
   if(USE_MMGR)
 	add_definitions(-DMMGR)
@@ -208,6 +209,7 @@ endif()
 if(BUILD_SHARED)
   add_our_library(nge2 SHARED ${NGE2_SRCS})
 else()
+  add_definitions(-DNGE_LIBTYPE_STATIC)
   add_our_library(nge2 STATIC ${NGE2_SRCS})
 endif()
 
@@ -218,7 +220,7 @@ endif()
 add_our_library(nge2_main STATIC src/nge_main.c)
 
 if(MSVC)
-#  if(NGE2_IS_DEBUG)
+#  if(NGE_IS_DEBUG)
 #	msvc_force_link_runtime(nge2 MDd)
 #  else()
 	msvc_force_link_runtime(nge2 MD)
