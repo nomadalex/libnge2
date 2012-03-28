@@ -38,13 +38,19 @@ if(WIN32 OR LINUX)
   endif()
 endif()
 
+find_package(Unzip)
+log_feature(UNZIP_FOUND "unzip" "a unzip library, you can download it from download page." "" REQUIRED)
+
 ################################################################################
 # coolauido
-set(COOLAUDIO_DEP_LIBS)
 if(LINUX AND NOT ANDROID)
   find_package(GStreamer)
   log_feature(GSTREAMER_FOUND "Gstreamer" "Open source multimedia framework" "http://gstreamer.freedesktop.org/" REQUIRED)
-  add_package(GSTREAMER COOLAUDIO_DEP_LIBS)
+endif()
+
+if(ANDROID)
+  find_package(OpenAL)
+  log_feature(OPENAL_FOUND "OpenAL" "cross-platform 3D audio API." "http://connect.creativelabs.com/openal/default.aspx" REQUIRED)
 endif()
 
 ################################################################################
@@ -53,11 +59,6 @@ endif()
 find_package(SQLite3)
 log_feature(SQLITE3_FOUND "sqlite3" "a self-contained, serverless, zero-configuration, transactional SQL database engine" "http://www.sqlite.org/")
 
-if(NOT ANDROID)
-# for demo9
-find_package(Unzip)
-log_feature(UNZIP_FOUND "unzip" "a unzip library, you can download it from download page." "")
-endif()
 ################################################################################
 # Tools
 find_package(Doxygen)
