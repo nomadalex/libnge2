@@ -111,10 +111,12 @@ inline void load_ca_methods()
 void CoolAudioDefaultInit()
 {
 	load_ca_methods();
+	InitAL();
 }
 
 void CoolAudioDefaultFini()
 {
+	DeInitAL();
 	GetEnv();
 	(*env)->DeleteGlobalRef(env, cLibCoolAudio);
 }
@@ -351,11 +353,6 @@ MAKE_METHOD(audio_media_player_t*, init, ())
 }
 
 #undef MAKE_METHOD
-
-audio_play_p CreateWavPlayer()
-{
-	return (audio_play_p) _METHOD(init)();
-}
 
 audio_play_p CreateMp3Player()
 {
