@@ -234,4 +234,6 @@ if(BUILD_SAMPLES)
   add_subdirectory(samples)
 endif()
 
-add_subdirectory(particle-conv)
+if(WIN32)
+  add_subdirectory(particle-conv)
+endif()
