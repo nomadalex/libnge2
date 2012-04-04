@@ -36,13 +36,13 @@
 #    ANDROID_NDK=/opt/android-ndk - path to the NDK root.
 #      Can be set as environment variable. Can be set only at first cmake run.
 #
-#    ANDROID_STANDALONE_TOOLCHAIN=/opt/android-toolchain - path to the 
+#    ANDROID_STANDALONE_TOOLCHAIN=/opt/android-toolchain - path to the
 #      standalone toolchain. This option is not used if full NDK is found
 #      (ignored if ANDROID_NDK is set).
 #      Can be set as environment variable. Can be set only at first cmake run.
 #
 #    ANDROID_ABI=armeabi-v7a -  specifies the target Application Binary
-#      Interface (ABI). This option nearly matches to the APP_ABI variable 
+#      Interface (ABI). This option nearly matches to the APP_ABI variable
 #      used by ndk-build tool from Android NDK.
 #      Possible values are:
 #        "armeabi" - matches to the NDK ABI with the same name.
@@ -94,10 +94,10 @@
 #      The flags will be prepopulated with critical flags, so don't loose them.
 #      Also be aware that toolchain also sets configuration-specific compiler
 #      flags and linker flags.
-#    
-#    ANDROID and BUILD_ANDROID will be set to true, you may test any of these 
+#
+#    ANDROID and BUILD_ANDROID will be set to true, you may test any of these
 #    variables to make necessary Android-specific configuration changes.
-#    
+#
 #    Also ARMEABI or ARMEABI_V7A or X86 will be set true, mutually exclusive.
 #    NEON option will be set true if VFP is set to NEON.
 #
@@ -128,7 +128,7 @@
 #         cmake pass
 #     [~] toolchain exits with error if ARM_TARGET is not recognized
 #   - modified June 2011 Andrey Kamaev andrey.kamaev@itseez.com
-#     [~] default NDK path is updated for version r5c 
+#     [~] default NDK path is updated for version r5c
 #     [+] variable CMAKE_SYSTEM_PROCESSOR is set based on ARM_TARGET
 #     [~] toolchain install directory is added to linker paths
 #     [-] removed SWIG-related stuff from toolchain
@@ -177,7 +177,7 @@ set( CMAKE_SYSTEM_NAME Linux )
 #this one not so much
 set( CMAKE_SYSTEM_VERSION 1 )
 
-set( ANDROID_SUPPORTED_NDK_VERSIONS -r7b -r7 -r6b -r6 -r5c -r5b -r5 "" )
+set( ANDROID_SUPPORTED_NDK_VERSIONS -r7b -r7 -r6b -r6 -r5c -r5b -r5 )
 if( CMAKE_HOST_WIN32 )
  file( TO_CMAKE_PATH "$ENV{PROGRAMFILES}" ANDROID_NDK_SEARCH_PATHS )
  set( ANDROID_NDK_SEARCH_PATHS "${ANDROID_NDK_SEARCH_PATHS}/android-ndk" "$ENV{SystemDrive}/NVPACK/android-ndk" )
@@ -343,6 +343,8 @@ if( NOT ANDROID_NDK )
   set( __ndkSearchPaths )
   foreach( __ndkSearchPath ${ANDROID_NDK_SEARCH_PATHS} )
    foreach( suffix ${ANDROID_SUPPORTED_NDK_VERSIONS} )
+	#fix for blank string will not store in list
+    list( APPEND __ndkSearchPaths "${__ndkSearchPath}" )
     list( APPEND __ndkSearchPaths "${__ndkSearchPath}${suffix}" )
    endforeach()
   endforeach()
@@ -875,7 +877,7 @@ set( CMAKE_C_FLAGS   "${ANDROID_CXX_FLAGS} ${CMAKE_C_FLAGS}" )
 set( ANDROID True )
 set( BUILD_ANDROID True )
 
-# where is the target environment 
+# where is the target environment
 set( CMAKE_FIND_ROOT_PATH "${ANDROID_TOOLCHAIN_ROOT}/bin" "${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_MACHINE_NAME}" "${ANDROID_SYSROOT}" "${CMAKE_INSTALL_PREFIX}" "${CMAKE_INSTALL_PREFIX}/share" )
 
 # only search for libraries and includes in the ndk toolchain
@@ -971,7 +973,7 @@ endif()
 #   ANDROID_SO_UNDEFINED : OFF/ON  (default depends on NDK version)
 #   ANDROID_SET_OBSOLETE_VARIABLES : ON/OFF
 #   LIBRARY_OUTPUT_PATH_ROOT : <any valid path>
-#   ANDROID_USE_STLPORT : OFF/ON - EXPERIMENTAL!!! 
+#   ANDROID_USE_STLPORT : OFF/ON - EXPERIMENTAL!!!
 #   ANDROID_FORBID_SYGWIN : ON/OFF
 # Can be set only at the first run:
 #   ANDROID_NDK
