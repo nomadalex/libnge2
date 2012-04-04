@@ -56,14 +56,26 @@ if(WIN32 OR PSP OR LINUX)
 endif()
 
 if(ANDROID)
+  list(FIND OPENAL_LIBRARY optimized OPENAL_OPTIMIZE_INDEX)
+  if(NOT OPENAL_OPTIMIZE_INDEX EQUAL -1)
+	math(EXPR OPENAL_OPTIMIZE_INDEX "${OPENAL_OPTIMIZE_INDEX} + 1")
+	list(GET OPENAL_LIBRARY ${OPENAL_OPTIMIZE_INDEX} OPENAL_LIBRARY_PATH)
+  else()
+	set(OPENAL_LIBRARY_PATH ${OPENAL_LIBRARY})
+  endif()
+  set(ENV{OPENAL_LIBRARY_PATH} ${OPENAL_LIBRARY_PATH})
+
   include(CopyFile)
   set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
   function(copy_coolaudio_android_files target android_dir)
 	copy_file("LibCoolAudio.java for ${target}"
 	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
 	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java")
+	copy_file("openal for ${target}"
+	  "$ENV{OPENAL_LIBRARY_PATH}"
+	  "${android_dir}/libs/${ARMEABI_NDK_NAME}/libopenal.so")
 	add_custom_target(${target}_android_coolaudio
-	  DEPENDS "LibCoolAudio.java for ${target}")
+	  DEPENDS "LibCoolAudio.java for ${target}" "openal for ${target}")
 	add_dependencies(${target}_android_coolaudio coolaudio)
 	add_dependencies(${target} ${target}_android_coolaudio)
   endfunction()
