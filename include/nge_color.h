@@ -36,7 +36,7 @@ extern "C" {
 #define DISPLAY_PIXEL_FORMAT_5551 GU_COLOR_5551
 #define DISPLAY_PIXEL_FORMAT_4444 GU_COLOR_4444
 #define DISPLAY_PIXEL_FORMAT_8888 GU_COLOR_8888
-//blend methord
+/*blend methord*/
 #define BLEND_ZERO					0x1000
 #define BLEND_ONE					0x1002
 #define BLEND_SRC_COLOR				GU_SRC_COLOR

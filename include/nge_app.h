@@ -28,7 +28,7 @@
 
 enum{
 	NGE_APP_NORMAL = 0,
-	NGE_APP_QUIT,
+	NGE_APP_QUIT
 };
 
 typedef struct nge_app {
