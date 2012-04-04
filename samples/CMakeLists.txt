@@ -39,7 +39,7 @@ function(add_nge_executable nm)
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
 
-	copy_coolaudio_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
+	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
 	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
 
 	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
@@ -54,15 +54,13 @@ function(add_nge_executable nm)
 	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
 	  "android/project_create.sh" @ONLY)
 
+
 	add_custom_command(
 	  TARGET ${nm}
 	  POST_BUILD
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
 	  "${CMAKE_CURRENT_BINARY_DIR}/android/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
-	  COMMAND "${CMAKE_COMMAND}" -E copy
-	  "${LIBRARY_OUTPUT_PATH}/libcoolaudio.so"
-	  "${CMAKE_CURRENT_BINARY_DIR}/android/libs/${ARMEABI_NDK_NAME}/libcoolaudio.so"
 	  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/android/project_create.sh"
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/android"
 	  )
