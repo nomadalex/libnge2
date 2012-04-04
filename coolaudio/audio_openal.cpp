@@ -15,6 +15,9 @@
 #endif
 #include <errno.h>
 #include <time.h>
+#include <assert.h>
+#include "nge_debug_log.h"
+#include <list>
 
 typedef pthread_mutex_t CRITICAL_SECTION;
 void EnterCriticalSection(CRITICAL_SECTION *cs);
@@ -137,7 +140,7 @@ static CRITICAL_SECTION cs;
 static bool need_run = true;
 static std::list<IPlayer*> playerList;
 
-static void ThreadFunc(void* ptr) {
+static void* ThreadFunc(void* ptr) {
 	while (need_run) {
 		LockAudio();
 		std::list<IPlayer*>::iterator iter = playerList.begin();
@@ -146,6 +149,7 @@ static void ThreadFunc(void* ptr) {
 		UnlockAudio();
 		ALSleep(0.01f);
 	}
+	return NULL;
 }
 
 BOOLEAN StartThread() {
