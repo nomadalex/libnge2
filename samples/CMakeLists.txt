@@ -61,7 +61,7 @@ function(add_nge_executable nm)
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
 	  "${CMAKE_CURRENT_BINARY_DIR}/android/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
-	  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/android/project_create.sh"
+	  COMMAND "./project_create.sh"
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/android"
 	  )
   endif()
