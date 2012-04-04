@@ -1,11 +1,11 @@
-# - Try to find unzip
+# - Try to find openal
 # Once done, this will define
 #
-#  UNZIP_INCLUDE_DIRS, where to find png.h, etc.
-#  UNZIP_LIBRARIES, the libraries to link against to use UNZIP.
-#  UNZIP_FOUND, If false, do not try to use UNZIP.
+#  OPENAL_INCLUDE_DIRS, where to find headers, etc.
+#  OPENAL_LIBRARIES, the libraries to link against for use OpenAL.
+#  OPENAL_FOUND, If false, do not try to use OpenAL.
 
-if(NOT UNZIP_FOUND)
+if(NOT OPENAL_FOUND)
   include(PkgUtils)
   findpkg_begin(OPENAL)
 
