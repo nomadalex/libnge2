@@ -42,8 +42,7 @@ if(PSP)
 endif()
 
 if(ANDROID)
-  add_library(coolaudio SHARED ${COOLAUDIO_SRCS})
-  target_link_libraries(coolaudio ${COOLAUDIO_LIBS})
+  add_library(coolaudio STATIC ${COOLAUDIO_SRCS})
 elseif(PSP OR LINUX)
   add_library(coolaudio STATIC ${COOLAUDIO_SRCS})
   install(TARGETS coolaudio DESTINATION lib)
@@ -59,17 +58,12 @@ endif()
 if(ANDROID)
   include(CopyFile)
   set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
-  set(COOLAUDIO_LIB_OUTPUT_NAME "libcoolaudio.so")
   function(copy_coolaudio_android_files target android_dir)
 	copy_file("LibCoolAudio.java for ${target}"
 	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
 	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java")
-	copy_file("${COOLAUDIO_LIB_OUTPUT_NAME} for ${target}"
-	  "${LIBRARY_OUTPUT_PATH}/${COOLAUDIO_LIB_OUTPUT_NAME}"
-	  "${android_dir}/libs/${ARMEABI_NDK_NAME}/${COOLAUDIO_LIB_OUTPUT_NAME}")
-
 	add_custom_target(${target}_android_coolaudio
-	  DEPENDS "coolaudio files for ${target}")
+	  DEPENDS "LibCoolAudio.java for ${target}")
 	add_dependencies(${target}_android_coolaudio coolaudio)
 	add_dependencies(${target} ${target}_android_coolaudio)
   endfunction()
