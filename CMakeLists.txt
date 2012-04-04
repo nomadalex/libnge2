@@ -34,6 +34,9 @@ set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
 
 include(Common)
+if(ANDROID)
+  include(AndroidCommon)
+endif()
 include(SetupDepends)
 
 # Put libraries into `lib'.
