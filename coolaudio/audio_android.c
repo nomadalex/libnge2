@@ -25,13 +25,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <android/log.h>
+#include "audio_openal.h"
 
 #define FALSE 0
 #define TRUE 1
 
 #define  LOG_TAG    "libcoolaudio"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+static inline void LOGI(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	__android_log_vprint(ANDROID_LOG_INFO,LOG_TAG, fmt, args);
+	va_end(args);
+}
+static inline void LOGE(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	__android_log_vprint(ANDROID_LOG_ERROR,LOG_TAG, fmt, args);
+	va_end(args);
+}
 
 #define WARN_UN_IMP() LOGI("%s not implementation!\n", __FUNCTION__)
 
@@ -152,14 +163,14 @@ typedef struct audio_media_player
 	fd_ispaused   ispaused;
 	fd_destroy    destroy;
 
-// private:
+/* private: */
 	int fd;
 	jobject obj;
 } audio_media_player_t;
 
 #define _METHOD(name) audio_##name
 #define MAKE_METHOD(return_type,name,args) static return_type _METHOD(name) args
-#define DEBUGME() //LOGI("this is in %s.\n", __FUNCTION__)
+#define DEBUGME() /*LOGI("this is in %s.\n", __FUNCTION__)*/
 
 MAKE_METHOD(int, load, (audio_media_player_t* p, const char* filename))
 {
