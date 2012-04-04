@@ -8,15 +8,6 @@ if(PSP OR IPHONE)
 endif()
 
 if(ANDROID)
-  include(CopyFile)
-  set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
-  function(copy_coolaudio_android_java_files target dir)
-	set(fromfile "${COOLAUDIO_DIR}/LibCoolAudio.java")
-	set(tofile "${dir}/src/org/libnge/nge2/LibCoolAudio.java")
-	copy_file("LibCoolAudio.java for ${nm}" ${fromfile} ${tofile})
-	add_custom_target(${target}_audio_java DEPENDS "LibCoolAudio.java for ${nm}")
-	add_dependencies(${target} ${target}_audio_java)
-  endfunction()
   list(APPEND COOLAUDIO_SRCS
 	audio_android.c
 	audio_openal.cpp
@@ -63,6 +54,25 @@ endif()
 
 if(WIN32 OR PSP OR LINUX)
   set(COOLAUDIO_LIBS ${COOLAUDIO_LIBS} PARENT_SCOPE)
+endif()
+
+if(ANDROID)
+  include(CopyFile)
+  set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
+  set(COOLAUDIO_LIB_OUTPUT_NAME "libcoolaudio.so")
+  function(copy_coolaudio_android_files target android_dir)
+	copy_file("LibCoolAudio.java for ${target}"
+	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
+	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java")
+	copy_file("${COOLAUDIO_LIB_OUTPUT_NAME} for ${target}"
+	  "${LIBRARY_OUTPUT_PATH}/${COOLAUDIO_LIB_OUTPUT_NAME}"
+	  "${android_dir}/libs/${ARMEABI_NDK_NAME}/${COOLAUDIO_LIB_OUTPUT_NAME}")
+
+	add_custom_target(${target}_android_coolaudio
+	  DEPENDS "coolaudio files for ${target}")
+	add_dependencies(${target}_android_coolaudio coolaudio)
+	add_dependencies(${target} ${target}_android_coolaudio)
+  endfunction()
 endif()
 
 install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
