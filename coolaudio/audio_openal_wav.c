@@ -6,7 +6,6 @@
  *  Copyright  2012  Kun Wang <ifreedom.cn@gmail.com>
  *
  */
-#include "nge_debug_log.h"
 #include "nge_io_file.h"
 #include "audio_interface.h"
 #include "audio_openal.h"
@@ -14,17 +13,32 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <android/log.h>
+
+#define  LOG_TAG    "libcoolaudio"
+static inline void LOGI(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	__android_log_vprint(ANDROID_LOG_INFO,LOG_TAG, fmt, args);
+	va_end(args);
+}
+static inline void LOGE(const char* fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	__android_log_vprint(ANDROID_LOG_ERROR,LOG_TAG, fmt, args);
+	va_end(args);
+}
 
 #define LOG_ERROR(str)							\
 	if(alGetError() != AL_NO_ERROR)				\
 	{											\
-		nge_log(str);							\
+		LOGE(str);							\
 	}
 
 #define LOG_ERROR_RET(str, ret)					\
 	if(alGetError() != AL_NO_ERROR)				\
 	{											\
-		nge_log(str);							\
+		LOGE(str);							\
 		return ret;								\
 	}
 
@@ -63,14 +77,14 @@ typedef struct
     uint32_t size;
 } wav_info_t;
 
-DECL_INIT_ENDIAN(OP_LITTLEENDIAN);
-
 inline static int parse_wav_hdr(const char* buf, int size, int *pos, wav_info_t* data) {
     struct wav_header hdr;
 	struct wav_data_hdr d_hdr;
+	DECL_ENDIAN();
 	int offset = *pos;
 
-	if ((size - offset) < sizeof(hdr))
+	SET_ENDIAN(OP_LITTLEENDIAN);
+	if ((size - offset) < (int)sizeof(hdr))
 		return -1;
 	memcpy(&hdr, buf+offset, sizeof(hdr));
 	offset += sizeof(hdr);
@@ -86,12 +100,12 @@ inline static int parse_wav_hdr(const char* buf, int size, int *pos, wav_info_t*
         return -1;
     }
 
-	if ((size - offset) < sizeof(d_hdr))
+	if ((size - offset) < (int)sizeof(d_hdr))
 		return -1;
 	memcpy(&d_hdr, buf+offset, sizeof(d_hdr));
 	offset += sizeof(d_hdr);
 
-	if (memcmp(d_hdr.data_id, "data") != 0)
+	if (memcmp(d_hdr.data_id, "data", 4) != 0)
 		return -1;
 
 	DO_ENDIAN(uint16_t, &hdr.num_channels);
@@ -181,7 +195,7 @@ audio_play_p CreateWavPlayer() {
     alSourcei(a->source, AL_ROLLOFF_FACTOR, 0);
 	LOG_ERROR_RET("Could not set source parameters\n", NULL);
 
-	al->buffer = 0;
+	a->buffer = 0;
 
 	a->info = NULL;
 	a->times = 0;
@@ -202,7 +216,7 @@ static void audio_callback(THIS_DEF) {
 		return;
 	}
 	else {
-		this->times--;
+		audio->times--;
 		goto replay;
 	}
 
@@ -221,7 +235,7 @@ _METHOD(int, load, (THIS_DEF, const char* filename)) {
 _METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
 	GET_AUDIO_FROM_THIS(audio);
 	wav_info_t *info = (wav_info_t*)malloc(sizeof(*info));
-	int format, pos;
+	int format, pos = 0;
 
 	audio->info = info;
 
@@ -250,7 +264,7 @@ _METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
 	if (audio->buffer != 0) {
 		alDeleteBuffers(1, &audio->buffer);
 	}
-	alGenBuffers(1, &a->buffer);
+	alGenBuffers(1, &audio->buffer);
 	LOG_ERROR_RET("Could not create buffers\n", 0);
 
 	alBufferData(audio->buffer, format, buf+pos, info->size, info->rate);
@@ -274,7 +288,7 @@ _METHOD(int, load_fp, (THIS_DEF, int fd, char closed_by_me)) {
 	if (closed_by_me == 1)
 		io_fclose(fd);
 
-	ret = wav_load_buf(this, buf, size);
+	ret = wav_load_buf(This, buf, size);
 	if (ret < 0)
 		free(buf);
 	return ret;
@@ -350,7 +364,7 @@ _METHOD(void, rewind, (THIS_DEF)) {
 
 _METHOD(void, seek, (THIS_DEF, int ms, int flag)) {
 	GET_AUDIO_FROM_THIS(audio);
-	struct wav_info* info = audio->info;
+	wav_info_t* info = audio->info;
 	ALint offset = (info->bps/8) * info->channels * ms * (info->rate/1000);
 	ALint cur;
 
@@ -373,7 +387,7 @@ _METHOD(void, seek, (THIS_DEF, int ms, int flag)) {
 seek:
 	if (offset < 0)
 		offset = 0;
-	else if (offset > info->size)
+	else if (offset > (int)info->size)
 		offset = info->size;
 
 	alSourcei(audio->source, AL_BYTE_OFFSET, offset);
