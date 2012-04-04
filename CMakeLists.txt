@@ -39,7 +39,7 @@ include(SetupDepends)
 # Put libraries into `lib'.
 if(NOT WIN32)
   if(ANDROID)
-	set_output_root(${CMAKE_SOURCE_DIR}/Android)
+	set_output_root(${CMAKE_BINARY_DIR}/Android)
   else()
 	set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
   endif()
