@@ -18,11 +18,11 @@ function(add_nge_executable nm)
 
   if(ANDROID)
 	add_library(${nm} SHARED ${NGE_ANDROID_JNI_FILE} ${_ARGS})
+	set(_LIBS nge2 ${_LIBS} ${NGE2_LIBS})
   else()
 	add_executable(${nm} WIN32 ${_ARGS})
+	set(_LIBS nge2_main nge2 ${_LIBS} ${NGE2_LIBS})
   endif()
-
-  set(_LIBS nge2_main nge2 ${_LIBS} ${NGE2_LIBS})
 
   rm_dup_lib(_LIBS)
   target_link_libraries(${nm} ${_LIBS})

@@ -223,7 +223,9 @@ if(WIN32)
   set_target_properties(nge2 PROPERTIES COMPILE_DEFINITIONS "NGE2_EXPORTS")
 endif()
 
-add_our_library(nge2_main STATIC src/nge_main.c)
+if(WIN32 OR UNIX)
+  add_our_library(nge2_main STATIC src/nge_main.c)
+endif()
 
 if(MSVC)
 #  if(NGE_IS_DEBUG)
