@@ -6,12 +6,12 @@
  *  Copyright  2012  Kun Wang <ifreedom.cn@gmail.com>
  *
  */
+#include <stdlib.h>
+#include <string.h>
 #include "nge_package.h"
 #include "nge_package_internal.h"
 #include "nge_io_file_internal.h"
 #include "nge_package_zip.h"
-#include <stdlib.h>
-#include <string.h>
 #include "unzip.h"
 
 typedef struct ngePackageZip {
