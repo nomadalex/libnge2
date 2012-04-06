@@ -59,7 +59,7 @@ char** get_main_argv(int* pargc)
 
 void CoolAudioDefaultInit()
 {
-	int argc = 0;
+	/* int argc = 0; */
 	char* argv[1] = { (char*)0 };
 
 	/* argv = get_main_argv(&argc); */
