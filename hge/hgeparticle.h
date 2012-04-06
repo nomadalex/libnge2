@@ -90,7 +90,7 @@ struct hgeParticleSystemInfo
 	float		fAlphaVar;
 };
 
-class NGE_API hgeParticleSystem
+class NGE_CLASS hgeParticleSystem
 {
 public:
 	hgeParticleSystemInfo info;
@@ -143,7 +143,7 @@ private:
 	float				mTimer;
 };
 
-class NGE_API hgeParticleManager
+class NGE_CLASS hgeParticleManager
 {
 public:
 	hgeParticleManager();

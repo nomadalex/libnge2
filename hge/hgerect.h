@@ -13,7 +13,7 @@
 
 #include "nge_common.h"
 
-class NGE_API hgeRect
+class NGE_CLASS hgeRect
 {
 public:
 	float	x1, y1, x2, y2;

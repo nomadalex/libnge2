@@ -18,7 +18,7 @@
 */
 float InvSqrt(float x);
 
-class NGE_API hgeVector
+class NGE_CLASS hgeVector
 {
 public:
 	float	x,y;
