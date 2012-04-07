@@ -1,12 +1,12 @@
 ﻿#include "nge_platform.h"
 #include "nge_debug_log.h"
 
-#include "nge_io_file.h"
-#include "nge_io_file_internal.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "nge_io_file.h"
+#include "nge_io_file_internal.h"
 
 typedef struct ngeVFBlock {
 	int start;
