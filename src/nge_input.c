@@ -1,5 +1,6 @@
 ﻿#include "nge_common.h"
 #include "nge_platform.h"
+#include "nge_debug_log.h"
 
 #if defined NGE_WIN
 #define WIN32_LEAN_AND_MEAN
@@ -7,7 +8,6 @@
 #include <windowsx.h>
 #endif
 
-#include "nge_debug_log.h"
 #include "nge_input.h"
 #include <stdlib.h>
 
@@ -22,7 +22,10 @@ static int game_quit = 0;
 
 #elif defined NGE_LINUX
 #include <X11/Xlib.h>
-
+// backward declarations
+// (in nge_graphics)
+extern Display *g_dpy;
+extern Window   g_win;
 #endif
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
@@ -53,6 +56,9 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 		sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 		inited = 1;
 	}
+#elif defined NGE_LINUX
+	long mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | PointerMotionMask | StructureNotifyMask;
+	XSelectInput(g_dpy, g_win, mask);
 #endif
 	if(downproc != NULL)
 		btn_down  = downproc;
@@ -164,10 +170,6 @@ static int SetAnalog(int key,char flag)
 #endif
 
 #if defined(NGE_LINUX)
-// backward declarations
-// (in nge_graphics)
-extern Display *g_dpy;
-extern Window   g_win;
 void FiniGrahics();
 
 #define _DEF_INPUT_PROC(n) inline void _##n (XEvent *event)

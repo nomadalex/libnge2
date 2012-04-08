@@ -11,4 +11,4 @@ if(SQLITE3_FOUND)
   list(APPEND NGE2_LIBS ${SQLITE3_LIBRARIES})
 endif()
 
-install(FILES CppSQLite3.h dictionary.h iniparser.h package.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES helper/CppSQLite3.h helper/dictionary.h helper/iniparser.h helper/package.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

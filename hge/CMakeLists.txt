@@ -5,4 +5,4 @@ set(HGE_DLL_SHORTVER 17)
 aux_source_directory(hge HGE_SRCS)
 list(APPEND NGE2_SRCS ${HGE_SRCS})
 
-install(FILES hgecolor.h hgeparticle.h hgerect.h hgevector.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES hge/hgecolor.h hge/hgeparticle.h hge/hgerect.h hge/hgevector.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

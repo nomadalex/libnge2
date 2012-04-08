@@ -18,7 +18,7 @@
 
 inline void ColorClamp(float &x) { if(x<0.0f) x=0.0f; if(x>1.0f) x=1.0f; }
 
-class NGE_API hgeColorRGB
+class NGE_CLASS hgeColorRGB
 {
 public:
 	float		r,g,b,a;
@@ -47,7 +47,7 @@ public:
 inline hgeColorRGB operator* (const float sc, const hgeColorRGB &c) { return c*sc; }
 
 
-class hgeColorHSV
+class NGE_CLASS hgeColorHSV
 {
 public:
 	float		h,s,v,a;

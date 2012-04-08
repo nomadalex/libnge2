@@ -12,7 +12,7 @@
 
 typedef struct ngeVFOperation_s ngeVFOperation;
 
-typedef struct {
+typedef struct ngeVF_s {
 	ngeVFOperation* op;
 } ngeVF;
 

@@ -38,6 +38,8 @@ public:
 	int mFps;
 };
 
-extern "C" NGE_API void nge_registerApp(CNgeApp *app);
+extern "C" {
+	NGE_API void nge_registerApp(CNgeApp *app);
+}
 
 #endif /* _NGE_APP_HPP */

@@ -10,21 +10,27 @@
 #ifndef _NGE_DLL_EXPORT_H
 #define _NGE_DLL_EXPORT_H
 
-#ifdef NGE_LIBTYPE_STATIC
-#define NGE_API
-#else
-
-#if defined WIN32
-
-#ifdef NGE2_EXPORTS
-#define NGE_API __declspec(dllexport)
-#else
-#define NGE_API __declspec(dllimport)
+#ifndef NGE_API
+ #ifdef NGE_LIBTYPE_STATIC
+  #define NGE_API
+  #define NGE_CLASS NGE_API
+ #elif defined WIN32
+  #ifdef NGE2_EXPORTS
+    #define NGE_API __declspec(dllexport)
+  #else
+    #define NGE_API __declspec(dllimport)
+  #endif
+  #define NGE_CLASS NGE_API
+ #else
+  #define NGE_API extern
+  #define NGE_CLASS
+ #endif
 #endif
 
+#ifdef WIN32
+ #define NGE_APIENTRY __cdecl
 #else
-#define NGE_API
-#endif
+ #define NGE_APIENTRY
 #endif
 
 #endif /* _NGE_DLL_EXPORT_H */

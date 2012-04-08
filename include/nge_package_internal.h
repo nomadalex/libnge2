@@ -14,7 +14,7 @@
 
 typedef struct ngePackageOperation ngePackageOperation;
 
-typedef struct {
+typedef struct ngePackageFormat_s {
 	char* extension;
 	ngePackageOperation* op;
 } ngePackageFormat;

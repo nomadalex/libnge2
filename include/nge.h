@@ -20,7 +20,7 @@ enum NotifyType
 {
 	NGE_NOTIFY_PAUSE = 0,
 	NGE_NOTIFY_RESUME,
-	NGE_NOTIFY_STOP,
+	NGE_NOTIFY_STOP
 };
 
 /**

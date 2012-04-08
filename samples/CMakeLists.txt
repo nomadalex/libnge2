@@ -18,11 +18,11 @@ function(add_nge_executable nm)
 
   if(ANDROID)
 	add_library(${nm} SHARED ${NGE_ANDROID_JNI_FILE} ${_ARGS})
+	set(_LIBS nge2 ${_LIBS} ${NGE2_LIBS})
   else()
 	add_executable(${nm} WIN32 ${_ARGS})
+	set(_LIBS nge2_main nge2 ${_LIBS} ${NGE2_LIBS})
   endif()
-
-  set(_LIBS nge2_main nge2 ${_LIBS} ${NGE2_LIBS})
 
   rm_dup_lib(_LIBS)
   target_link_libraries(${nm} ${_LIBS})
@@ -39,30 +39,30 @@ function(add_nge_executable nm)
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
 
-	copy_coolaudio_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
-	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/android)
+	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
+	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
 
 	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
-	  "android/default.properties" COPYONLY)
+	  "${nm}/default.properties" COPYONLY)
 	set(package_name "org.libnge.nge2.${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
-	  "android/AndroidManifest.xml" @ONLY)
+	  "${nm}/AndroidManifest.xml" @ONLY)
 	set(app_name "${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
-	  "android/res/values/strings.xml" @ONLY)
+	  "${nm}/res/values/strings.xml" @ONLY)
 	set(project_name "${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
-	  "android/project_create.sh" @ONLY)
+	  "${nm}/project_create.sh" @ONLY)
+
 
 	add_custom_command(
 	  TARGET ${nm}
 	  POST_BUILD
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
-	  "${CMAKE_CURRENT_BINARY_DIR}/android/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
-	  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/android/project_create.sh"
-	  COMMAND "ant" debug
-      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/android"
+	  "${CMAKE_CURRENT_BINARY_DIR}/${nm}/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
+	  COMMAND "./project_create.sh"
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${nm}"
 	  )
   endif()
 endfunction()

@@ -12,7 +12,7 @@
 
 #include "nge_common.h"
 
-typedef struct
+typedef struct ngeRefHandle_s
 {
 	void* ptr;
 } *ngeRefHandle;
