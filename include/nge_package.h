@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file  nge_package.h
  * @author Kun Wang <ifreedom.cn@gmail.com>
  * @date 2012/03/18 07:08:31
