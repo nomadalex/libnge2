@@ -97,7 +97,6 @@ list(APPEND NGE2_SRCS
   src/nge_tex_cache.c
   src/nge_tga.c
   src/nge_timer.c
-  src/nge_graphics.c
   src/nge_app.c
   src/nge_app.cpp
   src/nge_ref_handle.c
@@ -122,6 +121,10 @@ if(PSP)
   list(APPEND NGE2_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c
+	)
+else()
+  list(APPEND NGE2_SRCS
+	src/nge_graphics.c
 	)
 endif()
 
