@@ -1,4 +1,4 @@
-﻿#include "cAnimation.h"
+#include "cAnimation.h"
 #define ANI_WIDTH  70
 #define ANI_HEIGHT 124
 

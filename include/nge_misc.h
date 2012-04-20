@@ -1,4 +1,4 @@
-﻿#ifndef NGE_MISC_H_
+#ifndef NGE_MISC_H_
 #define NGE_MISC_H_
 
 #include "nge_common.h"

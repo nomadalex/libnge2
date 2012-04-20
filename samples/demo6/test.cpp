@@ -1,4 +1,4 @@
-﻿#include "libnge2.h"
+#include "libnge2.h"
 #include <stdio.h>
 /**
  * nge_gif:显示一张gif图片

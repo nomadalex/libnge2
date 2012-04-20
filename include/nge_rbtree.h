@@ -1,4 +1,4 @@
-﻿#ifndef NGE_RBTREE_H_
+#ifndef NGE_RBTREE_H_
 #define NGE_RBTREE_H_
 // red-black tree
 

@@ -1,4 +1,4 @@
-﻿#ifndef IO_FILE_H_
+#ifndef IO_FILE_H_
 #define IO_FILE_H_
 
 #include "nge_common.h"

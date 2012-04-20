@@ -1,4 +1,4 @@
-﻿#ifndef NGE_GRAPHICS_H_
+#ifndef NGE_GRAPHICS_H_
 #define NGE_GRAPHICS_H_
 
 #include "nge_common.h"

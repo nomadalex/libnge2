@@ -1,4 +1,4 @@
-﻿#ifndef NGE_TIMER_H_
+#ifndef NGE_TIMER_H_
 #define NGE_TIMER_H_
 
 #include "nge_common.h"

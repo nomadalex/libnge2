@@ -1,4 +1,4 @@
-﻿#ifndef NGE_IMAGE_EFFECT_H_
+#ifndef NGE_IMAGE_EFFECT_H_
 #define NGE_IMAGE_EFFECT_H_
 
 #include "nge_common.h"

@@ -1,4 +1,4 @@
-﻿#ifndef __NGE_CHARSET__H
+#ifndef __NGE_CHARSET__H
 #define __NGE_CHARSET__H
 
 #include "nge_common.h"

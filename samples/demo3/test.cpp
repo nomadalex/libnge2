@@ -1,4 +1,4 @@
-﻿#include "libnge2.h"
+#include "libnge2.h"
 /**
  * nge_test:最简单的nge程序:播放一个动画
  */

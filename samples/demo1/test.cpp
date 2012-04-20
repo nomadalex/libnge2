@@ -1,4 +1,4 @@
-﻿#include "libnge2.h"
+#include "libnge2.h"
 #include <stdio.h>
 #include <string.h>
 

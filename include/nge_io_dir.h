@@ -1,4 +1,4 @@
-﻿#ifndef NGE_DIR_IO_H
+#ifndef NGE_DIR_IO_H
 #define NGE_DIR_IO_H
 
 #include "nge_common.h"

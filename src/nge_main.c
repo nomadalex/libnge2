@@ -1,4 +1,4 @@
-﻿#include "nge_platform.h"
+#include "nge_platform.h"
 #include "nge_app.h"
 #include "nge.h"
 

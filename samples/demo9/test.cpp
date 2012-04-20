@@ -1,4 +1,4 @@
-﻿#include "libnge2.h"
+#include "libnge2.h"
 #include "nge_jpg.h"
 #include "unzip.h"
 #include <stdlib.h>

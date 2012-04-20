@@ -1,4 +1,4 @@
-﻿#include "libnge2.h"
+#include "libnge2.h"
 #include "cAnimation.h"
 #include <stdio.h>
 /**

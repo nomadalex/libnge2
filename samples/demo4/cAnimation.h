@@ -1,4 +1,4 @@
-﻿#ifndef CANIMATION_H_
+#ifndef CANIMATION_H_
 #define CANIMATION_H_
 #include "libnge2.h"
 extern int game_quit;

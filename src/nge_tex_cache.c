@@ -1,4 +1,4 @@
-﻿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_tex_cache.h"
 #include "nge_rbtree.h"
 #include <stdio.h>
