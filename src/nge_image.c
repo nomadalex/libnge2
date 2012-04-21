@@ -537,9 +537,6 @@ image_p image_clone(image_p pimage)
  *0 完全透明，255不透明
  *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
  *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
- /*
- #define MAKEALPHA(SRC, sg, sa, DES, dg, da, ALPHA)  
- */
 #define MAKEALPHA(SRC,DES,ALPHA) (( SRC*ALPHA + DES*(255-ALPHA) ) /255)
 
 void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha)
@@ -670,7 +667,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 		image_to_image(src, des, x, y);
 		return;
 	}
-	if(alpha == 0) {
+	if(alpha == 0)
 		return;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
@@ -769,7 +766,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy)
 {
 	uint16 *cpbegin16,*bmp16;
-	uint32 i,j;
+	uint32 i;
 	uint32 *cpbegin32,*bmp32;
 	uint32 size;
 	if(sw == 0 && sh == 0){
@@ -808,7 +805,7 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 	uint32 w = src->w;
 	uint32 h = src->h;
 	uint16 *cpbegin16,*bmp16;
-	uint32 i,j;
+	uint32 i;
 	uint32 size;
 	uint32 *cpbegin32,*bmp32;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
@@ -819,14 +816,14 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 		h = des->texh - y;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data + y * des->texw + x;
-		bmp16 = (uint16*)data;
+		bmp16 = (uint16*)src->data;
 		size = w * sizeof(uint16);
 		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16 += src->texw)
 			memcpy(cpbegin16, bmp16, size);
 	}
 	else{
 		cpbegin32 = (uint32*)des->data + y * des->texw + x;
-		bmp32= (uint32*)data;
+		bmp32= (uint32*)src->data;
 		size = w * sizeof(uint32);
 		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32 += src->texw)
 			memcpy(cpbegin32, bmp32, size);
@@ -837,7 +834,7 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 {
 	uint16 *cpbegin16,*bmp16;
 	uint32 *cpbegin32,*bmp32;
-	uint32 i,j;
+	uint32 i;
 	uint32 size;
 	CHECK_AND_UNSWIZZLE(des);
 	des->modified = 1;
@@ -849,14 +846,14 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 		cpbegin16 = (uint16*)des->data + y * des->texw + x;
 		bmp16 = (uint16*)data;
 		size = w * sizeof(uint16);
-		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16 += src->texw)
+		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16++)
 			memcpy(cpbegin16, bmp16, size);
 	}
 	else{
 		cpbegin32 = (uint32*)des->data + y * des->texw + x;
 		bmp32= (uint32*)data;
 		size = w * sizeof(uint32);
-		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32 += src->texw)
+		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32++)
 			memcpy(cpbegin32, bmp32, size);
 	}
 }
