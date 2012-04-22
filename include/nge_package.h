@@ -21,10 +21,10 @@ extern "C" {
 #endif
 
 /**
- *è½½å…¥æ‰“åŒ…æ–‡ä»¶
- *@param const char*,æ–‡ä»¶å
- *@param int, ä¸€äº›é€‰é¡¹ï¼ˆå¯é€‰ï¼‰
- *@return ngePackage*, è¿”å›åŒ…æ–‡ä»¶å¥æŸ„ï¼Œå¤±è´¥è¿”å›NULL
+ *ÔØÈë´ò°üÎÄ¼ş
+ *@param const char*,ÎÄ¼şÃû
+ *@param int, Ò»Ğ©Ñ¡Ïî£¨¿ÉÑ¡£©
+ *@return ngePackage*, ·µ»Ø°üÎÄ¼ş¾ä±ú£¬Ê§°Ü·µ»ØNULL
  */
 	NGE_API ngePackage* ngeLoadPackage(const char* fname, int option);
 	NGE_API ngeRefHandle ngeCreatePackageHandle(ngePackage* pkg);
@@ -32,11 +32,11 @@ extern "C" {
 	NGE_API void ngeClosePackage(ngePackage* pkg);
 
 /**
- *æ‰“å¼€åŒ…å†…æ–‡ä»¶
- *@param ngePackage*, åŒ…å¥æŸ„
- *@param const char*,æ–‡ä»¶å
- *@param int,æ‰“å¼€æ ‡å¿—(IO_RDONLY,IO_WRONLY,IO_APPENDçš„ä¸€ç§)
- *@return int,æ–‡ä»¶å¥æŸ„,è¯»å†™å‡ç”¨æ­¤æ–‡ä»¶å¥æŸ„è¿›è¡Œæ“ä½œ
+ *´ò¿ª°üÄÚÎÄ¼ş
+ *@param ngePackage*, °ü¾ä±ú
+ *@param const char*,ÎÄ¼şÃû
+ *@param int,´ò¿ª±êÖ¾(IO_RDONLY,IO_WRONLY,IO_APPENDµÄÒ»ÖÖ)
+ *@return int,ÎÄ¼ş¾ä±ú,¶ÁĞ´¾ùÓÃ´ËÎÄ¼ş¾ä±ú½øĞĞ²Ù×÷
  */
 	NGE_API int ngeOpenInPackage(ngePackage* pkg, const char* fname, int flag);
 

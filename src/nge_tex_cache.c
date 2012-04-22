@@ -64,7 +64,7 @@ void tex_cache_clear()
 }
 
 /**
- * 浠巉reelist涓幏鍙栦竴涓猚ache
+ * 从freelist中获取一个cache
  */
 static tex_node_p get_free_node()
 {
@@ -72,7 +72,7 @@ static tex_node_p get_free_node()
 	tex_node_p tex_node = NULL;
 	int i = 0;
 	if(free_tex_list == NULL){
-		//娌℃湁鍓╀綑鐨刢ache,浠庢爲涓噴鏀句竴鍗婄殑cache
+		//没有剩余的cache,从树中释放一半的cache
 		//root = rbtRoot();
 		delete_count = 0;
 		rbtInorder(rb,rb->root, deleteNodeProc);

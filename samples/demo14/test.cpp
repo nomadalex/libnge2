@@ -5,7 +5,7 @@
 #include "nge_app.h"
 
 /**
- * æµ‹è¯•nge2çš„æ–‡ä»¶ç³»ç»Ÿ
+ * ²âÊÔnge2µÄÎÄ¼þÏµÍ³
  */
 
 #ifdef ANDROID
@@ -40,7 +40,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
-		//å¼€å§‹é”®é€€å‡º
+		//¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
     }

@@ -35,9 +35,9 @@ extern "C" {
 #endif
 
 	/**
-	   æ³¨å†Œæ–°çš„åŒ…æ–‡ä»¶æ ¼å¼
-	 * @param ngePackageFormat*, åŒ…æ–‡ä»¶æ ¼å¼
-	 * @return int, è¿”å›0æˆåŠŸï¼Œè¿”å›-1å¤±è´¥
+	   ×¢²áĞÂµÄ°üÎÄ¼ş¸ñÊ½
+	 * @param ngePackageFormat*, °üÎÄ¼ş¸ñÊ½
+	 * @return int, ·µ»Ø0³É¹¦£¬·µ»Ø-1Ê§°Ü
 	 */
 	NGE_API int ngePackageRegister(ngePackageFormat* format);
 

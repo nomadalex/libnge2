@@ -3,7 +3,7 @@
 #include <string.h>
 
 /**
- * nge_test:æµ‹è¯•nge2çš„æŒ‰é”®è¾“å…¥å­—ä½“
+ * nge_test:²âÊÔnge2µÄ°´¼üÊäÈë×ÖÌå
  */
 
 int game_quit = 0;
@@ -12,7 +12,7 @@ image_p pimage_icon[2];
 
 int mask8888 = MAKE_RGBA_8888(255,255,255,255);
 int mask4444 = MAKE_RGBA_4444(255,255,255,255);
-//åŠé€æ˜çš„box
+//°ëÍ¸Ã÷µÄbox
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 
 void btn_down(int keycode)
@@ -98,20 +98,20 @@ int main(int argc, char* argv[])
 	InitInput(btn_down,btn_up,1);
 
 	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
-	//åˆ›å»ºä¸€ä¸ªæ˜¾ç¤ºimage,å­—å°±æ˜¾ç¤ºåœ¨è¿™ä¸ªä¸Šé¢æ³¨æ„DISPLAY_PIXEL_FORMATå¿…é¡»ä¸åˆ›å»ºå­—ä½“çš„DISPLAY_PIXEL_FORMATä¸€è‡´
+	//´´½¨Ò»¸öÏÔÊ¾image,×Ö¾ÍÏÔÊ¾ÔÚÕâ¸öÉÏÃæ×¢ÒâDISPLAY_PIXEL_FORMAT±ØĞëÓë´´½¨×ÖÌåµÄDISPLAY_PIXEL_FORMATÒ»ÖÂ
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
-	//åˆ›å»ºå­—ä½“
+	//´´½¨×ÖÌå
 	pf[0] = create_font_hzk("fonts/GBK14","fonts/ASC14",14,DISPLAY_PIXEL_FORMAT_4444);
 	pf[1] = create_font_freetype("fonts/simfang.ttf",13,DISPLAY_PIXEL_FORMAT_4444);
-	char str[3][128]={"ã€å°èè‰ã€‘","ä¼—èŠ³æ‘‡è½ç‹¬æš„å¦ï¼Œå å°½é£æƒ…å‘å°å›­ã€‚","ç–å½±æ¨ªæ–œæ°´æ¸…æµ…ï¼Œæš—é¦™æµ®åŠ¨æœˆé»„æ˜ã€‚"};
-	//æ˜¾ç¤ºGBK Font
+	char str[3][128]={"¡¾Ğ¡ÂÜÀò¡¿","ÖÚ·¼Ò¡Âä¶ÀêÑåû£¬Õ¼¾¡·çÇéÏòĞ¡Ô°¡£","ÊèÓ°ºáĞ±Ë®ÇåÇ³£¬°µÏã¸¡¶¯ÔÂ»Æ»è¡£"};
+	//ÏÔÊ¾GBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[0],str[0],strlen(str[0]),pimage_text,100,195,FONT_SHOW_NORMAL);
 	for(i = 1;i<3;i++){
 		font_drawtext(pf[0],str[i],strlen(str[i]),pimage_text,120,200+i*20,FONT_SHOW_SHADOW);
 		font_setcolor(pf[0],MAKE_RGBA_4444(255,0,0,255));
 	}
-	//æ˜¾ç¤ºfreetype
+	//ÏÔÊ¾freetype
 	font_setcolor(pf[1],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[1],str[0],strlen(str[0]),pimage_text,100,30,FONT_SHOW_NORMAL);
 	for(i =1;i<3;i++){

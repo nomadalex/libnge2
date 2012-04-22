@@ -2,8 +2,8 @@
 #include "nge_misc.h"
 #include <time.h>
 
-//ä¸€äº›æœ‰ç”¨çš„å…¬å…±å‡½æ•°
-//ç”Ÿæˆä¸€ä¸ªmin---maxçš„æµ®ç‚¹æ•°
+//Ò»Ğ©ÓĞÓÃµÄ¹«¹²º¯Êı
+//Éú³ÉÒ»¸ömin---maxµÄ¸¡µãÊı
 float rand_float(float min, float max)
 {
 	static int g_seed ;
@@ -16,7 +16,7 @@ float rand_float(float min, float max)
 	return min+(g_seed>>16)*(1.0f/65535.0f)*(max-min);
 }
 
-//ç”Ÿæˆä¸€ä¸ª(min,max)çš„æ•´æ•°
+//Éú³ÉÒ»¸ö(min,max)µÄÕûÊı
 int rand_int(int min, int max)
 {
 	static int g_seed ;

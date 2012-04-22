@@ -66,18 +66,18 @@ extern "C" {
 #endif
 
 /**
- * gifåŠ¨ç”»åŠ è½½ç¨‹åº,å°†gifåŠ¨ç”»å¸§å…¨éƒ¨åŠ è½½åˆ°å†…å­˜,
- * æœ¬å‡½æ•°æ˜¯é¢„å…ˆåŠ è½½å‡½æ•°,è¯·æ³¨æ„å†…å­˜çš„ä½¿ç”¨é‡
- *@param const char* filename,gifæ–‡ä»¶å
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼
- *@param int swizzle,ä¼˜åŒ–æ ‡å¿—,é€šå¸¸å¡«1
- *@return gif_desc_p,gifç»˜å›¾æ–‡ä»¶å¥æŸ„,ä¾›æ˜¾ç¤ºå‡½æ•°è°ƒç”¨
+ * gif¶¯»­¼ÓÔØ³ÌĞò,½«gif¶¯»­Ö¡È«²¿¼ÓÔØµ½ÄÚ´æ,
+ * ±¾º¯ÊıÊÇÔ¤ÏÈ¼ÓÔØº¯Êı,Çë×¢ÒâÄÚ´æµÄÊ¹ÓÃÁ¿
+ *@param const char* filename,gifÎÄ¼şÃû
+ *@param int displaymode,ÏÔÊ¾Ä£Ê½
+ *@param int swizzle,ÓÅ»¯±êÖ¾,Í¨³£Ìî1
+ *@return gif_desc_p,gif»æÍ¼ÎÄ¼ş¾ä±ú,¹©ÏÔÊ¾º¯Êıµ÷ÓÃ
  */
 	NGE_API gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle);
 
 /**
- * é‡Šæ”¾ä¸€ä¸ªgifåŠ¨ç”»èµ„æº
- *@param gif_desc_p pgif,ç”±gif_animation_loadåŠ è½½çš„æè¿°ç¬¦
+ * ÊÍ·ÅÒ»¸ögif¶¯»­×ÊÔ´
+ *@param gif_desc_p pgif,ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
  *@return
  */
 	NGE_API void gif_animation_free(gif_desc_p pgif);

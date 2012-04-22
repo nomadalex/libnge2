@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include "nge_app.h"
 /**
- * nge_test:æµ‹è¯•nge2çš„æŒ‰é”®è¾“å…¥å­—ä½“
- * é‡‡ç”¨æœ€æ–°çš„éŸ³é¢‘æ¥å£~
+ * nge_test:²âÊÔnge2µÄ°´¼üÊäÈë×ÖÌå
+ * ²ÉÓÃ×îĞÂµÄÒôÆµ½Ó¿Ú~
  */
 
 #ifdef ANDROID
@@ -17,14 +17,14 @@
 int game_quit = 0;
 image_p pimage_text,pimage_bg,pimage_box;
 image_p pimage_icon[2];
-//éŸ³ä¹æ’­æ”¾
+//ÒôÀÖ²¥·Å
 
-//åˆå§‹éŸ³é‡ä¸º128éŸ³é‡èŒƒå›´ä¸ºã€0-128ã€‘
+//³õÊ¼ÒôÁ¿Îª128ÒôÁ¿·¶Î§Îª¡¾0-128¡¿
 int volume = 128;
 
 int mask8888 = MAKE_RGBA_8888(255,255,255,255);
 int mask4444 = MAKE_RGBA_4444(255,255,255,255);
-//åŠé€æ˜çš„box
+//°ëÍ¸Ã÷µÄbox
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 int wav_ret;
 
@@ -48,7 +48,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_TRIANGLE:
 		break;
 	case PSP_BUTTON_CIRCLE:
-		//Oé”®æ¢å¤åˆ°å¼€å¤´
+		//O¼ü»Ö¸´µ½¿ªÍ·
 		if(audio[1]->iseof(audio[1])==1)
 			audio[1]->rewind(audio[1]);
 		audio[1]->play(audio[1],1,0);
@@ -60,7 +60,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
-		//å¼€å§‹é”®é€€å‡º
+		//¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
     }
@@ -106,7 +106,7 @@ void DrawScene()
 	DrawImage(pimage_icon[1],0,0,0,0,-20,143,128,128);
 	ImageToScreen(pimage_text,0,0);
 
-	//ä¸Šé¢2å¥ç­‰ä»·ä¸ä¸‹é¢2å¥
+	//ÉÏÃæ2¾äµÈ¼ÛÓëÏÂÃæ2¾ä
 	//RenderQuad(bg,0,0,0,0,0,0,1,1,0,mask8888);
 	//RenderQuad(pimage_text,0,0,0,0,0,0,1,1,0,mask4444);
 	EndScene();
@@ -165,21 +165,21 @@ int init()
 	NGE_RegisterNotifyCallback(notifyCallback, NULL);
 
 	int i;
-	//åˆ›å»ºä¸€ä¸ªæ˜¾ç¤ºimage,å­—å°±æ˜¾ç¤ºåœ¨è¿™ä¸ªä¸Šé¢æ³¨æ„DISPLAY_PIXEL_FORMATå¿…é¡»ä¸åˆ›å»ºå­—ä½“çš„DISPLAY_PIXEL_FORMATä¸€è‡´
+	//´´½¨Ò»¸öÏÔÊ¾image,×Ö¾ÍÏÔÊ¾ÔÚÕâ¸öÉÏÃæ×¢ÒâDISPLAY_PIXEL_FORMAT±ØĞëÓë´´½¨×ÖÌåµÄDISPLAY_PIXEL_FORMATÒ»ÖÂ
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
-	//åˆ›å»ºå­—ä½“
+	//´´½¨×ÖÌå
 	pf[0] = create_font_hzk(RES_PATH("fonts/GBK14"),RES_PATH("fonts/ASC14"),14,DISPLAY_PIXEL_FORMAT_4444);
 	pf[1] = create_font_freetype(RES_PATH("fonts/simfang.ttf"),13,DISPLAY_PIXEL_FORMAT_4444);
-	char str1[3][128]={"ã€æŠ¥å¹•å‘˜ã€‘","ä¸‹é¢æ’­æ”¾çš„æ˜¯ç”±é›ªè‰æ¼”å”±çš„å°„æ‰‹åº§ã€‚","æ¬¢è¿å¤§å®¶æ”¶å¬ï¼"};
-	char str2[3][128]={"ã€é›ªè‰ç²‰ä¸ã€‘","å“‡å“‡å“‡ã€‚ã€‚ã€‚å¤ªæ£’äº†ï¼","XXXXå¥³ç‹SAMAï¼Œæˆ‘çˆ±ä½ ã€‚"};
-	//æ˜¾ç¤ºGBK Font
+	char str1[3][128]={"¡¾±¨Ä»Ô±¡¿","ÏÂÃæ²¥·ÅµÄÊÇÓÉÑ©ÀòÑİ³ªµÄÉäÊÖ×ù¡£","»¶Ó­´ó¼ÒÊÕÌı£¡"};
+	char str2[3][128]={"¡¾Ñ©Àò·ÛË¿¡¿","ÍÛÍÛÍÛ¡£¡£¡£Ì«°ôÁË£¡","XXXXÅ®ÍõSAMA£¬ÎÒ°®Äã¡£"};
+	//ÏÔÊ¾GBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[0],str2[0],strlen(str2[0]),pimage_text,100,195,FONT_SHOW_NORMAL);
 	for(i = 1;i<3;i++){
 		font_drawtext(pf[0],str2[i],strlen(str2[i]),pimage_text,120,200+i*20,FONT_SHOW_SHADOW);
 		font_setcolor(pf[0],MAKE_RGBA_4444(255,0,0,255));
 	}
-	//æ˜¾ç¤ºfreetype
+	//ÏÔÊ¾freetype
 	font_setcolor(pf[1],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[1],str1[0],strlen(str1[0]),pimage_text,100,30,FONT_SHOW_NORMAL);
 	for(i =1;i<3;i++){
@@ -198,7 +198,7 @@ int init()
 	pimage_icon[0] = image_load_colorkey(RES_PATH("images/demo2_icon1.png"),DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 	pimage_icon[1] = image_load_colorkey(RES_PATH("images/demo2_icon0.bmp"),DISPLAY_PIXEL_FORMAT_8888,MAKE_RGB(0,0,0),1);
 
-	//è½½å…¥3å£°éŸ³ä¸€ä¼šæ’­æ”¾
+	//ÔØÈë3ÉùÒôÒ»»á²¥·Å
 	//0-mp3
 	audio[0] = CreateMp3Player();
 	audio[0]->load(audio[0], RES_PATH("music/simple1.mp3"));
@@ -297,7 +297,7 @@ int fini()
 	image_free(pimage_bg);
 	image_free(pimage_text);
 	image_free(pimage_box);
-	//é‡Šæ”¾å£°éŸ³èµ„æº
+	//ÊÍ·ÅÉùÒô×ÊÔ´
 	audio[0]->destroy(audio[0]);
 	audio[1]->destroy(audio[1]);
 	audio[2]->destroy(audio[2]);

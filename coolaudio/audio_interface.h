@@ -1,5 +1,5 @@
 /*
- * æœ¬æ–‡ä»¶å®šä¹‰äº†audioçš„å…¬å…±æ¥å£
+ * ±¾ÎÄ¼ş¶¨ÒåÁËaudioµÄ¹«¹²½Ó¿Ú
  */
 
 #ifndef AUDIO_INTERFACE_H_
@@ -13,79 +13,79 @@
 
 struct audio_play;
 /**
- *ä»æ–‡ä»¶åŠ è½½ä¸€ä¸ªaudioæ–‡ä»¶åˆ°å†…å­˜
+ *´ÓÎÄ¼ş¼ÓÔØÒ»¸öaudioÎÄ¼şµ½ÄÚ´æ
  */
 typedef int (*fd_load) (struct audio_play* This,const char* filename);
 /**
- *ä»å†…å­˜åŠ è½½ä¸€ä¸ªaudioæ–‡ä»¶åˆ°å†…å­˜
+ *´ÓÄÚ´æ¼ÓÔØÒ»¸öaudioÎÄ¼şµ½ÄÚ´æ
  */
 typedef int (*fd_load_buf) (struct audio_play* This,const char* buf,int size);
 /**
- *ä»æ–‡ä»¶æŒ‡é’ˆåŠ è½½ä¸€ä¸ªaudioæ–‡ä»¶åˆ°å†…å­˜
+ *´ÓÎÄ¼şÖ¸Õë¼ÓÔØÒ»¸öaudioÎÄ¼şµ½ÄÚ´æ
  */
 typedef int (*fd_load_fp) (struct audio_play* This,int handle,char closed_by_me);
 
 /**
- *æ’­æ”¾ä¸€ä¸ªå£°éŸ³
- *times=0ä¸ºå¾ªç¯æ’­æ”¾ï¼Œtime=nå°±æ’­æ”¾å‡ æ¬¡ï¼Œæ’­æ”¾å®Œæˆå
- *å¤„äºæœ«å°¾(eof()==true)å¹¶ç­‰å¾…ï¼ˆä¸é‡Šæ”¾å†…å­˜ï¼Œå¯ä»¥å†æ¬¡è°ƒç”¨rewindåˆ°å¼€å¤´æˆ–è€…seekåˆ°æŸä¸ªå¼€å§‹å¤„ç„¶åplayæ’­æ”¾ï¼Œæˆ–è€…è°ƒç”¨stopé‡Šæ”¾å†…å­˜ï¼‰ï¼Œ
- *free_when_stopæ˜¯æ’­æ”¾å®Œæ¯•åæ˜¯å¦é‡Šæ”¾å†…å­˜ï¼ˆè¿™ä¸ªä¸»è¦æ˜¯ç”¨äºæ’­æ”¾éŸ³æ•ˆä½¿ç”¨ï¼‰ã€‚
+ *²¥·ÅÒ»¸öÉùÒô
+ *times=0ÎªÑ­»·²¥·Å£¬time=n¾Í²¥·Å¼¸´Î£¬²¥·ÅÍê³Éºó
+ *´¦ÓÚÄ©Î²(eof()==true)²¢µÈ´ı£¨²»ÊÍ·ÅÄÚ´æ£¬¿ÉÒÔÔÙ´Îµ÷ÓÃrewindµ½¿ªÍ·»òÕßseekµ½Ä³¸ö¿ªÊ¼´¦È»ºóplay²¥·Å£¬»òÕßµ÷ÓÃstopÊÍ·ÅÄÚ´æ£©£¬
+ *free_when_stopÊÇ²¥·ÅÍê±ÏºóÊÇ·ñÊÍ·ÅÄÚ´æ£¨Õâ¸öÖ÷ÒªÊÇÓÃÓÚ²¥·ÅÒôĞ§Ê¹ÓÃ£©¡£
  */
 typedef int (*fd_play) (struct audio_play* This,int times,int free_when_stop);
 /**
- * æ’­æ”¾çš„ç®€åŒ–ç‰ˆï¼Œç­‰ä»·äºfd_play(This,1,1),ç”¨äºæ’­æ”¾éŸ³æ•ˆ;
+ * ²¥·ÅµÄ¼ò»¯°æ£¬µÈ¼ÛÓÚfd_play(This,1,1),ÓÃÓÚ²¥·ÅÒôĞ§;
  */
 typedef int (*fd_playstop) (struct audio_play* This);
 
 /**
-   æš‚åœæ’­æ”¾ä¸€ä¸ªå£°éŸ³,ç”¨resumeå¯ä»¥æ¢å¤ã€‚
+   ÔİÍ£²¥·ÅÒ»¸öÉùÒô,ÓÃresume¿ÉÒÔ»Ö¸´¡£
 */
 typedef void (*fd_pause) (struct audio_play* This);
 
 /**
-   åœæ­¢å£°éŸ³å¹¶é‡Šæ”¾å†…å­˜å’Œèµ„æºã€‚åªæœ‰å†æ¬¡loadæ‰èƒ½é‡æ–°åŠ è½½å£°éŸ³ã€‚
+   Í£Ö¹ÉùÒô²¢ÊÍ·ÅÄÚ´æºÍ×ÊÔ´¡£Ö»ÓĞÔÙ´Îload²ÅÄÜÖØĞÂ¼ÓÔØÉùÒô¡£
 */
 typedef int (*fd_stop) (struct audio_play* This);
 
 /**
-   æ¢å¤æ’­æ”¾ä¸€ä¸ªpauseçš„å£°éŸ³ã€‚
+   »Ö¸´²¥·ÅÒ»¸öpauseµÄÉùÒô¡£
  */
 typedef void (*fd_resume)(struct audio_play* This);
 
 /**
-   è®¾ç½®éŸ³é‡
+   ÉèÖÃÒôÁ¿
 */
 typedef int (*fd_volume) (struct audio_play* This,int volume);
 
 /**
-   å›åˆ°å£°éŸ³å¼€å¤´ã€‚åŒäºseek(this,0,SEEK_BEGIN);
+   »Øµ½ÉùÒô¿ªÍ·¡£Í¬ÓÚseek(this,0,SEEK_BEGIN);
 */
 typedef void (*fd_rewind)(struct audio_play* This);
 
 /**
-   msï¼Œç›¸å¯¹äºflagçš„æ—¶é—´å•ä½ä¸ºmsï¼Œflagæ˜¯Beginï¼Œendï¼Œä¾‹å¦‚ï¼š
-   seek(this,0,Begin);å°±æ˜¯å›åˆ°å¼€å¤´ï¼Œç­‰ä»·äºrewindã€‚
+   ms£¬Ïà¶ÔÓÚflagµÄÊ±¼äµ¥Î»Îªms£¬flagÊÇBegin£¬end£¬ÀıÈç£º
+   seek(this,0,Begin);¾ÍÊÇ»Øµ½¿ªÍ·£¬µÈ¼ÛÓÚrewind¡£
 */
 typedef void (*fd_seek) (struct audio_play* This,int ms,int flag);
 
 /**
-   åˆ¤å®šå‡½æ•°ï¼šæ˜¯å¦åˆ°è¾¾å£°éŸ³å°¾éƒ¨
+   ÅĞ¶¨º¯Êı£ºÊÇ·ñµ½´ïÉùÒôÎ²²¿
 */
 typedef int (*fd_iseof) (struct audio_play* This);
 /**
-   åˆ¤å®šå‡½æ•°ï¼šæ˜¯å¦æš‚åœï¼š
+   ÅĞ¶¨º¯Êı£ºÊÇ·ñÔİÍ££º
 */
 typedef int (*fd_ispaused)(struct audio_play* This);
 
 /**
-   é‡Šæ”¾å‡½æ•°ï¼Œé‡Šæ”¾è¿™ä¸ªæ’­æ”¾å™¨çš„å…¬æœ‰èµ„æº
-   åŒ…æ‹¬playeræœ¬èº«.ä»¥åæ­¤playerä¸èƒ½å†ä½¿ç”¨äº†,
-   playerå˜ä¸ºä¸€ä¸ªæ— æ•ˆæŒ‡é’ˆï¼Œè¦å†ä½¿ç”¨å¿…é¡»é‡æ–°create
+   ÊÍ·Åº¯Êı£¬ÊÍ·ÅÕâ¸ö²¥·ÅÆ÷µÄ¹«ÓĞ×ÊÔ´
+   °üÀ¨player±¾Éí.ÒÔºó´Ëplayer²»ÄÜÔÙÊ¹ÓÃÁË,
+   player±äÎªÒ»¸öÎŞĞ§Ö¸Õë£¬ÒªÔÙÊ¹ÓÃ±ØĞëÖØĞÂcreate
 */
 typedef int (*fd_destroy)(struct audio_play* This);
 
 /*
- * å¤–éƒ¨æ¥å£.
+ * Íâ²¿½Ó¿Ú.
  */
 typedef struct audio_play{
 	fd_load       load;

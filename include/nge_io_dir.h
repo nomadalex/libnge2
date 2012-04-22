@@ -21,12 +21,12 @@ extern "C"{
 #endif
 
 /**
- * ç›®å½•éå†è®¿é—®å‡½æ•°,åªæ”¯æŒè‹±æ–‡è·¯å¾„å’Œæ–‡ä»¶å.
- * æ³¨æ„åœ¨PSPä¸Šå…¨å°å†™çš„æ–‡ä»¶åä¼šä»¥å…¨éƒ¨å¤§å†™æ˜¾ç¤º.
- *@param const char* directory, å¾…è®¿é—®ç›®å½•å
- *@param file_travel_cb callback, è®¿é—®å›è°ƒå‡½æ•°
- *@param void* user_data,ç”¨æˆ·å‚æ•°
- *@return int ,è¿”å›å€¼0,1
+ * Ä¿Â¼±éÀú·ÃÎÊº¯Êı,Ö»Ö§³ÖÓ¢ÎÄÂ·¾¶ºÍÎÄ¼şÃû.
+ * ×¢ÒâÔÚPSPÉÏÈ«Ğ¡Ğ´µÄÎÄ¼şÃû»áÒÔÈ«²¿´óĞ´ÏÔÊ¾.
+ *@param const char* directory, ´ı·ÃÎÊÄ¿Â¼Ãû
+ *@param file_travel_cb callback, ·ÃÎÊ»Øµ÷º¯Êı
+ *@param void* user_data,ÓÃ»§²ÎÊı
+ *@return int ,·µ»ØÖµ0,1
  */
 	NGE_API int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data);
 

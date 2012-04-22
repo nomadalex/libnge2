@@ -25,119 +25,119 @@ extern "C"{
 #endif
 
 /**
- *è®¾ç½®å­—ä½“ç³»ç»Ÿå½“å‰çš„ç¼–ç 
- *@param uint8,ç¼–ç å€¼(å¦‚NGE_ENCODING_GBKæˆ–NGE_ENCODING_UTF_8)
+ *ÉèÖÃ×ÖÌåÏµÍ³µ±Ç°µÄ±àÂë
+ *@param uint8,±àÂëÖµ(ÈçNGE_ENCODING_GBK»òNGE_ENCODING_UTF_8)
  */
 	NGE_API void NGE_SetFontEncoding(uint8 encoding);
 
 /**
- *åˆ›å»ºä¸€ä¸ªGBK(hzk)font,é»˜è®¤ä¸ºGBKçš„ç‚¹é˜µ
- *@param const char* cname,ä¸­æ–‡å­—åº“é€šå¸¸æ˜¯GBKxx
- *@param const char* aname,è‹±æ–‡å­—åº“é€šå¸¸æ˜¯ASCxx
- *@param int height,é«˜åº¦,ä¾‹å¦‚å­—åº“ä¸ºGBK16,è¿™é‡Œå°±å¡«16
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨5551,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´´½¨Ò»¸öGBK(hzk)font,Ä¬ÈÏÎªGBKµÄµãÕó
+ *@param const char* cname,ÖĞÎÄ×Ö¿âÍ¨³£ÊÇGBKxx
+ *@param const char* aname,Ó¢ÎÄ×Ö¿âÍ¨³£ÊÇASCxx
+ *@param int height,¸ß¶È,ÀıÈç×Ö¿âÎªGBK16,ÕâÀï¾ÍÌî16
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ5551,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_hzk(const char* cname,const char* aname, int height,int disp);
 
 /**
- *ä»ä¸€ä¸ªå†…å­˜bufä¸Šåˆ›å»ºä¸€ä¸ªGBK(hzk)font,é»˜è®¤ä¸ºGBKçš„ç‚¹é˜µ
- *@param const char *cfbuf,ä¸­æ–‡å­—åº“bufé€šå¸¸æ˜¯GBKxx
- *@param int csize,ä¸Šé¢bufçš„å¤§å°
- *@param const char *afbuf,ä¸­æ–‡å­—åº“cbufé€šå¸¸æ˜¯ASCxx
- *@param int asize,ä¸Šé¢abufçš„å¤§å°
- *@param int height,é«˜åº¦,ä¾‹å¦‚å­—åº“ä¸ºGBK16,è¿™é‡Œå°±å¡«16
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨5551,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´ÓÒ»¸öÄÚ´æbufÉÏ´´½¨Ò»¸öGBK(hzk)font,Ä¬ÈÏÎªGBKµÄµãÕó
+ *@param const char *cfbuf,ÖĞÎÄ×Ö¿âbufÍ¨³£ÊÇGBKxx
+ *@param int csize,ÉÏÃæbufµÄ´óĞ¡
+ *@param const char *afbuf,ÖĞÎÄ×Ö¿âcbufÍ¨³£ÊÇASCxx
+ *@param int asize,ÉÏÃæabufµÄ´óĞ¡
+ *@param int height,¸ß¶È,ÀıÈç×Ö¿âÎªGBK16,ÕâÀï¾ÍÌî16
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ5551,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asize, int height,int disp);
 
 /**
- *åˆ›å»ºä¸€ä¸ªttf(freetype)font
- *@param const char* cname,freetypeæ–‡ä»¶å
- *@param int height,é«˜åº¦åƒç´ 
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨8888,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´´½¨Ò»¸öttf(freetype)font
+ *@param const char* cname,freetypeÎÄ¼şÃû
+ *@param int height,¸ß¶ÈÏñËØ
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ8888,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_freetype(const char* ttfname, int height,int disp);
 
 /**
- *ä»ä¸€ä¸ªå†…å­˜bufä¸Šåˆ›å»ºä¸€ä¸ªttf(freetype)font
- *@param const char *cfbuf,freetypeçš„å†…å­˜buf
- *@param int csize,freetypeçš„å†…å­˜buf
- *@param int height,é«˜åº¦åƒç´ 
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨8888,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´ÓÒ»¸öÄÚ´æbufÉÏ´´½¨Ò»¸öttf(freetype)font
+ *@param const char *cfbuf,freetypeµÄÄÚ´æbuf
+ *@param int csize,freetypeµÄÄÚ´æbuf
+ *@param int height,¸ß¶ÈÏñËØ
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ8888,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_freetype_buf(const char *cfbuf,int csize, int height,int disp);
 
 /**
- *åˆ›å»ºä¸€ä¸ªnfont
- *@param const char* cname,nfontæ–‡ä»¶å
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨8888,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´´½¨Ò»¸önfont
+ *@param const char* cname,nfontÎÄ¼şÃû
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ8888,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_nfont(const char* name,int disp);
 
 /**
- *ä»ä¸€ä¸ªå†…å­˜bufä¸Šåˆ›å»ºä¸€ä¸ªnfont
- *@param const char *cfbuf,nfontçš„å†…å­˜buf
- *@param int csize,bufçš„é•¿åº¦
- *@param int disp,æ˜¾ç¤ºæ¨¡å¼,4ç§æ˜¾ç¤ºæ¨¡å¼ä¹‹ä¸€,æ¨èä½¿ç”¨8888,4444
- *@return PFont pfont,è¿”å›fontæŒ‡é’ˆ
+ *´ÓÒ»¸öÄÚ´æbufÉÏ´´½¨Ò»¸önfont
+ *@param const char *cfbuf,nfontµÄÄÚ´æbuf
+ *@param int csize,bufµÄ³¤¶È
+ *@param int disp,ÏÔÊ¾Ä£Ê½,4ÖÖÏÔÊ¾Ä£Ê½Ö®Ò»,ÍÆ¼öÊ¹ÓÃ8888,4444
+ *@return PFont pfont,·µ»ØfontÖ¸Õë
  */
 	NGE_API PFont create_font_nfont_buf(const char *nfbuf,int nsize,int disp);
 
 /**
- * æ˜¾ç¤ºä¸€è¡Œå­—åˆ°å†…å­˜å›¾textarea,æ³¨æ„å¿…é¡»ç”¨create_imageå»ºç«‹å†…å­˜å›¾textarea
- *@param PFont pf,å­—ä½“æŒ‡é’ˆ,ç”±create_font_xxxåˆ›å»º
- *@param const char* text,æ˜¾ç¤ºçš„æ–‡å­—
- *@param int len,æ˜¾ç¤ºæ–‡å­—çš„é•¿åº¦,ç”¨strlenè®¡ç®—
- *@param image_p textarea,å†…å­˜å›¾textarea
- *@param int dx,æ‹·è´åˆ°å†…å­˜å›¾çš„xä½ç½®åæ ‡
- *@param int dy,æ‹·è´åˆ°å†…å­˜å›¾çš„yä½ç½®åæ ‡
- *@param int showflag,æ˜¾ç¤ºæ ‡å¿—,ç›®å‰åªæœ‰0(æ­£å¸¸),1(é˜´å½±)
- *@return æ— 
+ * ÏÔÊ¾Ò»ĞĞ×Öµ½ÄÚ´æÍ¼textarea,×¢Òâ±ØĞëÓÃcreate_image½¨Á¢ÄÚ´æÍ¼textarea
+ *@param PFont pf,×ÖÌåÖ¸Õë,ÓÉcreate_font_xxx´´½¨
+ *@param const char* text,ÏÔÊ¾µÄÎÄ×Ö
+ *@param int len,ÏÔÊ¾ÎÄ×ÖµÄ³¤¶È,ÓÃstrlen¼ÆËã
+ *@param image_p textarea,ÄÚ´æÍ¼textarea
+ *@param int dx,¿½±´µ½ÄÚ´æÍ¼µÄxÎ»ÖÃ×ø±ê
+ *@param int dy,¿½±´µ½ÄÚ´æÍ¼µÄyÎ»ÖÃ×ø±ê
+ *@param int showflag,ÏÔÊ¾±êÖ¾,Ä¿Ç°Ö»ÓĞ0(Õı³£),1(ÒõÓ°)
+ *@return ÎŞ
  */
 	NGE_API void font_drawtext(PFont pf,const char* text,int len,image_p textarea,int dx,int dy,int flags);
 /**
- *è®¾ç½®å­—ä½“çš„å±æ€§
- *@param PFont pf,å­—ä½“æŒ‡é’ˆ
- *@param int attr,å±æ€§å€¼
- *@param int setflag,éœ€è¦è®¾ç½®çš„å±æ€§æ ‡å¿—
- *@return æ— 
+ *ÉèÖÃ×ÖÌåµÄÊôĞÔ
+ *@param PFont pf,×ÖÌåÖ¸Õë
+ *@param int attr,ÊôĞÔÖµ
+ *@param int setflag,ĞèÒªÉèÖÃµÄÊôĞÔ±êÖ¾
+ *@return ÎŞ
  */
 	NGE_API void font_setattr(PFont pf,int attr,int setflag);
 /**
- *é‡Šæ”¾ä¸€ä¸ªå­—ä½“
- *@param PFont pf,å¾…é‡Šæ”¾çš„å­—ä½“æŒ‡é’ˆ
- *@return æ— 
+ *ÊÍ·ÅÒ»¸ö×ÖÌå
+ *@param PFont pf,´ıÊÍ·ÅµÄ×ÖÌåÖ¸Õë
+ *@return ÎŞ
  */
 	NGE_API void font_destory(PFont pf);
 /**
- *è®¾ç½®å­—ä½“é¢œè‰²
- *@param PFont pf,å­—ä½“æŒ‡é’ˆ
- *@param uint32 color,å­—ä½“é¢œè‰²ï¼Œé¢œè‰²å€¼ä¸å»ºç«‹å­—ä½“çš„dtypeå¯¹åº”,ä¾‹å¦‚å»ºç«‹æ˜¯16ä½5551,è¿™é‡Œå°±æ˜¯MAKE_RGBA5551è®¾ç½®
- *@return int,ä¸Šä¸€ä¸ªé¢œè‰²
+ *ÉèÖÃ×ÖÌåÑÕÉ«
+ *@param PFont pf,×ÖÌåÖ¸Õë
+ *@param uint32 color,×ÖÌåÑÕÉ«£¬ÑÕÉ«ÖµÓë½¨Á¢×ÖÌåµÄdtype¶ÔÓ¦,ÀıÈç½¨Á¢ÊÇ16Î»5551,ÕâÀï¾ÍÊÇMAKE_RGBA5551ÉèÖÃ
+ *@return int,ÉÏÒ»¸öÑÕÉ«
  */
 	NGE_API int font_setcolor(PFont pf,uint32 color);
 /**
- *å¢å¼ºå‹è®¾ç½®å­—ä½“é¢œè‰²,è§†æ”¯æŒè€Œå®š
- *@param PFont pf,å­—ä½“æŒ‡é’ˆ
- *@param uint32 color_fg,å‰æ™¯è‰²(å­—ä½“é¢œè‰²)ï¼Œé¢œè‰²å€¼ä¸å»ºç«‹å­—ä½“çš„dtypeå¯¹åº”,ä¾‹å¦‚å»ºç«‹æ˜¯16ä½5551,è¿™é‡Œå°±æ˜¯MAKE_RGBA5551è®¾ç½®
- *@param uint32 color_bg,èƒŒæ™¯è‰²ï¼Œé¢œè‰²å€¼ä¸å»ºç«‹å­—ä½“çš„dtypeå¯¹åº”
- *@param uint32 color_sh,å­—ä½“é˜´å½±è‰²ï¼Œé¢œè‰²å€¼ä¸å»ºç«‹å­—ä½“çš„dtypeå¯¹åº”
- *@return int,æ— 
+ *ÔöÇ¿ĞÍÉèÖÃ×ÖÌåÑÕÉ«,ÊÓÖ§³Ö¶ø¶¨
+ *@param PFont pf,×ÖÌåÖ¸Õë
+ *@param uint32 color_fg,Ç°¾°É«(×ÖÌåÑÕÉ«)£¬ÑÕÉ«ÖµÓë½¨Á¢×ÖÌåµÄdtype¶ÔÓ¦,ÀıÈç½¨Á¢ÊÇ16Î»5551,ÕâÀï¾ÍÊÇMAKE_RGBA5551ÉèÖÃ
+ *@param uint32 color_bg,±³¾°É«£¬ÑÕÉ«ÖµÓë½¨Á¢×ÖÌåµÄdtype¶ÔÓ¦
+ *@param uint32 color_sh,×ÖÌåÒõÓ°É«£¬ÑÕÉ«ÖµÓë½¨Á¢×ÖÌåµÄdtype¶ÔÓ¦
+ *@return int,ÎŞ
  */
 	NGE_API void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color_sh );
 /**
- *å¾—åˆ°ä¸€æ®µæ–‡å­—çš„èŒƒå›´
- *@param PFont pf,å­—ä½“æŒ‡é’ˆ
- *@param const void *text,æ–‡å­—æŒ‡é’ˆ
- *@param int cc,æ–‡å­—é•¿åº¦
- *@param int *pwidth  å®½
- *@param int *pheight é«˜
- *@param int *pbase   åŸºçº¿
+ *µÃµ½Ò»¶ÎÎÄ×ÖµÄ·¶Î§
+ *@param PFont pf,×ÖÌåÖ¸Õë
+ *@param const void *text,ÎÄ×ÖÖ¸Õë
+ *@param int cc,ÎÄ×Ö³¤¶È
+ *@param int *pwidth  ¿í
+ *@param int *pheight ¸ß
+ *@param int *pbase   »ùÏß
  *@return
  */
 	NGE_API void font_textsize(PFont pfont, const void *text, int cc,int *pwidth, int *pheight,int *pbase);

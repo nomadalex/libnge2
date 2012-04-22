@@ -72,10 +72,10 @@ int get_gray_color(int dtype, int scol, int gray)
 }
 
 /**
- * å»ºç«‹ src å›¾åƒçš„ç°åº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄ»Ò¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param gray ç°åº¦ 0 åˆ° 100, 0 ä¸ºæºå›¾åƒ, 100 ä¸ºçº¯ç°è‰²å›¾åƒ
+ * @param src Ô´Í¼Ïñ
+ * @param gray »Ò¶È 0 µ½ 100, 0 ÎªÔ´Í¼Ïñ, 100 Îª´¿»ÒÉ«Í¼Ïñ
  */
 image_p create_gray_image(image_p src, int gray)
 {
@@ -142,7 +142,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 	default:
 		return 0;
 	}
-	// å¤„ç†é¥±å’Œåº¦
+	// ´¦Àí±¥ºÍ¶È
 	if(saturation!=0)
 	{
 		maxcol = r>g ? (r>b?r:b):g;
@@ -172,7 +172,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 		if(b<0)b=0;
 	}
 cont001:
-	// å¤„ç†äº®åº¦
+	// ´¦ÀíÁÁ¶È
 	if(brightness!=0)
 	{
 		//gcol = ((r + g + b) / 3) & 0xff;
@@ -189,7 +189,7 @@ cont001:
 		if(b<0)b=0;
 	}
 
-	// è¾“å‡º
+	// Êä³ö
 	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_8888:
@@ -210,11 +210,11 @@ cont001:
 }
 
 /**
- * å»ºç«‹ src å›¾åƒçš„äº®åº¦ï¼Œé¥±å’Œåº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄÁÁ¶È£¬±¥ºÍ¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param saturation é¥±åˆåº¦ -100(ç°åº¦å›¾åƒ) è‡³ 100(é«˜å½©è‰²æ¯”å›¾åƒ)
- * @param brightness äº®åº¦ -100(å…¨é»‘) è‡³ 100(å…¨ç™½)
+ * @param src Ô´Í¼Ïñ
+ * @param saturation ±¥ºÏ¶È -100(»Ò¶ÈÍ¼Ïñ) ÖÁ 100(¸ß²ÊÉ«±ÈÍ¼Ïñ)
+ * @param brightness ÁÁ¶È -100(È«ºÚ) ÖÁ 100(È«°×)
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {

@@ -1,15 +1,15 @@
 #include "libnge2.h"
 /**
- * nge_test:æœ€ç®€å•çš„ngeç¨‹åº:æ’­æ”¾ä¸€ä¸ªåŠ¨ç”»
+ * nge_test:×î¼òµ¥µÄnge³ÌÐò:²¥·ÅÒ»¸ö¶¯»­
  */
 
-//é€€å‡ºæ ‡è¯†
+//ÍË³ö±êÊ¶
 int game_quit = 0;
-//èƒŒæ™¯å›¾ç‰‡
+//±³¾°Í¼Æ¬
 image_p p_bg = NULL;
-//logoå›¾ç‰‡
+//logoÍ¼Æ¬
 image_p p_logo  = NULL;
-//logoå›¾ç‰‡çš„å›¾ç‰‡é®ç½©
+//logoÍ¼Æ¬µÄÍ¼Æ¬ÕÚÕÖ
 int logomask1,logomask2;
 
 movie_ops movie;
@@ -35,11 +35,11 @@ void btn_down(int keycode)
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//æŒ‰ä¸‹é€‰æ‹©é”®é€€å‡º
+		//°´ÏÂÑ¡Ôñ¼üÍË³ö
 		game_quit = 1;
 		break;
 	case PSP_BUTTON_START:
-		//æŒ‰ä¸‹å¼€å§‹é”®é€€å‡º
+		//°´ÏÂ¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
     }
@@ -62,27 +62,27 @@ void DrawScene()
 extern "C"
 int main(int argc, char* argv[])
 {
-	//åˆå§‹åŒ–NGEåˆ†ä¸ºVIDEO,AUDIOï¼Œè¿™é‡Œæ˜¯åªåˆå§‹åŒ–VIDEOï¼Œå¦‚æžœåˆå§‹åŒ–æ‰€æœ‰ç”¨INIT_VIDEO|INIT_AUDIO,æˆ–è€…INIT_ALL
+	//³õÊ¼»¯NGE·ÖÎªVIDEO,AUDIO£¬ÕâÀïÊÇÖ»³õÊ¼»¯VIDEO£¬Èç¹û³õÊ¼»¯ËùÓÐÓÃINIT_VIDEO|INIT_AUDIO,»òÕßINIT_ALL
 	NGE_Init(INIT_VIDEO);
-	//åˆå§‹åŒ–æŒ‰é”®å¤„ç†btn_downæ˜¯æŒ‰ä¸‹å“åº”,åŽé¢æ˜¯å¼¹èµ·æ—¶çš„å“åº”ï¼Œ0æ˜¯è®©ngeå¤„ç†homeæ¶ˆæ¯(ç›´æŽ¥é€€å‡º)
+	//³õÊ¼»¯°´¼ü´¦Àíbtn_downÊÇ°´ÏÂÏìÓ¦,ºóÃæÊÇµ¯ÆðÊ±µÄÏìÓ¦£¬0ÊÇÈÃnge´¦ÀíhomeÏûÏ¢(Ö±½ÓÍË³ö)
 	InitInput(btn_down,NULL,0);
-	//æœ€åŽä¸€ä¸ªå‚æ•°æ˜¯psp swizzleä¼˜åŒ–ï¼Œé€šå¸¸å¡«1
+	//×îºóÒ»¸ö²ÎÊýÊÇpsp swizzleÓÅ»¯£¬Í¨³£Ìî1
 	p_bg = image_load("images/demo0.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
 	if(p_bg == NULL)
 		printf("can not open file\n");
 	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_4444,1);
 	if(p_logo == NULL)
 		printf("can not open file\n");
-	//åˆ›å»ºä¸€ä¸ªåŠé€æ˜Žçš„å›¾ç‰‡é®ç½©color
+	//´´½¨Ò»¸ö°ëÍ¸Ã÷µÄÍ¼Æ¬ÕÚÕÖcolor
 	logomask1 = CreateColor(255,255,255,128,p_logo->dtype);
-	//éšä¾¿åˆ›å»ºä¸€ä¸ªå›¾ç‰‡é®ç½©color
+	//Ëæ±ã´´½¨Ò»¸öÍ¼Æ¬ÕÚÕÖcolor
 	logomask2 = CreateColor(100,100,100,255,p_logo->dtype);
 
 	MoviePlayInit(&movie);
 	movie.load("movies/test.pmp");
 	movie.play();
-	//ç­‰å¾…åŠ¨ç”»æ’­æ”¾å®Œæ¯•eosæ˜¯ç»“æŸ
-	//ç»“æŸäº†è¿”å›ž1ï¼Œæœªç»“æŸä¸€ç›´ç­‰ä»–æ”¾å®Œ
+	//µÈ´ý¶¯»­²¥·ÅÍê±ÏeosÊÇ½áÊø
+	//½áÊøÁË·µ»Ø1£¬Î´½áÊøÒ»Ö±µÈËû·ÅÍê
 	do {
 	}while((movie.eos()==0));
 	movie.stop();

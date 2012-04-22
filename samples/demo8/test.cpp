@@ -3,7 +3,7 @@
  * nge_test:Polygons
  */
 
-//é€€å‡ºæ ‡è¯†
+//ÍË³ö±êÊ¶
 int game_quit = 0;
 
 void btn_down(int keycode)
@@ -19,7 +19,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_RIGHT:
 		break;
 	case PSP_BUTTON_TRIANGLE:
-		//æŒ‰ä¸‹ä¸‰è§’é”®æˆªå›¾
+		//°´ÏÂÈý½Ç¼ü½ØÍ¼
 		ScreenShot("screenshot.png");
 		break;
 	case PSP_BUTTON_CIRCLE:
@@ -29,27 +29,27 @@ void btn_down(int keycode)
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//æŒ‰ä¸‹é€‰æ‹©é”®é€€å‡º
+		//°´ÏÂÑ¡Ôñ¼üÍË³ö
 		game_quit = 1;
 		break;
 	case PSP_BUTTON_START:
-		//æŒ‰ä¸‹å¼€å§‹é”®é€€å‡º
+		//°´ÏÂ¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
     }
 }
 
 int colors[]={
-	MAKE_RGBA_8888(255,0,0,255),//çº¢
-	MAKE_RGBA_8888(255,128,0,255),//æ©™
-	MAKE_RGBA_8888(255,255,0,255),//é»„
-	MAKE_RGBA_8888(0,255,0,255),//ç»¿
-	MAKE_RGBA_8888(0,128,255,255),//é’
-	MAKE_RGBA_8888(0,0,255,255),//è“
-	MAKE_RGBA_8888(195,0,255,255)//ç´«
+	MAKE_RGBA_8888(255,0,0,255),//ºì
+	MAKE_RGBA_8888(255,128,0,255),//³È
+	MAKE_RGBA_8888(255,255,0,255),//»Æ
+	MAKE_RGBA_8888(0,255,0,255),//ÂÌ
+	MAKE_RGBA_8888(0,128,255,255),//Çà
+	MAKE_RGBA_8888(0,0,255,255),//À¶
+	MAKE_RGBA_8888(195,0,255,255)//×Ï
 };
 
-/*ä¸‹é¢DrawPolygonç”»ä¸ªç”¨å¹³è¡Œ4è¾¹å½¢
+/*ÏÂÃæDrawPolygon»­¸öÓÃÆ½ÐÐ4±ßÐÎ
 //  -------------------\
 //   \                  \
 //    \                  \
@@ -67,7 +67,7 @@ float Polygons_y1[]={
 	70.0f,
 	70.0f
 };
-//ä¸‹é¢ç”¨FillPolygonç”»ä¸ªä¸‰è§’å½¢
+//ÏÂÃæÓÃFillPolygon»­¸öÈý½ÇÐÎ
 float Polygons_x2[]={
 	200.0f,
 	300.0f,
@@ -79,7 +79,7 @@ float Polygons_y2[]={
 	160.0f
 };
 //
-//ä¸‹é¢ç”¨FillPolygonGradç”»ä¸ªæ¸è¿›ä¸‰è§’å½¢
+//ÏÂÃæÓÃFillPolygonGrad»­¸ö½¥½øÈý½ÇÐÎ
 float Polygons_x3[]={
 	400.0f,
 	450.0f,
@@ -90,11 +90,11 @@ float Polygons_y3[]={
 	250.0f,
 	250.0f
 };
-//é¢œè‰²
+//ÑÕÉ«
 int tri_color[]={
-	MAKE_RGBA_8888(255,0,0,255),//çº¢
-	MAKE_RGBA_8888(255,255,0,255),//é»„
-	MAKE_RGBA_8888(0,0,255,255)//è“
+	MAKE_RGBA_8888(255,0,0,255),//ºì
+	MAKE_RGBA_8888(255,255,0,255),//»Æ
+	MAKE_RGBA_8888(0,0,255,255)//À¶
 };
 
 void DrawScene()
@@ -117,19 +117,19 @@ void DrawScene()
 extern "C"
 int main(int argc, char* argv[])
 {
-	//åˆå§‹åŒ–NGEåˆ†ä¸ºVIDEO,AUDIOï¼Œè¿™é‡Œæ˜¯åªåˆå§‹åŒ–VIDEOï¼Œå¦‚æžœåˆå§‹åŒ–æ‰€æœ‰ç”¨INIT_VIDEO|INIT_AUDIO,æˆ–è€…INIT_ALL
+	//³õÊ¼»¯NGE·ÖÎªVIDEO,AUDIO£¬ÕâÀïÊÇÖ»³õÊ¼»¯VIDEO£¬Èç¹û³õÊ¼»¯ËùÓÐÓÃINIT_VIDEO|INIT_AUDIO,»òÕßINIT_ALL
 	NGE_Init(INIT_VIDEO);
-	//åˆå§‹åŒ–æŒ‰é”®å¤„ç†btn_downæ˜¯æŒ‰ä¸‹å“åº”,åŽé¢æ˜¯å¼¹èµ·æ—¶çš„å“åº”ï¼Œ0æ˜¯è®©ngeå¤„ç†homeæ¶ˆæ¯(ç›´æŽ¥é€€å‡º),å¡«1å°±æ˜¯è®©PSPç³»ç»Ÿå¤„ç†
-	//homeæ¶ˆæ¯,é€šå¸¸å¡«1æ­£å¸¸é€€å‡ºï¼ˆ1.50ç‰ˆçš„è‡ªåˆ¶ç¨‹åºéœ€è¦å¡«0ï¼‰
+	//³õÊ¼»¯°´¼ü´¦Àíbtn_downÊÇ°´ÏÂÏìÓ¦,ºóÃæÊÇµ¯ÆðÊ±µÄÏìÓ¦£¬0ÊÇÈÃnge´¦ÀíhomeÏûÏ¢(Ö±½ÓÍË³ö),Ìî1¾ÍÊÇÈÃPSPÏµÍ³´¦Àí
+	//homeÏûÏ¢,Í¨³£Ìî1Õý³£ÍË³ö£¨1.50°æµÄ×ÔÖÆ³ÌÐòÐèÒªÌî0£©
 	InitInput(btn_down,NULL,1);
-	//è®¾ç½®å±å¹•é¢œè‰²ä¸ºç™½è‰²
+	//ÉèÖÃÆÁÄ»ÑÕÉ«Îª°×É«
 	SetScreenColor(255,255,255,255);
 	while ( !game_quit )
 	{
 		ShowFps();
 		InputProc();
 		DrawScene();
-		//é™åˆ¶fpsä¸º60
+		//ÏÞÖÆfpsÎª60
 		LimitFps(60);
 	}
 	NGE_Quit();

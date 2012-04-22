@@ -31,44 +31,44 @@ extern "C" {
 #endif
 
 /**
- *åŠ è½½jpgå›¾ç‰‡,ä»æ–‡ä»¶åŠ è½½
- *@param const char* filename,å›¾ç‰‡æ–‡ä»¶å
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØjpgÍ¼Æ¬,´ÓÎÄ¼ş¼ÓÔØ
+ *@param const char* filename,Í¼Æ¬ÎÄ¼şÃû
+ *@param int displaymode,ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_jpg(const char* filename, int displaymode);
 
 /**
- *åŠ è½½jpgå›¾ç‰‡,ä»å†…å­˜åŠ è½½
- *@param const char* mbuf,å†…å­˜åœ°å€
- *@param int bsize,ä¸Šè¿°bufferå¤§å°
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØjpgÍ¼Æ¬,´ÓÄÚ´æ¼ÓÔØ
+ *@param const char* mbuf,ÄÚ´æµØÖ·
+ *@param int bsize,ÉÏÊöbuffer´óĞ¡
+ *@param int displaymode,ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode);
 
 /**
- *åŠ è½½jpgå›¾ç‰‡,ä»æ–‡ä»¶æŒ‡é’ˆåŠ è½½
- *@param int handle,æ–‡ä»¶æŒ‡é’ˆ
- *@param int fsize,ä¸Šè¿°æ–‡ä»¶å¤§å°
- *@param int autoclose,æ˜¯å¦å…³é—­æ–‡ä»¶,æ˜¯å¦å…³é—­æ–‡ä»¶,0ä¸å…³é—­,1å…³é—­
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØjpgÍ¼Æ¬,´ÓÎÄ¼şÖ¸Õë¼ÓÔØ
+ *@param int handle,ÎÄ¼şÖ¸Õë
+ *@param int fsize,ÉÏÊöÎÄ¼ş´óĞ¡
+ *@param int autoclose,ÊÇ·ñ¹Ø±ÕÎÄ¼ş,ÊÇ·ñ¹Ø±ÕÎÄ¼ş,0²»¹Ø±Õ,1¹Ø±Õ
+ *@param int displaymode,ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_jpg_fp(int handle,int fsize, int autoclose,int displaymode);
 
 /**
- * åŒimage_load_jpgå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_jpgº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
  */
 	NGE_API image_p image_load_jpg_colorkey(const char* filename, int displaymode,int colorkey);
 
 /**
- * åŒimage_load_jpg_bufå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_jpg_bufº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
  */
 	NGE_API image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
 
 /**
- * åŒimage_load_jpg_fpå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_jpg_fpº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
  */
 	NGE_API image_p image_load_jpg_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 
