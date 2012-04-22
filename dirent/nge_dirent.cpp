@@ -324,6 +324,7 @@ NGEDirent::~NGEDirent()
 
 #elif defined _PSP
 #include <pspkernel.h>
+#include <string.h>
 #include "fat.h"
 #include "directory.h"
 #include "miniconv.h"
@@ -354,6 +355,7 @@ int NGEDirent::openDirent(string directory)
 	currentPath=directory;
 
 	char spath[256];
+	char buff[1024];
 
 	directory_item_struct* dirItems = NULL;
 
@@ -378,7 +380,8 @@ int NGEDirent::openDirent(string directory)
 			string shortFullPath=shortpath+dirItems[i].shortname;
 
 			//[longname] UTF-8->
-			charsets_utf8_conv(    (const uint8 *) (dirItems[i].longname),   (uint8 *) dirItems[i].longname);
+			nge_charsets_utf8_to_gbk((const uint8*)(dirItems[i].longname), (uint8*)buff, strlen(dirItems[i].longname), 1024);
+			strcpy((char*)dirItems[i].longname, (const char*)buff);
 
 			//创建 修改时间
 			file_time ctime;
