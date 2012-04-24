@@ -312,8 +312,10 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	pimage->modified =1;
 	for (i =0;i<cc;i++) {
 		FT_Load_Glyph( pf->face, FT_Get_Char_Index( pf->face, value[i] ), FT_LOAD_DEFAULT );
-		if(pf->flags == FLAGS_FREETYPE_BOLDER)
+		if(pf->flags & FLAGS_FREETYPE_BOLD)
 			FT_GlyphSlot_Embolden(pf->face->glyph);
+		if(pf->flags & FLAGS_FREETYPE_ITALICS)
+			FT_GlyphSlot_Oblique(pf->face->glyph);
 		FT_Get_Glyph( pf->face->glyph, &glyph );
 		FT_Render_Glyph( pf->face->glyph, ft_render_mode_normal );
 		FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
@@ -345,7 +347,16 @@ static void freetype2_setfontattr(PFont pfont, int attr, int setflags)
 		pf->fix_width = attr;
 		break;
 	case SET_ATTR_BOLD:
-		pf->flags = FLAGS_FREETYPE_BOLDER;
+		pf->flags |= FLAGS_FREETYPE_BOLD;
+		break;
+	case SET_ATTR_NOBOLD:
+		pf->flags &= ~FLAGS_FREETYPE_BOLD;
+		break;
+	case SET_ATTR_ITALICS:
+		pf->flags |= FLAGS_FREETYPE_ITALICS;
+		break;
+	case SET_ATTR_NOITALICS:
+		pf->flags &= ~FLAGS_FREETYPE_ITALICS;
 		break;
 	case SET_ATTR_MARGIN:
 		break;
