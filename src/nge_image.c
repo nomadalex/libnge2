@@ -616,8 +616,6 @@ inline uint32 ALPHABLEND_8888(uint32 SRC,uint32 DST,int ALPHA) {
 
 void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha)
 {
-	uint8 sr, sg, sb, sa;
-	uint8 dr, dg, db, da;
 	uint32 i,j;
 	uint16 *cpbegin16;
 	uint16 *bmp16;
@@ -703,8 +701,6 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 
 void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,int alpha)
 {
-	uint8 sr,sg,sb,sa;
-	uint8 dr,dg,db,da;
 	uint32 i,j;
 	uint16 *cpbegin16;
 	uint16 *bmp16;
