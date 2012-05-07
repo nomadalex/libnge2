@@ -18,7 +18,7 @@ extern int NGE_main(int argc, char *argv[]);
 int cbid = 0;
 
 PSP_MODULE_INFO("NGE APP", 0, 1, 1);
-PSP_MAIN_THREAD_ATTR(0);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(18*1024);
 
 int nge_psp_exit_callback(int arg1, int arg2, void *common)
