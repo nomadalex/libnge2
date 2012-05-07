@@ -31,11 +31,11 @@ char* CreateInfoByid(int id)
 			" heroinfo,herotype where heroinfo.id=%d and heroinfo.type=herotype.id;",id);
 		CppSQLite3Query q = db.execQuery(querybuf);
 
-		nge_charsets_utf8_to_gbk((uint8*)str, (uint8*)querybuf, strlen(str), 1024);
+		//nge_charsets_utf8_to_gbk((uint8*)str, (uint8*)querybuf, strlen(str), 1024);
 
 		if (!q.eof())
 	{
-		sprintf(buffer,querybuf, q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
+		sprintf(buffer,str, q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
 				q.fieldValue(4),q.fieldValue(5),q.fieldValue(6));
 	}
 		db.close();
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 	int i;
 
 	NGE_Init(INIT_VIDEO);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	InitInput(btn_down,btn_up,1);
 
 	int maxid = GetInfoCount();

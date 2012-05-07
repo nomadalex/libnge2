@@ -152,7 +152,7 @@ void mouseButtonProc(int type, int x, int y)
 int init()
 {
 	NGE_Init(INIT_ALL);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 	InitInput(btn_down,btn_up,1);

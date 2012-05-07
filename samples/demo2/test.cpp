@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 	NGE_Init(INIT_ALL);
 	//audio_play_p mp3 = CreateMp3Player();
 	InitInput(btn_down,btn_up,1);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	PFont pf[2] ;
 	int i;
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致

@@ -229,7 +229,7 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	NGE_Init(INIT_ALL);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 
 	InitInput(btn_down,btn_up,1);
 

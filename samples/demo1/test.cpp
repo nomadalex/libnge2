@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 	NGE_Init(INIT_VIDEO);
 	InitInput(btn_down,btn_up,1);
 
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	//创建一个显示image,字就显示在这个上面注意DISPLAY_PIXEL_FORMAT必须与创建字体的DISPLAY_PIXEL_FORMAT一致
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
 	//创建字体

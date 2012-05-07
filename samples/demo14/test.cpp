@@ -98,7 +98,7 @@ int init()
 	char* txt;
 
 	NGE_Init(INIT_VIDEO);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	ngePackageZipInit();
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
