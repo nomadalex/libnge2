@@ -61,6 +61,11 @@ int main(int argc, char *argv[])
 #ifdef NGE_WIN
 	static int argc = 0;
 	static char* argv[] = { NULL };
+#ifdef _DEBUG
+    AllocConsole();
+    freopen("CONOUT$","w+t",stdout);
+    freopen("CONIN$","r+t",stdin);
+#endif
 #endif
 
 #ifdef NGE_PSP
