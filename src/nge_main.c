@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 #ifdef NGE_WIN
 	static int argc = 0;
 	static char* argv[] = { NULL };
-#ifdef _DEBUG
+#ifdef _DEBUG_STDOUT
     AllocConsole();
     freopen("CONOUT$","w+t",stdout);
     freopen("CONIN$","r+t",stdin);
