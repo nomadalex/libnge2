@@ -29,58 +29,58 @@ extern "C"{
 
 /**
  *打开(本地磁盘)文件
- *@param const char*,文件名
- *@param int,打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
+ *@param[in] fname 文件名
+ *@param[in] flag 打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
  *@return int,文件句柄,读写均用此文件句柄进行操作
  */
 	NGE_API int io_fopen(const char* fname,int flag);
 
 /**
  *读文件,与fread类似
- *@param void*,保存读取数据的缓存
- *@param int,读取个数
- *@param int,读取大小
- *@param int,文件句柄
+ *@param[in] buffer 保存读取数据的缓存
+ *@param[in] count 读取个数
+ *@param[in] size 读取大小
+ *@param[in] handle 文件句柄
  *@return,实际读取数量
  */
 	NGE_API int io_fread(void* buffer,int count,int size,int handle);
 
 /**
  *写文件,与fwrite类似
- *@param void*,待写数据的缓存
- *@param int,待写块个数
- *@param int,待写块大小
- *@param int,文件句柄
+ *@param[in] buffer 待写数据的缓存
+ *@param[in] count 待写块个数
+ *@param[in] size 待写块大小
+ *@param[in] handle 文件句柄
  *@return,实际写入数量
  */
 	NGE_API int io_fwrite(void* buffer,int count,int size,int handle);
 
 /**
  *文件指针偏移设置,与fseek类似
- *@param int,文件句柄
- *@param int offset,偏移量
- *@param int flag,seek标志,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
+ *@param[in] handle 文件句柄
+ *@param[in] offset 偏移量
+ *@param[in] flag seek标志,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
  *@return int,返回0成功,-1失败
  */
 	NGE_API int io_fseek(int handle,int offset,int flag);
 
 /**
  *获得当前文件偏移值
- *@param int handle,文件句柄
- *@return int,文件偏移值
+ *@param[in] handle 文件句柄
+ *@return int 文件偏移值
  */
 	NGE_API int io_ftell(int handle);
 
 /**
  *关闭文件
- *@param int handle,文件句柄
+ *@param[in] handle 文件句柄
  *@return int,-1失败
  */
 	NGE_API int io_fclose(int handle);
 
 /**
  *文件大小
- *@param int handle,文件句柄
+ *@param[in] handle 文件句柄
  *@return int,文件大小
  */
 	NGE_API int io_fsize(int handle);

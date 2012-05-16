@@ -68,52 +68,70 @@ extern "C" {
 
 /**
  *加载tga图片,从文件加载
- *@param const char* filename,图片文件名
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] filename 图片文件名
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_tga(const char* filename, int displaymode);
 
 /**
  *加载tga图片,从内存加载
- *@param const char* mbuf,内存地址
- *@param int bsize,上述buffer大小
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] mbuf 内存地址
+ *@param[in] bsize 上述buffer大小
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode);
 
 /**
  *加载tga图片,从文件指针加载
- *@param int handle,文件指针
- *@param int fsize,上述文件大小
- *@param int autoclose,是否关闭文件,是否关闭文件,0不关闭,1关闭
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] handle 文件指针
+ *@param[in] fsize 上述文件大小
+ *@param[in] autoclose 是否关闭文件,是否关闭文件,0不关闭,1关闭
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_tga_fp(int handle,int fsize, int autoclose,int displaymode);
 
 /**
  * 同image_load_tga函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@see image_load_tga
+ *@param[in] filename 图片文件名
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,加载图片填充此结构
  */
 	NGE_API image_p image_load_tga_colorkey(const char* filename, int displaymode,int colorkey);
 
 /**
  * 同image_load_tga_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@see image_load_tga_buf
+ *@param[in] mbuf 内存地址
+ *@param[in] bsize 上述buffer大小
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
 
 /**
  * 同image_load_png_fp函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@see image_load_png_fp
+ *@param[in] handle 文件指针
+ *@param[in] fsize 上述文件大小
+ *@param[in] autoclose 是否关闭文件,0不关闭,1关闭
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 
 /**
  *存储tga图片,将image_p结构内容存储为tga文件
- *@param image_p,image_p结构指针,里面保存为image_t的数据
- *@param const char*,保存文件名
- *@param uint8,是否保存为含alpha通道的图片
- *@param uint8,是否采用rle编码压缩
+ *@param[in] pimage image_p结构指针,里面保存为image_t的数据
+ *@param[in] filename 保存文件名
+ *@param[in] alpha 是否保存为含alpha通道的图片
+ *@param[in] rle 是否采用rle编码压缩
  *@return int,返回0(加载失败)或1(加载成功)
  */
 	NGE_API int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle);

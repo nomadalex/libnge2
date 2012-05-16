@@ -23,10 +23,10 @@ extern "C"{
 /**
  * 目录遍历访问函数,只支持英文路径和文件名.
  * 注意在PSP上全小写的文件名会以全部大写显示.
- *@param const char* directory, 待访问目录名
- *@param file_travel_cb callback, 访问回调函数
- *@param void* user_data,用户参数
- *@return int ,返回值0,1
+ *@param[in] directory 待访问目录名
+ *@param[in] callback 访问回调函数
+ *@param[out] user_data 用户参数
+ *@return int,返回值0为失败,1为成功
  */
 	NGE_API int io_dir_travel(const char* directory, file_travel_cb callback,void* user_data);
 

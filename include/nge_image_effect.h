@@ -7,13 +7,13 @@
 
 //支持的效果器
 enum{
-	IMAGE_EFFECT_FADEIN = 0,
-	IMAGE_EFFECT_FADEOUT,
-	IMAGE_EFFECT_SCALEIN,
-	IMAGE_EFFECT_SCALEOUT,
-	IMAGE_EFFECT_SHAKE,
-	IMAGE_EFFECT_BLUR,
-	IMAGE_EFFECT_TRANSITIONS
+	IMAGE_EFFECT_FADEIN = 0,//<<渐入
+	IMAGE_EFFECT_FADEOUT,	//<<渐出
+	IMAGE_EFFECT_SCALEIN,	//<<缩放入
+	IMAGE_EFFECT_SCALEOUT,	//<<缩放出
+	IMAGE_EFFECT_SHAKE,		//<<抖动
+	IMAGE_EFFECT_BLUR,		//<<模糊
+	IMAGE_EFFECT_TRANSITIONS//<<转场
 };
 //效果器的状态
 enum{
@@ -73,48 +73,47 @@ extern "C"{
 
 /**
  *创建一个渐入的效果器,渐入是alpha从一个小值变化到一个大值
- *@param int src_alpha,开始的alpha值0-255
- *@param int des_alpha,结束的alpha值0-255
- *@param int timeticks,完成时间以毫秒记,1000是1秒
+ *@param[in] src_alpha 开始的alpha值0-255
+ *@param[in] des_alpha 结束的alpha值0-255
+ *@param[in] timeticks 完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
 	NGE_API image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks);
 
 /**
  *创建一个渐出的效果器,渐入是alpha从一个大值变化到一个小值
- *@param int src_alpha,开始的alpha值0-255
- *@param int des_alpha,结束的alpha值0-255
- *@param int timeticks,完成时间以毫秒记,1000是1秒
+ *@param[in] src_alpha 开始的alpha值0-255
+ *@param[in] des_alpha 结束的alpha值0-255
+ *@param[in] timeticks 完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
 	NGE_API image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks);
 
 /**
  *创建一个抖动的效果器
- *@param float shake_x,x方向上的抖动范围
- *@param float shake_y,y方向上的抖动范围
- *@param int timeticks,完成时间以毫秒记,1000是1秒
+ *@param[in] shake_x x方向上的抖动范围
+ *@param[in] shake_y y方向上的抖动范围
+ *@param[in] timeticks 完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
 	NGE_API image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks);
 
 /**
  *创建一个模糊的效果器
- *@param float src_blur,开始时的模糊度 0 为不模糊
- *@param float shake_y,结束时的模糊度 0 为不模糊
- *@param int timeticks,完成时间以毫秒记,1000是1秒
- *@param int optimization,速度优化选项，0为不优化，效果好速度慢，1为一般优化，速度效果一般，2为最大优化，速度最快，但效果最差，一般情况下使用 1
+ *@param[in] src_blur 开始时的模糊度 0 为不模糊
+ *@param[in] des_blur 结束时的模糊度 0 为不模糊
+ *@param[in] timeticks 完成时间以毫秒记,1000是1秒
+ *@param[in] optimization 速度优化选项，0为不优化，效果好速度慢，1为一般优化，速度效果一般，2为最大优化，速度最快，但效果最差，一般情况下使用 1
  *@return image_effect_p,返回效果器的指针
  */
 	NGE_API image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks, int optimization);
 
 /**
  *创建一个转场效果器
- *@param image_p effect_img, 效果图，效果器使用此图片的像素亮度产生中间效果
- *@param image_p src_img, 原图
- *@param image_p dst_img, 目标图
- *@param int reversed, 反转效果
- *@param int timeticks, 完成时间以毫秒记,1000是1秒
+ *@param[in] effect_img 效果图，效果器使用此图片的像素亮度产生中间效果
+ *@param[in] src_img 原图
+ *@param[in] reversed 反转效果
+ *@param[in] timeticks 完成时间以毫秒记,1000是1秒
  *@return image_effect_p,返回效果器的指针
  */
 	NGE_API image_effect_p effect_create_transitions(image_p effect_img, image_p src_img, int reversed, int timeticks);

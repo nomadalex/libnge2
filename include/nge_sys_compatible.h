@@ -31,7 +31,7 @@ extern "C"{
 
 /**
  *获取系统的本地时间
- *@param sys_time_p tm,系统时间结构
+ *@param[out] tm 系统时间结构
  *@return int,成功返回1,失败返回0
  */
 	NGE_API int sys_localtime(sys_time_p tm);
@@ -56,7 +56,7 @@ extern "C"{
 
 /**
  *设置CPU的频率类型.
- *@param int,类型为CPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
+ *@param[in] type 类型为CPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
  *@return int,1设置成功,0设置失败.
  */
 	NGE_API int sys_set_frequency_type(int type);

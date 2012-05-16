@@ -22,9 +22,9 @@ extern "C" {
 
 /**
  *载入打包文件
- *@param const char*,文件名
- *@param int, 一些选项（可选）
- *@return ngePackage*, 返回包文件句柄，失败返回NULL
+ *@param[in] fname 文件名
+ *@param[in] option 一些选项（可选）
+ *@return ngePackage*,返回包文件句柄，失败返回NULL
  */
 	NGE_API ngePackage* ngeLoadPackage(const char* fname, int option);
 	NGE_API ngeRefHandle ngeCreatePackageHandle(ngePackage* pkg);
@@ -33,9 +33,9 @@ extern "C" {
 
 /**
  *打开包内文件
- *@param ngePackage*, 包句柄
- *@param const char*,文件名
- *@param int,打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
+ *@param[in] pkg 包句柄
+ *@param[in] fname 文件名
+ *@param[in] flag 打开标志(IO_RDONLY,IO_WRONLY,IO_APPEND的一种)
  *@return int,文件句柄,读写均用此文件句柄进行操作
  */
 	NGE_API int ngeOpenInPackage(ngePackage* pkg, const char* fname, int flag);

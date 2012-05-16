@@ -104,9 +104,9 @@ extern "C" {
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 /**
  *初始化输入系统
- *@param ButtonProc downproc,按键按下的处理消息函数
- *@param ButtonProc upproc,按键释放的处理消息函数
- *@param int doneflag,是否自行处理退出消息(HOME键按下时),0(否),1(是)
+ *@param[in] downproc 按键按下的处理消息函数
+ *@param[in] upproc 按键释放的处理消息函数
+ *@param[in] doneflag 是否自行处理退出消息(HOME键按下时),0(否),1(是)
  *@return 无
  */
 	NGE_API void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
@@ -115,8 +115,8 @@ extern "C" {
 #ifdef NGE_INPUT_ANALOG_SUPPORT
 /**
  *初始化摇杆
- *@param AnalogProc,摇杆的回调函数
- *@return
+ *@param[in] AnalogProc 摇杆的回调函数
+ *@return 无
  */
 	NGE_API void InitAnalog(AnalogProc analogproc);
 #endif
@@ -124,11 +124,16 @@ extern "C" {
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 /**
  *初始化mouse-touch
+ *@param[in] mouse_btn 鼠标单击的回调函数
+ *@param[in] mouse_move 鼠标移动的回调函数
  */
 	NGE_API void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 	NGE_API void EmulateTouchMove(int flag);
 #endif
-
+/**
+ *交换坐标的x,y值
+ *@param[in] flag 是否交换,0为不交换,1为交换
+ */
 	NGE_API void SetSwapXY(int flag);
 
 #if !defined NGE_IPHONE || !defined NGE_ANDROID

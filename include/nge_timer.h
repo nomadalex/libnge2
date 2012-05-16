@@ -35,7 +35,7 @@ extern "C"{
 
 /**
  *释放一个timer
- *@param nge_timer* timer,待释放的timer指针
+ *@param[in, out] timer 待释放的timer指针
  *@return 无
  */
 	NGE_API void timer_free(nge_timer* timer);

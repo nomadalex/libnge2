@@ -68,25 +68,25 @@ extern "C" {
 /**
  * gif动画加载程序,将gif动画帧全部加载到内存,
  * 本函数是预先加载函数,请注意内存的使用量
- *@param[IN] filename,gif文件名
- *@param[IN] displaymode,显示模式
- *@param[IN] swizzle,优化标志,通常填1
- *@return gif_desc_p,gif绘图文件句柄,供显示函数调用
+ *@param[in] filename gif文件名
+ *@param[in] displaymode 显示模式
+ *@param[in] swizzle 优化标志,通常填1
+ *@return gif_desc_p gif绘图文件句柄,供显示函数调用
  */
 	NGE_API gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle);
 
 /**
  * 释放一个gif动画资源
- *@param[IN] pgif,由gif_animation_load加载的描述符
+ *@param[in] pgif 由gif_animation_load加载的描述符
  *@return
  */
 	NGE_API void gif_animation_free(gif_desc_p pgif);
 
 /**
  * 在屏幕上显示一个gif动画1, 效率最高
- *@param[IN] pgif,由gif_animation_load加载的描述符
- *@param[IN] dx,屏幕x坐标
- *@param[IN] dy,屏幕y坐标
+ *@param[in] pgif 由gif_animation_load加载的描述符
+ *@param[in] x 屏幕x坐标
+ *@param[in] y 屏幕y坐标
  *@return
  */
 	NGE_API void GifAnimationToScreen(gif_desc_p pgif,float x,float y);
@@ -104,17 +104,17 @@ extern "C" {
  * RenderGifAnimation(pgif,32,32,64,64,40,80,1,1,90,pgif->gif_image_chains->pimage->mask);
  * 例子3:将动画pgif(pgif显示模式是8888)的80，80开始的64宽,64高的部分显示在100，100处并半透明显示
  * RenderGifAnimation(pgif,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));
- *@param[IN] pgif,由gif_animation_load加载的描述符
- *@param[IN] sx,动画x坐标
- *@param[IN] sy,动画y坐标
- *@param[IN] sw,动画宽
- *@param[IN] sh,动画高,
- *@param[IN] dx,屏幕x坐标
- *@param[IN] dy,屏幕y坐标
- *@param[IN] xscale,动画x方向放大缩小因子
- *@param[IN] yscale,动画y方向放大缩小因子
- *@param[IN] angle,旋转角度
- *@param[IN] mask,颜色遮罩
+ *@param[in] pgif 由gif_animation_load加载的描述符
+ *@param[in] sx 动画x坐标
+ *@param[in] sy 动画y坐标
+ *@param[in] sw 动画宽
+ *@param[in] sh 动画高,
+ *@param[in] dx 屏幕x坐标
+ *@param[in] dy 屏幕y坐标
+ *@param[in] xscale 动画x方向放大缩小因子
+ *@param[in] yscale 动画y方向放大缩小因子
+ *@param[in] angle 旋转角度
+ *@param[in] mask 颜色遮罩
  *@return
  */
 	NGE_API void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
@@ -122,16 +122,16 @@ extern "C" {
 /**
  * 在屏幕上显示一个gif动画3
  * 同DrawGifAnimation，只是多了个MASK
- *@param[IN] pgif,由gif_animation_load加载的描述符
- *@param[IN] sx,动画x坐标
- *@param[IN] sy,动画y坐标
- *@param[IN] sw,动画宽
- *@param[IN] sh,动画高
- *@param[IN] dx,屏幕x坐标
- *@param[IN] dy,屏幕y坐标
- *@param[IN] dw,屏幕宽
- *@param[IN] dh,屏幕高
- *@param[IN] mask,颜色遮罩
+ *@param[in] pgif 由gif_animation_load加载的描述符
+ *@param[in] sx 动画x坐标
+ *@param[in] sy 动画y坐标
+ *@param[in] sw 动画宽
+ *@param[in] sh 动画高
+ *@param[in] dx 屏幕x坐标
+ *@param[in] dy 屏幕y坐标
+ *@param[in] dw 屏幕宽
+ *@param[in] dh 屏幕高
+ *@param[in] mask 颜色遮罩
  *@return 无
  */
 	NGE_API void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask);
@@ -141,15 +141,15 @@ extern "C" {
  * 例子1:将200*200的gif动画pgif显示在屏幕100，0处
  * DrawGifAnimation(pgif,0,0,0,0,100,0,0,0);
  * 或者用严格方式：DrawGifAnimation(pgif,0,0,200,200,100,0,200,200);
- *@param[IN] pgif,由gif_animation_load加载的描述符
- *@param[IN] sx,动画x坐标
- *@param[IN] sy,动画y坐标
- *@param[IN] sw,动画宽
- *@param[IN] sh,动画高
- *@param[IN] dx,屏幕x坐标
- *@param[IN] dy,屏幕y坐标
- *@param[IN] dw,屏幕宽
- *@param[IN] dh,屏幕高
+ *@param[in] pgif 由gif_animation_load加载的描述符
+ *@param[in] sx 动画x坐标
+ *@param[in] sy 动画y坐标
+ *@param[in] sw 动画宽
+ *@param[in] sh 动画高
+ *@param[in] dx 屏幕x坐标
+ *@param[in] dy 屏幕y坐标
+ *@param[in] dw 屏幕宽
+ *@param[in] dh 屏幕高
  *@return 无
  */
 	NGE_API void DrawGifAnimation(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);

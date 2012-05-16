@@ -32,43 +32,58 @@ extern "C" {
 
 /**
  *加载jpg图片,从文件加载
- *@param const char* filename,图片文件名
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] filename 图片文件名
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg(const char* filename, int displaymode);
 
 /**
  *加载jpg图片,从内存加载
- *@param const char* mbuf,内存地址
- *@param int bsize,上述buffer大小
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] mbuf 内存地址
+ *@param[in] bsize 上述buffer大小
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode);
 
 /**
  *加载jpg图片,从文件指针加载
- *@param int handle,文件指针
- *@param int fsize,上述文件大小
- *@param int autoclose,是否关闭文件,是否关闭文件,0不关闭,1关闭
- *@param int displaymode,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] handle 文件指针
+ *@param[in] fsize 上述文件大小
+ *@param[in] autoclose 是否关闭文件,0不关闭,1关闭
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg_fp(int handle,int fsize, int autoclose,int displaymode);
 
 /**
  * 同image_load_jpg函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@param[in] filename 图片文件名
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg_colorkey(const char* filename, int displaymode,int colorkey);
 
 /**
  * 同image_load_jpg_buf函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@param[in] mbuf 内存地址
+ *@param[in] bsize 上述buffer大小
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
 
 /**
  * 同image_load_jpg_fp函数,只是多了一个设置关键色,colorkey用MAKE_RGB设定
+ *@param[in] handle 文件指针
+ *@param[in] fsize 上述文件大小
+ *@param[in] autoclose 是否关闭文件,0不关闭,1关闭
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] colorkey 关键色,用MAKE_RGB设定
+ *@return image_p,返回0(加载失败),加载图片填充此结构
  */
 	NGE_API image_p image_load_jpg_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 

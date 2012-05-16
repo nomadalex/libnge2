@@ -25,9 +25,9 @@ enum NotifyType
 
 /**
  *回调函数
- *@param int type, 通知类型
- *@param void* data, 通知数据
- *@param void* pCookie, 用户数据
+ *@param[in] type 通知类型
+ *@param[in] data 通知数据
+ *@param[out] pCookie 用户数据
  */
 typedef void (*NotifyCallback)(int type, void* data, void* pCookie);
 
@@ -37,7 +37,7 @@ extern "C"{
 
 /**
  *NGE初始化函数
- *@param int flags,初始化标志位,INIT_VIDEO(视频),INIT_AUDIO(音频)或者INIT_ALL
+ *@param[in] flags 初始化标志位,INIT_VIDEO(视频),INIT_AUDIO(音频)或者INIT_ALL
  *@return 无
  */
 	NGE_API void NGE_Init(int flags);
@@ -50,38 +50,40 @@ extern "C"{
 
 /**
  *设置屏幕窗口
- *@param const char* winname,窗口名字
- *@param int screen_width,窗口宽
- *@param int screen_height,窗口高
- *@param int screen_bpp,窗口bpp,通常填32
- *@param int screen_full,是否全屏0-窗口,1-全屏
- *@return
+ *@param[in] winname 窗口名字
+ *@param[in] screen_width 窗口宽
+ *@param[in] screen_height 窗口高
+ *@param[in] screen_bpp 窗口bpp,通常填32
+ *@param[in] screen_full 是否全屏0-窗口,1-全屏
+ *@return 无
  */
 	NGE_API void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
 /**
  *设置系统原生屏幕分辨率
- *@param int width,宽度
- *@param int height,高度
+ *@param[in] width 宽度
+ *@param[in] height 高度
+ *@return 无
  */
 	NGE_API void NGE_SetNativeResolution(int width,int height);
 
 /**
  *设置片头动画地址
- *@param const char* path,地址
+ *@param[in] path 地址
  */
 	NGE_API void NGE_SetOPMoviePath(const char* path);
 
 /**
  *注册通知回调函数
- *@param NotifyCallback cb, 回调函数
+ *@param[in] cb 回调函数
+ *@param[out] pCookie 用户数据
  */
 	NGE_API void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
 
 #ifdef NGE_PSP
 /**
  *注册PSP的退出回调
- *@param int cb_id, 回调标识号
+ *@param[in] cb_id 回调标识号
  */
 	NGE_API void NGE_RegisterPSPExitCallback(int cb_id);
 #endif

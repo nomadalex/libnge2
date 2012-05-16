@@ -203,12 +203,12 @@ typedef struct{
 
 /**
  *根据颜色分量创建一个dtype对应的色彩
- *@param uint8 r,r颜色分量
- *@param uint8 g,g颜色分量
- *@param uint8 b,b颜色分量
- *@param uint8 a,a颜色分量
- *@param int dtype,显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
- *@return int ,颜色值
+ *@param[in] r r颜色分量
+ *@param[in] g g颜色分量
+ *@param[in] b b颜色分量
+ *@param[in] a a颜色分量
+ *@param[in] dtype 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@return int,颜色值
  */
 NGE_API int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype); // it is in nge_image.c
 

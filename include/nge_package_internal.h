@@ -36,7 +36,7 @@ extern "C" {
 
 	/**
 	   注册新的包文件格式
-	 * @param ngePackageFormat*, 包文件格式
+	 * @param[in] format, 包文件格式
 	 * @return int, 返回0成功，返回-1失败
 	 */
 	NGE_API int ngePackageRegister(ngePackageFormat* format);
