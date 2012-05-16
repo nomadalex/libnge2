@@ -771,11 +771,11 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 }
 
 /** 填充三角型(单色)
- *@param pointf v0,顶点坐标v1
- *@param pointf v2,顶点坐标v2
- *@param pointf v2,顶点坐标v3
- *@param int color,填充色
- *@param int dtype,显示模式,填充色要与之相对应
+ *@param[in] v1 顶点坐标v1
+ *@param[in] v2 顶点坐标v2
+ *@param[in] v3 顶点坐标v3
+ *@param[in] color 填充色
+ *@param[in] dtype 显示模式,填充色要与之相对应
  *@return void ,无
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
