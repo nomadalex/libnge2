@@ -284,7 +284,7 @@ int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if (mouse_move_proc != NULL && (istouched&&touch_mode == 1)||(touch_mode == 0))
+	if ((mouse_move_proc != NULL) && ((istouched&&touch_mode == 1)||(touch_mode == 0)))
 		mouse_move_proc(xPos, yPos);
 	return 0;
 }
