@@ -7,4 +7,4 @@ set(DIRENT_SRCS
 
 add_addon_srcs(NGE2_SRCS DIRENT_SRCS dirent)
 
-install(FILES nge_dirent.hpp nge_ch_io_dir.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES dirent/nge_dirent.hpp dirent/nge_ch_io_dir.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
