@@ -49,8 +49,8 @@ typedef struct  tag_gif_desc_t{
 	sint32         gif_rgbbackgnd;
 	uint32         gif_w;
 	uint32         gif_h;
-	uint32         gif_pgifw;
-	uint32         gif_pgifh;
+	uint32         gif_texw;
+	uint32         gif_texh;
 	uint32         gif_framecount;
 	/*for display*/
 	nge_timer*     gif_inner_timer;
