@@ -45,13 +45,13 @@ extern "C"{
 	NGE_API image_p image_scale(image_p src, int w, int h,int mode);
 
 /**
- * @TODO: haven't put into use yet
  * 将图片进行角度为rot的色相旋转
+ * @remark 可能有性能问题,且多次使用会丢失图片质量,请慎用
  * @param[in] pimage 源图像
  * @param[in] rot 色相旋转的角度
  * @return int 成功1,失败0
-	NGE_API int image_hue_rotate(image_p pimage, float rot);
  */
+	NGE_API int image_hue_rotate(image_p pimage, float rot);
 
 #ifdef __cplusplus
 }
