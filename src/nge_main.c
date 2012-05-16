@@ -2,6 +2,8 @@
 #include "nge_app.h"
 #include "nge.h"
 
+#include <stdio.h>
+
 #ifdef NGE_WIN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
