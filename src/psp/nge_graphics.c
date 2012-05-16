@@ -674,7 +674,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 {
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
-//é¡¶ç‚¹coloré¡ºåºä¸ºé€†æ—¶é’ˆæ–¹å‘0->3è®¾ç½®
+//¶¥µãcolorË³ĞòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -747,7 +747,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
-	//å¹³ç§»,æ—‹è½¬,æ”¾ç¼©å˜æ¢
+	//Æ½ÒÆ,Ğı×ª,·ÅËõ±ä»»
 	m_transmatrix.x = dx;
 	m_transmatrix.y = dy;
 	sceGumTranslate(&m_transmatrix);
@@ -779,7 +779,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	//sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	//sceGuTexFilter(GU_LINEAR,GU_LINEAR);
 
-	//psp dcacheä¼˜åŒ–
+	//psp dcacheÓÅ»¯
 	for(ustart = 0,step = 0;ustart<su;ustart += PSP_SLICE_F,step += swf * PSP_SLICE_F){
 		vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct VertexUV));
 		width = (ustart + PSP_SLICE_F ) < su ? (PSP_SLICE_F) : su-ustart;
@@ -810,7 +810,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		vertices[3].z = 0.0f;
 		sceGumDrawArray(GU_TRIANGLE_STRIP,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_3D,4,0,vertices);
 	}
-	//æ¢å¤åæ ‡
+	//»Ö¸´×ø±ê
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
 
