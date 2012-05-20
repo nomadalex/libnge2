@@ -6,6 +6,7 @@
  *  Copyright  2012  Kun Wang <ifreedom.cn@gmail.com>
  *
  */
+#include "nge_debug_log.h"
 #include "audio_openal.h"
 
 #ifndef _MSC_VER
@@ -16,8 +17,11 @@
 #include <errno.h>
 #include <time.h>
 #include <assert.h>
-#include "nge_debug_log.h"
 #include <list>
+
+#include <android/log.h>
+#define  LOG_TAG    "libcoolaudio"
+#include "android_log.h"
 
 typedef pthread_mutex_t CRITICAL_SECTION;
 void EnterCriticalSection(CRITICAL_SECTION *cs);
@@ -29,13 +33,13 @@ void EnterCriticalSection(CRITICAL_SECTION *cs)
 {
     int ret;
     ret = pthread_mutex_lock(cs);
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
 }
 void LeaveCriticalSection(CRITICAL_SECTION *cs)
 {
     int ret;
     ret = pthread_mutex_unlock(cs);
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
 }
 void InitializeCriticalSection(CRITICAL_SECTION *cs)
 {
@@ -43,16 +47,17 @@ void InitializeCriticalSection(CRITICAL_SECTION *cs)
     int ret;
 
     ret = pthread_mutexattr_init(&attrib);
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
 
     ret = pthread_mutexattr_settype(&attrib, PTHREAD_MUTEX_RECURSIVE);
 #ifdef HAVE_PTHREAD_NP_H
     if(ret != 0)
         ret = pthread_mutexattr_setkind_np(&attrib, PTHREAD_MUTEX_RECURSIVE);
 #endif
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
+
     ret = pthread_mutex_init(cs, &attrib);
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
 
     pthread_mutexattr_destroy(&attrib);
 }
@@ -60,7 +65,7 @@ void DeleteCriticalSection(CRITICAL_SECTION *cs)
 {
     int ret;
     ret = pthread_mutex_destroy(cs);
-    assert(ret == 0);
+	LOG_ASSERT(ret == 0);
 }
 #endif
 
@@ -73,7 +78,7 @@ extern "C" BOOLEAN InitAL() {
     {
         alcGetError(NULL);
 
-        nge_log("Audio Device open failed");
+		LOGE("Audio Device open failed");
         return FALSE;
     }
 
@@ -84,13 +89,15 @@ extern "C" BOOLEAN InitAL() {
             alcDestroyContext(context);
         alcCloseDevice(device);
 
-        nge_log("Audio Context setup failed");
+        LOGE("Audio Context setup failed");
         return FALSE;
     }
     alcGetError(device);
 
 	if (StartThread() != TRUE)
 		return FALSE;
+
+	LOGI("Audio Context setup success");
     return TRUE;
 }
 
@@ -120,7 +127,7 @@ extern "C" void DeInitAL() {
 void ALSleep(float duration) {
     if(duration < 0.0f)
     {
-        nge_log("ALSleep Invalid duration");
+        LOGE("ALSleep Invalid duration");
         return;
     }
 
@@ -137,15 +144,33 @@ void ALSleep(float duration) {
 
 static pthread_t thread;
 static CRITICAL_SECTION cs;
+static pthread_cond_t non_empty;
 static bool need_run = true;
-static std::list<IPlayer*> playerList;
+static std::list<IPlayer*> playerList, deleteList;
 
 static void* ThreadFunc(void* ptr) {
 	while (need_run) {
 		LockAudio();
+
+		if (playerList.empty()) {
+			pthread_cond_wait(&non_empty, &cs);
+		}
+
 		std::list<IPlayer*>::iterator iter = playerList.begin();
-		for (;iter != playerList.end(); iter++)
-			(*iter)->op->CheckUpdate(*iter);
+		for (;iter != playerList.end(); iter++) {
+			if ((*iter)->op->CheckUpdate(*iter) != 0) {
+				deleteList.push_back(*iter);
+			}
+		}
+
+		if (!deleteList.empty()) {
+			iter = deleteList.begin();
+			for (;iter != deleteList.end(); iter++) {
+				playerList.remove(*iter);
+			}
+			deleteList.clear();
+		}
+
 		UnlockAudio();
 		ALSleep(0.01f);
 	}
@@ -154,9 +179,9 @@ static void* ThreadFunc(void* ptr) {
 
 BOOLEAN StartThread() {
 	need_run = true;
+	InitializeCriticalSection(&cs);
     if(pthread_create(&thread, NULL, ThreadFunc, NULL) != 0)
 		return FALSE;
-	InitializeCriticalSection(&cs);
 	return TRUE;
 }
 
@@ -175,8 +200,15 @@ extern "C" inline void UnlockAudio() {
 }
 
 extern "C" void AddActivePlayer(IPlayer* player) {
+	bool empty = false;
 	LockAudio();
+	if (playerList.empty())
+		empty = true;
+
 	playerList.push_back(player);
+
+	if (empty)
+		pthread_cond_signal(&non_empty);
 	UnlockAudio();
 }
 

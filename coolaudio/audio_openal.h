@@ -24,7 +24,7 @@ typedef struct {
 } IPlayer;
 
 struct PlayerOperation_s {
-	void (*CheckUpdate)(IPlayer* player);
+	int (*CheckUpdate)(IPlayer* player);
 };
 
 #ifdef __cplusplus

@@ -16,31 +16,7 @@
 #include <android/log.h>
 
 #define  LOG_TAG    "libcoolaudio"
-static inline void LOGI(const char* fmt, ...) {
-	va_list args;
-	va_start(args, fmt);
-	__android_log_vprint(ANDROID_LOG_INFO,LOG_TAG, fmt, args);
-	va_end(args);
-}
-static inline void LOGE(const char* fmt, ...) {
-	va_list args;
-	va_start(args, fmt);
-	__android_log_vprint(ANDROID_LOG_ERROR,LOG_TAG, fmt, args);
-	va_end(args);
-}
-
-#define LOG_ERROR(str)							\
-	if(alGetError() != AL_NO_ERROR)				\
-	{											\
-		LOGE(str);							\
-	}
-
-#define LOG_ERROR_RET(str, ret)					\
-	if(alGetError() != AL_NO_ERROR)				\
-	{											\
-		LOGE(str);							\
-		return ret;								\
-	}
+#include "android_log.h"
 
 #define ID_RIFF 0x46464952
 #define ID_WAVE 0x45564157
@@ -135,7 +111,7 @@ typedef struct {
 	BOOLEAN isEof;
 } AudioOpenALWav;
 
-void WavCheckUpdate(IPlayer* player);
+int WavCheckUpdate(IPlayer* player);
 PlayerOperation WavPlayerOperation = {
 	WavCheckUpdate
 };
@@ -201,10 +177,11 @@ audio_play_p CreateWavPlayer() {
 	a->times = 0;
 	a->isEof = FALSE;
 
+	LOGI("Create wav player success\n");
 	return &(a->op);
 }
 
-static void audio_callback(THIS_DEF) {
+static int audio_callback(THIS_DEF) {
 	GET_AUDIO_FROM_THIS(audio);
 
 	if (audio->times == 0) /* loop? */ {
@@ -212,8 +189,8 @@ static void audio_callback(THIS_DEF) {
 	}
 	else if (audio->times == 1) {
 		audio->isEof = TRUE;
-		wav_stop(This);
-		return;
+		LOGI("wav playing complete\n");
+		return -1;
 	}
 	else {
 		audio->times--;
@@ -221,15 +198,19 @@ static void audio_callback(THIS_DEF) {
 	}
 
 replay:
+	alSourcePause(audio->source);
 	alSourceRewind(audio->source);
 	alSourcePlay(audio->source);
+	return 0;
 }
 
 #define _METHOD(ret, method, arg) ret wav_##method arg
 
 _METHOD(int, load, (THIS_DEF, const char* filename)) {
 	int fd = io_fopen(filename, IO_RDONLY);
-	return wav_load_fp(This, fd, 1);
+	int ret = wav_load_fp(This, fd, TRUE);
+	LOGI("Load %s\n", filename);
+	return ret;
 }
 
 _METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
@@ -265,10 +246,10 @@ _METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
 		alDeleteBuffers(1, &audio->buffer);
 	}
 	alGenBuffers(1, &audio->buffer);
-	LOG_ERROR_RET("Could not create buffers\n", 0);
+	LOG_ERROR_GOTO("Could not create buffers\n");
 
 	alBufferData(audio->buffer, format, buf+pos, info->size, info->rate);
-	LOG_ERROR_RET("Error buffering data\n", 0);
+	LOG_ERROR_GOTO("Error buffering data\n");
 
 	alSourcei(audio->source, AL_BUFFER, audio->buffer);
 
@@ -313,6 +294,7 @@ _METHOD(int, play, (THIS_DEF, int times, int free_when_stop)) {
 	alSourcePlay(audio->source);
 	AddActivePlayer(&audio->alPlayer);
 
+	LOGI("wav playing play %d times\n", times);
 	return 0;
 }
 
@@ -359,6 +341,7 @@ _METHOD(void, rewind, (THIS_DEF)) {
 	GET_AUDIO_FROM_THIS(audio);
 	CHECK_BUFFER_V(audio);
 
+	RemoveActivePlayer(&audio->alPlayer);
 	alSourceRewind(audio->source);
 }
 
@@ -426,11 +409,13 @@ _METHOD(int, destroy, (THIS_DEF)) {
 
 #undef _METHOD
 
-void WavCheckUpdate(IPlayer* player) {
+int WavCheckUpdate(IPlayer* player) {
 	GET_AUDIO_FROM_IPLAYER(audio, player);
 	ALint state = 0;
 
 	alGetSourcei(audio->source, AL_SOURCE_STATE, &state);
 	if (state == AL_STOPPED)
-		audio_callback(&audio->op);
+		return audio_callback(&audio->op);
+
+	return 0;
 }
