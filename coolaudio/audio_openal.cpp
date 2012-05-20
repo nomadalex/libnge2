@@ -146,7 +146,7 @@ static pthread_t thread;
 static CRITICAL_SECTION cs;
 static pthread_cond_t non_empty;
 static bool need_run = true;
-static std::list<IPlayer*> playerList, deleteList;
+static std::list<IPlayer*> playerList;
 
 static void* ThreadFunc(void* ptr) {
 	while (need_run) {
@@ -157,18 +157,13 @@ static void* ThreadFunc(void* ptr) {
 		}
 
 		std::list<IPlayer*>::iterator iter = playerList.begin();
-		for (;iter != playerList.end(); iter++) {
+		for (;iter != playerList.end();) {
 			if ((*iter)->op->CheckUpdate(*iter) != 0) {
-				deleteList.push_back(*iter);
+				iter = playerList.erase(iter);
 			}
-		}
-
-		if (!deleteList.empty()) {
-			iter = deleteList.begin();
-			for (;iter != deleteList.end(); iter++) {
-				playerList.remove(*iter);
+			else {
+				iter++;
 			}
-			deleteList.clear();
 		}
 
 		UnlockAudio();
