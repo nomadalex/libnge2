@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_graphics.c
  *
  *  2011/03/27 09:29:04
@@ -750,7 +750,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
 
-//é¡¶ç‚¹coloré¡ºåºä¸ºé€†æ—¶é’ˆæ–¹å‘0->3è®¾ç½®
+//¶¥µãcolorË³ĞòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -770,13 +770,13 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 	FillRectGrad(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,colors,dtype);
 }
 
-/** å¡«å……ä¸‰è§’å‹(å•è‰²)
- *@param pointf v0,é¡¶ç‚¹åæ ‡v1
- *@param pointf v2,é¡¶ç‚¹åæ ‡v2
- *@param pointf v2,é¡¶ç‚¹åæ ‡v3
- *@param int color,å¡«å……è‰²
- *@param int dtype,æ˜¾ç¤ºæ¨¡å¼,å¡«å……è‰²è¦ä¸ä¹‹ç›¸å¯¹åº”
- *@return void ,æ— 
+/** Ìî³äÈı½ÇĞÍ(µ¥É«)
+ *@param[in] v1 ¶¥µã×ø±êv1
+ *@param[in] v2 ¶¥µã×ø±êv2
+ *@param[in] v3 ¶¥µã×ø±êv3
+ *@param[in] color Ìî³äÉ«
+ *@param[in] dtype ÏÔÊ¾Ä£Ê½,Ìî³äÉ«ÒªÓëÖ®Ïà¶ÔÓ¦
+ *@return void ,ÎŞ
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {

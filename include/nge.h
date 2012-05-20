@@ -1,4 +1,4 @@
-ï»¿/**
+/**
  * @file  nge.h
  * @author Kun Wang <ifreedom.cn@gmail.com>
  * @date 2012/02/12 09:34:32
@@ -24,10 +24,10 @@ enum NotifyType
 };
 
 /**
- *å›è°ƒå‡½æ•°
- *@param int type, é€šçŸ¥ç±»å‹
- *@param void* data, é€šçŸ¥æ•°æ®
- *@param void* pCookie, ç”¨æˆ·æ•°æ®
+ *»Øµ÷º¯Êı
+ *@param[in] type Í¨ÖªÀàĞÍ
+ *@param[in] data Í¨ÖªÊı¾İ
+ *@param[out] pCookie ÓÃ»§Êı¾İ
  */
 typedef void (*NotifyCallback)(int type, void* data, void* pCookie);
 
@@ -36,52 +36,54 @@ extern "C"{
 #endif
 
 /**
- *NGEåˆå§‹åŒ–å‡½æ•°
- *@param int flags,åˆå§‹åŒ–æ ‡å¿—ä½,INIT_VIDEO(è§†é¢‘),INIT_AUDIO(éŸ³é¢‘)æˆ–è€…INIT_ALL
- *@return æ— 
+ *NGE³õÊ¼»¯º¯Êı
+ *@param[in] flags ³õÊ¼»¯±êÖ¾Î»,INIT_VIDEO(ÊÓÆµ),INIT_AUDIO(ÒôÆµ)»òÕßINIT_ALL
+ *@return ÎŞ
  */
 	NGE_API void NGE_Init(int flags);
 
 /**
- *NGEé€€å‡ºå‡½æ•°
- *@return æ— 
+ *NGEÍË³öº¯Êı
+ *@return ÎŞ
  */
 	NGE_API void NGE_Quit();
 
 /**
- *è®¾ç½®å±å¹•çª—å£
- *@param const char* winname,çª—å£åå­—
- *@param int screen_width,çª—å£å®½
- *@param int screen_height,çª—å£é«˜
- *@param int screen_bpp,çª—å£bpp,é€šå¸¸å¡«32
- *@param int screen_full,æ˜¯å¦å…¨å±0-çª—å£,1-å…¨å±
- *@return
+ *ÉèÖÃÆÁÄ»´°¿Ú
+ *@param[in] winname ´°¿ÚÃû×Ö
+ *@param[in] screen_width ´°¿Ú¿í
+ *@param[in] screen_height ´°¿Ú¸ß
+ *@param[in] screen_bpp ´°¿Úbpp,Í¨³£Ìî32
+ *@param[in] screen_full ÊÇ·ñÈ«ÆÁ0-´°¿Ú,1-È«ÆÁ
+ *@return ÎŞ
  */
 	NGE_API void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
 /**
- *è®¾ç½®ç³»ç»ŸåŸç”Ÿå±å¹•åˆ†è¾¨ç‡
- *@param int width,å®½åº¦
- *@param int height,é«˜åº¦
+ *ÉèÖÃÏµÍ³Ô­ÉúÆÁÄ»·Ö±æÂÊ
+ *@param[in] width ¿í¶È
+ *@param[in] height ¸ß¶È
+ *@return ÎŞ
  */
 	NGE_API void NGE_SetNativeResolution(int width,int height);
 
 /**
- *è®¾ç½®ç‰‡å¤´åŠ¨ç”»åœ°å€
- *@param const char* path,åœ°å€
+ *ÉèÖÃÆ¬Í·¶¯»­µØÖ·
+ *@param[in] path µØÖ·
  */
 	NGE_API void NGE_SetOPMoviePath(const char* path);
 
 /**
- *æ³¨å†Œé€šçŸ¥å›è°ƒå‡½æ•°
- *@param NotifyCallback cb, å›è°ƒå‡½æ•°
+ *×¢²áÍ¨Öª»Øµ÷º¯Êı
+ *@param[in] cb »Øµ÷º¯Êı
+ *@param[out] pCookie ÓÃ»§Êı¾İ
  */
 	NGE_API void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
 
 #ifdef NGE_PSP
 /**
- *æ³¨å†ŒPSPçš„é€€å‡ºå›è°ƒ
- *@param int cb_id, å›è°ƒæ ‡è¯†å·
+ *×¢²áPSPµÄÍË³ö»Øµ÷
+ *@param[in] cb_id »Øµ÷±êÊ¶ºÅ
  */
 	NGE_API void NGE_RegisterPSPExitCallback(int cb_id);
 #endif

@@ -1,9 +1,9 @@
-ï»¿#ifndef NGE_MISC_H_
+#ifndef NGE_MISC_H_
 #define NGE_MISC_H_
 
 #include "nge_common.h"
 
-//ä¼‘çœ æ¯«ç§’æ•°
+//ĞİÃßºÁÃëÊı
 #if defined WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -23,11 +23,17 @@ extern "C"{
 #endif
 
 /**
- *ç”Ÿæˆä¸€ä¸ªmin---maxçš„æµ®ç‚¹æ•°
+ *Éú³ÉÒ»¸ömin---maxµÄ¸¡µãÊı
+ *@param[in] min,×îĞ¡Öµ
+ *@param[in] max,×î´óÖµ
+ *@return float,Éú³ÉµÄ¸¡µãÊı
  */
 	NGE_API float rand_float(float min, float max);
 /**
- *ç”Ÿæˆä¸€ä¸ª(min,max)çš„æ•´æ•°
+ *Éú³ÉÒ»¸ö(min,max)µÄÕûÊı
+ *@param[in] min,×îĞ¡Öµ
+ *@param[in] max,×î´óÖµ
+ *@return int,Éú³ÉµÄÕûÊı
  */
 	NGE_API int rand_int(int min, int max);
 

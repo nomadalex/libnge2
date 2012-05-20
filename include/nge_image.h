@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_image.h
  *
  *  2011/03/25 04:56:54
@@ -27,21 +27,21 @@
 #include "nge_color.h"
 
 typedef struct tagImage{
-	uint32  w;        /**< å›¾ç‰‡åŸå®½ */
-	uint32  h;        /**< å›¾ç‰‡åŸé«˜ */
-	uint32  texw;     /**< å›¾ç‰‡è´´å›¾å®½ */
-	uint32  texh;     /**< å›¾ç‰‡è´´å›¾é«˜ */
-	uint8   bpb;      /**< æ¯åƒç´ å­—èŠ‚æ•°(16ä½2å­—èŠ‚,32ä½4å­—èŠ‚) */
-	uint8   swizzle;  /**< æ˜¯å¦å¯¹data swizzle ä¼˜åŒ–*/
-	uint32  mode;     /**< GSMæ˜¾ç¤ºmode for psp */
-	uint32  dtype;    /**< æ˜¾ç¤ºæ¨¡å¼(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§) */
-	uint8*  data;     /**< å›¾åƒæ•°æ® */
-	float   rcentrex; /**< å›¾åƒä¸­å¿ƒx */
-	float   rcentrey; /**< å›¾åƒä¸­å¿ƒy */
-	uint32  texid;    /**< å›¾åƒid */
-	uint8   modified; /**< å¼ºåˆ¶æ›´æ–°æ˜¾å­˜*/
-	uint8   dontswizzle; /**å¼ºåˆ¶ä¸swizzle ä¼˜åŒ–*/
-	int     mask;     /**< é¢œè‰²é®ç½©,ç”¨äºæ˜¾ç¤ºå„ç§æ•ˆæœ*/
+	uint32  w;        /**< Í¼Æ¬Ô­¿í */
+	uint32  h;        /**< Í¼Æ¬Ô­¸ß */
+	uint32  texw;     /**< Í¼Æ¬ÌùÍ¼¿í */
+	uint32  texh;     /**< Í¼Æ¬ÌùÍ¼¸ß */
+	uint8   bpb;      /**< Ã¿ÏñËØ×Ö½ÚÊı(16Î»2×Ö½Ú,32Î»4×Ö½Ú) */
+	uint8   swizzle;  /**< ÊÇ·ñ¶Ôdata swizzle ÓÅ»¯*/
+	uint32  mode;     /**< GSMÏÔÊ¾mode for psp */
+	uint32  dtype;    /**< ÏÔÊ¾Ä£Ê½(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ) */
+	uint8*  data;     /**< Í¼ÏñÊı¾İ */
+	float   rcentrex; /**< Í¼ÏñÖĞĞÄx */
+	float   rcentrey; /**< Í¼ÏñÖĞĞÄy */
+	uint32  texid;    /**< Í¼Ïñid */
+	uint8   modified; /**< Ç¿ÖÆ¸üĞÂÏÔ´æ*/
+	uint8   dontswizzle; /**Ç¿ÖÆ²»swizzle ÓÅ»¯*/
+	int     mask;     /**< ÑÕÉ«ÕÚÕÖ,ÓÃÓÚÏÔÊ¾¸÷ÖÖĞ§¹û*/
 }image_t,*image_p;
 
 extern uint32 image_tid;
@@ -51,177 +51,188 @@ extern "C" {
 #endif
 
 /**
- *åŠ è½½å›¾ç‰‡,ä»æ–‡ä»¶åŠ è½½
- *@param const char* filename,å›¾ç‰‡æ–‡ä»¶å
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@param int swizzle,æ˜¯å¦åšä¼˜åŒ–,å¡«0ä¸åšä¼˜åŒ–,é€šå¸¸å¡«1
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØÍ¼Æ¬,´ÓÎÄ¼ş¼ÓÔØ
+ *@param[in] filename Í¼Æ¬ÎÄ¼şÃû
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] swizzle ÊÇ·ñ×öÓÅ»¯,Ìî0²»×öÓÅ»¯,Í¨³£Ìî1
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load(const char* filename, int displaymode,int swizzle);
 
 /**
- *åŠ è½½å›¾ç‰‡,ä»å†…å­˜åŠ è½½
- *@param const char* mbuf,å†…å­˜åœ°å€
- *@param int bsize,ä¸Šè¿°bufferå¤§å°
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@param int swizzle,æ˜¯å¦åšä¼˜åŒ–,å¡«0ä¸åšä¼˜åŒ–,é€šå¸¸å¡«1
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØÍ¼Æ¬,´ÓÄÚ´æ¼ÓÔØ
+ *@param[in] mbuf ÄÚ´æµØÖ·
+ *@param[in] bsize ÉÏÊöbuffer´óĞ¡
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] swizzle ÊÇ·ñ×öÓÅ»¯,Ìî0²»×öÓÅ»¯,Í¨³£Ìî1
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle);
 
 /**
- *åŠ è½½å›¾ç‰‡,ä»æ–‡ä»¶æŒ‡é’ˆåŠ è½½
- *@param int handle,æ–‡ä»¶æŒ‡é’ˆ
- *@param int fsize,ä¸Šè¿°æ–‡ä»¶å¤§å°
- *@param int autoclose,æ˜¯å¦å…³é—­æ–‡ä»¶,æ˜¯å¦å…³é—­æ–‡ä»¶,0ä¸å…³é—­,1å…³é—­
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@param int swizzle,æ˜¯å¦åšä¼˜åŒ–,å¡«0ä¸åšä¼˜åŒ–,é€šå¸¸å¡«1
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØÍ¼Æ¬,´ÓÎÄ¼şÖ¸Õë¼ÓÔØ
+ *@param[in] handle ÎÄ¼şÖ¸Õë
+ *@param[in] fsize ÉÏÊöÎÄ¼ş´óĞ¡
+ *@param[in] autoclose ÊÇ·ñ¹Ø±ÕÎÄ¼ş,ÊÇ·ñ¹Ø±ÕÎÄ¼ş,0²»¹Ø±Õ,1¹Ø±Õ
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] swizzle ÊÇ·ñ×öÓÅ»¯,Ìî0²»×öÓÅ»¯,Í¨³£Ìî1
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int swizzle);
 
 /**
- * åŒimage_loadå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_loadº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
+ *@param[in] filename Í¼Æ¬ÎÄ¼şÃû
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] colorkey ¹Ø¼üÉ«,ÓÃMAKE_RGBÉè¶¨
+ *@param[in] swizzle ÊÇ·ñ×öÓÅ»¯,Ìî0²»×öÓÅ»¯,Í¨³£Ìî1
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,int swizzle);
 
 /**
- * åŒimage_load_bufå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_bufº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
+ *@param[in] mbuf ÄÚ´æµØÖ·
+ *@param[in] bsize ÉÏÊöbuffer´óĞ¡
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] colorkey ¹Ø¼üÉ«,ÓÃMAKE_RGBÉè¶¨
+ *@param[in] swizzle ÊÇ·ñ×öÓÅ»¯,Ìî0²»×öÓÅ»¯,Í¨³£Ìî1
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey,int swizzle);
 
 /**
- *åˆ›å»ºä¸€ä¸ªimageç»“æ„,æ˜¾ç¤ºæ¨¡å¼æ˜¯displaymode
- *@param int w,imageçš„å®½
- *@param int h,imageçš„é«˜
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p pimage,è¿”å›imageæŒ‡é’ˆ
+ *´´½¨Ò»¸öimage½á¹¹,ÏÔÊ¾Ä£Ê½ÊÇdisplaymode
+ *@param[in] w imageµÄ¿í
+ *@param[in] h imageµÄ¸ß
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»ØimageÖ¸Õë
  */
 	NGE_API image_p image_create(int w,int h,int displaymode);
 
 /**
- *åˆ›å»ºä¸€ä¸ªimageç»“æ„,æ˜¾ç¤ºæ¨¡å¼æ˜¯displaymode
- *@param int w,imageçš„å®½
- *@param int h,imageçš„é«˜
- *@param int color,é¢œè‰²,ä¸ºä¿è¯å…¼å®¹æ€§è¯·ç”¨MAKE_RGBA_XXXXç”Ÿæˆè¿™ä¸ªé¢œè‰²
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,ä¸é¢œè‰²ä¸€è‡´,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p pimage,è¿”å›imageæŒ‡é’ˆ
+ *´´½¨Ò»¸öimage½á¹¹,ÏÔÊ¾Ä£Ê½ÊÇdisplaymode
+ *@param[in] w imageµÄ¿í
+ *@param[in] h imageµÄ¸ß
+ *@param[in] color ÑÕÉ«,Îª±£Ö¤¼æÈİĞÔÇëÓÃMAKE_RGBA_XXXXÉú³ÉÕâ¸öÑÕÉ«
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,ÓëÑÕÉ«Ò»ÖÂ,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»ØimageÖ¸Õë
  */
 	NGE_API image_p image_create_ex(int w,int h,int color,int displaymode);
 
 /**
- *å°†imageä¿å­˜ï¼Œæ ¹æ®æ–‡ä»¶ååˆ¤æ–­ä¿å­˜çš„æ ¼å¼ï¼Œç›®å‰æ”¯æŒpngå’Œtgaæ ¼å¼
- *@param image_p pimage,å¾…ä¿å­˜çš„imageæŒ‡é’ˆ
- *@param const char* filename, ä¿å­˜çš„æ–‡ä»¶å
- *@param uint8 alpha,æ˜¯å¦ä¿å­˜ä¸ºå«alphaé€šé“çš„å›¾ç‰‡
- *@param uint8 rle,æ˜¯å¦ä¿å­˜ä¸ºrleå‹ç¼©æ ¼å¼çš„å›¾ç‰‡
- *@return int,è¿”å›0(åŠ è½½å¤±è´¥)æˆ–1(åŠ è½½æˆåŠŸ)
+ *½«image±£´æ£¬¸ù¾İÎÄ¼şÃûÅĞ¶Ï±£´æµÄ¸ñÊ½£¬Ä¿Ç°Ö§³ÖpngºÍtga¸ñÊ½
+ *@param[in] pimage ´ı±£´æµÄimageÖ¸Õë
+ *@param[in] filename ±£´æµÄÎÄ¼şÃû
+ *@param[in] alpha ÊÇ·ñ±£´æÎªº¬alphaÍ¨µÀµÄÍ¼Æ¬
+ *@param[in] rle ÊÇ·ñ±£´æÎªrleÑ¹Ëõ¸ñÊ½µÄÍ¼Æ¬
+ *@return int,·µ»Ø0(¼ÓÔØÊ§°Ü)»ò1(¼ÓÔØ³É¹¦)
  */
 	NGE_API int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
 
 /**
- *é‡Šæ”¾ä¸€ä¸ªimage
- *@param image_p pimage,å¾…é‡Šæ”¾çš„imageæŒ‡é’ˆ
- *@return void,æ— è¿”å›
+ *ÊÍ·ÅÒ»¸öimage
+ *@param[in] pimage ´ıÊÍ·ÅµÄimageÖ¸Õë
+ *@return void,ÎŞ·µ»Ø
  */
 	NGE_API void image_free(image_p pimage);
 
 /**
- *cloneä¸€ä¸ªimage,å¹¶æŠŠimage_pè¿”å›ä¸€ä¸ªpimageçš„æ·±æ‹·è´
- *@param image_p pimage,å¾…cloneçš„imageæŒ‡é’ˆ
- *@return image_p,pimageçš„æ·±æ‹·è´
+ *cloneÒ»¸öimage,²¢°Ñimage_p·µ»ØÒ»¸öpimageµÄÉî¿½±´
+ *@param[in] pimage ´ıcloneµÄimageÖ¸Õë
+ *@return image_p,pimageµÄÉî¿½±´
  */
 	NGE_API image_p image_clone(image_p pimage);
 
 /**
- *å°†æ•°æ®æ¸…ç©º,å›¾åƒå˜ä¸ºæ— è‰²é€æ˜
- *@param image_p pimage,å¾…æ¸…é™¤çš„imageæŒ‡é’ˆ
- *@return void,æ— è¿”å›
+ *½«Êı¾İÇå¿Õ,Í¼Ïñ±äÎªÎŞÉ«Í¸Ã÷
+ *@param[in, out] pimage ´ıÇå³ıµÄimageÖ¸Õë
+ *@return void,ÎŞ·µ»Ø
  */
 	NGE_API void image_clear(image_p pimage);
 
 /**
- *å°†æºimage_p srcæ‹·è´åˆ°image_p des.æ³¨æ„æ­¤å‡½æ•°é€šå¸¸åªç”¨ä½œå…¼å®¹å…¶ä»–ä½¿ç”¨
- *é€šå¸¸ç›´æ¥ç”¨DrawImageåˆ°screenæ˜¯ç¡¬ä»¶åŠ é€Ÿ.
- *@param const image_p src,æºå†…å­˜å›¾
- *@param const image_p des,ç›®çš„å†…å­˜å›¾
- *@param uint32 dx,ç›®çš„å†…å­˜å›¾çš„xåæ ‡
- *@param uint32 dy,ç›®çš„å†…å­˜å›¾çš„yåæ ‡
- *@return
+ *½«Ô´image_p src¿½±´µ½image_p des.
+ *@remark ×¢Òâ´Ëº¯ÊıÍ¨³£Ö»ÓÃ×÷¼æÈİÆäËûÊ¹ÓÃ,Í¨³£Ö±½ÓÓÃDrawImageµ½screenÊÇÓ²¼ş¼ÓËÙ.
+ *@param[in] src Ô´ÄÚ´æÍ¼
+ *@param[in, out] des Ä¿µÄÄÚ´æÍ¼
+ *@param[in] dx Ä¿µÄÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] dy Ä¿µÄÄÚ´æÍ¼µÄy×ø±ê
+ *@return ÎŞ
  */
 	NGE_API void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
 
 /**
- *å°†æºimage_p srcçš„sx,sh,sw,shæ‹·è´åˆ°image_p des.æ³¨æ„æ­¤å‡½æ•°é€šå¸¸åªç”¨ä½œå…¼å®¹å…¶ä»–ä½¿ç”¨
- *é€šå¸¸ç›´æ¥ç”¨DrawImageåˆ°screenæ˜¯ç¡¬ä»¶åŠ é€Ÿ.
- *@param const image_p src,æºå†…å­˜å›¾
- *@param const image_p des,ç›®çš„å†…å­˜å›¾
- *@param uint32 sx,æºå†…å­˜å›¾çš„xåæ ‡
- *@param uint32 sy,æºå†…å­˜å›¾çš„yåæ ‡
- *@param uint32 sw,æºå†…å­˜å›¾çš„å®½
- *@param uint32 sh,æºå†…å­˜å›¾çš„é«˜
- *@param uint32 dx,ç›®çš„å†…å­˜å›¾çš„xåæ ‡
- *@param uint32 dy,ç›®çš„å†…å­˜å›¾çš„yåæ ‡
- *@return
+ *½«Ô´image_p srcµÄsx,sh,sw,sh¿½±´µ½image_p des.
+ *@remark ×¢Òâ´Ëº¯ÊıÍ¨³£Ö»ÓÃ×÷¼æÈİÆäËûÊ¹ÓÃ,Í¨³£Ö±½ÓÓÃDrawImageµ½screenÊÇÓ²¼ş¼ÓËÙ.
+ *@param[in] src Ô´ÄÚ´æÍ¼
+ *@param[in, out] des Ä¿µÄÄÚ´æÍ¼
+ *@param[in] sx Ô´ÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] sy Ô´ÄÚ´æÍ¼µÄy×ø±ê
+ *@param[in] sw Ô´ÄÚ´æÍ¼µÄ¿í
+ *@param[in] sh Ô´ÄÚ´æÍ¼µÄ¸ß
+ *@param[in] dx Ä¿µÄÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] dy Ä¿µÄÄÚ´æÍ¼µÄy×ø±ê
+ *@return ÎŞ
  */
 	NGE_API void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy);
 
 /**
- *å°†æºimage_p srcæ‹·è´åˆ°image_p des çš„alphaæ··åˆ.æ³¨æ„æ­¤å‡½æ•°é€šå¸¸åªç”¨ä½œå…¼å®¹å…¶ä»–ä½¿ç”¨
- *é€šå¸¸ç›´æ¥ç”¨DrawImageåˆ°screenæ˜¯ç¡¬ä»¶åŠ é€Ÿ.
- *@param const image_p src,æºå†…å­˜å›¾
- *@param const image_p des,ç›®çš„å†…å­˜å›¾
- *@param uint32 dx,ç›®çš„å†…å­˜å›¾çš„xåæ ‡
- *@param uint32 dy,ç›®çš„å†…å­˜å›¾çš„yåæ ‡
- *@param int alpha,alphaæ··åˆå€¼,0-255(é€æ˜->ä¸é€æ˜),ä¾‹å¦‚128å°±æ˜¯åŠé€æ˜
- *@return
+ *½«Ô´image_p src¿½±´µ½image_p des µÄalpha»ìºÏ.
+ *@remark ×¢Òâ´Ëº¯ÊıÍ¨³£Ö»ÓÃ×÷¼æÈİÆäËûÊ¹ÓÃ,Í¨³£Ö±½ÓÓÃDrawImageµ½screenÊÇÓ²¼ş¼ÓËÙ.
+ *@param[in] src Ô´ÄÚ´æÍ¼
+ *@param[in, out] des Ä¿µÄÄÚ´æÍ¼
+ *@param[in] dx Ä¿µÄÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] dy Ä¿µÄÄÚ´æÍ¼µÄy×ø±ê
+ *@param[in] alpha alpha»ìºÏÖµ,0-255(Í¸Ã÷->²»Í¸Ã÷),ÀıÈç128¾ÍÊÇ°ëÍ¸Ã÷
+ *@return ÎŞ
  */
 	NGE_API void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 dy,int alpha);
 
 /**
- *å°†æºimage_p srcçš„sx,sh,sw,shæ‹·è´åˆ°image_p des.æ³¨æ„æ­¤å‡½æ•°é€šå¸¸åªç”¨ä½œå…¼å®¹å…¶ä»–ä½¿ç”¨
- *é€šå¸¸ç›´æ¥ç”¨DrawImageåˆ°screenæ˜¯ç¡¬ä»¶åŠ é€Ÿ.
- *@param const image_p src,æºå†…å­˜å›¾
- *@param const image_p des,ç›®çš„å†…å­˜å›¾
- *@param uint32 sx,æºå†…å­˜å›¾çš„xåæ ‡
- *@param uint32 sy,æºå†…å­˜å›¾çš„yåæ ‡
- *@param uint32 sw,æºå†…å­˜å›¾çš„å®½
- *@param uint32 sh,æºå†…å­˜å›¾çš„é«˜
- *@param uint32 dx,ç›®çš„å†…å­˜å›¾çš„xåæ ‡
- *@param uint32 dy,ç›®çš„å†…å­˜å›¾çš„yåæ ‡
- *@param int alpha,alphaæ··åˆå€¼,0-255(é€æ˜->ä¸é€æ˜),ä¾‹å¦‚128å°±æ˜¯åŠé€æ˜
- *@return
+ *½«Ô´image_p srcµÄsx,sh,sw,sh¿½±´µ½image_p des.
+ *@remark ×¢Òâ´Ëº¯ÊıÍ¨³£Ö»ÓÃ×÷¼æÈİÆäËûÊ¹ÓÃ,Í¨³£Ö±½ÓÓÃDrawImageµ½screenÊÇÓ²¼ş¼ÓËÙ.
+ *@param[in] src Ô´ÄÚ´æÍ¼
+ *@param[in, out] des Ä¿µÄÄÚ´æÍ¼
+ *@param[in] sx Ô´ÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] sy Ô´ÄÚ´æÍ¼µÄy×ø±ê
+ *@param[in] sw Ô´ÄÚ´æÍ¼µÄ¿í
+ *@param[in] sh Ô´ÄÚ´æÍ¼µÄ¸ß
+ *@param[in] dx Ä¿µÄÄÚ´æÍ¼µÄx×ø±ê
+ *@param[in] dy Ä¿µÄÄÚ´æÍ¼µÄy×ø±ê
+ *@param[in] alpha alpha»ìºÏÖµ,0-255(Í¸Ã÷->²»Í¸Ã÷),ÀıÈç128¾ÍÊÇ°ëÍ¸Ã÷
+ *@return ÎŞ
  */
 	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha);
 
 /**
- *å°†åŸå§‹ä½å›¾æ ¼å¼æ•°æ®æ‹·è´åˆ°image,è€ƒè™‘åˆ°æ•ˆç‡é—®é¢˜,åªæ”¯æŒåŒç§displaymode,
- *æ³¨æ„æ­¤å¤„æœªåŠ åˆ¤å®š,æ‰€ä»¥éœ€è¦ä¿è¯dataæ•°æ®æ­£ç¡®æ€§
- *@param void* data,ä½å›¾æ•°æ®
- *@param image_p ,imageæŒ‡é’ˆ,ç›®æ ‡image
- *@param int x,æ‹·è´åˆ°imageä¸Šçš„dxä½ç½®
- *@param int y,æ‹·è´åˆ°imageä¸Šçš„dyä½ç½®
- *@param int w,dataçš„w
- *@param int h,dataçš„h
- *@return void,æ— è¿”å›
+ *½«Ô­Ê¼Î»Í¼¸ñÊ½Êı¾İ¿½±´µ½image,¿¼ÂÇµ½Ğ§ÂÊÎÊÌâ,Ö»Ö§³ÖÍ¬ÖÖdisplaymode,
+ *@remark ×¢Òâ´Ë´¦Î´¼ÓÅĞ¶¨,ËùÒÔĞèÒª±£Ö¤dataÊı¾İÕıÈ·ĞÔ
+ *@param[in] data Î»Í¼Êı¾İ
+ *@param[in, out] des imageÖ¸Õë,Ä¿±êimage
+ *@param[in] x ¿½±´µ½imageÉÏµÄdxÎ»ÖÃ
+ *@param[in] y ¿½±´µ½imageÉÏµÄdyÎ»ÖÃ
+ *@param[in] w dataµÄw
+ *@param[in] h dataµÄh
+ *@return void,ÎŞ·µ»Ø
  */
 	NGE_API void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,uint32 h);
 
 /**
- * å°†å›¾åƒåšæ°´å¹³ç¿»è½¬ï¼Œå›¾åƒåæ ‡xä¸å˜
- *@param image_p pimage,å¾…ç¿»è½¬å›¾åƒ
- *@return int,æˆåŠŸ1,å¤±è´¥0
+ * ½«Í¼Ïñ×öË®Æ½·­×ª£¬Í¼Ïñ×ø±êx²»±ä
+ *@param[in, out] pimage ´ı·­×ªÍ¼Ïñ
+ *@return int,³É¹¦1,Ê§°Ü0
  */
 	NGE_API int image_fliph(image_p pimage);
 
 /**
- * å°†å›¾åƒåšå‚ç›´ç¿»è½¬ï¼Œç¿»è½¬åxè½´å¯¹ç§°
- *@param image_p pimage,å¾…ç¿»è½¬å›¾åƒ
- *@return int,æˆåŠŸ1,å¤±è´¥0
+ * ½«Í¼Ïñ×ö´¹Ö±·­×ª£¬·­×ªºóxÖá¶Ô³Æ
+ *@param[in, out] pimage ´ı·­×ªÍ¼Ïñ
+ *@return int,³É¹¦1,Ê§°Ü0
  */
 	NGE_API int image_flipv(image_p pimage);
 
-//ä»¥ä¸‹å‡½æ•°ä¸ºå†…éƒ¨ä½¿ç”¨
+//ÒÔÏÂº¯ÊıÎªÄÚ²¿Ê¹ÓÃ
 int GET_PSM_COLOR_MODE(int dtype);
 int roundpower2(int width);
 

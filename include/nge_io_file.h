@@ -1,9 +1,9 @@
-ï»¿#ifndef IO_FILE_H_
+#ifndef IO_FILE_H_
 #define IO_FILE_H_
 
 #include "nge_common.h"
 
-/* PSPä¸win32æ–‡ä»¶è¯»å†™ç»Ÿä¸€æ¥å£ */
+/* PSPÓëwin32ÎÄ¼ş¶ÁĞ´Í³Ò»½Ó¿Ú */
 #ifdef _PSP
 #include <pspiofilemgr.h>
 #define IO_RDONLY PSP_O_RDONLY
@@ -28,60 +28,60 @@ extern "C"{
 #endif
 
 /**
- *æ‰“å¼€(æœ¬åœ°ç£ç›˜)æ–‡ä»¶
- *@param const char*,æ–‡ä»¶å
- *@param int,æ‰“å¼€æ ‡å¿—(IO_RDONLY,IO_WRONLY,IO_APPENDçš„ä¸€ç§)
- *@return int,æ–‡ä»¶å¥æŸ„,è¯»å†™å‡ç”¨æ­¤æ–‡ä»¶å¥æŸ„è¿›è¡Œæ“ä½œ
+ *´ò¿ª(±¾µØ´ÅÅÌ)ÎÄ¼ş
+ *@param[in] fname ÎÄ¼şÃû
+ *@param[in] flag ´ò¿ª±êÖ¾(IO_RDONLY,IO_WRONLY,IO_APPENDµÄÒ»ÖÖ)
+ *@return int,ÎÄ¼ş¾ä±ú,¶ÁĞ´¾ùÓÃ´ËÎÄ¼ş¾ä±ú½øĞĞ²Ù×÷
  */
 	NGE_API int io_fopen(const char* fname,int flag);
 
 /**
- *è¯»æ–‡ä»¶,ä¸freadç±»ä¼¼
- *@param void*,ä¿å­˜è¯»å–æ•°æ®çš„ç¼“å­˜
- *@param int,è¯»å–ä¸ªæ•°
- *@param int,è¯»å–å¤§å°
- *@param int,æ–‡ä»¶å¥æŸ„
- *@return,å®é™…è¯»å–æ•°é‡
+ *¶ÁÎÄ¼ş,ÓëfreadÀàËÆ
+ *@param[in] buffer ±£´æ¶ÁÈ¡Êı¾İµÄ»º´æ
+ *@param[in] count ¶ÁÈ¡¸öÊı
+ *@param[in] size ¶ÁÈ¡´óĞ¡
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@return,Êµ¼Ê¶ÁÈ¡ÊıÁ¿
  */
 	NGE_API int io_fread(void* buffer,int count,int size,int handle);
 
 /**
- *å†™æ–‡ä»¶,ä¸fwriteç±»ä¼¼
- *@param void*,å¾…å†™æ•°æ®çš„ç¼“å­˜
- *@param int,å¾…å†™å—ä¸ªæ•°
- *@param int,å¾…å†™å—å¤§å°
- *@param int,æ–‡ä»¶å¥æŸ„
- *@return,å®é™…å†™å…¥æ•°é‡
+ *Ğ´ÎÄ¼ş,ÓëfwriteÀàËÆ
+ *@param[in] buffer ´ıĞ´Êı¾İµÄ»º´æ
+ *@param[in] count ´ıĞ´¿é¸öÊı
+ *@param[in] size ´ıĞ´¿é´óĞ¡
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@return,Êµ¼ÊĞ´ÈëÊıÁ¿
  */
 	NGE_API int io_fwrite(void* buffer,int count,int size,int handle);
 
 /**
- *æ–‡ä»¶æŒ‡é’ˆåç§»è®¾ç½®,ä¸fseekç±»ä¼¼
- *@param int,æ–‡ä»¶å¥æŸ„
- *@param int offset,åç§»é‡
- *@param int flag,seekæ ‡å¿—,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
- *@return int,è¿”å›0æˆåŠŸ,-1å¤±è´¥
+ *ÎÄ¼şÖ¸ÕëÆ«ÒÆÉèÖÃ,ÓëfseekÀàËÆ
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@param[in] offset Æ«ÒÆÁ¿
+ *@param[in] flag seek±êÖ¾,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
+ *@return int,·µ»Ø0³É¹¦,-1Ê§°Ü
  */
 	NGE_API int io_fseek(int handle,int offset,int flag);
 
 /**
- *è·å¾—å½“å‰æ–‡ä»¶åç§»å€¼
- *@param int handle,æ–‡ä»¶å¥æŸ„
- *@return int,æ–‡ä»¶åç§»å€¼
+ *»ñµÃµ±Ç°ÎÄ¼şÆ«ÒÆÖµ
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@return int ÎÄ¼şÆ«ÒÆÖµ
  */
 	NGE_API int io_ftell(int handle);
 
 /**
- *å…³é—­æ–‡ä»¶
- *@param int handle,æ–‡ä»¶å¥æŸ„
- *@return int,-1å¤±è´¥
+ *¹Ø±ÕÎÄ¼ş
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@return int,-1Ê§°Ü
  */
 	NGE_API int io_fclose(int handle);
 
 /**
- *æ–‡ä»¶å¤§å°
- *@param int handle,æ–‡ä»¶å¥æŸ„
- *@return int,æ–‡ä»¶å¤§å°
+ *ÎÄ¼ş´óĞ¡
+ *@param[in] handle ÎÄ¼ş¾ä±ú
+ *@return int,ÎÄ¼ş´óĞ¡
  */
 	NGE_API int io_fsize(int handle);
 

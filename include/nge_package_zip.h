@@ -17,7 +17,16 @@
 extern "C" {
 #endif
 
+/**
+ *初始化zip处理
+ */
 	NGE_API void ngePackageZipInit();
+
+/**
+ *为一个zip压缩包设置密码
+ *@param[in, out] pkg 待设置的zip包
+ *@param[in] passwd 要设置的密码
+ */
 	NGE_API void ngePackageZipSetPassword(ngePackage* pkg, const char* passwd);
 
 #ifdef __cplusplus

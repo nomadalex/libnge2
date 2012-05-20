@@ -18,8 +18,8 @@
 //freetype private flags
 #define FONT_ANTIALIAS 32
 #define FONT_KERNING   64
-#define FLAGS_FREETYPE_BOLDER 1
-#define FLAGS_FREETYPE_NORMAL 0
+#define FLAGS_FREETYPE_BOLD 1
+#define FLAGS_FREETYPE_ITALICS (1 << 1)
 
 typedef struct {
 	/**

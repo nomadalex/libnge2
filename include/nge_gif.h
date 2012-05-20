@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_gif.h
  *
  *  2011/03/26 02:03:11
@@ -66,25 +66,92 @@ extern "C" {
 #endif
 
 /**
- * gifåŠ¨ç”»åŠ è½½ç¨‹åº,å°†gifåŠ¨ç”»å¸§å…¨éƒ¨åŠ è½½åˆ°å†…å­˜,
- * æœ¬å‡½æ•°æ˜¯é¢„å…ˆåŠ è½½å‡½æ•°,è¯·æ³¨æ„å†…å­˜çš„ä½¿ç”¨é‡
- *@param const char* filename,gifæ–‡ä»¶å
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼
- *@param int swizzle,ä¼˜åŒ–æ ‡å¿—,é€šå¸¸å¡«1
- *@return gif_desc_p,gifç»˜å›¾æ–‡ä»¶å¥æŸ„,ä¾›æ˜¾ç¤ºå‡½æ•°è°ƒç”¨
+ * gif¶¯»­¼ÓÔØ³ÌĞò,½«gif¶¯»­Ö¡È«²¿¼ÓÔØµ½ÄÚ´æ,
+ * ±¾º¯ÊıÊÇÔ¤ÏÈ¼ÓÔØº¯Êı,Çë×¢ÒâÄÚ´æµÄÊ¹ÓÃÁ¿
+ *@param[in] filename gifÎÄ¼şÃû
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½
+ *@param[in] swizzle ÓÅ»¯±êÖ¾,Í¨³£Ìî1
+ *@return gif_desc_p gif»æÍ¼ÎÄ¼ş¾ä±ú,¹©ÏÔÊ¾º¯Êıµ÷ÓÃ
  */
 	NGE_API gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle);
 
 /**
- * é‡Šæ”¾ä¸€ä¸ªgifåŠ¨ç”»èµ„æº
- *@param gif_desc_p pgif,ç”±gif_animation_loadåŠ è½½çš„æè¿°ç¬¦
+ * ÊÍ·ÅÒ»¸ögif¶¯»­×ÊÔ´
+ *@param[in] pgif ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
  *@return
  */
 	NGE_API void gif_animation_free(gif_desc_p pgif);
 
+/**
+ * ÔÚÆÁÄ»ÉÏÏÔÊ¾Ò»¸ögif¶¯»­1, Ğ§ÂÊ×î¸ß
+ *@param[in] pgif ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
+ *@param[in] x ÆÁÄ»x×ø±ê
+ *@param[in] y ÆÁÄ»y×ø±ê
+ *@return
+ */
 	NGE_API void GifAnimationToScreen(gif_desc_p pgif,float x,float y);
+
+/**
+ * ÔÚÆÁÄ»ÉÏÏÔÊ¾Ò»¸ögif¶¯»­2, Ğ§ÂÊ×îµÍ
+ * sx,sy,sw,sh,¹¹³É´ıÏÔÊ¾µÄ¶¯»­·¶Î§£¬ÀıÈçÒªÏÔÊ¾Ò»ÕÅ200*200µÄ¶¯»­µÄ
+ * 20£¬20µ½50¿í50¸ßµÄ×ÓÍ¼¿é£¬ÕâÀï¾ÍÌîÒÀ´Î20,20,50,50¡£Èç¹ûÒªÏÔÊ¾Ô­Í¼,¶¼ÌîÉÏ0
+ * ¼´¿É.¶¼Ìî0ÊÇÏÔÊ¾0,0,pgif->gif_w,pgif->gif_w¡£xscale,yscaleÊÇ·Å´óËõĞ¡Òò×Ó1ÊÇÔ­Ê¼±ÈÀı£¬
+ * Èç¹û·Å´óÒ»±¶£¬¶¼Ìî2£¬ËõĞ¡1±¶Ìî0.5¡£maskÊÇÑÕÉ«ÕÚÕÖ£¬ÓÃÓÚ¶ÔÍ¼Æ¬½øĞĞ»ìÉ«£¬
+ * ÀıÈç°ëÍ¸Ã÷Ğ§¹ûµÈ£¬Ä¬ÈÏÊÇÏÔÊ¾Ô­É«£¬ÕâÀïÓÃpgif->gif_image_chains->pimage->mask¼´¿É
+ * Àı×Ó1:½«200*200µÄ¶¯»­pgifÏÔÊ¾ÔÚÆÁÄ»100£¬0´¦£¬²¢·Å´óÒ»±¶ÏÔÊ¾
+ * RenderGifAnimation(pgif,0,0,0,0,100,0,2,2,0,pgif->gif_image_chains->pimage->mask);
+ * Àı×Ó2:½«¶¯»­pgifµÄ32£¬32¿ªÊ¼µÄ64¿í,64¸ßµÄ²¿·ÖÏÔÊ¾ÔÚ40£¬80´¦²¢Ğı×ª90¶È
+ * RenderGifAnimation(pgif,32,32,64,64,40,80,1,1,90,pgif->gif_image_chains->pimage->mask);
+ * Àı×Ó3:½«¶¯»­pgif(pgifÏÔÊ¾Ä£Ê½ÊÇ8888)µÄ80£¬80¿ªÊ¼µÄ64¿í,64¸ßµÄ²¿·ÖÏÔÊ¾ÔÚ100£¬100´¦²¢°ëÍ¸Ã÷ÏÔÊ¾
+ * RenderGifAnimation(pgif,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));
+ *@param[in] pgif ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
+ *@param[in] sx ¶¯»­x×ø±ê
+ *@param[in] sy ¶¯»­y×ø±ê
+ *@param[in] sw ¶¯»­¿í
+ *@param[in] sh ¶¯»­¸ß,
+ *@param[in] dx ÆÁÄ»x×ø±ê
+ *@param[in] dy ÆÁÄ»y×ø±ê
+ *@param[in] xscale ¶¯»­x·½Ïò·Å´óËõĞ¡Òò×Ó
+ *@param[in] yscale ¶¯»­y·½Ïò·Å´óËõĞ¡Òò×Ó
+ *@param[in] angle Ğı×ª½Ç¶È
+ *@param[in] mask ÑÕÉ«ÕÚÕÖ
+ *@return
+ */
 	NGE_API void RenderGifAnimation(gif_desc_p pgif,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
+
+/**
+ * ÔÚÆÁÄ»ÉÏÏÔÊ¾Ò»¸ögif¶¯»­3
+ * Í¬DrawGifAnimation£¬Ö»ÊÇ¶àÁË¸öMASK
+ *@param[in] pgif ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
+ *@param[in] sx ¶¯»­x×ø±ê
+ *@param[in] sy ¶¯»­y×ø±ê
+ *@param[in] sw ¶¯»­¿í
+ *@param[in] sh ¶¯»­¸ß
+ *@param[in] dx ÆÁÄ»x×ø±ê
+ *@param[in] dy ÆÁÄ»y×ø±ê
+ *@param[in] dw ÆÁÄ»¿í
+ *@param[in] dh ÆÁÄ»¸ß
+ *@param[in] mask ÑÕÉ«ÕÚÕÖ
+ *@return ÎŞ
+ */
 	NGE_API void DrawGifAnimationMask(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int mask);
+
+/**
+ * ÔÚÆÁÄ»ÉÏÏÔÊ¾Ò»¸ögif¶¯»­3,sw,shÎª0ÊÇ»­Ô­Í¼£¬dw£¬dhÎª0ÊÇÏÔÊ¾swºÍdh´óĞ¡
+ * Àı×Ó1:½«200*200µÄgif¶¯»­pgifÏÔÊ¾ÔÚÆÁÄ»100£¬0´¦
+ * DrawGifAnimation(pgif,0,0,0,0,100,0,0,0);
+ * »òÕßÓÃÑÏ¸ñ·½Ê½£ºDrawGifAnimation(pgif,0,0,200,200,100,0,200,200);
+ *@param[in] pgif ÓÉgif_animation_load¼ÓÔØµÄÃèÊö·û
+ *@param[in] sx ¶¯»­x×ø±ê
+ *@param[in] sy ¶¯»­y×ø±ê
+ *@param[in] sw ¶¯»­¿í
+ *@param[in] sh ¶¯»­¸ß
+ *@param[in] dx ÆÁÄ»x×ø±ê
+ *@param[in] dy ÆÁÄ»y×ø±ê
+ *@param[in] dw ÆÁÄ»¿í
+ *@param[in] dh ÆÁÄ»¸ß
+ *@return ÎŞ
+ */
 	NGE_API void DrawGifAnimation(gif_desc_p pgif,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
 
 #ifdef __cplusplus

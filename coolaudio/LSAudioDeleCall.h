@@ -26,7 +26,7 @@ typedef struct core_audio_play_tag{
 	fd_iseof      iseof;
 	fd_ispaused   ispaused;
 	fd_destroy    destroy;
-	// 涓撶敤鍐呴儴鍙傛暟
+	// 专用内部参数
 	AVAudioPlayer *player;
 	int		      playcount;
 	int           autostop;

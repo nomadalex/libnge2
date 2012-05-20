@@ -1,4 +1,4 @@
-﻿/*
+/*
 	RLE encoder/decoder for 4,8,16,24 and 32bit
 	written by alexander berl, 2004/2007
 */

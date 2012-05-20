@@ -14,55 +14,55 @@
 extern "C"{
 #endif
 	/**
-	*æ‰“å¼€MEM,æ³¨æ„ç¡®ä¿MEMæœ‰æ•ˆ
-	*@param const char*,memæŒ‡é’ˆ
+	*´ò¿ªMEM,×¢ÒâÈ·±£MEMÓĞĞ§
+	*@param const char*,memÖ¸Õë
 	*@param int,size
-	*@param int,æ‰“å¼€æ ‡å¿—(IO_RDONLY,IO_WRONLY,IO_APPENDçš„ä¸€ç§)
-	*@return int,æ–‡ä»¶å¥æŸ„,è¯»å†™å‡ç”¨æ­¤æ–‡ä»¶å¥æŸ„è¿›è¡Œæ“ä½œ
+	*@param int,´ò¿ª±êÖ¾(IO_RDONLY,IO_WRONLY,IO_APPENDµÄÒ»ÖÖ)
+	*@return int,ÎÄ¼ş¾ä±ú,¶ÁĞ´¾ùÓÃ´ËÎÄ¼ş¾ä±ú½øĞĞ²Ù×÷
 	*/
 	int io_mopen(const char* mem,int size,int flag);
 	/**
-	*è¯»MEMæ–‡ä»¶,ä¸freadç±»ä¼¼
-	*@param void*,ä¿å­˜è¯»å–æ•°æ®çš„ç¼“å­˜
-	*@param int,è¯»å–ä¸ªæ•°
-	*@param int,è¯»å–å¤§å°
-	*@param int,æ–‡ä»¶å¥æŸ„
-	*@return,å®é™…è¯»å–æ•°é‡
+	*¶ÁMEMÎÄ¼ş,ÓëfreadÀàËÆ
+	*@param void*,±£´æ¶ÁÈ¡Êı¾İµÄ»º´æ
+	*@param int,¶ÁÈ¡¸öÊı
+	*@param int,¶ÁÈ¡´óĞ¡
+	*@param int,ÎÄ¼ş¾ä±ú
+	*@return,Êµ¼Ê¶ÁÈ¡ÊıÁ¿
 	*/
 	int io_mread(void* buffer,int count,int size,int handle);
 	/**
-	*å†™MEMæ–‡ä»¶,ä¸fwriteç±»ä¼¼
-	*@param void*,å¾…å†™æ•°æ®çš„ç¼“å­˜
-	*@param int,å¾…å†™å—ä¸ªæ•°
-	*@param int,å¾…å†™å—å¤§å°
-	*@param int,æ–‡ä»¶å¥æŸ„
-	*@return,å®é™…å†™å…¥æ•°é‡
+	*Ğ´MEMÎÄ¼ş,ÓëfwriteÀàËÆ
+	*@param void*,´ıĞ´Êı¾İµÄ»º´æ
+	*@param int,´ıĞ´¿é¸öÊı
+	*@param int,´ıĞ´¿é´óĞ¡
+	*@param int,ÎÄ¼ş¾ä±ú
+	*@return,Êµ¼ÊĞ´ÈëÊıÁ¿
 	*/
 	int io_mwrite(void* buffer,int count,int size,int handle);
 	/**
-	*æ–‡ä»¶æŒ‡é’ˆåç§»è®¾ç½®,ä¸fseekç±»ä¼¼
-	*@param int,æ–‡ä»¶å¥æŸ„
-	*@param int offset,åç§»é‡
-	*@param int flag,seekæ ‡å¿—,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
-	*@return int,è¿”å›0æˆåŠŸ,-1å¤±è´¥
+	*ÎÄ¼şÖ¸ÕëÆ«ÒÆÉèÖÃ,ÓëfseekÀàËÆ
+	*@param int,ÎÄ¼ş¾ä±ú
+	*@param int offset,Æ«ÒÆÁ¿
+	*@param int flag,seek±êÖ¾,IO_SEEK_CUR,IO_SEEK_END,IO_SEEK_SET
+	*@return int,·µ»Ø0³É¹¦,-1Ê§°Ü
 	*/
 	int io_mseek(int handle,int offset,int flag);
 	/**
-	*è·å¾—å½“å‰æ–‡ä»¶åç§»å€¼
-	*@param int handle,æ–‡ä»¶å¥æŸ„
-	*@return int,æ–‡ä»¶åç§»å€¼
+	*»ñµÃµ±Ç°ÎÄ¼şÆ«ÒÆÖµ
+	*@param int handle,ÎÄ¼ş¾ä±ú
+	*@return int,ÎÄ¼şÆ«ÒÆÖµ
 	*/
 	int io_mtell(int handle);
 	/**
-	*å…³é—­MEMæ–‡ä»¶
-	*@param int handle,æ–‡ä»¶å¥æŸ„
-	*@return int,-1å¤±è´¥
+	*¹Ø±ÕMEMÎÄ¼ş
+	*@param int handle,ÎÄ¼ş¾ä±ú
+	*@return int,-1Ê§°Ü
 	*/
 	int io_mclose(int handle);
 	/**
-	*MEM sizeå¤§å°
-	*@param int handle,æ–‡ä»¶å¥æŸ„
-	*@return int,MEM sizeå¤§å°
+	*MEM size´óĞ¡
+	*@param int handle,ÎÄ¼ş¾ä±ú
+	*@return int,MEM size´óĞ¡
 	*/
 	int io_msize(int handle);
 	

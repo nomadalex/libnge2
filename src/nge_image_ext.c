@@ -1,4 +1,4 @@
-ï»¿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_image_ext.h"
 #include <math.h>
 #include <assert.h>
@@ -72,10 +72,10 @@ int get_gray_color(int dtype, int scol, int gray)
 }
 
 /**
- * å»ºç«‹ src å›¾åƒçš„ç°åº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄ»Ò¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param gray ç°åº¦ 0 åˆ° 100, 0 ä¸ºæºå›¾åƒ, 100 ä¸ºçº¯ç°è‰²å›¾åƒ
+ * @param src Ô´Í¼Ïñ
+ * @param gray »Ò¶È 0 µ½ 100, 0 ÎªÔ´Í¼Ïñ, 100 Îª´¿»ÒÉ«Í¼Ïñ
  */
 image_p create_gray_image(image_p src, int gray)
 {
@@ -142,7 +142,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 	default:
 		return 0;
 	}
-	// å¤„ç†é¥±å’Œåº¦
+	// ´¦Àí±¥ºÍ¶È
 	if(saturation!=0)
 	{
 		maxcol = r>g ? (r>b?r:b):g;
@@ -172,7 +172,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 		if(b<0)b=0;
 	}
 cont001:
-	// å¤„ç†äº®åº¦
+	// ´¦ÀíÁÁ¶È
 	if(brightness!=0)
 	{
 		//gcol = ((r + g + b) / 3) & 0xff;
@@ -189,7 +189,7 @@ cont001:
 		if(b<0)b=0;
 	}
 
-	// è¾“å‡º
+	// Êä³ö
 	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_8888:
@@ -210,11 +210,11 @@ cont001:
 }
 
 /**
- * å»ºç«‹ src å›¾åƒçš„äº®åº¦ï¼Œé¥±å’Œåº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄÁÁ¶È£¬±¥ºÍ¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param saturation é¥±åˆåº¦ -100(ç°åº¦å›¾åƒ) è‡³ 100(é«˜å½©è‰²æ¯”å›¾åƒ)
- * @param brightness äº®åº¦ -100(å…¨é»‘) è‡³ 100(å…¨ç™½)
+ * @param src Ô´Í¼Ïñ
+ * @param saturation ±¥ºÏ¶È -100(»Ò¶ÈÍ¼Ïñ) ÖÁ 100(¸ß²ÊÉ«±ÈÍ¼Ïñ)
+ * @param brightness ÁÁ¶È -100(È«ºÚ) ÖÁ 100(È«°×)
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {
@@ -752,4 +752,246 @@ image_p image_scale(image_p src, int w, int h,int mode)
 	filter_destroy(filter);
 	CHECK_AND_SWIZZLE(src);
 	return dst;
+}
+
+//for image_hue_rotate
+//Thanks to Paul Haeberli
+#define M_PI	(3.1415926535f)
+#define RLUM    (0.3086f)
+#define GLUM    (0.6094f)
+#define BLUM    (0.0820f)
+
+//multiply two matrixes
+void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+{
+    int x, y;
+    float temp[4][4];
+
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < 4; x++) {
+            temp[y][x] = b[y][0] * a[0][x]
+                       + b[y][1] * a[1][x]
+                       + b[y][2] * a[2][x]
+                       + b[y][3] * a[3][x];
+        }
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < 4; x++)
+            c[y][x] = temp[y][x];
+}
+
+//transpose a matrix
+void matrixtrans(float a[4][4])
+{
+    float temp;
+	int y, x;
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < y; x++) {
+            temp = a[y][x];
+            a[y][x] = a[x][y];
+            a[x][y] = temp;
+        }   
+}
+
+//generate an identity matrix
+void identmat(float *matrix)
+{
+    *matrix++ = 1.0;    /* row 1        */
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 2        */
+    *matrix++ = 1.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 3        */
+    *matrix++ = 0.0;
+    *matrix++ = 1.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 4        */
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 1.0;
+}
+
+//transform a 3D point
+void xformpnt(float matrix[4][4], float x, float y, float z, float *tx, float *ty, float *tz)
+{
+    *tx = x*matrix[0][0] + y*matrix[1][0] + z*matrix[2][0] + matrix[3][0];
+    *ty = x*matrix[0][1] + y*matrix[1][1] + z*matrix[2][1] + matrix[3][1];
+    *tz = x*matrix[0][2] + y*matrix[1][2] + z*matrix[2][2] + matrix[3][2];
+}
+
+//shear a matrix
+void zshearmat(float mat[4][4], float dx, float dy)
+{
+    float mmat[4][4];
+
+    mmat[0][0] = 1.0;
+    mmat[0][1] = 0.0;
+    mmat[0][2] = dx;
+    mmat[0][3] = 0.0;
+
+    mmat[1][0] = 0.0;
+    mmat[1][1] = 1.0;
+    mmat[1][2] = dy;
+    mmat[1][3] = 0.0;
+
+    mmat[2][0] = 0.0;
+    mmat[2][1] = 0.0;
+    mmat[2][2] = 1.0;
+    mmat[2][3] = 0.0;
+
+    mmat[3][0] = 0.0;
+    mmat[3][1] = 0.0;
+    mmat[3][2] = 0.0;
+    mmat[3][3] = 1.0;
+    matrixmult(mmat,mat,mat);
+}
+
+//z-rotate a matrix
+void zrotatemat(float mat[4][4], float rs, float rc)
+{
+    float mmat[4][4];
+
+    mmat[0][0] = rc;
+    mmat[0][1] = rs;
+    mmat[0][2] = 0.0;
+    mmat[0][3] = 0.0;
+
+    mmat[1][0] = -rs;
+    mmat[1][1] = rc;
+    mmat[1][2] = 0.0;
+    mmat[1][3] = 0.0;
+
+    mmat[2][0] = 0.0;
+    mmat[2][1] = 0.0;
+    mmat[2][2] = 1.0;
+    mmat[2][3] = 0.0;
+
+    mmat[3][0] = 0.0;
+    mmat[3][1] = 0.0;
+    mmat[3][2] = 0.0;
+    mmat[3][3] = 1.0;
+    matrixmult(mmat,mat,mat);
+}
+
+int image_hue_rotate(image_p pimage, float rot)
+{
+	float mat1[4][4], mmat[4][4];
+	float lx, ly, lz;
+	float mag;
+	float zsx, zsy;
+	float zrs, zrc;
+	int n;
+	uint16 *bmp16;
+	uint32 *bmp32;
+	uint16 ir, ig, ib;
+	uint16 r, g, b, a;
+	
+	if(!pimage)	return 0;
+	
+	identmat(mat1);
+	identmat(mmat);
+	
+	/* rotate the grey vector into positive Z */
+	mag = sqrt(3.0f);
+	mag = 1.0f / mag;
+	mat1[0][0] = mat1[0][2] = mat1[1][2] = mat1[2][2] = mag;
+	mat1[1][0] = -mag;
+	mag = sqrt(2.0f);
+	mat1[0][0] *= mag;
+	mag = 1.0f / mag;
+	mat1[1][0] *= mag;
+	mat1[2][0] = mat1[1][0];
+	mat1[1][1] = mag;
+	mat1[2][1] = -mag;
+	
+	/* shear the space to make the luminance plane horizontal */
+	xformpnt(mat1, RLUM, GLUM, BLUM, &lx, &ly, &lz);
+	zsx = lx / lz;
+	zsy = ly / lz;
+	matrixmult(mmat, mat1, mmat);
+	zshearmat(mmat,zsx,zsy);
+	
+	matrixtrans(mat1);
+	
+	/* rotate the hue */
+	zrs = sin(rot*M_PI/180.0f);
+	zrc = cos(rot*M_PI/180.0f);
+	zrotatemat(mmat,zrs,zrc);
+	
+	/* unshear the space to put the luminance plane back */
+	zshearmat(mmat,-zsx,-zsy);
+	
+	matrixmult(mat1, mmat, mmat);
+	
+	n = pimage->texh * pimage->texw;
+	pimage->modified = 1;
+	switch(pimage->dtype)	{
+		case DISPLAY_PIXEL_FORMAT_565:
+			bmp16 = (uint16*)pimage->data;
+			while(n--)	{
+				GET_RGBA_565(*bmp16, ir, ig, ib, a)
+				r = ir*mmat[0][0] + ig*mmat[1][0] + ib*mmat[2][0];
+				g = ir*mmat[0][1] + ig*mmat[1][1] + ib*mmat[2][1];
+				b = ir*mmat[0][2] + ig*mmat[1][2] + ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_565(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			bmp16 = (uint16*)pimage->data;
+			while(n--)	{
+				GET_RGBA_5551(*bmp16, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_5551(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			bmp16 = (uint16*)pimage->data;
+			while(n--)	{
+				GET_RGBA_4444(*bmp16, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_4444(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_8888:
+			bmp32 = (uint32*)pimage->data;
+			while(n--)	{
+				GET_RGBA_8888(*bmp32, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp32++) = MAKE_RGBA_8888(r, g, b, a);
+			}
+			break;
+	}
+	return 1;
 }

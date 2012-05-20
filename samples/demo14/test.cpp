@@ -1,11 +1,11 @@
-ï»¿#include "libnge2.h"
+#include "libnge2.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "nge_app.h"
 
 /**
- * æµ‹è¯•nge2çš„æ–‡ä»¶ç³»ç»Ÿ
+ * ²âÊÔnge2µÄÎÄ¼þÏµÍ³
  */
 
 #ifdef ANDROID
@@ -40,7 +40,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
-		//å¼€å§‹é”®é€€å‡º
+		//¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
     }
@@ -98,7 +98,7 @@ int init()
 	char* txt;
 
 	NGE_Init(INIT_VIDEO);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	ngePackageZipInit();
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT

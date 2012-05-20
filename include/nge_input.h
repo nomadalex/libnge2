@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_input.h
  *
  *  2011/03/25 06:18:44
@@ -82,8 +82,8 @@ typedef void (*AnalogProc)(unsigned char analog_x,unsigned char analog_y);
 
 #ifndef NGE_PSP
 #define NGE_INPUT_MOUSE_SUPPORT
-// åœ¨iphoneå’Œandroidä¸Šç”¨è§¦æ‘¸å±æ¨¡æ‹Ÿé¼ æ ‡
-// æ‰‹æŒ‡ç¦»å¼€ä¸ºMOUSE_LBUTTON_UPï¼Œè½ä¸‹ä¸ºMOUSE_LBUTTON_DOWNï¼Œåœ¨å±ä¸Šç§»åŠ¨ä¸ºMouseMove
+// ÔÚiphoneºÍandroidÉÏÓÃ´¥ÃşÆÁÄ£ÄâÊó±ê
+// ÊÖÖ¸Àë¿ªÎªMOUSE_LBUTTON_UP£¬ÂäÏÂÎªMOUSE_LBUTTON_DOWN£¬ÔÚÆÁÉÏÒÆ¶¯ÎªMouseMove
 typedef void (*MouseMoveProc)(int x,int y);
 typedef void (*MouseButtonProc)(int type,int x,int y);
 #define MOUSE_LBUTTON_DOWN 1
@@ -103,46 +103,51 @@ extern "C" {
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 /**
- *åˆå§‹åŒ–è¾“å…¥ç³»ç»Ÿ
- *@param ButtonProc downproc,æŒ‰é”®æŒ‰ä¸‹çš„å¤„ç†æ¶ˆæ¯å‡½æ•°
- *@param ButtonProc upproc,æŒ‰é”®é‡Šæ”¾çš„å¤„ç†æ¶ˆæ¯å‡½æ•°
- *@param int doneflag,æ˜¯å¦è‡ªè¡Œå¤„ç†é€€å‡ºæ¶ˆæ¯(HOMEé”®æŒ‰ä¸‹æ—¶),0(å¦),1(æ˜¯)
- *@return æ— 
+ *³õÊ¼»¯ÊäÈëÏµÍ³
+ *@param[in] downproc °´¼ü°´ÏÂµÄ´¦ÀíÏûÏ¢º¯Êı
+ *@param[in] upproc °´¼üÊÍ·ÅµÄ´¦ÀíÏûÏ¢º¯Êı
+ *@param[in] doneflag ÊÇ·ñ×ÔĞĞ´¦ÀíÍË³öÏûÏ¢(HOME¼ü°´ÏÂÊ±),0(·ñ),1(ÊÇ)
+ *@return ÎŞ
  */
 	NGE_API void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag);
 #endif
 
 #ifdef NGE_INPUT_ANALOG_SUPPORT
 /**
- *åˆå§‹åŒ–æ‘‡æ†
- *@param AnalogProc,æ‘‡æ†çš„å›è°ƒå‡½æ•°
- *@return
+ *³õÊ¼»¯Ò¡¸Ë
+ *@param[in] AnalogProc Ò¡¸ËµÄ»Øµ÷º¯Êı
+ *@return ÎŞ
  */
 	NGE_API void InitAnalog(AnalogProc analogproc);
 #endif
 
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 /**
- *åˆå§‹åŒ–mouse-touch
+ *³õÊ¼»¯mouse-touch
+ *@param[in] mouse_btn Êó±êµ¥»÷µÄ»Øµ÷º¯Êı
+ *@param[in] mouse_move Êó±êÒÆ¶¯µÄ»Øµ÷º¯Êı
  */
 	NGE_API void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move);
 	NGE_API void EmulateTouchMove(int flag);
 #endif
-
+/**
+ *½»»»×ø±êµÄx,yÖµ
+ *@param[in] flag ÊÇ·ñ½»»»,0Îª²»½»»»,1Îª½»»»
+ */
 	NGE_API void SetSwapXY(int flag);
 
 #if !defined NGE_IPHONE || !defined NGE_ANDROID
 #define NGE_INPUT_HAS_PROC
 /**
- *è¾“å…¥å“åº”,å…·ä½“ä½¿ç”¨è¯·çœ‹ä¾‹å­test/input_test.cpp
- *@return æ— 
+ *ÊäÈëÏìÓ¦,¾ßÌåÊ¹ÓÃÇë¿´Àı×Ótest/input_test.cpp
+ *@return ÎŞ
  */
 	NGE_API void InputProc();
 #endif
 
 /**
- *é€€å‡ºè¾“å…¥ç³»ç»Ÿ
- *@return æ— 
+ *ÍË³öÊäÈëÏµÍ³
+ *@return ÎŞ
  */
 #define FiniInput()
 

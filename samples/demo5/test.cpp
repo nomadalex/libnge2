@@ -1,10 +1,10 @@
-ï»¿#include "libnge2.h"
+#include "libnge2.h"
 #include "CppSQLite3.h"
 #include <stdlib.h>
 #include "nge_charsets.h"
 
 /**
- * nge_test:æµ‹è¯• sqlite3
+ * nge_test:²âÊÔ sqlite3
  */
 
 
@@ -14,7 +14,7 @@ image_p pimage_icon[2];
 
 int mask8888 = MAKE_RGBA_8888(255,255,255,255);
 int mask4444 = MAKE_RGBA_4444(255,255,255,255);
-//åŠé€æ˜çš„box
+//°ëÍ¸Ã÷µÄbox
 int maskbox = MAKE_RGBA_8888(255,255,255,128);
 CppSQLite3DB db;
 
@@ -22,7 +22,7 @@ char* CreateInfoByid(int id)
 {
 	static char buffer[1024]={0};
 	static char querybuf[1024]={0};
-	char* str = "%s  ä½“åŠ›%s æ­¦åŠ›%s æ™ºåŠ›%s é­…åŠ›%s å¹´é¾„%s ç±»å‹ %s";
+	char* str = "%s  ÌåÁ¦%s ÎäÁ¦%s ÖÇÁ¦%s ÷ÈÁ¦%s ÄêÁä%s ÀàĞÍ %s";
 
 	memset(querybuf,0,1024);
 	try
@@ -31,11 +31,11 @@ char* CreateInfoByid(int id)
 			" heroinfo,herotype where heroinfo.id=%d and heroinfo.type=herotype.id;",id);
 		CppSQLite3Query q = db.execQuery(querybuf);
 
-		nge_charsets_utf8_to_gbk((uint8*)str, (uint8*)querybuf, strlen(str), 1024);
+		//nge_charsets_utf8_to_gbk((uint8*)str, (uint8*)querybuf, strlen(str), 1024);
 
 		if (!q.eof())
 	{
-		sprintf(buffer,querybuf, q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
+		sprintf(buffer,str, q.fieldValue(0),q.fieldValue(1),q.fieldValue(2),q.fieldValue(3),
 				q.fieldValue(4),q.fieldValue(5),q.fieldValue(6));
 	}
 		db.close();
@@ -147,17 +147,17 @@ int main(int argc, char* argv[])
 	int i;
 
 	NGE_Init(INIT_VIDEO);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	InitInput(btn_down,btn_up,1);
 
 	int maxid = GetInfoCount();
-	//åˆ›å»ºä¸€ä¸ªæ˜¾ç¤ºimage,å­—å°±æ˜¾ç¤ºåœ¨è¿™ä¸ªä¸Šé¢æ³¨æ„DISPLAY_PIXEL_FORMATå¿…é¡»ä¸åˆ›å»ºå­—ä½“çš„DISPLAY_PIXEL_FORMATä¸€è‡´
+	//´´½¨Ò»¸öÏÔÊ¾image,×Ö¾ÍÏÔÊ¾ÔÚÕâ¸öÉÏÃæ×¢ÒâDISPLAY_PIXEL_FORMAT±ØĞëÓë´´½¨×ÖÌåµÄDISPLAY_PIXEL_FORMATÒ»ÖÂ
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
-	//åˆ›å»ºå­—ä½“
+	//´´½¨×ÖÌå
 	pf[0] = create_font_hzk("fonts/GBK14","fonts/ASC14",14,DISPLAY_PIXEL_FORMAT_4444);
 	pf[1] = create_font_freetype("fonts/simfang.ttf",13,DISPLAY_PIXEL_FORMAT_4444);
-	char str[3][128]={"ã€å°èè‰ã€‘","ä¼—èŠ³æ‘‡è½ç‹¬æš„å¦ï¼Œå å°½é£æƒ…å‘å°å›­ã€‚","ç–å½±æ¨ªæ–œæ°´æ¸…æµ…ï¼Œæš—é¦™æµ®åŠ¨æœˆé»„æ˜ã€‚"};
-	//æ˜¾ç¤ºGBK Font
+	char str[3][128]={"¡¾Ğ¡ÂÜÀò¡¿","ÖÚ·¼Ò¡Âä¶ÀêÑåû£¬Õ¼¾¡·çÇéÏòĞ¡Ô°¡£","ÊèÓ°ºáĞ±Ë®ÇåÇ³£¬°µÏã¸¡¶¯ÔÂ»Æ»è¡£"};
+	//ÏÔÊ¾GBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(128,0,0,255));
 	font_drawtext(pf[0],str[0],strlen(str[0]),pimage_text,100,195,FONT_SHOW_NORMAL);
 	NGE_SetFontEncoding(NGE_ENCODING_GBK);
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
 		font_setcolor(pf[0],MAKE_RGBA_4444(255,0,0,255));
 	}
 
-	//æ˜¾ç¤ºfreetype
+	//ÏÔÊ¾freetype
 	font_setcolor(pf[1],MAKE_RGBA_4444(128,0,0,255));
 	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	font_drawtext(pf[1],str[0],strlen(str[0]),pimage_text,100,30,FONT_SHOW_NORMAL);

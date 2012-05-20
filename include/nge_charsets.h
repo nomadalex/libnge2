@@ -1,4 +1,4 @@
-ï»¿#ifndef __NGE_CHARSET__H
+#ifndef __NGE_CHARSET__H
 #define __NGE_CHARSET__H
 
 #include "nge_common.h"
@@ -9,49 +9,49 @@
 extern "C"{
 #endif
 
-/*ä»¥ä¸‹å‡½æ•°ä¸ºå†…éƒ¨ä½¿ç”¨,é€šå¸¸æ— éœ€è°ƒç”¨*/
+/*ÒÔÏÂº¯ÊıÎªÄÚ²¿Ê¹ÓÃ,Í¨³£ÎŞĞèµ÷ÓÃ*/
 
 /**
- *å°†GBKç¼–ç çš„å­—ç¬¦è½¬åŒ–ä¸ºunicode(ucs-2)å­—ç¬¦
- *æ³¨æ„out bufferéœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°.
- *@param const uint8* in,è¾“å…¥å­—ç¬¦ä¸²
- *@param uint8* out,è½¬æ¢åunicodeå­—ç¬¦ä¿å­˜åœ¨è¿™é‡Œ,æ³¨æ„éœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°
- *@param int len,inå­—ç¬¦ä¸²ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®°ï¼Œå³strlenè®¡ç®—çš„ä¸ªæ•°
- *@param int n,out bufferçš„å¤§å°ï¼Œä»¥å­—èŠ‚è®°
- *@return int,è½¬æ¢åçš„å­—ç¬¦ä¸ªæ•°ï¼Œä»¥uint16ä¸ªæ•°è®¡ï¼Œ0ä¸è´Ÿæ•°å³ä¸ºerror
+ *½«GBK±àÂëµÄ×Ö·û×ª»¯Îªunicode(ucs-2)×Ö·û
+ *@remark ×¢Òâout bufferĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡.
+ *@param[in] in ÊäÈë×Ö·û´®
+ *@param[out] out ×ª»»ºóunicode×Ö·û±£´æÔÚÕâÀï,×¢ÒâĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡
+ *@param[in] len in×Ö·û´®¸öÊı£¬ÒÔ×Ö½Ú¼Ç£¬¼´strlen¼ÆËãµÄ¸öÊı
+ *@param[in] n out bufferµÄ´óĞ¡£¬ÒÔ×Ö½Ú¼Ç
+ *@return int,×ª»»ºóµÄ×Ö·û¸öÊı£¬ÒÔuint16¸öÊı¼Æ£¬0Óë¸ºÊı¼´Îªerror
  */
 	NGE_API int nge_charset_gbk_to_ucs2(const uint8* in, uint16* out, int len, int n);
 
 /**
- *å°†utf8ç¼–ç çš„å­—ç¬¦è½¬åŒ–ä¸ºunicode(ucs-2)å­—ç¬¦
- *æ³¨æ„out bufferéœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°.
- *@param const uint8* in,è¾“å…¥å­—ç¬¦ä¸²
- *@param uint8* out,è½¬æ¢åunicodeå­—ç¬¦ä¿å­˜åœ¨è¿™é‡Œ,æ³¨æ„éœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°
- *@param int len,inå­—ç¬¦ä¸²ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®°ï¼Œå³strlenè®¡ç®—çš„ä¸ªæ•°
- *@param int n,out bufferçš„å¤§å°ï¼Œä»¥å­—èŠ‚è®°
- *@return int,è½¬æ¢åçš„å­—ç¬¦ä¸ªæ•°ï¼Œä»¥uint16ä¸ªæ•°è®¡ï¼Œ0ä¸è´Ÿæ•°å³ä¸ºerror
+ *½«utf8±àÂëµÄ×Ö·û×ª»¯Îªunicode(ucs-2)×Ö·û
+ *@remark ×¢Òâout bufferĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡.
+ *@param[in] in ÊäÈë×Ö·û´®
+ *@param[out] out ×ª»»ºóunicode×Ö·û±£´æÔÚÕâÀï,×¢ÒâĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡
+ *@param[in] len in×Ö·û´®¸öÊı£¬ÒÔ×Ö½Ú¼Ç£¬¼´strlen¼ÆËãµÄ¸öÊı
+ *@param[in] n out bufferµÄ´óĞ¡£¬ÒÔ×Ö½Ú¼Ç
+ *@return int,×ª»»ºóµÄ×Ö·û¸öÊı£¬ÒÔuint16¸öÊı¼Æ£¬0Óë¸ºÊı¼´Îªerror
  */
 	NGE_API int nge_charset_utf8_to_ucs2(const uint8* in, uint16* out, int len, int n);
 
 /**
- *å°†utf8ç¼–ç çš„å­—ç¬¦è½¬åŒ–ä¸ºgbkå­—ç¬¦
- *æ³¨æ„out bufferéœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°.
- *@param const uint8* in,è¾“å…¥å­—ç¬¦ä¸²
- *@param uint8* out,è½¬æ¢ågbkå­—ç¬¦ä¿å­˜åœ¨è¿™é‡Œ,æ³¨æ„éœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°
- *@param int len,inå­—ç¬¦ä¸²ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®°ï¼Œå³strlenè®¡ç®—çš„ä¸ªæ•°
- *@param int n,out bufferçš„å¤§å°ï¼Œä»¥å­—èŠ‚è®°
- *@return int,è½¬æ¢åçš„å­—ç¬¦ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®¡ï¼Œ0ä¸è´Ÿæ•°å³ä¸ºerror
+ *½«utf8±àÂëµÄ×Ö·û×ª»¯Îªgbk×Ö·û
+ *@remark ×¢Òâout bufferĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡.
+ *@param[in] in ÊäÈë×Ö·û´®
+ *@param[out] out ×ª»»ºógbk×Ö·û±£´æÔÚÕâÀï,×¢ÒâĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡
+ *@param[in] len in×Ö·û´®¸öÊı£¬ÒÔ×Ö½Ú¼Ç£¬¼´strlen¼ÆËãµÄ¸öÊı
+ *@param[in] n out bufferµÄ´óĞ¡£¬ÒÔ×Ö½Ú¼Ç
+ *@return int,×ª»»ºóµÄ×Ö·û¸öÊı£¬ÒÔ×Ö½Ú¼Æ£¬0Óë¸ºÊı¼´Îªerror
  */
 	NGE_API int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n);
 
 /**
- *å°†gbkç¼–ç çš„å­—ç¬¦è½¬åŒ–ä¸ºutf8å­—ç¬¦
- *æ³¨æ„out bufferéœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°.
- *@param const uint8* in,è¾“å…¥å­—ç¬¦ä¸²
- *@param uint8* out,è½¬æ¢åutf8å­—ç¬¦ä¿å­˜åœ¨è¿™é‡Œ,æ³¨æ„éœ€è¦é¢„å…ˆåˆ†é…è¶³å¤Ÿå¤§å°
- *@param int len,inå­—ç¬¦ä¸²ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®°ï¼Œå³strlenè®¡ç®—çš„ä¸ªæ•°
- *@param int n,out bufferçš„å¤§å°ï¼Œä»¥å­—èŠ‚è®°
- *@return int,è½¬æ¢åçš„å­—ç¬¦ä¸ªæ•°ï¼Œä»¥å­—èŠ‚è®¡ï¼Œ0ä¸è´Ÿæ•°å³ä¸ºerror
+ *½«gbk±àÂëµÄ×Ö·û×ª»¯Îªutf8×Ö·û
+ *@remark ×¢Òâout bufferĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡.
+ *@param[in] in ÊäÈë×Ö·û´®
+ *@param[out] out ×ª»»ºógbk×Ö·û±£´æÔÚÕâÀï,×¢ÒâĞèÒªÔ¤ÏÈ·ÖÅä×ã¹»´óĞ¡
+ *@param[in] len in×Ö·û´®¸öÊı£¬ÒÔ×Ö½Ú¼Ç£¬¼´strlen¼ÆËãµÄ¸öÊı
+ *@param[in] n out bufferµÄ´óĞ¡£¬ÒÔ×Ö½Ú¼Ç
+ *@return int,×ª»»ºóµÄ×Ö·û¸öÊı£¬ÒÔ×Ö½Ú¼Æ£¬0Óë¸ºÊı¼´Îªerror
  */
 	NGE_API int nge_charsets_gbk_to_utf8(const uint8* in, uint8* out, int len, int n);
 

@@ -1,4 +1,4 @@
-ï»¿#ifndef NGE_RBTREE_H_
+#ifndef NGE_RBTREE_H_
 #define NGE_RBTREE_H_
 // red-black tree
 
@@ -29,10 +29,10 @@ typedef struct {                // value related to key
 /////////////////////////////////////
 
 typedef enum {
-		RBT_STATUS_OK,
-		RBT_STATUS_MEM_EXHAUSTED,
-		RBT_STATUS_DUPLICATE_KEY,
-		RBT_STATUS_KEY_NOT_FOUND
+		RBT_STATUS_OK, /**< ³É¹¦*/
+		RBT_STATUS_MEM_EXHAUSTED,/**< ¿Õ¼ä²»×ã*/
+		RBT_STATUS_DUPLICATE_KEY,/**< Ë÷ÒýÖØ¸´*/
+		RBT_STATUS_KEY_NOT_FOUND/**< Ë÷ÒýÎÞ·¨ÕÒµ½*/
 } RbtStatus;
 
 typedef enum { BLACK, RED } nodeColor;
@@ -56,12 +56,59 @@ typedef void (*travelcall)(rbtree_p rb,NodeType *);
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ *ÏòÒ»¿ÃºìºÚÊ÷ÖÐ²åÈëÒ»¸ökey, val¶Ô
+ *@see RbtStatus
+ *@param[in, out] rb Òª²åÈëµÄºìºÚÊ÷
+ *@param[in] key ±êÊ¶ÖµµÄË÷Òý
+ *@param[in] val Òª²åÈëµÄÖµ
+ *@return RbtStatus,²Ù×÷³É¹¦¼´ÎªRBT_STATUS_OK
+ */
 	NGE_API RbtStatus rbtInsert(rbtree_p rb,KeyType key, ValType val);
+
+/**
+ *´ÓÒ»¿ÃºìºÚÊ÷ÖÐÉ¾³ýÒ»¸ö½Úµã
+ *@see RbtStatus
+ *@param[in, out] rb ÒªÉ¾³ýµÄºìºÚÊ÷
+ *@param[in] z ´ýÉ¾³ý½Úµã
+ *@return RbtStatus,²Ù×÷³É¹¦¼´ÎªRBT_STATUS_OK£¬·ñÔòÇë²Î¿¼RbtStatus¶¨Òå
+ */
 	NGE_API RbtStatus rbtErase(rbtree_p rb,NodeType * z);
+
+/**
+ *´ÓÒ»¿ÃºìºÚÊ÷ÖÐÕÒµ½Ò»¸öË÷Òý¶ÔÓ¦µÄ½Úµã
+ *@param[in] rb ÒªËÑË÷µÄºìºÚÊ÷
+ *@param[in] key ´ýËÑË÷Ë÷Òý
+ *@return NodeType*,ËÑË÷µ½µÄ½Úµã,ÈôËÑË÷Ê§°Ü,·µ»ØNULL
+ */
 	NGE_API NodeType* rbtFind(rbtree_p rb,KeyType key);
+
+/**
+ *´ÓÒ»¿ÃºìºÚÊ÷ÖÐÄ³¸ö½Úµã¿ªÊ¼½øÐÐÏÈÐò±éÀú
+ *@param[in, out] rb Òª±éÀúµÄºìºÚÊ÷
+ *@param[in] p Òª¿ªÊ¼µÄ½Úµã
+ *@param[in] callback »Øµ÷º¯Êý,¶ÔÃ¿Ò»¸ö½Úµã½øÐÐµ÷ÓÃ
+ */
 	NGE_API void rbtInorder(rbtree_p rb,NodeType *p, travelcall callback);
+
+/**
+ *´ÓÒ»¿ÃºìºÚÊ÷ÖÐÉ¾³ýÄ³¸ö½ÚµãµÄÕû¸ö×ÓÊ÷
+ *@param[in, out] rb ÒªÉ¾³ýµÄºìºÚÊ÷
+ *@param[in] p É¾³ýµÄ¸ù½Úµã
+ */
 	NGE_API void rbtDelete(rbtree_p rb,NodeType *p);
+
+/**
+ *´´½¨Ò»¿ÃºìºÚÊ÷
+ *@return rbtree_p,´´½¨µÄºìºÚÊ÷
+ */
 	NGE_API rbtree_p createTree();
+
+/**
+ *Ïú»ÙÒ»¿ÃºìºÚÊ÷
+ *@param[in, out] rb ÒªÏú»ÙµÄºìºÚÊ÷
+*/
 	NGE_API void destoryTree(rbtree_p rb);
 #ifdef __cplusplus
 }

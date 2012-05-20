@@ -1,4 +1,4 @@
-Ôªø#include "nge_common.h"
+#include "nge_common.h"
 #include "nge_platform.h"
 #include "nge_debug_log.h"
 
@@ -100,7 +100,7 @@ void InitAnalog(AnalogProc analogproc)
 		analog_proc = analogproc;
 }
 
-//Ê®°ÊãüÊëáÊùÜ
+//ƒ£ƒ‚“°∏À
 #if defined NGE_WIN || defined NGE_LINUX
 #define ANALOG_LEFT  0
 #define ANALOG_RIGHT 1
@@ -284,7 +284,7 @@ int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if (mouse_move_proc != NULL && (istouched&&touch_mode == 1)||(touch_mode == 0))
+	if ((mouse_move_proc != NULL) && ((istouched&&touch_mode == 1)||(touch_mode == 0)))
 		mouse_move_proc(xPos, yPos);
 	return 0;
 }

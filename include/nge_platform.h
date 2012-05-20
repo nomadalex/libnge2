@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file  nge_platform.h
  * @author Kun Wang <ifreedom.cn@gmail.com>
  * @date 2011/08/07 09:11:47

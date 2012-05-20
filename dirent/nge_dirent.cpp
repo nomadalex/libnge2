@@ -86,7 +86,7 @@ void NGEDirent::sortDirentByModityTime()
 	sort( vec.begin(),vec.end(),DIRComparatorByModityTime());
 }
 //////////////////////////////////////////////////////////////////////////
-//for win32 é‡‡ç”¨nge_io_dirä¿®æ”¹
+//for win32 ²ÉÓÃnge_io_dirĞŞ¸Ä
 //////////////////////////////////////////////////////////////////////////
 
 #ifdef WIN32
@@ -117,7 +117,7 @@ static void st_GetProperty(dir_desc_p dir_entry,const char* path)
 {
 	HANDLE hFile;
 	//*********************************************
-	//[è·å–æ–‡ä»¶å’Œæ–‡ä»¶å¤¹å±æ€§]
+	//[»ñÈ¡ÎÄ¼şºÍÎÄ¼ş¼ĞÊôĞÔ]
 	hFile = CreateFile(path,
 			GENERIC_READ | GENERIC_WRITE,
 			FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,NULL,
@@ -133,7 +133,7 @@ static void st_GetProperty(dir_desc_p dir_entry,const char* path)
 
 		GetFileTime(hFile, &ftCreate, &ftAccess, &ftModify);
 
-		//åˆ›å»ºæ—¶é—´
+		//´´½¨Ê±¼ä
 		FileTimeToLocalFileTime(&ftCreate, &ftLocal);
 		FileTimeToSystemTime(&ftLocal, &sysTime);
 
@@ -145,7 +145,7 @@ static void st_GetProperty(dir_desc_p dir_entry,const char* path)
 		dir_entry->ctime.min=sysTime.wMinute;
 		dir_entry->ctime.sec=sysTime.wSecond;
 
-		//ä¿®æ”¹æ—¶é—´
+		//ĞŞ¸ÄÊ±¼ä
 		FileTimeToLocalFileTime(&ftModify, &ftLocal);
 		FileTimeToSystemTime(&ftLocal, &sysTime);
 
@@ -161,7 +161,7 @@ static void st_GetProperty(dir_desc_p dir_entry,const char* path)
 	}
 	else
 	{
-		//åˆ›å»ºæ—¶é—´
+		//´´½¨Ê±¼ä
 		dir_entry->ctime.year=0;
 		dir_entry->ctime.month=0;
 		dir_entry->ctime.day=0;
@@ -170,7 +170,7 @@ static void st_GetProperty(dir_desc_p dir_entry,const char* path)
 		dir_entry->ctime.min=0;
 		dir_entry->ctime.sec=0;
 
-		//ä¿®æ”¹æ—¶é—´
+		//ĞŞ¸ÄÊ±¼ä
 		dir_entry->mtime.year=0;
 		dir_entry->mtime.month=0;
 		dir_entry->mtime.day=0;
@@ -237,7 +237,7 @@ static BOOL st_FindCloseFile(HANDLE handle )
 
 int NGEDirent::openDirent(string directory,vector<DIR> &vec)
 {
-	//ç­‰å¾…é‡å†™
+	//µÈ´ıÖØĞ´
 	return 1;
 }
 int NGEDirent::openDirent(string directory)
@@ -300,7 +300,7 @@ int NGEDirent::openDirent(string directory)
 
 int NGEDirent::openDeepDirent(string directory)
 {
-	//ç­‰å¾…é‡å†™
+	//µÈ´ıÖØĞ´
 	return 1;
 }
 
@@ -324,6 +324,7 @@ NGEDirent::~NGEDirent()
 
 #elif defined _PSP
 #include <pspkernel.h>
+#include <string.h>
 #include "fat.h"
 #include "directory.h"
 #include "miniconv.h"
@@ -331,7 +332,7 @@ NGEDirent::~NGEDirent()
 
 NGEDirent::NGEDirent()
 {
-	//åˆå§‹åŒ–
+	//³õÊ¼»¯
 	fat_init(sceKernelDevkitVersion());
 }
 
@@ -350,10 +351,11 @@ int NGEDirent::openDirent(string directory,vector<DIR> &vec)
 
 int NGEDirent::openDirent(string directory)
 {
-	//ä¿å­˜å½“å‰å·¥ä½œç›®å½• getcwd()
+	//±£´æµ±Ç°¹¤×÷Ä¿Â¼ getcwd()
 	currentPath=directory;
 
 	char spath[256];
+	char buff[1024];
 
 	directory_item_struct* dirItems = NULL;
 
@@ -378,9 +380,10 @@ int NGEDirent::openDirent(string directory)
 			string shortFullPath=shortpath+dirItems[i].shortname;
 
 			//[longname] UTF-8->
-			charsets_utf8_conv(    (const uint8 *) (dirItems[i].longname),   (uint8 *) dirItems[i].longname);
+			nge_charsets_utf8_to_gbk((const uint8*)(dirItems[i].longname), (uint8*)buff, strlen(dirItems[i].longname), 1024);
+			strcpy((char*)dirItems[i].longname, (const char*)buff);
 
-			//åˆ›å»º ä¿®æ”¹æ—¶é—´
+			//´´½¨ ĞŞ¸ÄÊ±¼ä
 			file_time ctime;
 			file_time mtime;
 			ctime.year=(dirItems[i].cdate >> 9) + 1980;
