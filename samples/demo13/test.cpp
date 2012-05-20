@@ -268,9 +268,13 @@ int mainloop()
 		break;
 
 	case 6:
-		audio[0]->seek(audio[0], -3000, AUDIO_SEEK_CUR);
-		nge_print("seek -3000 ms\n");
-		step = 0;
+		if (audio[1]->iseof(audio[1])) {
+			audio[1]->playstop(audio[1]);
+		}
+		// for test seek
+		// audio[0]->seek(audio[0], -3000, AUDIO_SEEK_CUR);
+		// nge_print("seek -3000 ms\n");
+		step = 7;
 		break;
 
 	case 7:
