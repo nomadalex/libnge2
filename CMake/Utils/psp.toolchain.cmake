@@ -52,29 +52,35 @@ if(NOT PSP)
 	"Build shared library." FORCE)
 
   # option :
-  # KERNEL "use kernel libs."
-  # USER "use user libs."
-  # KERNEL_AND_USER "use kernel and user libs."
-  FUNCTION(ADD_PSPSDK_LIBS return)
-	FOREACH(option ${ARGN})
-	  IF(option STREQUAL "KERNEL")
-		SET(PSP_KERNEL 1)
-	  ELSEIF(option STREQUAL "USER")
-		SET(PSP_USER 1)
-	  ENDIF()
-	ENDFOREACH()
+  # KERNEL use kernel libs.
+  # KERNEL_LIBC use kernel's libc // default libc is newlib's libc.
+  # PSPSDK_LIBC use pspsdk's libc
+  # USER use user libs.
+  function(ADD_PSPSDK_LIBS lib_var)
+	set(LIBC c)
+	foreach(option ${ARGN})
+	  if(option STREQUAL "KERNEL")
+		set(PSP_KERNEL 1)
+	  elseif(option STREQUAL "USER")
+		set(PSP_USER 1)
+	  elseif(option STREQUAL "KERNEL_LIBC")
+		set(LIBC ${PSPSDK_PATH}/include/libc)
+	  elseif(option STREQUAL "PSPSDK_LIBC")
+		set(LIBC psplibc ${PSPSDK_PATH}/include/libc)
+	  endif()
+	endforeach()
 
-	SET(PSPSDK_LIBS ${${return}} pspdebug pspdisplay_driver pspsdk)
+	set(PSPSDK_LIBS ${${lib_var}} pspdebug)
 	if(PSP_KERNEL)
-	  list(APPEND PSPSDK_LIBS pspctrl_driver)
+	  list(APPEND PSPSDK_LIBS pspdisplay_driver pspctrl_driver pspsdk ${LIBC} pspkernel)
 	else()
-	  list(APPEND PSPSDK_LIBS pspge pspctrl pspnet c pspnet_inet pspnet_apctl pspnet_resolver psputility pspuser)
+	  list(APPEND PSPSDK_LIBS pspdisplay pspge pspctrl pspsdk ${LIBC} pspnet pspnet_inet pspnet_apctl pspnet_resolver psputility pspuser)
 	  if(NOT PSP_USER)
 		list(APPEND PSPSDK_LIBS pspkernel)
 	  endif()
 	endif()
-	SET(${return} ${PSPSDK_LIBS} PARENT_SCOPE)
-  ENDFUNCTION()
+	set(${lib_var} ${PSPSDK_LIBS} PARENT_SCOPE)
+  endfunction()
 
   # After building the ELF binary build the PSP executable.
   # FW_VERSION "Your psp fireware version."
