@@ -160,7 +160,11 @@ if(WIN32)
 elseif(ANDROID)
   list(APPEND NGE2_LIBS log GLESv1_CM)
 else()
-  list(APPEND NGE2_LIBS g c stdc++)
+  list(APPEND NGE2_LIBS g)
+  if(NOT PSP)
+	list(APPEND NGE2_LIBS c) # psp contains newlib's libc
+  endif()
+  list(APPEND NGE2_LIBS stdc++)
 endif()
 
 if(PSP)
@@ -209,9 +213,6 @@ add_addon(helper)
 if(PSP)
   add_addon(dirent)
   add_addon(movie)
-endif()
-
-if(PSP)
   add_addon(net)
 endif()
 

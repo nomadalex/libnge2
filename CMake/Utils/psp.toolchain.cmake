@@ -52,8 +52,9 @@ if(NOT PSP)
 	"Build shared library." FORCE)
 
   # option :
+  # // default libc is newlib's libc, if you not use KERNEL_LIBC and PSPSDK_LIBC.
   # KERNEL use kernel libs.
-  # KERNEL_LIBC use kernel's libc // default libc is newlib's libc.
+  # KERNEL_LIBC use kernel's libc
   # PSPSDK_LIBC use pspsdk's libc
   # USER use user libs.
   function(ADD_PSPSDK_LIBS lib_var)
