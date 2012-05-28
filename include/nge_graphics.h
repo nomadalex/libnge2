@@ -200,18 +200,18 @@ extern "C"{
  */
 	NGE_API void FillRectGradEx(rectf rect,int* colors,int dtype);
 /**
- * 画图函数1，效率依次是ImageToScreen>DrawImage>DrawImageMask>RenderQuad;
- * sx,sy,sw,sh,构成待显示的图片范围，例如要显示一张图片200*200的图片的
+ * 画图函数1，效率依次是ImageToScreen>DrawImage>DrawImageMask>RenderQuad;\n
+ * sx,sy,sw,sh,构成待显示的图片范围，例如要显示一张图片200*200的图片的\n
  * 20，20到50宽50高的子图块，这里就填依次20,20,50,50。如果要显示原图,都填上0
- * 即可.都填0是显示0,0,tex->w,tex->h。xscale,yscale是放大缩小因子1是原始比例，
- * 如果放大一倍，都填2，缩小1倍填0.5。mask是颜色遮罩，用于对图片进行混色，
- * 例如半透明效果等，默认是显示原色，这里用texture->mask即可
- * 例子1:将200*200的图片tex显示在屏幕100，0处，并放大一倍显示
- * RenderQuad(tex,0,0,0,0,100,0,2,2,0,tex->mask);
- * 例子2:将图片tex的32，32开始的64宽,64高的部分显示在40，80处并旋转90度
- * RenderQuad(tex,32,32,64,64,40,80,1,1,90,tex->mask);
- * 例子3:将图片tex(tex显示模式是8888)的80，80开始的64宽,64高的部分显示在100，100处并半透明显示
- * RenderQuad(tex,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));
+ * 即可.都填0是显示0,0,tex->w,tex->h。xscale,yscale是放大缩小因子1是原始比例，\n
+ * 如果放大一倍，都填2，缩小1倍填0.5。mask是颜色遮罩，用于对图片进行混色，\n
+ * 例如半透明效果等，默认是显示原色，这里用texture->mask即可\n
+ * 例子1:将200*200的图片tex显示在屏幕100，0处，并放大一倍显示\n
+ * RenderQuad(tex,0,0,0,0,100,0,2,2,0,tex->mask);\n
+ * 例子2:将图片tex的32，32开始的64宽,64高的部分显示在40，80处并旋转90度\n
+ * RenderQuad(tex,32,32,64,64,40,80,1,1,90,tex->mask);\n
+ * 例子3:将图片tex(tex显示模式是8888)的80，80开始的64宽,64高的部分显示在100，100处并半透明显示\n
+ * RenderQuad(tex,80,80,64,64,100,100,1,1,0,MAKE_RGBA_8888(255,255,255,128));\n
  *@param[in] texture 图片指针
  *@param[in] sx 图片x坐标
  *@param[in] sy 图片y坐标
@@ -227,10 +227,10 @@ extern "C"{
  */
 	NGE_API void RenderQuad(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask);
 /**
- * 画图函数2,sw,sh为0是画原图，dw，dh为0是显示sw和dh大小
- * 例子1:将200*200的图片tex显示在屏幕100，0处
- * DrawImage(tex,0,0,0,0,100,0,0,0);
- * 或者用严格方式：DrawImage(tex,0,0,200,200,100,0,200,200);
+ * 画图函数2,sw,sh为0是画原图，dw，dh为0是显示sw和dh大小\n
+ * 例子1:将200*200的图片tex显示在屏幕100，0处\n
+ * DrawImage(tex,0,0,0,0,100,0,0,0);\n
+ * 或者用严格方式：DrawImage(tex,0,0,200,200,100,0,200,200);\n
  * @see RenderQuad
  *@param[in] texture 图片指针
  *@param[in] sx 图片x坐标
@@ -245,8 +245,8 @@ extern "C"{
  */
 	NGE_API void DrawImage(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh);
 /**
- * 画图函数3
- * 同DrawImage，只是多了个MASK
+ * 画图函数3\n
+ * 同DrawImage，只是多了个MASK\n
  * @see DrawImage
  *@param[in] tex 图片指针
  *@param[in] sx 图片x坐标
@@ -353,19 +353,19 @@ extern "C"{
  */
 	NGE_API uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a);
 /**
- * 设置当前的混合方式
- *混合因子的取值可以是
- *BLEND_ZERO: 该颜色不参与混色
- *BLEND_ONE: 该颜色完全参与混色
- *BLEND_SRC_COLOR: 该因子取源颜色
- *BLEND_ONE_MINUS_SRC_COLOR: 用1.0减去源颜色作为因子
- *BLEND_SRC_ALPHA: 该因子取目标颜色
- *BLEND_ONE_MINUS_SRC_ALPHA: 用1.0减去目标颜色作为因子
- *BLEND_DST_ALPHA: 该因子取源颜色的alpha值
- *BLEND_ONE_MINUS_DST_ALPHA: 用1.0减去源颜色的alpha值作为因子
- *BLEND_DST_COLOR: 该因子取目标颜色的alpha值
- *BLEND_ONE_MINUS_DST_COLOR: 用1.0减去目标颜色的alpha值作为因子
- *BLEND_SRC_ALPHA_SATURATE: 允许对源颜色不同的颜色分量进行不同的因子计算
+ * 设置当前的混合方式\n
+ * 混合因子的取值可以是\n
+ * BLEND_ZERO: 该颜色不参与混色\n
+ * BLEND_ONE: 该颜色完全参与混色\n
+ * BLEND_SRC_COLOR: 该因子取源颜色\n
+ * BLEND_ONE_MINUS_SRC_COLOR: 用1.0减去源颜色作为因子\n
+ * BLEND_SRC_ALPHA: 该因子取目标颜色\n
+ * BLEND_ONE_MINUS_SRC_ALPHA: 用1.0减去目标颜色作为因子\n
+ * BLEND_DST_ALPHA: 该因子取源颜色的alpha值\n
+ * BLEND_ONE_MINUS_DST_ALPHA: 用1.0减去源颜色的alpha值作为因子\n
+ * BLEND_DST_COLOR: 该因子取目标颜色的alpha值\n
+ * BLEND_ONE_MINUS_DST_COLOR: 用1.0减去目标颜色的alpha值作为因子\n
+ * BLEND_SRC_ALPHA_SATURATE: 允许对源颜色不同的颜色分量进行不同的因子计算\n
  *@param[in] src_blend 源因子,即源颜色参与运算的模式
  *@param[in] des_blend 目标因子,即目标颜色参与运算的模式
  */
