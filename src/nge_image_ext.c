@@ -754,6 +754,8 @@ image_p image_scale(image_p src, int w, int h,int mode)
 	return dst;
 }
 
+#ifndef NGE_PSP
+
 //for image_hue_rotate
 //Thanks to Paul Haeberli
 #define M_PI	(3.1415926535f)
@@ -995,3 +997,213 @@ int image_hue_rotate(image_p pimage, float rot)
 	}
 	return 1;
 }
+
+#else
+//hue rotate for PSP
+//VFPU accerleration
+void GetHueMatrix(ScePspFMatrix4 *mat, float rot)	{
+	__asm__ volatile (
+		"vfim.s		S000, 0.3086\n"
+		"vfim.s		S010, 0.6094\n"
+		"vfim.s		S020, 0.0820\n"
+		"vadd.s		S030, S030[0], S030[1]\n"
+		"vcst.s		S001, VFPU_SQRT1_2\n"
+		"vcst.s		S011, VFPU_SQRT3_2\n"
+		"vrcp.s		S011, S011\n"
+		"vmidt.q	M100\n"
+		"vmul.s		S100, S011, S001\n"
+		"vmul.s		S101, S100, S001\n"
+		"vadd.t		C120, C101[0, 0, 0], C101[x, x, x]\n"
+		"vmul.s		S101, S101, S001\n"
+		"vneg.s		S101, S101\n"
+		"vadd.s		S102, S101[0], S101[x]\n"
+		"vadd.s		S111, S001[0], S001[x]\n"
+		"vadd.s		S112, S001[0], S001[x]\n"
+		"vneg.s		S112, S112\n"
+		"vadd.s		S133, S133[0], S133[1]\n"
+		"vtfm4.q	R001, M100, R000\n"
+		"vrcp.s		S021, S021\n"
+		"vmul.p		R001, R001[x, y], R021[x, x]\n"
+		"vmidt.q	M200\n"
+		"vadd.s		S220, S001[0], S001[x]\n"
+		"vadd.s		S221, S011[0], S011[x]\n"
+		"vmmul.q	M000, M100, M200\n"
+		"mtv		%1, S500\n"
+		"vfim.s		S510, 90.0\n"
+		"vrcp.s		S510, S510\n"
+		"vmul.s		S500, S500, S510\n"
+		"vsin.s		S501, S500\n"
+		"vcos.s		S502, S500\n"
+		"vmidt.q	M300\n"
+		//y - sin  z - cos
+		"vadd.q		C300, C500[0, 0, 0, 0], C500[z, -y, 0, 0]\n"
+		"vadd.q		C310, C500[0, 0, 0, 0], C500[y,  z, 0, 0]\n"
+		"vmmul.q	M400, M000, M300\n"
+		"vneg.s		S220, S220\n"
+		"vneg.s		S221, S221\n"
+		"vmmul.q	M000, M400, M200\n"
+		"vmmul.q	M200, M000, E100\n"
+		
+		"sv.q		C200, 0(%0)\n"
+		"sv.q		C210, 16(%0)\n"
+		"sv.q		C220, 32(%0)\n"
+		"sv.q		C230, 48(%0)\n"
+		::"r"(mat), "r"(rot));
+}
+
+int image_hue_rotate(image_p pimage, float rot)	{
+	ScePspFMatrix4 hue_mat;
+	if(rot < 0.0001f && rot > -0.0001f)
+		return 1;
+	GetHueMatrix(&hue_mat, rot);
+	if(!pimage)	return 0;
+	pimage->modified = 1;
+	switch(pimage->dtype)	{
+		case DISPLAY_PIXEL_FORMAT_565:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 63.0\n"
+				"U565:"
+				"blez		%2, D565\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 10\n"
+				"andi		$t6, $t6, 0x3E\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 5\n"
+				"andi		$t6, $t6, 0x3F\n"
+				"mtv		$t6, S110\n"
+				"sll		$t6, $t5, 1\n"
+				"andi		$t6, $t6, 0x3E\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, $t5, 0x0\n"
+				"mfv		$t6, S101\n"
+				"srl		$t6, $t6, 1\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 5\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"srl		$t6, $t6, 1\n"
+				"sll		$t6, $t6, 11\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U565\n"
+				"D565:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 31.0\n"
+				"U5551:"
+				"blez		%2, D5551\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 10\n"
+				"andi		$t6, $t6, 0x1F\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 5\n"
+				"andi		$t6, $t6, 0x1F\n"
+				"mtv		$t6, S110\n"
+				"andi		$t6, $t5, 0x1F\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, 0x8000\n"
+				"mfv		$t6, S101\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 5\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"sll		$t6, $t6, 10\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U5551\n"
+				"D5551:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 15.0\n"
+				"U4444:"
+				"blez		%2, D4444\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 8\n"
+				"andi		$t6, $t6, 0xF\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 4\n"
+				"andi		$t6, $t6, 0xF\n"
+				"mtv		$t6, S110\n"
+				"andi		$t6, $t5, 0xF\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, 0xF000\n"
+				"mfv		$t6, S101\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 4\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"sll		$t6, $t6, 8\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U4444\n"
+				"D4444:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_8888:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 255.0\n"
+				"U8888:"
+				"blez		%2, D8888\n"
+				"lv.s		S200, 0(%0)\n"
+				".word		0xD0380000 | (8 << 8) | (36)\n"//"vuc2i.s	R100, S200\n"
+				"vi2f.q		R100, R100, 23\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2iz.q	R101, R101, 23\n"
+				"vi2uc.q	S200, R101\n"
+				"sv.s		S200, 0(%0)\n"
+				"addi		%0, %0, 4\n"
+				"addi		%2, %2, -1\n"
+				"j			U8888\n"
+				"D8888:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+	}
+	return 1;
+}
+#endif
