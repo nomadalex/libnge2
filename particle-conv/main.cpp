@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 /**
- * 绮掑瓙鏂囦欢杞崲涓烘柊鏍煎紡
+ * 粒子文件转换为新格式
  */
 struct hgeParticleSystemInfo_Old
 {
@@ -57,17 +57,26 @@ int main(int argc, char* argv[])
 	hgeParticleSystemInfo info;
 	hgeParticleSystemInfo_Old old_info;
 
-	if (argc != 3)
+	if (argc != 3) {
+		fprintf(stderr, "Arguments Num Error:\n"
+			"Usage: particle-conv input output\n"
+			"\tinput\t\tInput Filename\n"
+			"\toutput\t\tOutput Filename\n");
 		return -1;
+	}
 
 	char* filename = argv[1];
 	char* outname = argv[2];
 
 	int handle = io_fopen(filename,IO_RDONLY);
-	if(handle==0)
+	if(handle==0) {
+		fprintf(stderr, "Input File Error!\n");
 		return -1;
+	}
 	io_fread(&old_info,1,sizeof(hgeParticleSystemInfo_Old),handle);
 	io_fclose(handle);
+
+	fprintf(stdout, "Processing File: %s\n", filename);
 
 	COPY_PROP(nEmission);
 	COPY_FLOATS(fLifetime, 5);
@@ -76,8 +85,12 @@ int main(int argc, char* argv[])
 	COPY_PROP(colColorStart);
 	COPY_PROP(colColorEnd);
 	COPY_FLOATS(fColorVar, 2);
-
-	if (!hgeParticleSystem::SaveInfoToFile(info, outname))
+	
+	fprintf(stdout, "Writing File: %s\n", outname);
+	if (!hgeParticleSystem::SaveInfoToFile(info, outname)) {
+		fprintf(stderr, "Error Writing File: %s\n", outname);
 		return -1;
+	}
+	fprintf(stdout, "Done.\n");
 	return 0;
 }
