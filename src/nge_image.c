@@ -468,8 +468,7 @@ image_p image_create(int w,int h,int displaymode)
 image_p image_create_ex(int w,int h,int color,int displaymode)
 {
 	image_p pimage = (image_p)malloc(sizeof(image_t));
-	int size;
-	uint32 i,j;
+	int size, block = 1, processed = 1;
 	uint16* img16;
 	uint32* img32;
 	memset(pimage,0,sizeof(image_t));
@@ -487,19 +486,28 @@ image_p image_create_ex(int w,int h,int color,int displaymode)
 	size = pimage->texw*pimage->texh*pimage->bpb;
 	pimage->data = (uint8*)malloc(size);
 	memset(pimage->data,0,size);
+	size = pimage->texw*pimage->texh;
+	if(size==0)
+		return pimage;
 	if(displaymode==DISPLAY_PIXEL_FORMAT_8888){
 		img32 = (uint32*)pimage->data;
-		for(i=0;i<pimage->h;i++)
-			for(j=0;j<pimage->w;j++){
-				*(img32+i*pimage->texw+j) = color;
-			}
+		*img32 = color;
+		while(processed + block <= size)	{
+			memcpy(img32 + processed, img32, block * pimage->bpb);
+			processed += block;
+			block <<= 1;
+		}
+		memcpy(img32 + processed, img32, (size - processed) * pimage->bpb);
 	}
 	else{
 		img16 = (uint16*)pimage->data;
-		for(i=0;i<pimage->h;i++)
-			for(j=0;j<pimage->w;j++){
-				*(img16+i*pimage->texw+j) = (uint16)(color&0xffff);
-			}
+		*img16 = (uint16)(color&0xFFFF);
+		while(processed + block <= size)	{
+			memcpy(img16 + processed, img16, block * pimage->bpb);
+			processed += block;
+			block <<= 1;
+		}
+		memcpy(img16 + processed, img16, (size - processed) * pimage->bpb);
 	}
 	return pimage;
 }
