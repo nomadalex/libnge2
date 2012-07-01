@@ -53,6 +53,18 @@ extern "C"{
  */
 	NGE_API int image_hue_rotate(image_p pimage, float rot);
 
+/**
+ * 填充图片的一块矩形区域
+ * @param[in] pimage 源图像
+ * @param[in] x 填充矩形左上角距左边距离
+ * @param[in] y 填充矩形左上角距上边距离
+ * @param[in] w 填充矩形宽
+ * @param[in] h 填充矩形高
+ * @param[in] color 要填充的颜色
+ * @return 无
+ */
+	NGE_API void image_fillrect(image_p pimage, int x, int y, int w, int h, int color);
+
 #ifdef __cplusplus
 }
 #endif
