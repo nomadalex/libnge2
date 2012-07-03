@@ -938,3 +938,31 @@ int image_flipv(image_p pimage)
 
 	return 1;
 }
+
+void image_fillrect(image_p pimage, int x, int y, int w, int h, int color) {
+	int i, j;
+	uint16 *img16;
+	uint32 *img32;
+	if(w + x > pimage->texw)
+		w = pimage->texw - x;
+	if(h + y > pimage->texh)
+		h = pimage->texh - y;
+	pimage->modified = 1;
+	CHECK_AND_UNSWIZZLE(pimage)
+	if(pimage->bpb == 2) {
+		img16 = ((uint16*)pimage->data) + y * pimage->texw + x;
+		for(i = 0; i < h && i < 1; i++)
+			for(j = 0; j < w; j++)
+				*(img16 + j) = (uint16)(color & 0xffff);
+		for(; i < h; i++)
+			memcpy(img16 + i * pimage->texw, img16, w * pimage->bpb);
+	}
+	else {
+		img32 = ((uint32*)pimage->data) + y * pimage->texw + x;
+		for(i = 0; i < h && i < 1; i++)
+			for(j = 0; j < w; j++)
+				*(img32 + j) = color;
+		for(; i < h; i++)
+			memcpy(img32 + i * pimage->texw, img32, w * pimage->bpb);
+	}
+}
