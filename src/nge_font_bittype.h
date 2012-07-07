@@ -173,9 +173,9 @@ inline static uint8* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC
 			}															\
 		}																\
 																		\
-		*pwidth = ax;													\
-		*pheight = pf->font_height;										\
-		*pbase = pf->font_height-2;										\
+		if(pwidth) *pwidth = ax;										\
+		if(pheight) *pheight = pf->font_height;							\
+		if(pbase) *pbase = pf->font_height-2;							\
 	}
 
 static uint32 bit_setfontcolor(PFont pfont, uint32 color)

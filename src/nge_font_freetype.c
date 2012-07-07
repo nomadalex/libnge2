@@ -229,9 +229,9 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 			max_descent = descent;
 	}
 
-	*pwidth = total_advance;
-	*pheight = max_ascent + max_descent;
-	*pbase = max_ascent;
+	if(pwidth) *pwidth = total_advance;
+	if(pheight) *pheight = max_ascent + max_descent;
+	if(pbase) *pbase = max_ascent;
 }
 
 static void freetype2_destroyfont(PFont pfont)
