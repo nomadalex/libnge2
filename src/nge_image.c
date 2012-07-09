@@ -648,6 +648,24 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 		sw = des->texw - dx;
 	if(sh + dy > des->texh)
 		sh = des->texh - dy;
+	if(sx < 0) {
+		sw += sx;
+		sx = 0;
+	}
+	if(sy < 0) {
+		sh += sy;
+		sy = 0;
+	}
+	if(dx < 0) {
+		sw += dx;
+		dx = 0;
+	}
+	if(dy < 0) {
+		sh += dy;
+		dy = 0;
+	}
+	if(sw <= 0 || sh <= 0)
+		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16*)des->data + dy * des->texw + dx;
 		bmp16 = (uint16*)src->data + sy * src->texw + sx;
@@ -727,6 +745,16 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 		w = des->texw - x;
 	if(h + y > des->texh)
 		h = des->texh - y;
+	if(x < 0) {
+		w += x;
+		x = 0;
+	}
+	if(y < 0) {
+		h += y;
+		y = 0;
+	}
+	if(w <= 0 || h <= 0)
+		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16*)des->data + y * des->texw + x;
 		bmp16 = (uint16*)src->data;
@@ -808,6 +836,24 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 		sw = des->texw - dx;
 	if(sh + dy > des->texh)
 		sh = des->texh - dy;
+	if(sx < 0) {
+		sw += sx;
+		sx = 0;
+	}
+	if(sy < 0) {
+		sh += sy;
+		sy = 0;
+	}
+	if(dx < 0) {
+		sw += dx;
+		dx = 0;
+	}
+	if(dy < 0) {
+		sh += dy;
+		dy = 0;
+	}
+	if(sw <= 0 || sh <= 0)
+		return;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data + dy * des->texw + dx;
 		bmp16 = (uint16*)src->data + sy * src->texw + sx;
@@ -839,6 +885,16 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 		w = des->texw - x;
 	if(h + y > des->texh)
 		h = des->texh - y;
+	if(x < 0) {
+		w += x;
+		x = 0;
+	}
+	if(y < 0) {
+		h += y;
+		y = 0;
+	}
+	if(w <= 0 || h <= 0)
+		return;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data + y * des->texw + x;
 		bmp16 = (uint16*)src->data;
@@ -867,6 +923,16 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 		w = des->texw - x;
 	if(h + y > des->texh)
 		h = des->texh - y;
+	if(x < 0) {
+		w += x;
+		x = 0;
+	}
+	if(y < 0) {
+		h += y;
+		y = 0;
+	}
+	if(w <= 0 || h <= 0)
+		return;
 	if(des->bpb==2){
 		cpbegin16 = (uint16*)des->data + y * des->texw + x;
 		bmp16 = (uint16*)data;
