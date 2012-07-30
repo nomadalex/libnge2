@@ -76,8 +76,8 @@ public class NGE2 extends Activity
 
 	private String TAG = "nge2";
 	static {
-		System.loadLibrary("nge2app-jni");
 		System.loadLibrary("openal");
+		System.loadLibrary("nge2app-jni");
 	}
 
 	public boolean m_need_init = true;
