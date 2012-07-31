@@ -178,6 +178,29 @@ public class NGE2 extends Activity
 			m_need_init = true;
 		}
 	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) { 
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			
+			new AlertDialog.Builder(this)
+			.setTitle("NGE2")
+			.setMessage("Quit this application?")
+			.setPositiveButton(android.R.string.ok,
+					new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							dialog.dismiss();
+							android.os.Process.killProcess(android.os.Process.myPid());
+						}
+					})
+			.setNegativeButton(android.R.string.cancel,null).
+			create().show();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	private class NGE2View extends GLSurfaceView
 	{
@@ -190,10 +213,16 @@ public class NGE2 extends Activity
 		{
 			super.setRenderer(renderer);
 		}
-
-		@Override public boolean onTouchEvent(MotionEvent event)
-		{
-			nativeTouch(event.getAction(), (int)event.getX(), (int)event.getY());
+		
+		@Override
+		public boolean onTouchEvent(final MotionEvent event) {
+			queueEvent(new Runnable(){
+										public void run(){
+											nativeTouch(event.getAction(),(int)event.getX(),(int)event.getY());
+										}
+									 }
+			);
+			
 			return true;
 		}
 	}
