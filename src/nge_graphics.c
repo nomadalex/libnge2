@@ -249,17 +249,18 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	/* float rate_w_ori = 1/nge_screen.rate_w; */
-	/* float rate_h_ori = 1/nge_screen.rate_h; */
-	/* glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori* (y-h)), */
-	/* 		  ceil(w*rate_w_ori),ceil(h*rate_h_ori)); */
-	glScissor(x,nge_screen.height-y-h,w,h);
+	float rate_w_ori = 1/nge_screen.rate_w;
+	float rate_h_ori = 1/nge_screen.rate_h;
+	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori*y-rate_h_ori*h),
+		ceil(w*rate_w_ori),ceil(h*rate_h_ori));
 }
 
 void ResetClip()
 {
-	SetClip(0,0,nge_screen.width, nge_screen.height);
+	SetClip(0, 0, nge_screen.ori_width,nge_screen.ori_height);
 }
+
+
 
 #if defined NGE_LINUX
 Display *g_dpy;
@@ -343,7 +344,7 @@ void nge_graphics_reset(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 
 	glEnable(GL_SCISSOR_TEST);
@@ -435,7 +436,7 @@ void makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
-void InitGrahics()
+void InitGraphics()
 {
 	int i = 0;
 
@@ -473,7 +474,7 @@ void InitGrahics()
 	nge_log("Init Graphics Ok\n");
 }
 
-void FiniGrahics()
+void FiniGraphics()
 {
 	tex_cache_fini();
 #ifndef NGE_ANDROID

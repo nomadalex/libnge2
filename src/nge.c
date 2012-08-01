@@ -71,7 +71,7 @@ void NGE_Init(int flags)
 	if(initFlags==0){
 #ifndef NGE_IPHONE
 		if(flags&INIT_VIDEO)
-			InitGrahics();
+			InitGraphics();
 		if(flags&INIT_AUDIO)
 			CoolAudioDefaultInit();
 #endif
@@ -85,7 +85,7 @@ void NGE_Quit()
 #ifndef NGE_IPHONE
 		FiniInput();
 		if(initFlags&INIT_VIDEO)
-			FiniGrahics();
+			FiniGraphics();
 		if(initFlags&INIT_AUDIO)
 			CoolAudioDefaultFini();
 #endif

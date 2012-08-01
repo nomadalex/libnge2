@@ -80,11 +80,11 @@ extern "C"{
 /**
  * 初始化函数,由nge2系统调用,用户无须显式调用
  */
-	NGE_API void InitGrahics();
+	NGE_API void InitGraphics();
 /**
  * 结束函数,由nge2系统调用,用户无须显式调用
  */
-	NGE_API void FiniGrahics();
+	NGE_API void FiniGraphics();
 /**
  * 屏幕绘制开始函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
  *@param[in] clear 清屏标志，默认为1清屏
