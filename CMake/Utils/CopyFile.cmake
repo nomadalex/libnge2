@@ -22,7 +22,7 @@ if(NOT COMMAND add_copy_file)
 	  set(to ${from})
 	endif()
 
-	copy_file(${to} "${CMAKE_CURRENT_SOURCE_DIR}/${from}" "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${to}")
+	copy_file(${to} "${CMAKE_CURRENT_SOURCE_DIR}/${from}" "${CMAKE_CURRENT_BINARY_DIR}/${to}")
 	list(APPEND ${outputs} ${to})
 	set(${outputs} ${${outputs}} PARENT_SCOPE)
   endfunction()
