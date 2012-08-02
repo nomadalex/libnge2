@@ -944,6 +944,16 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	AFTER_DRAW_IMAGE();
 }
 
+
+//static function for DrawRegion
+/* NGE_TRANS_x for private use */
+enum{
+	NGE_TRANS_NONE = 0,
+	NGE_TRANS_V,
+	NGE_TRANS_H,
+	NGE_TRANS_HV
+};
+
 #define SET_IMAGE_TRANS(trans, tex)					\
 	switch(trans){									\
 	case NGE_TRANS_V:								\
@@ -959,42 +969,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3); \
 	}
 
-void ImageToScreenTrans(image_p tex,float dx,float dy,int trans)
-{
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	AFTER_DRAW_IMAGE();
-}
-
-void DrawImageTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans)
-{
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-
-	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	}else{
-		SET_IMAGE_RECT(dx, dy, dw, dh);
-	}
-	AFTER_DRAW_IMAGE();
-}
-
-void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans)
-{
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-
-	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	}else{
-		SET_IMAGE_RECT(dx, dy, dw, dh);
-	}
-	SET_COLOR(mask,tex->dtype);
-	AFTER_DRAW_IMAGE();
-}
-
-void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans)
+static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans)
 {
 	if(dy == 0.0f)
 		dy = 0.1f;
@@ -1008,6 +983,166 @@ void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float d
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
+
+void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor)
+{
+	if(pImage == NULL){
+		return ;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//锚点的正确性
+	switch (anchor) {
+	case 0:
+	case ANCHOR_TOP | ANCHOR_LEFT:
+	case ANCHOR_TOP | ANCHOR_RIGHT:
+	case ANCHOR_BOTTOM | ANCHOR_LEFT:
+	case ANCHOR_BOTTOM | ANCHOR_RIGHT:
+	case ANCHOR_TOP | ANCHOR_HCENTER:
+	case ANCHOR_BOTTOM | ANCHOR_HCENTER:
+	case ANCHOR_LEFT | ANCHOR_VCENTER:
+	case ANCHOR_RIGHT | ANCHOR_VCENTER:
+	case ANCHOR_HCENTER | ANCHOR_VCENTER:
+		break;
+	default:
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	if (transform < TRANS_NONE || transform > TRANS_MIRROR_ROT90) {
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	if(width < 0 || height < 0 || x_src < 0 || y_src < 0 || x_src + width > pImage->w || y_src + height > pImage->h) {
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//移动位置
+	if ((INVERTED_AXES & transform) != 0) {
+		//////////////////////////////////////////////////////////////////////////
+		//高宽度坐标,位置偏移
+		switch(transform){
+		case TRANS_ROT90:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+			}
+			break;
+		case TRANS_ROT270:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				if(width == 0){
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + (int)pImage->w;
+				}else{
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
+				}
+			}
+			break;
+		case TRANS_MIRROR_ROT90:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+			}
+			break;
+		case TRANS_MIRROR_ROT270:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				if(width == 0){
+					y_dest	= y_dest + pImage->rcentrex - pImage->rcentrey;
+				}else{
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
+				}
+			}
+			break;
+		}
+	}else{
+		//////////////////////////////////////////////////////////////////////////
+		//高宽度坐标,位置偏移
+		switch(transform){
+		case TRANS_ROT180:
+			{
+				if(width != 0){
+					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
+				}
+			}
+			break;
+		case TRANS_MIRROR_ROT180:
+			{
+				if(width != 0){
+					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
+				}
+			}
+			break;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//锚点确定截取屏幕的位置
+	if((INVERTED_AXES & transform) == 0) {
+		if(anchor != ANCHOR_SOLID) {
+			if((anchor & ANCHOR_BOTTOM) != 0) {
+				y_dest -= height;
+			}
+			if((anchor & ANCHOR_RIGHT) != 0) {
+				x_dest -= width;
+			}
+			if((anchor & ANCHOR_HCENTER) != 0) {
+				x_dest -= width / 2;
+			}
+			if((anchor & ANCHOR_VCENTER) != 0) {
+				y_dest -= height / 2;
+			}
+		}
+	}else{
+		if (anchor != ANCHOR_SOLID) {
+			if((anchor & ANCHOR_BOTTOM) != 0) {
+				y_dest -= width;
+			}
+			if((anchor & ANCHOR_RIGHT) != 0) {
+				x_dest -= height;
+			}
+			if((anchor & ANCHOR_HCENTER) != 0) {
+				x_dest -= height / 2;
+			}
+			if ((anchor & ANCHOR_VCENTER) != 0) {
+				y_dest -= width / 2;
+			}
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	switch (transform)
+	{
+	case TRANS_ROT90:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask);
+		break;
+	case TRANS_ROT180:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask);
+		break;
+	case TRANS_ROT270:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask);
+		break;
+	case TRANS_MIRROR:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT90:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT180:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT270:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	default:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask);
+		break;
+	}
+}
+
 
 image_p ScreenToImage()
 {

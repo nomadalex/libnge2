@@ -34,12 +34,32 @@
 #define SCREEN_BPP    32
 #define DEFAULT_FPS 60
 
-/* NGE_TRANS_x */
-enum{
-	NGE_TRANS_NONE = 0,
-	NGE_TRANS_V,
-	NGE_TRANS_H,
-	NGE_TRANS_HV
+
+//we merge *_Trans to Java like function DrawRegion.
+
+#define INVERTED_AXES	 0x4
+
+//sprite transform type
+enum TRANS_TYPE{
+	TRANS_NONE		    = 0,	//无翻转
+	TRANS_ROT90		    = 5,	//顺时针旋转90
+	TRANS_ROT180		= 3,	//顺时针旋转180
+	TRANS_ROT270		= 6,	//顺时针旋转270
+	TRANS_MIRROR		= 2,	//FLIPX
+	TRANS_MIRROR_ROT90	= 7,	//逆时针旋转90 镜像
+	TRANS_MIRROR_ROT180	= 1,	//FLIPY
+	TRANS_MIRROR_ROT270	= 4,	//逆时针旋转270 镜像
+};
+
+enum ANCHOR_TYPE{
+	ANCHOR_SOLID		= 0,
+	ANCHOR_HCENTER		= 0x1,		//1
+	ANCHOR_VCENTER		= 0x2,		//2
+	ANCHOR_LEFT		    = 0x4,		//4
+	ANCHOR_RIGHT		= 0x8,		//8
+	ANCHOR_TOP		    = 0x10,		//16
+	ANCHOR_BOTTOM		= 0x20,		//32
+	ANCHOR_BASELINE		= 0x40,		//64
 };
 
 /* note: bpp and fullscreen are not used on windows at current */
@@ -269,68 +289,20 @@ extern "C"{
  *@return 无
  */
 	NGE_API void ImageToScreen(image_p texture,float dx,float dy);
-
 /**
- *同RenderQuad,增加一个trans参数
- *@see RederQuad
- *@param[in] texture 图片指针
- *@param[in] sx 图片x坐标
- *@param[in] sy 图片y坐标
- *@param[in] sw 图片宽
- *@param[in] sh 图片高,
- *@param[in] dx 屏幕x坐标
- *@param[in] dy 屏幕y坐标
- *@param[in] xscale 图片x方向放大缩小因子
- *@param[in] yscale 图片y方向放大缩小因子
- *@param[in] angle 旋转角度
- *@param[in] mask 颜色遮罩
- *@param[in] trans 目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return 无
- */
-	NGE_API void RenderQuadTrans(image_p texture,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans);
-/**
- *同DrawImage,增加一个trans参数
- *@see DrawImage
- *@param[in] texture 图片指针
- *@param[in] sx 图片x坐标
- *@param[in] sy 图片y坐标
- *@param[in] sw 图片宽
- *@param[in] sh 图片高
- *@param[in] dx 屏幕x坐标
- *@param[in] dy 屏幕y坐标
- *@param[in] dw 屏幕宽
- *@param[in] dh 屏幕高
- *@param[in] trans 目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return 无
- */
-	NGE_API void DrawImageTrans(image_p texture,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans);
-/**
- *同DrawImageMask,增加一个trans参数
- *@see DrawImageMask
+ * 画图函数5，本函数兼容Java函数的DrawRegion
  *@param[in] tex 图片指针
  *@param[in] sx 图片x坐标
  *@param[in] sy 图片y坐标
  *@param[in] sw 图片宽
  *@param[in] sh 图片高
+ *@param[in] transform 变换方式,同Java
  *@param[in] dx 屏幕x坐标
  *@param[in] dy 屏幕y坐标
- *@param[in] dw 屏幕宽
- *@param[in] dh 屏幕高
- *@param[in] mask 颜色遮罩
- *@param[in] trans 目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
+ *@param[in] anchor 锚点,同Java
  *@return 无
  */
-	NGE_API void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans);
-/**
- *同ImageToScreen,增加一个trans参数
- *@see ImageToScreen
- *@param[in] texture 图片指针
- *@param[in] dx 屏幕x坐标
- *@param[in] dy 屏幕y坐标
- *@param[in] trans 目前支持的NGE_TRANS_NONE,NGE_TRANS_V,NGE_TRANS_H,NGE_TRANS_VH
- *@return 无
- */
-	NGE_API void ImageToScreenTrans(image_p texture,float dx,float dy,int trans);
+	NGE_API void DrawRegion(image_p	texture, int sx, int sy, int sw, int sh, int transform, int dx, int dy, int anchor);
 
 /**
  *将屏幕内容保存在image_p中
