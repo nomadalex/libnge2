@@ -62,7 +62,7 @@ struct hgeParticleSystemInfo
 
 	float		fDirection;
 	float		fSpread;
-	uint8 /*BOOL*/ bRelative;
+	int /*BOOL*/ bRelative;
 
 	float		fSpeedMin;
 	float		fSpeedMax;
@@ -102,9 +102,8 @@ public:
 
 	hgeParticleSystem&	operator= (const hgeParticleSystem &ps);
 
-	static bool ReadInfoFromBuf(hgeParticleSystemInfo& info, const uint8* mem, uint32 len);
+	static void FixInfoEndian(hgeParticleSystemInfo& info);
 	static bool ReadInfoFromFile(hgeParticleSystemInfo& info, const char* filename);
-	static uint32 SaveInfoToBuf(const hgeParticleSystemInfo& info, uint8* mem, uint32 len);
 	static bool SaveInfoToFile(hgeParticleSystemInfo& info, const char* filename);
 
 	void				Render();
@@ -121,8 +120,6 @@ public:
 	void				GetPosition(float *x, float *y) const { *x=vecLocation.x; *y=vecLocation.y; }
 	void				GetTransposition(float *x, float *y) const { *x=fTx; *y=fTy; }
 	hgeRect*			GetBoundingBox(hgeRect *rect) const { memcpy(rect, &rectBoundingBox, sizeof(hgeRect)); return rect; }
-
-	static const int infoSize;
 
 private:
 	hgeParticleSystem();
