@@ -13,11 +13,11 @@ NGE2(Not a Game Engine的递归缩写)，NGE第一版原为制作中国象棋psp
 * 直线，矩形，三角形，圆形等几何图形的绘制。
 * 音频支持，用于播放声音，mp3，wav，可扩展。
 * 动画支持，用于播放动画，支持gif。
-* 支持各种图像裁剪，例如J2ME2的SetClip函数。
+* J2ME的开发者能很容易上手，支持图像裁剪SetClip，绘图函数DrawRegion。
 
 主页:
 ----------
-http://www.iacger.com/product/official/nge2.php
+http://www.iacger.com/
 
 安装
 ---------
@@ -49,8 +49,8 @@ cache的修改：
 目前已通过 linux 、android 和 psp 平台的编译。
 
 windows平台：
-VC6.0已通过。
-VS2003，VS2005，VS2008编译环境请自行尝试，不会有太大问题的。
+VS2003已通过,推荐使用VS2003以上。
+VS2005，VS2008编译环境请自行尝试，不会有太大问题的。
 
 注：
 如需编译例子，请先下载res.7z解压到samples目录。
