@@ -75,6 +75,11 @@ extern "C" {
 #define BLEND_DST_COLOR				0x0306
 #define BLEND_ONE_MINUS_DST_COLOR	0x0307
 #define BLEND_SRC_ALPHA_SATURATE	0x0308
+
+#define FILTER_LINEAR			0
+#define FILTER_NEAREST			1
+
+
 //define for psp compatiable,no use on other
 #define PSM_5551 0
 #define PSM_565  1

@@ -42,6 +42,7 @@ typedef struct tagImage{
 	uint8   modified; /**< 强制更新显存*/
 	uint8   dontswizzle; /**强制不swizzle 优化*/
 	int     mask;     /**< 颜色遮罩,用于显示各种效果*/
+	uint8   filter;   /**< FILTER_NEAREST,FILTER_LINEAR(default) */
 }image_t,*image_p;
 
 extern uint32 image_tid;

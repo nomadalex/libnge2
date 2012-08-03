@@ -338,8 +338,8 @@ void nge_graphics_reset(void)
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
 		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 
 	glMatrixMode(GL_PROJECTION);
@@ -813,6 +813,14 @@ static uint8 tex_ret = 0;
 		glBindTexture(GL_TEXTURE_2D, cacheid);			\
 		if(tex_ret == 0 ||tex->modified==1){			\
 			TexImage2D(tex);							\
+			if(tex->filter == FILTER_NEAREST){          \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
+			}                                                                      \
+			else{                                                                  \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  \
+			}                                                                      \
 			tex->modified = 0;							\
 		}												\
 	}while(0)
@@ -931,8 +939,6 @@ void DrawImageMask(image_p tex,float sx,float sy,float sw,float sh,float dx,floa
 
 void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float xscale ,float yscale,float angle,int mask)
 {
-	if(dy == 0.0f)
-		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
 
@@ -971,8 +977,6 @@ enum{
 
 static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans)
 {
-	if(dy == 0.0f)
-		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_IMAGE_TRANS(trans, tex);
 
