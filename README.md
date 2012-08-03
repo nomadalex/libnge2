@@ -1,7 +1,13 @@
 NGE2
 ====
 
-NGE2(Not a Game Engine的递归缩写)，NGE第一版原为制作中国象棋psp所写，第二版得到了更全面的强化，是PSP/Windows/iPhone/Linux/android开发的一个程序库，不是一个游戏引擎，设计思想是简单易用，用来做各个显示程序或者游戏引擎，NGE2追求的是性能，所以全部用的c函数写，而显示函数也分为各个性能要求，提供不同的显示函数。 NGE2的设计就是让开发人员不需要用PSP调试就能开发出PSP的应用程序。就是说在Windows/linux下调试，在PSP/iphone/android上运行。 大大降低了PSP/iphone/android调试程序浪费的时间。
+NGE2(Not a Game Engine的递归缩写)，NGE第一版原为制作中国象棋PSP所写，第二版得到了更全面的强化（2008年初完成），
+是PSP/Windows/iPhone/Linux/android开发的一个程序库，设计的初衷不是一个游戏引擎，设计思想是简单易用，
+用来做各个显示程序或者游戏引擎，NGE2追求的是性能，所以全部用的c函数写，而显示函数也分为各个性能要求，
+提供不同的显示函数。 
+NGE2的最初的设计就是让开发人员不需要用PSP调试就能开发出PSP的应用程序。后来衍生到了IOS和Android，
+就是说在Windows/linux下调试，在PSP/iphone/android上运行，大大降低了PSP/iphone/android调试程序浪费的时间。
+
 
 特点:
 ---------
