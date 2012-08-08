@@ -1,9 +1,10 @@
 #include "libnge2.h"
-#include "nge_app.h"
+#include "nge_app.hpp"
 #include <stdio.h>
 // #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
 /**
  * nge_test:最简单的nge程序:显示一张图片
+ * 同时作为C++ Style App的例子
  */
 
 //退出标识
@@ -112,14 +113,28 @@ int fini() {
 	return 0;
 }
 
-static nge_app_t app;
+class MyApp : public CNgeApp
+{
+public:
+	MyApp() : CNgeApp() {}
+	~MyApp() {}
+
+	virtual int Init() {
+		return init();
+	}
+	virtual int Mainloop() {
+		return mainloop();
+	}
+	virtual int Fini() {
+		return fini();
+	}
+};
+
+MyApp app;
 
 extern "C"
 int main(int argc, char* argv[])
 {
-	app.init = init;
-	app.mainloop = mainloop;
-	app.fini = fini;
-	nge_register_app(&app);
+	nge_registerApp(&app);
 	return 0;
 }
