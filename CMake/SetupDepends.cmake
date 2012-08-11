@@ -48,11 +48,6 @@ if(LINUX AND NOT ANDROID)
   log_feature(GSTREAMER_FOUND "Gstreamer" "Open source multimedia framework" "http://gstreamer.freedesktop.org/" REQUIRED)
 endif()
 
-if(ANDROID)
-  find_package(OpenAL)
-  log_feature(OPENAL_FOUND "OpenAL" "cross-platform 3D audio API." "http://connect.creativelabs.com/openal/default.aspx" REQUIRED)
-endif()
-
 ################################################################################
 # samples deps
 # for demo5

@@ -15,13 +15,6 @@
  */
 package org.libnge.nge2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -36,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.util.DisplayMetrics;
 
@@ -76,7 +70,6 @@ public class NGE2 extends Activity
 
 	private String TAG = "nge2";
 	static {
-		System.loadLibrary("openal");
 		System.loadLibrary("nge2app-jni");
 	}
 
@@ -178,11 +171,11 @@ public class NGE2 extends Activity
 			m_need_init = true;
 		}
 	}
-	
+
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) { 
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			
+
 			new AlertDialog.Builder(this)
 			.setTitle("NGE2")
 			.setMessage("Quit this application?")
@@ -213,7 +206,7 @@ public class NGE2 extends Activity
 		{
 			super.setRenderer(renderer);
 		}
-		
+
 		@Override
 		public boolean onTouchEvent(final MotionEvent event) {
 			queueEvent(new Runnable(){
@@ -222,7 +215,7 @@ public class NGE2 extends Activity
 										}
 									 }
 			);
-			
+
 			return true;
 		}
 	}
