@@ -1,4 +1,4 @@
-NGE2
+﻿NGE2
 ====
 
 NGE2(Not a Game Engine的递归缩写)，NGE第一版原为制作中国象棋PSP所写，第二版得到了更全面的强化（2008年初完成），
@@ -21,7 +21,7 @@ NGE2的最初的设计就是让开发人员不需要用PSP调试就能开发出P
 * 动画支持，用于播放动画，支持gif。
 * 支持HGE的粒子库。
 * J2ME的开发者能很容易上手，支持图像裁剪SetClip，绘图函数DrawRegion。
-
+* 提供硬件加速图片到图片绘制image_to_image。
 主页:
 ----------
 http://www.iacger.com/
