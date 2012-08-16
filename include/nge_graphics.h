@@ -116,6 +116,19 @@ extern "C"{
  *@return 无
  */
 	NGE_API void EndScene();
+
+/**
+ * 屏幕绘制开始函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
+ *@param[in] clear 清屏标志，默认为1清屏
+ *@return 无
+ */
+	NGE_API BOOL BeginTarget(image_p _img);
+/**
+ * 屏幕绘制结束函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
+ *@return 无
+ */
+	NGE_API void EndTarget();
+
 /**
  * 设置是否显示FPS和调试信息
  *@return 无

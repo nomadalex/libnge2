@@ -41,7 +41,7 @@
 
 #define glOrtho glOrthof
 #elif defined NGE_WIN || defined NGE_LINUX
-
+#include <gl/glew.h>
 #include <GL/gl.h>
 
 #if defined NGE_LINUX
@@ -66,9 +66,12 @@ static uint32 m_frame = 0;
 static uint32 m_t0 = 0;
 static int fps_last_ticks = 0;
 
+static int cacheid = 0;
+static uint8 tex_ret = 0;
+
 #define MAX_TEX_CACHE_SIZE 32
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
-
+GLuint fbo = 0;
 // nge_screen *************************
 static screen_context_t nge_screen = {
 	NULL,
@@ -389,6 +392,8 @@ void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
 	/* create and enable the render context (RC) */
 	*hRC = wglCreateContext( *hDC );
 	wglMakeCurrent( *hDC, *hRC );
+    glewInit();
+	glGenFramebuffersEXT(1, &fbo);
 }
 
 void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
@@ -396,6 +401,7 @@ void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
 	wglMakeCurrent( NULL, NULL );
 	wglDeleteContext( hRC );
 	ReleaseDC( hWnd, hDC );
+	glDeleteFramebuffersEXT(1, &fbo);
 }
 
 static HWND hWnd;
@@ -564,6 +570,7 @@ void EndScene()
 	glFlush();
 #endif
 }
+
 
 static uint8 r,g,b,a;
 #define SET_COLOR(color, dtype)                 \
@@ -805,8 +812,7 @@ static inline void TexImage2D(image_p pimg)
 	glTexImage2D(GL_TEXTURE_2D, 0, format, pimg->texw, pimg->texh, 0, format, pimg->dtype, pimg->data);
 }
 
-static int cacheid = 0;
-static uint8 tex_ret = 0;
+
 #define BIND_AND_TEST_CACHE(tex)						\
 	do {												\
 		tex_ret = tex_cache_getid(tex->texid,&cacheid);	\
@@ -1166,4 +1172,27 @@ void ScreenShot(const char* filename)
 		return;
 	image_save(pimage,filename,1, 1);
 	image_free(pimage);
+}
+BOOL BeginTarget(image_p _img){
+	static int cacheid = 0;
+	static int ret = 0;
+	if(!_img)
+		return FALSE;
+	BIND_AND_TEST_CACHE(_img);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.ori_width,0,nge_screen.ori_height, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+
+	return TRUE;
+}
+void EndTarget(){
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+
 }
