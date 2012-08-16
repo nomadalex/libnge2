@@ -38,6 +38,10 @@ if(WIN32 OR LINUX)
   endif()
 endif()
 
+find_package(GLEW)
+log_feature(GLEW_FOUND "GLEW" "The OpenGL Extension Wrangler Library" "http://glew.sourceforge.net" REQUIRED)
+add_package(GLEW NGE2_DEP_LIBS)
+
 find_package(Unzip)
 log_feature(UNZIP_FOUND "unzip" "a unzip library, you can download it from download page." "" REQUIRED)
 
