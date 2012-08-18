@@ -13,7 +13,7 @@ if(NOT GLEW_FOUND)
 
   define_find_pkg(GLEW
 	PKG_CONFIG_NAME glew
-	LIBRARY_HINTS glew GLEW glew32 glew32s
+	LIBRARY_HINTS glew GLEW glew32 glew32s libglew libglew32
 	HEADER_HINTS gl/glew.h GL/glew.h)
 	
   findpkg_finish(GLEW)
