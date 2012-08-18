@@ -41,7 +41,7 @@
 
 #define glOrtho glOrthof
 #elif defined NGE_WIN || defined NGE_LINUX
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 
 #if defined NGE_LINUX
