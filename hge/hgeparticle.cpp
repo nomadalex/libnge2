@@ -60,7 +60,7 @@ inline static void doswap(int swap, void *p, size_t n)
 	}
 }
 
-#define DECL_ENDIAN() uint8 __swap__ = 0
+#define DECL_ENDIAN() uint8_t __swap__ = 0
 #define SET_ENDIAN(endian) __swap__ = doendian(endian)
 
 #define FIX_TYPE(type, val)						\

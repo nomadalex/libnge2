@@ -15,13 +15,13 @@ typedef pspTime sys_time_t,*sys_time_p;
 #else
 #include "nge_common.h"
 typedef struct st_tm{
-	uint16  year;
-	uint16  month;
-	uint16  day;
-	uint16  hour;
-	uint16  minutes;
-	uint16  seconds;
-	uint32  microseconds;
+	uint16_t  year;
+	uint16_t  month;
+	uint16_t  day;
+	uint16_t  hour;
+	uint16_t  minutes;
+	uint16_t  seconds;
+	uint32_t  microseconds;
 }sys_time_t,*sys_time_p;
 #endif
 

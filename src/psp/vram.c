@@ -30,6 +30,11 @@ static unsigned int getMemorySize(unsigned int width, unsigned int height, unsig
 	}
 }
 
+unsigned int getStaticVramOffset()
+{
+	return staticOffset;
+}
+
 void* getStaticVramBuffer(unsigned int width, unsigned int height, unsigned int psm)
 {
 	unsigned int memSize = getMemorySize(width,height,psm);

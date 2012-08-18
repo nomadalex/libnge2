@@ -14,7 +14,7 @@
 
 /* definitions */
 
-typedef uint32 ucs4_t;
+typedef uint32_t ucs4_t;
 /* Return code if invalid. (xxx_mbtowc) */
 #define RET_ILSEQ      -1
 /* Return code if only a shift sequence of n bytes was read. (xxx_mbtowc) */
@@ -25,8 +25,8 @@ typedef uint32 ucs4_t;
 #define RET_TOOSMALL   -2
 
 typedef struct {
-  uint16 indx; /* index into big table */
-  uint16 used; /* bitmask of used entries */
+  uint16_t indx; /* index into big table */
+  uint16_t used; /* bitmask of used entries */
 } Summary16;
 
 #include "ascii.h"
@@ -34,48 +34,48 @@ typedef struct {
 #include "gbk.h"
 #include "ces_gbk.h"
 
-int nge_charset_gbk_to_ucs2(const uint8* in, uint16* out, int len, int n) {
+int nge_charset_gbk_to_ucs2(const uint8_t* in, uint16_t* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint16 *pOut = out, *pEnd = out+n/2;
+	uint16_t *pOut = out, *pEnd = out+n/2;
 
 	while (cur < len) {
 		ret = ces_gbk_mbtowc(&wc, in+cur, len-cur);
 		if (ret < 0 || wc > 0xffff)
 			return 0;
-		*pOut = (uint16)wc;
+		*pOut = (uint16_t)wc;
 		cur += ret;
 		pOut++;
 		if (pOut > pEnd)
 			return NGE_RET_BUFFER_SMALL;
 	}
 	*pOut = 0x0;
-	return pOut - (uint16*)out;
+	return pOut - (uint16_t*)out;
 }
 
-int nge_charset_utf8_to_ucs2(const uint8* in, uint16* out, int len, int n) {
+int nge_charset_utf8_to_ucs2(const uint8_t* in, uint16_t* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint16 *pOut = out, *pEnd = out+n/2;
+	uint16_t *pOut = out, *pEnd = out+n/2;
 
 	while (cur < len) {
 		ret = utf8_mbtowc(&wc, in+cur, len-cur);
 		if (ret < 0 || wc > 0xffff)
 			return 0;
-		*pOut = (uint16)wc;
+		*pOut = (uint16_t)wc;
 		cur += ret;
 		pOut++;
 		if (pOut > pEnd)
 			return NGE_RET_BUFFER_SMALL;
 	}
 	*pOut = 0x0;
-	return pOut - (uint16*)out;
+	return pOut - (uint16_t*)out;
 }
 
-int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n) {
+int nge_charsets_utf8_to_gbk(const uint8_t* in, uint8_t* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint8 *pOut = out, *pEnd = out+n;
+	uint8_t *pOut = out, *pEnd = out+n;
 
 	while (cur < len) {
 		ret = utf8_mbtowc(&wc, in+cur, len-cur);
@@ -96,10 +96,10 @@ int nge_charsets_utf8_to_gbk(const uint8* in, uint8* out, int len, int n) {
 	return pOut - out - 1;
 }
 
-int nge_charsets_gbk_to_utf8(const uint8* in, uint8* out, int len, int n) {
+int nge_charsets_gbk_to_utf8(const uint8_t* in, uint8_t* out, int len, int n) {
 	ucs4_t wc = 0;
 	int cur = 0, ret;
-	uint8 *pOut = out, *pEnd = out+n;
+	uint8_t *pOut = out, *pEnd = out+n;
 
 	while (cur < len) {
 		ret = ces_gbk_mbtowc(&wc, in+cur, len-cur);

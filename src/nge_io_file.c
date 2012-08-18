@@ -12,7 +12,7 @@ typedef struct ngeVFBlock {
 	int start;
 	ngeVF* f[10];
 	struct ngeVFBlock *next, *prev;
-	uint8 len;
+	uint8_t len;
 } ngeVFBlock;
 
 static ngeVFBlock firstBlock = { 1, {NULL}, NULL, NULL, 0 };

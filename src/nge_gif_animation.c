@@ -28,17 +28,17 @@
 static GifByteType Netscape20ext[] = "\x0bNETSCAPE2.0";
 #define NSEXT_LOOP      0x01        // Loop Count field code
 
-const sint32 InterlacedOffset[] = { 0, 4, 2, 1 }; /* The way Interlaced image should. */
-const sint32 InterlacedJumps[] = { 8, 8, 4, 2 };    /* be read - offsets and jumps... */
+const int32_t InterlacedOffset[] = { 0, 4, 2, 1 }; /* The way Interlaced image should. */
+const int32_t InterlacedJumps[] = { 8, 8, 4, 2 };    /* be read - offsets and jumps... */
 
 #define MAKEWORD(a,b) ((short)((char)(a))|(((short)(char)(b))<<8))
 
-static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32 width,sint32 transparent);
-static void gif_fill_frame_line(GifPixelType* pDst, const sint32 rgb, sint32 width);
+static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32_t width,int32_t transparent);
+static void gif_fill_frame_line(GifPixelType* pDst, const int32_t rgb, int32_t width);
 
-static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32 width,sint32 transparent)
+static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32_t width,int32_t transparent)
 {
-	uint32 i;
+	uint32_t i;
 	GifPixelType b;
 	for (i=0;i<width;i++)
 	{
@@ -49,7 +49,7 @@ static void gif_copy_frame_line(GifPixelType * dest, GifPixelType *src,uint32 wi
 	}
 }
 
-static void gif_fill_frame_line(GifPixelType* pDst, const sint32 rgb, sint32 width)
+static void gif_fill_frame_line(GifPixelType* pDst, const int32_t rgb, int32_t width)
 {
 	if (width)
 	{
@@ -63,10 +63,10 @@ static void gif_fill_frame_line(GifPixelType* pDst, const sint32 rgb, sint32 wid
 
 gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
  {
-     uint32 cxScreen,cyScreen,dwRowBytes,dwScreen,m,n;
-     sint32 Size,rgbFill,flag,ExtCode,iSubCode,bNetscapeExt;
-	 uint32 *pdata32 = NULL;
-	 uint16 *pdata16 = NULL;
+     uint32_t cxScreen,cyScreen,dwRowBytes,dwScreen,m,n;
+     int32_t Size,rgbFill,flag,ExtCode,iSubCode,bNetscapeExt;
+	 uint32_t *pdata32 = NULL;
+	 uint16_t *pdata16 = NULL;
      GifRecordType RecordType;
      GifByteType *pExtension = NULL;
 	 GifByteType bLength;
@@ -124,7 +124,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
                  Width = GifFileIn->Image.Width;
                  Height = GifFileIn->Image.Height;
 
-                 pLine = (GifPixelType*)malloc((uint16)(Width * sizeof(GifPixelType)));
+                 pLine = (GifPixelType*)malloc((uint16_t)(Width * sizeof(GifPixelType)));
 				 memset(pLine,0,Width * sizeof(GifPixelType));
                  pgif->gif_framecount++;
                  memcpy(m_current_frame_buf, m_next_frame_buf, dwScreen);
@@ -165,7 +165,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 				 if(displaymode == DISPLAY_PIXEL_FORMAT_8888){
 					 pimage = image_create(pgif->gif_w,pgif->gif_h,DISPLAY_PIXEL_FORMAT_8888);
 					 ColorMap = (GifFileIn->Image.ColorMap? GifFileIn->Image.ColorMap: GifFileIn->SColorMap);
-					 pdata32 = (uint32*)pimage->data;
+					 pdata32 = (uint32_t*)pimage->data;
 					 Gifdata = m_current_frame_buf;
 					 for(m = 0; m < pgif->gif_h;m++ ){
 						 for(n = 0;n <pgif->gif_w;n++){
@@ -177,7 +177,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 				 else{
 					pimage = image_create(pgif->gif_w,pgif->gif_h,displaymode);
 					 ColorMap = (GifFileIn->Image.ColorMap? GifFileIn->Image.ColorMap: GifFileIn->SColorMap);
-					 pdata16 = (uint16*)pimage->data;
+					 pdata16 = (uint16_t*)pimage->data;
 					 Gifdata = m_current_frame_buf;
 					 for(m = 0; m < pgif->gif_h;m++ ){
 						 for(n = 0;n <pgif->gif_w;n++){

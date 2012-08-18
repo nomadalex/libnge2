@@ -62,12 +62,12 @@ static float m_costable[360];
 #define COSF(a)  (m_costable[a%360])
 
 //fps count
-static uint32 m_frame = 0;
-static uint32 m_t0 = 0;
+static uint32_t m_frame = 0;
+static uint32_t m_t0 = 0;
 static int fps_last_ticks = 0;
 
 static int cacheid = 0;
-static uint8 tex_ret = 0;
+static uint8_t tex_ret = 0;
 
 #define MAX_TEX_CACHE_SIZE 32
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
@@ -139,9 +139,9 @@ static Vectice2D_t *gl_vectices;
 static Color_t *gl_colors;
 static TexCoord_t *gl_tex_uvs;
 
-static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
+static uint32_t max_vectices=0,max_colors=0,max_tex_uvs=0;
 #define GL_ARRAY_CHECK_V(size)											\
-	if(((uint32)size) > max_vectices){									\
+	if(((uint32_t)size) > max_vectices){									\
 		max_vectices = size;											\
 		SAFE_FREE(gl_vectices);											\
 		gl_vectices = (Vectice2D_t*)malloc(size*sizeof(Vectice2D_t));	\
@@ -149,7 +149,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_C(size)											\
-	if(((uint32)size) > max_colors)										\
+	if(((uint32_t)size) > max_colors)										\
 	{																	\
 		max_colors = size;												\
 		SAFE_FREE(gl_colors);											\
@@ -158,7 +158,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_T(size)											\
-	if(((uint32)size) > max_tex_uvs)									\
+	if(((uint32_t)size) > max_tex_uvs)									\
 	{																	\
 		max_tex_uvs = size;												\
 		SAFE_FREE(gl_tex_uvs);											\
@@ -172,7 +172,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 #define GL_ARRAY_DIS(what)						\
 	glDisableClientState(GL_##what##_ARRAY);
 
-static inline void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8* a)
+static inline void GetRGBA(int color,int dtype,uint8_t* r,uint8_t* g,uint8_t* b,uint8_t* a)
 {
 	switch(dtype)
 	{
@@ -207,9 +207,9 @@ char* NGE_GetVersion()
 
 static Color_t screen_c = {0, 0, 0, 0};
 
-uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
+uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 {
-	uint32 u_lastcolor;
+	uint32_t u_lastcolor;
 	u_lastcolor = MAKE_RGBA_8888(((int)(COLOR_T_R(screen_c)*255)),((int)(COLOR_T_G(screen_c)*255)),((int)(COLOR_T_B(screen_c)*255)),((int)(COLOR_T_A(screen_c)*255)));
 	COLOR_T_R(screen_c) = r/255.0;
 	COLOR_T_G(screen_c) = g/255.0;
@@ -528,7 +528,7 @@ void ShowFps()
 #endif
 }
 
-void LimitFps(uint32 limit)
+void LimitFps(uint32_t limit)
 {
 	int ticks = 0, sleep_ticks = 0;
 	if(limit == 0)
@@ -546,7 +546,7 @@ void LimitFps(uint32 limit)
 	glRotatef(angle,0,0,1);                     \
 	glTranslatef(-(xcent),-(ycent),0)
 
-void BeginScene(uint8 clear)
+void BeginScene(uint8_t clear)
 {
 	if(clear == 1){
 		glDisable(GL_SCISSOR_TEST);
@@ -572,7 +572,7 @@ void EndScene()
 }
 
 
-static uint8 r,g,b,a;
+static uint8_t r,g,b,a;
 #define SET_COLOR(color, dtype)                 \
 	GetRGBA(color,dtype,&r,&g,&b,&a);           \
 	glColor4ub(r, g, b, a)
@@ -805,7 +805,7 @@ int PreLoadImage(image_p pimg)
 
 static inline void TexImage2D(image_p pimg)
 {
-	uint32 format = GL_RGBA;
+	uint32_t format = GL_RGBA;
 	if(pimg->dtype == DISPLAY_PIXEL_FORMAT_565){
 		format = GL_RGB;
 	}

@@ -60,9 +60,9 @@ static int offset = 0;
 static void png_custom_mread_fn(png_structp png_ptr, png_bytep data, png_size_t length)
 {
 
-	uint8* handle = (uint8*)png_ptr->io_ptr;
-	uint8* workptr = handle + offset;
-	uint32 i;
+	uint8_t* handle = (uint8_t*)png_ptr->io_ptr;
+	uint8_t* workptr = handle + offset;
+	uint32_t i;
    if (handle == NULL)
    {
 	  png_error(png_ptr, "Read Error!");
@@ -111,21 +111,21 @@ image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode)
 
 image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 {
-	uint32* p32;
-	uint16* p16;
+	uint32_t* p32;
+	uint16_t* p16;
 	png_structp png_ptr;
 	png_infop info_ptr;
 	unsigned int sig_read = 0;
 	png_uint_32 width, height;
 	int bit_depth, color_type, interlace_type, x, y;
-	uint32* line;
+	uint32_t* line;
 	image_p pimage = NULL;
 	int texw,texh,bpb,size;
-	uint8 done = 0;
-	uint8* buffer = NULL;
-	uint32 color32;
-	uint16 color16;
-	static uint8 r,g,b,a;
+	uint8_t done = 0;
+	uint8_t* buffer = NULL;
+	uint32_t color32;
+	uint16_t color16;
+	static uint8_t r,g,b,a;
 	offset = 0;
 
 	if (mbuf == 0) return 0;
@@ -151,7 +151,7 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
 	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-	line = (uint32*) malloc(width * 4);
+	line = (uint32_t*) malloc(width * 4);
 	if (!line) {
 		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
 		return 0;
@@ -164,13 +164,13 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 		bpb = 2;
 	}
 	size = texw * texh * bpb;
-	buffer = (uint8*) malloc(size);
+	buffer = (uint8_t*) malloc(size);
 	memset(buffer,0,size);
 	if (buffer){
-		p32 = (uint32*) buffer;
-		p16 = (uint16*) p32;
+		p32 = (uint32_t*) buffer;
+		p16 = (uint16_t*) p32;
 		for (y = 0; y < (int)height; y++){
-		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
+		png_read_row(png_ptr, (uint8_t*) line, png_bytep_NULL);
 		for (x = 0; x < (int)width; x++)  {
 			color32 = line[x];
 			a = (color32 >> 24) & 0xff;
@@ -208,7 +208,7 @@ image_p image_load_png_buf(const char* mbuf, int bsize, int displaymode)
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)buffer;
+		pimage->data = (uint8_t *)buffer;
 		pimage->w    = width;
 		pimage->h    = height;
 		pimage->texw = texw;
@@ -265,10 +265,10 @@ image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displ
 image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode,int colorkey)
 {
 
-	uint32* p32;
-	uint16* p16;
-	uint8* buffer;
-	uint32* line;
+	uint32_t* p32;
+	uint16_t* p16;
+	uint8_t* buffer;
+	uint32_t* line;
 	image_p pimage = NULL;
 	png_structp png_ptr;
 	png_infop info_ptr;
@@ -276,11 +276,11 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	png_uint_32 width, height;
 	int bit_depth, color_type, interlace_type, x, y;
 	int texw,texh,bpb,size;
-	uint8 done = 0;
+	uint8_t done = 0;
 	int pixcolor;
-	uint32 color32;
-	uint16 color16;
-	static uint8 r,g,b,a,alpha;
+	uint32_t color32;
+	uint16_t color16;
+	static uint8_t r,g,b,a,alpha;
 
 	offset = 0;/*global*/
 
@@ -307,7 +307,7 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
 	if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
 	png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-	line = (uint32*) malloc(width * 4);
+	line = (uint32_t*) malloc(width * 4);
 	if (!line) {
 		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
 		return 0;
@@ -320,15 +320,15 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 		bpb = 2;
 	}
 	size = texw * texh * bpb;
-	buffer = (uint8*) malloc(size);
+	buffer = (uint8_t*) malloc(size);
 	memset(buffer,0,size);
 	alpha = 0xff;
 
 	if (buffer){
-		p32 = (uint32*) buffer;
-		p16 = (uint16*) p32;
+		p32 = (uint32_t*) buffer;
+		p16 = (uint16_t*) p32;
 		for (y = 0; y < (int)height; y++){
-		png_read_row(png_ptr, (uint8*) line, png_bytep_NULL);
+		png_read_row(png_ptr, (uint8_t*) line, png_bytep_NULL);
 		for (x = 0; x < (int)width; x++)  {
 			color32 = line[x];
 					a = (color32 >> 24) & 0xff;
@@ -383,7 +383,7 @@ image_p image_load_png_colorkey_buf(const char* mbuf, int bsize, int displaymode
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)buffer;
+		pimage->data = (uint8_t *)buffer;
 		pimage->w    = width;
 		pimage->h    = height;
 		pimage->texw = texw;
@@ -416,20 +416,20 @@ static void png_custom_fwrite_fn(png_structp png_ptr, png_bytep data, png_size_t
 	}
 }
 
-int image_save_png(image_p pimage,const char* filename,uint8 alpha)
+int image_save_png(image_p pimage,const char* filename,uint8_t alpha)
 {
 	png_structp png_ptr;
 	png_infop info_ptr;
-	uint8* line;
-	uint32 col_type;
+	uint8_t* line;
+	uint32_t col_type;
 	int handle;
-	uint8 *src;
-	uint16 *src16 ;
-	uint32 *src32 ;
-	uint32 x,y,i;
-	uint8 r = 0, g = 0, b = 0, a = 0;
-	uint16 col16;
-	uint32 col32;
+	uint8_t *src;
+	uint16_t *src16 ;
+	uint32_t *src32 ;
+	uint32_t x,y,i;
+	uint8_t r = 0, g = 0, b = 0, a = 0;
+	uint16_t col16;
+	uint32_t col32;
 
 
 	if (pimage==0)
@@ -464,7 +464,7 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 		PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 	png_write_info(png_ptr, info_ptr);
 
-	line = (uint8*) malloc(pimage->w * 4);
+	line = (uint8_t*) malloc(pimage->w * 4);
 	if (line==0)
 	{
 		png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
@@ -472,14 +472,14 @@ int image_save_png(image_p pimage,const char* filename,uint8 alpha)
 		return 0;
 	}
 
-	src = (uint8*)pimage->data;
-	src16 = (uint16*)src;
-	src32 = (uint32*)src;
+	src = (uint8_t*)pimage->data;
+	src16 = (uint16_t*)src;
+	src32 = (uint32_t*)src;
 	for (y = 0; y < pimage->h; y++)
 	{
-		//uint32 swap = 0;
-		src16 = (uint16*)src;
-		src32 = (uint32*)src;
+		//uint32_t swap = 0;
+		src16 = (uint16_t*)src;
+		src32 = (uint32_t*)src;
 		for (i = 0, x = 0; x < pimage->w; x++)
 		{
 			switch (pimage->dtype)

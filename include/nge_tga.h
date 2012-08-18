@@ -47,18 +47,18 @@
 
 #pragma pack(push, 1)
 typedef struct {
-    uint8	ImageIDSize;
-    uint8	ColorMapType;
-    uint8	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
-    uint8	ColorMapOrigin[2];
-    uint8	ColorMapLength[2];                      // Palette Size
-    uint8	ColorMapESize;							// Size in bits of one Palette entry
-    uint8	OriginX[2];
-    uint8	OriginY[2];
-    uint8	Width[2];                               // Width of Image
-    uint8	Height[2];                              // Height of Image
-    uint8	Depth;                                  // Bits per Pixel of Image
-    uint8	ImageDescrip;
+    uint8_t	ImageIDSize;
+    uint8_t	ColorMapType;
+    uint8_t	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
+    uint8_t	ColorMapOrigin[2];
+    uint8_t	ColorMapLength[2];                      // Palette Size
+    uint8_t	ColorMapESize;							// Size in bits of one Palette entry
+    uint8_t	OriginX[2];
+    uint8_t	OriginY[2];
+    uint8_t	Width[2];                               // Width of Image
+    uint8_t	Height[2];                              // Height of Image
+    uint8_t	Depth;                                  // Bits per Pixel of Image
+    uint8_t	ImageDescrip;
 } TGAFILEHEADER;
 #pragma pack(pop)
 
@@ -134,7 +134,7 @@ extern "C" {
  *@param[in] rle 是否采用rle编码压缩
  *@return int,返回0(加载失败)或1(加载成功)
  */
-	NGE_API int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
+	NGE_API int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle);
 
 #ifdef __cplusplus
 }

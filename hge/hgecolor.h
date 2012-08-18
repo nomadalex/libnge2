@@ -24,7 +24,7 @@ public:
 	float		r,g,b,a;
 
 	hgeColorRGB(float _r, float _g, float _b, float _a) { r=_r; g=_g; b=_b; a=_a; }
-	hgeColorRGB(uint32 col) { SetHWColor(col); }
+	hgeColorRGB(uint32_t col) { SetHWColor(col); }
 	hgeColorRGB() { r=g=b=a=0; }
 
 	hgeColorRGB		operator-  (const hgeColorRGB &c) const { return hgeColorRGB(r-c.r, g-c.g, b-c.b, a-c.a); }
@@ -40,8 +40,8 @@ public:
 	hgeColorRGB&	operator*= (const float scalar)		  { r*=scalar; g*=scalar; b*=scalar; a*=scalar; return *this;   }
 
 	void			Clamp() { ColorClamp(r); ColorClamp(g); ColorClamp(b); ColorClamp(a); }
-	void			SetHWColor(uint32 col) {	a = (col>>24)/255.0f; r = ((col>>16) & 0xFF)/255.0f; g = ((col>>8) & 0xFF)/255.0f; b = (col & 0xFF)/255.0f;	}
-	uint32			GetHWColor() const { return MAKE_RGBA_8888(((int)(r*255.0f)), ((int)(g*255.0f)), ((int)(b*255.0f)),((int)(a*255.0f)));	}
+	void			SetHWColor(uint32_t col) {	a = (col>>24)/255.0f; r = ((col>>16) & 0xFF)/255.0f; g = ((col>>8) & 0xFF)/255.0f; b = (col & 0xFF)/255.0f;	}
+	uint32_t			GetHWColor() const { return MAKE_RGBA_8888(((int)(r*255.0f)), ((int)(g*255.0f)), ((int)(b*255.0f)),((int)(a*255.0f)));	}
 };
 
 inline hgeColorRGB operator* (const float sc, const hgeColorRGB &c) { return c*sc; }
@@ -53,7 +53,7 @@ public:
 	float		h,s,v,a;
 
 	hgeColorHSV(float _h, float _s, float _v, float _a) { h=_h; s=_s; v=_v; a=_a; }
-	hgeColorHSV(uint32 col) { SetHWColor(col); }
+	hgeColorHSV(uint32_t col) { SetHWColor(col); }
 	hgeColorHSV() { h=s=v=a=0; }
 
 	hgeColorHSV		operator-  (const hgeColorHSV &c) const { return hgeColorHSV(h-c.h, s-c.s, v-c.v, a-c.a); }
@@ -69,8 +69,8 @@ public:
 	hgeColorHSV&	operator*= (const float scalar)		  { h*=scalar; s*=scalar; v*=scalar; a*=scalar; return *this;   }
 
 	void			Clamp() { ColorClamp(h); ColorClamp(s); ColorClamp(v); ColorClamp(a); }
-	void			SetHWColor(uint32 col);
-	uint32			GetHWColor() const;
+	void			SetHWColor(uint32_t col);
+	uint32_t			GetHWColor() const;
 };
 
 inline hgeColorHSV operator* (const float sc, const hgeColorHSV &c) { return c*sc; }

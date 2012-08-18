@@ -94,7 +94,7 @@ extern "C" {
  *@param[in] alpha 是否保存为含alpha通道的图片
  *@return int,返回0(加载失败)或1(加载成功)
  */
-	NGE_API int image_save_png(image_p pimage,const char* filename,uint8 alpha);
+	NGE_API int image_save_png(image_p pimage,const char* filename,uint8_t alpha);
 
 #ifdef __cplusplus
 }

@@ -2,9 +2,9 @@
 #include "nge_font.h"
 #include "nge_font_internal.h"
 
-uint8 nge_font_encoding = NGE_ENCODING_GBK;
+uint8_t nge_font_encoding = NGE_ENCODING_GBK;
 
-void NGE_SetFontEncoding(uint8 encoding) {
+void NGE_SetFontEncoding(uint8_t encoding) {
 	nge_font_encoding = encoding;
 }
 
@@ -48,7 +48,7 @@ void font_destory(PFont pf)
 		procs->DestroyFont(pf);
 }
 
-int font_setcolor(PFont pf,uint32 color)
+int font_setcolor(PFont pf,uint32_t color)
 {
 	PFontProcs procs;
 	if(pf == NULL)
@@ -59,7 +59,7 @@ int font_setcolor(PFont pf,uint32 color)
 	return 0;
 }
 
-void font_setcolor_ex(PFont pf, uint32 color_fg,uint32 color_bg ,uint32 color_sh )
+void font_setcolor_ex(PFont pf, uint32_t color_fg,uint32_t color_bg ,uint32_t color_sh )
 {
 	PFontProcs procs;
 	if(pf == NULL)

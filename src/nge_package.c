@@ -11,7 +11,7 @@
 #include <string.h>
 
 static ngePackageFormat* formats[NGE_MAX_PACKAGE_FORMAT];
-static uint8 len = 0;
+static uint8_t len = 0;
 
 int ngePackageRegister(ngePackageFormat* format) {
 	if (len > NGE_MAX_PACKAGE_FORMAT)

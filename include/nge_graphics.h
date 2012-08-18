@@ -110,7 +110,7 @@ extern "C"{
  *@param[in] clear 清屏标志，默认为1清屏
  *@return 无
  */
-	NGE_API void BeginScene(uint8 clear);
+	NGE_API void BeginScene(uint8_t clear);
 /**
  * 屏幕绘制结束函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
  *@return 无
@@ -139,7 +139,7 @@ extern "C"{
  *@param[in] fps,目标帧数
  *@return 无
  */
-	NGE_API void LimitFps(uint32 fps);
+	NGE_API void LimitFps(uint32_t fps);
 /**
  * 设置裁剪区域，在目标区域内的才显示，同J2ME的SetClip
  *@param[in] x 目标区域x坐标
@@ -334,9 +334,9 @@ extern "C"{
  *@param[in] g 设置g分量(0-255)
  *@param[in] b 设置b分量(0-255)
  *@param[in] a 设置a分量(0-255)
- *@return uint32 上一个屏幕颜色值,可用宏GET_RGBA_8888分离出各个颜色分量
+ *@return uint32_t 上一个屏幕颜色值,可用宏GET_RGBA_8888分离出各个颜色分量
  */
-	NGE_API uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a);
+	NGE_API uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a);
 /**
  * 设置当前的混合方式\n
  * 混合因子的取值可以是\n
