@@ -55,7 +55,7 @@ static  FontProcs hzk_procs = {
 static int use_big5 = 0;
 
 #define MAKE_EXPANDCCHAR_FUNC(bits)										\
-	static inline void expandcchar_##bits (PFontHzk pf, int bg, int fg, unsigned char* c, uint##bits * bitmap) \
+	static inline void expandcchar_##bits (PFontHzk pf, int bg, int fg, unsigned char* c, uint##bits##_t * bitmap) \
 	{																	\
 		int x,y, i=0, b = 0;											\
 		int c1, c2, seq;												\
@@ -96,7 +96,7 @@ static int use_big5 = 0;
 
 
 #define MAKE_EXPANDCHAR_FUNC(bits)										\
-	static inline void expandchar_##bits(PFontHzk pf, int bg, int fg, int c, uint##bits* bitmap) \
+	static inline void expandchar_##bits(PFontHzk pf, int bg, int fg, int c, uint##bits##_t* bitmap) \
 	{																	\
 		int x,y, i=0, b = 0;											\
 		unsigned char *font;											\
@@ -123,7 +123,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 	void hzk_drawtext_##bits(PFontHzk pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		char *s,*sbegin;												\
 		int size;														\
@@ -138,22 +138,22 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 		}																\
 																		\
 		sbegin=s;														\
-		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
+		size = pf->cfont_width * pf->font_height *sizeof(uint##bits##_t);	\
 		EXPAND_WORKBUF(pf, size, bitbuf);								\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\
 		{																\
 			if( c[1] != '\0'){											\
 				expandcchar_##bits(pf, pf->color_bg,pf->color_fg,c, bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
 				s += 2;													\
 				ax += pf->cfont_width;									\
 			}															\
 			else{														\
 				expandchar_##bits(pf, pf->color_bg,pf->color_fg,c[0], bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
 				s += 1;													\
 				ax += pf->afont_width;									\
 			}															\
@@ -166,7 +166,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 	void hzk_drawtext_shadow_##bits(PFontHzk pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		int size;														\
 		char *s,*sbegin;												\
@@ -181,24 +181,24 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 		}																\
 																		\
 		sbegin=s;														\
-		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
+		size = pf->cfont_width * pf->font_height *sizeof(uint##bits##_t);	\
 		EXPAND_WORKBUF(pf, size, bitbuf);								\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\
 		{																\
 			if( c[1] != '\0'){											\
 				expandcchar_##bits(pf, pf->color_bg,pf->color_fg,c, bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
-				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg,(uint##bits)pf->color_sh); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
+				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg,(uint##bits##_t)pf->color_sh); \
 				s += 2;													\
 				ax += pf->cfont_width;									\
 			}															\
 			else{														\
 				expandchar_##bits(pf, pf->color_bg,pf->color_fg,c[0], bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
-				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg,(uint##bits)pf->color_sh); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
+				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg,(uint##bits##_t)pf->color_sh); \
 				s += 1;													\
 				ax += pf->afont_width;									\
 			}															\

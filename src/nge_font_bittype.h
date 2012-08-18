@@ -207,19 +207,19 @@ static void bit_setcolorex(PFont pfont, uint32_t color_fg,uint32_t color_bg ,uin
 			b = *font++;								\
 														\
 		if (b & (128 >> (x % 8)))						\
-			bitmap[i++]=(uint##bits)fg;					\
+			bitmap[i++]=(uint##bits##_t)fg;					\
 		else											\
-			bitmap[i++]=(uint##bits)bg;					\
+			bitmap[i++]=(uint##bits##_t)bg;					\
 	}
 
 #define MAKE_COPY_RAWDATA_IMAGE_FUNC(bits, var)							\
-	inline static void copy_rawdata_image_custom_##bits(void* data,const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits color_bg,uint##bits color_fg) \
+	inline static void copy_rawdata_image_custom_##bits(void* data,const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits##_t color_bg,uint##bits##_t color_fg) \
 	{																	\
-		uint##bits *bmp, *cpbegin;										\
+		uint##bits##_t *bmp, *cpbegin;										\
 		uint32_t i,j;														\
 																		\
-		cpbegin = (uint##bits*)des->data+y*des->texw+x;					\
-		bmp = (uint##bits*)data;										\
+		cpbegin = (uint##bits##_t*)des->data+y*des->texw+x;					\
+		bmp = (uint##bits##_t*)data;										\
 		for(i =0;i<h;i++){												\
 			for(j =0;j<w;j++){											\
 				if(j+x>des->texw||i+y>des->texh)						\
@@ -231,12 +231,12 @@ static void bit_setcolorex(PFont pfont, uint32_t color_fg,uint32_t color_bg ,uin
 	}
 
 #define MAKE_PROCESS_SHADOW_FUNC(bits, var)								\
-	inline static void process_shadow_##bits(void* data, const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits color_bg,uint##bits color_fg,uint##bits color_sh) \
+	inline static void process_shadow_##bits(void* data, const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits##_t color_bg,uint##bits##_t color_fg,uint##bits##_t color_sh) \
 	{																	\
-		uint##bits *bmp, *cpbegin;										\
+		uint##bits##_t *bmp, *cpbegin;										\
 		uint32_t i,j;														\
-		bmp = (uint##bits*)data;										\
-		cpbegin = (uint##bits*)des->data+y*des->texw+x;					\
+		bmp = (uint##bits##_t*)data;										\
+		cpbegin = (uint##bits##_t*)des->data+y*des->texw+x;					\
 		for(i = 1;i<h+1;i++){											\
 			for(j = 1;j<w+1;j++){										\
 				if(j+x+1>des->texw||i+y+1>des->texh)					\
