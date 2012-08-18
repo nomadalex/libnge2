@@ -170,7 +170,7 @@ static int SetAnalog(int key,char flag)
 #endif
 
 #if defined(NGE_LINUX)
-void FiniGrahics();
+void FiniGraphics();
 
 #define _DEF_INPUT_PROC(n) inline void _##n (XEvent *event)
 
@@ -368,7 +368,7 @@ void InputProc()
 		if (event.xany.window == g_win) {
 			switch (event.type) {
 			case DestroyNotify:
-				FiniGrahics();
+				FiniGraphics();
 				exit(0);
 				break;
 			case MotionNotify:
