@@ -1,6 +1,0 @@
-add_executable(particle-conv main.cpp)
-if(BUILD_SHARED)
-  target_link_libraries(particle-conv nge2)
-else()
-  target_link_libraries(particle-conv nge2 ${NGE2_LIBS})
-endif()
