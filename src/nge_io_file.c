@@ -192,7 +192,7 @@ static int Read(void *buf, size_t size, size_t n, ngeVF* f) {
 	ngeVFDisk* df = (ngeVFDisk*)f;
 
 #if defined NGE_PSP
-	return sceIoRead(df->handle, buf, size*n);
+	return sceIoRead(df->handle, buf, size*n) / size;
 #else
 	return fread(buf, size, n,df->handle);
 #endif
@@ -202,7 +202,7 @@ static int Write(const void *buf, size_t size, size_t n, ngeVF* f) {
 	ngeVFDisk* df = (ngeVFDisk*)f;
 
 #if defined NGE_PSP
-	return sceIoWrite(df->handle, buf, size*n);
+	return sceIoWrite(df->handle, buf, size*n) / size;
 #else
 	return fwrite(buf, size, n, df->handle);
 #endif
