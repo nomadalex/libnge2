@@ -10,6 +10,8 @@ extern "C" {
 	Do not use for your own code, it's better you manage it in your own way.
 */
 
+/* get vram offset */
+unsigned int getStaticVramOffset();
 /* make a static allocation of vram memory and return pointer relative to vram start */
 void* getStaticVramBuffer(unsigned int width, unsigned int height, unsigned int psm);
 /* make a static allocation of vram memory and return absolute pointer */

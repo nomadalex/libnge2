@@ -266,7 +266,7 @@ void GetVersion()
 
 }
 
-void InitGrahics()
+void InitGraphics()
 {
 	int i;
 	InitGu();
@@ -277,7 +277,7 @@ void InitGrahics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 }
-void FiniGrahics()
+void FiniGraphics()
 {
 	sceGuTerm();
 	timer_free(timer);
@@ -1057,4 +1057,119 @@ void ScreenShot(const char* filename)
 		return;
 	image_save(pimage,filename,1,1);
 	image_free(pimage);
+}
+
+static image_p targetIMG = NULL;
+
+BOOL BeginTarget(image_p _img){
+	unsigned int offset = getStaticVramOffset();
+	int width, height;
+	if(!_img)
+		return FALSE;
+	targetIMG = _img;
+	width = _img->texw; height = _img->texh;
+
+	if(_img->swizzle)
+		unswizzle_swap(_img);
+	
+	sceGuStart(GU_DIRECT,list);
+	
+	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, sceGeEdramGetAddr() + offset);
+//	sceGuDispBuffer(width,height,offset + width * height * (_img->mode<3?2:4),BUF_WIDTH);
+	sceGuOffset(2048 - (width/2), 2048 - (height/2));
+	sceGuViewport(2048, 2048, width, height);
+	// Scissoring
+	sceGuEnable(GU_SCISSOR_TEST);
+	sceGuScissor(0, 0, width, height);
+	
+/*	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[0] );
+	gumOrtho( (ScePspFMatrix4*)ProjectionMatrix[0], 0.0f, 480.0f, 0.0f, 272.0f, -1.0f, 1.0f );
+
+	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[1] );
+	ScePspFVector3 displace = { -0.002f, 0.00367f, 0.0f };	// ~ 1/480, 1/272
+	gumTranslate( (ScePspFMatrix4*)ProjectionMatrix[1], &displace );
+	gumMultMatrix( (ScePspFMatrix4*)ProjectionMatrix[1], (ScePspFMatrix4*)ProjectionMatrix[1], (ScePspFMatrix4*)ProjectionMatrix[0] );
+
+	sceGumMatrixMode(GU_PROJECTION);
+	sceGumLoadMatrix( (ScePspFMatrix4*)ProjectionMatrix[0] );*/
+	return TRUE;
+}
+
+void EndTarget(){
+	int x,y;
+	uint32 *vram32, *line32;
+	uint16 *vram16, *line16;
+	int width;
+	int format;
+	if(!targetIMG)
+		return;
+	width = targetIMG->texw;
+	format = targetIMG->dtype;
+	sceGuDrawBufferList(GU_PSM_8888,m_drawbuf,BUF_WIDTH);
+//	sceGuDispBuffer(SCR_WIDTH,SCR_HEIGHT,m_displaybuf,BUF_WIDTH);
+	sceGuOffset(2048 - (SCREEN_WIDTH/2), 2048 - (SCREEN_HEIGHT/2));
+	sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	sceGuFinish();
+	sceGuSync(0,0);
+	
+	// Scissoring
+/*	sceGuEnable(GU_SCISSOR_TEST);
+	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[0] );
+	gumOrtho( (ScePspFMatrix4*)ProjectionMatrix[0], 0.0f, 480.0f, 272.0f, 0.0f, -1.0f, 1.0f );
+
+	gumLoadIdentity( (ScePspFMatrix4*)ProjectionMatrix[1] );
+	ScePspFVector3 displace = { -0.002f, 0.00367f, 0.0f };	// ~ 1/480, 1/272
+	gumTranslate( (ScePspFMatrix4*)ProjectionMatrix[1], &displace );
+	gumMultMatrix( (ScePspFMatrix4*)ProjectionMatrix[1], (ScePspFMatrix4*)ProjectionMatrix[1], (ScePspFMatrix4*)ProjectionMatrix[0] );
+
+	sceGumMatrixMode(GU_PROJECTION);
+	sceGumLoadMatrix( (ScePspFMatrix4*)ProjectionMatrix[0] );*/
+	
+	vram32 = (uint32*) (sceGeEdramGetAddr() + getStaticVramOffset());
+	vram16 = (uint16*) vram32;
+	line16 = (uint16*)targetIMG->data;
+	line32 = (uint32*)line16;
+	switch (format) {
+		case DISPLAY_PIXEL_FORMAT_565:
+			for (y = 0; y < targetIMG->texh; y++) {
+				memcpy(line16, vram16, targetIMG->texw * 2);
+				vram16 += BUF_WIDTH;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			for (y = 0; y < targetIMG->texh; y++) {
+				memcpy(line16, vram16, targetIMG->texw * 2);
+				for (x = 0; x < targetIMG->texw; x++) {
+					*(line16++) |= 0x8000;
+				}
+				vram16 += BUF_WIDTH;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			for (y = 0; y < targetIMG->texh; y++) {
+				memcpy(line16, vram16, targetIMG->texw * 2);
+				for (x = 0; x < targetIMG->texw; x++) {
+					*(line16++) |= 0xF000;
+				}
+				vram16 += BUF_WIDTH;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_8888:
+			for (y = 0; y < targetIMG->texh; y++) {
+				memcpy(line32, vram32, targetIMG->texw * 4);
+				for (x = 0; x < targetIMG->texw; x++) {
+					*(line32++) |= 0xFF000000;
+				}
+				vram32 += BUF_WIDTH;
+			}
+			break;
+	}
+	//targetIMG->data = sceGeEdramGetAddr() + getStaticVramOffset();
+	targetIMG->modified = 1;
+	targetIMG = NULL;
+	return;
 }
