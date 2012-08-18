@@ -95,7 +95,7 @@ list(APPEND NGE2_SRCS
   src/nge_tga.c
   src/nge_timer.c
   src/nge_app.c
-  src/nge_app.cpp
+  src/nge_app_cpp.cpp
   src/nge_ref_handle.c
   src/nge_package.c
   src/nge_package_zip.c
