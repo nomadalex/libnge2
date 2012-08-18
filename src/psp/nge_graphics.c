@@ -28,7 +28,7 @@ static float m_costable[360];
 #define COSF(a)  (m_costable[a%360])
 
 
-static uint32 screen_color = 0;
+static uint32_t screen_color = 0;
 
 struct Vertex
 {
@@ -60,12 +60,12 @@ static int use_vblank = 0;;
 /**debug show fps*/
 u64 m_lasttick;
 u64 m_currtick;
-uint32 m_tickres;
+uint32_t m_tickres;
 float m_currms;
-uint32 m_fcount;
-static uint8 show_fps = 0;
-static uint32 m_tex_in_ram = -1;
-static uint32 m_tex_id = 0;
+uint32_t m_fcount;
+static uint8_t show_fps = 0;
+static uint32_t m_tex_in_ram = -1;
+static uint32_t m_tex_id = 0;
 
 static nge_timer* timer = NULL;
 
@@ -106,7 +106,7 @@ void ShowFps()
 	show_fps = 1;
 }
 
-void LimitFps(uint32 limit)
+void LimitFps(uint32_t limit)
 {
 	if(limit!=60){
 		if(limit == 0)
@@ -318,7 +318,7 @@ void ResetTexBlend()
 	sceGuBlendFunc(GU_ADD, BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA, 0, 0);
 }
 
-void BeginScene(uint8 clear)
+void BeginScene(uint8_t clear)
 {
 	sceGuStart(GU_DIRECT,list);
 	if(clear){
@@ -329,9 +329,9 @@ void BeginScene(uint8 clear)
 	}
 }
 
-uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
+uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 {
-	uint32 u_lastcolor;
+	uint32_t u_lastcolor;
 	u_lastcolor = screen_color;
 	screen_color = MAKE_RGBA_8888(r,g,b,a);
 	return u_lastcolor;
@@ -822,7 +822,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 /*
 void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
 {
-	uint8 *data;
+	uint8_t *data;
 	float start, end;
 	float cur_u,cur_x,x_end,slice,ustep;
 	struct VertexUV *vertices;
@@ -910,7 +910,7 @@ void DrawImage(image_p tex,float sx , float sy, float sw, float sh, float dx, fl
 
 void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
 {
-	uint8 *data;
+	uint8_t *data;
 	float start, end;
 	float cur_u,cur_x,x_end,slice,ustep;
 	struct VertexUV *vertices;
@@ -998,19 +998,19 @@ image_p ScreenToImage()
 	int width,format,dtype;
 	image_p pimage = NULL;
 	int i,x,y;
-	uint8 r,g,b;
-	uint32 color;
-	uint32 *vram32;
-	uint16 *vram16;
-	uint8 *line;
+	uint8_t r,g,b;
+	uint32_t color;
+	uint32_t *vram32;
+	uint16_t *vram16;
+	uint8_t *line;
 	sceDisplayWaitVblankStart();  // if framebuf was set with PSP_DISPLAY_SETBUF_NEXTFRAME, wait until it is changed
 	sceDisplayGetFrameBuf(&temp, &width, &format, PSP_DISPLAY_SETBUF_NEXTFRAME);
 	pimage = image_create(SCREEN_WIDTH,SCREEN_HEIGHT,DISPLAY_PIXEL_FORMAT_8888);
 	if(pimage == NULL)
 		return NULL;
-	vram32 = (uint32*) temp;
-	vram16 = (uint16*) vram32;
-	line = (uint8*)pimage->data;
+	vram32 = (uint32_t*) temp;
+	vram16 = (uint16_t*) vram32;
+	line = (uint8_t*)pimage->data;
 	for (y = 0; y < SCREEN_HEIGHT; y++) {
 				for (i = 0, x = 0; x < SCREEN_WIDTH; x++) {
 					   switch (format) {
@@ -1088,8 +1088,8 @@ BOOL BeginTarget(image_p _img){
 
 void EndTarget(){
 	int x,y;
-	uint32 *vram32, *line32;
-	uint16 *vram16, *line16;
+	uint32_t *vram32, *line32;
+	uint16_t *vram16, *line16;
 	int width;
 	int format;
 	if(!targetIMG)
@@ -1107,10 +1107,10 @@ void EndTarget(){
 	sceGuFinish();
 	sceGuSync(0,0);
 	
-	vram32 = (uint32*) (sceGeEdramGetAddr() + getStaticVramOffset());
-	vram16 = (uint16*) vram32;
-	line16 = (uint16*)targetIMG->data;
-	line32 = (uint32*)line16;
+	vram32 = (uint32_t*) (sceGeEdramGetAddr() + getStaticVramOffset());
+	vram16 = (uint16_t*) vram32;
+	line16 = (uint16_t*)targetIMG->data;
+	line32 = (uint32_t*)line16;
 	switch (format) {
 		case DISPLAY_PIXEL_FORMAT_565:
 			for (y = 0; y < targetIMG->texh; y++) {

@@ -17,12 +17,12 @@ enum{
 //16 bytes header
 typedef struct  {
 	char magic[4];    //"NDOT"
-	uint8 hdrlen;     //current version header is 16
-	uint8 version;    //current version 1
-	uint8 size;       //dot font size,eg 12,14,16...
-	uint8 type;       //ASCII,GBK,UNICODE,OTHER
-	uint8 alignsize;  //memalign size.
-	uint16 gbkoffset; //gbkoffset
+	uint8_t hdrlen;     //current version header is 16
+	uint8_t version;    //current version 1
+	uint8_t size;       //dot font size,eg 12,14,16...
+	uint8_t type;       //ASCII,GBK,UNICODE,OTHER
+	uint8_t alignsize;  //memalign size.
+	uint16_t gbkoffset; //gbkoffset
 	char  reserved[5];//reserved
 }NfontHeader;
 
@@ -30,14 +30,14 @@ typedef struct {
 	void*	    procs;	/* font-specific rendering routines*/
 	int		    size;	/* font height in pixels*/
 	int		    rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
+	uint32_t		disp;	/* diplaymode*/
 	int         flags;
 	workbuf     encodingBuf;
 
 	/* bit font spec */
-	uint32      color_fg;
-	uint32      color_bg;
-	uint32      color_sh;
+	uint32_t      color_fg;
+	uint32_t      color_bg;
+	uint32_t      color_sh;
 	char*       cfont_raw;
 	char*       afont_raw;
 	workbuf     bitbuf;

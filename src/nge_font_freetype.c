@@ -14,23 +14,23 @@ typedef struct
 	void* procs;	/* font-specific rendering routines*/
 	int	size;	/* font height in pixels*/
 	int	rotation;	/* font rotation*/
-	uint32 disp;	/* diplaymode*/
+	uint32_t disp;	/* diplaymode*/
 	int flags;
 	workbuf	encodingBuf;
 
 /* freetype stuff */
 	//color
-	uint8  r;
-	uint8  g;
-	uint8  b;
-	uint8  a;
+	uint8_t  r;
+	uint8_t  g;
+	uint8_t  b;
+	uint8_t  a;
 	int   fix_width;
 	FT_Face face;
 	FT_Matrix matrix;
 	FT_Library library;
 	
 /* custom stuff */
-	uint8  alpha_table[256];
+	uint8_t  alpha_table[256];
 }FontFreetype,*PFontFreetype;
 
 static BOOL freetype2_getfontinfo(PFont pfont, PFontInfo pfontinfo);
@@ -44,7 +44,7 @@ static void freetype2_setfontsize(PFont pfont, int fontsize);
 static void freetype2_setfontrotation(PFont pfont, int rot);
 static void freetype2_setfontattr(PFont pfont, int setflags, int clrflags);
 static PFont freetype2_duplicate(PFont psrcfont, int fontsize);
-static uint32  freetype2_setfontcolor(PFont pfont, uint32 color);
+static uint32_t  freetype2_setfontcolor(PFont pfont, uint32_t color);
 static void freetype2_calcalphatable(PFont pfont);
 static FontProcs freetype2_procs = {
 	freetype2_getfontinfo,
@@ -166,8 +166,8 @@ static FT_Error freetype2_get_glyph_size(PFontFreetype pf,
 		return 0;
 }
 
-inline static uint16* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
-	uint16 *value;
+inline static uint16_t* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
+	uint16_t *value;
 	int len = *pCC;
 
 	if( len > pf->encodingBuf.datalen){
@@ -175,13 +175,13 @@ inline static uint16* _nge_ft_conv_encoding(PFont pf, const void *text, int * pC
 		free(pf->encodingBuf.data);
 		pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
 	}
-	value = (uint16*)pf->encodingBuf.data;
+	value = (uint16_t*)pf->encodingBuf.data;
 
 	if(nge_font_encoding == NGE_ENCODING_GBK){
-		*pCC = nge_charset_gbk_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
+		*pCC = nge_charset_gbk_to_ucs2((uint8_t*)text, value, len, pf->encodingBuf.datalen);
 	}
 	else if (nge_font_encoding == NGE_ENCODING_UTF_8) {
-		*pCC = nge_charset_utf8_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
+		*pCC = nge_charset_utf8_to_ucs2((uint8_t*)text, value, len, pf->encodingBuf.datalen);
 	}
 	return value;
 }
@@ -191,7 +191,7 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 								  int *pbase)
 {
 	FT_Face face;
-	uint16* value;
+	uint16_t* value;
 	int char_index;
 	int total_advance;
 	int max_ascent;
@@ -246,11 +246,11 @@ static void freetype2_destroyfont(PFont pfont)
 
 static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int x,int y)
 {
-	uint32 height = bitmap->rows;
-	uint32 width = bitmap->width;
-	uint32 i,j;
-	uint32* cpbegin32;
-	uint16* cpbegin16;
+	uint32_t height = bitmap->rows;
+	uint32_t width = bitmap->width;
+	uint32_t i,j;
+	uint32_t* cpbegin32;
+	uint16_t* cpbegin16;
 	unsigned char *buf = bitmap->buffer;
 	if(y + height > pimage->texh)
 		height = pimage->texh - y;
@@ -259,7 +259,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 
 	switch(pimage->dtype) {
 		case DISPLAY_PIXEL_FORMAT_8888:
-			cpbegin32 = (uint32*)pimage->data + y * pimage->texw + x;
+			cpbegin32 = (uint32_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
 				cpbegin32 += pimage->texw;
 			for(; j < height; j++){
@@ -272,7 +272,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_4444:
-			cpbegin16 = (uint16*)pimage->data + y * pimage->texw + x;
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
 				cpbegin32 += pimage->texw;
 			for(; j < height; j++){
@@ -285,7 +285,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_5551:
-			cpbegin16 = (uint16*)pimage->data + y * pimage->texw + x;
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
 				cpbegin32 += pimage->texw;
 			for(; j < height; j++){
@@ -298,7 +298,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_565:
-			cpbegin16 = (uint16*)pimage->data + y * pimage->texw + x;
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
 				cpbegin32 += pimage->texw;
 			for(; j < height; j++){
@@ -323,7 +323,7 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 							   const void *text, int cc, int flags)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	uint16* value;
+	uint16_t* value;
 	FT_Glyph glyph;
 	int pen_x = x;
 	int pen_y = y + pf->size;
@@ -404,10 +404,10 @@ static PFont freetype2_duplicate(PFont pfont, int fontsize)
 	return pfont;
 }
 
-uint32  freetype2_setfontcolor(PFont pfont, uint32 color)
+uint32_t  freetype2_setfontcolor(PFont pfont, uint32_t color)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	uint32 last_color;
+	uint32_t last_color;
 	switch(pf->disp)
 	{
 		case DISPLAY_PIXEL_FORMAT_5551:

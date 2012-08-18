@@ -79,10 +79,10 @@ int get_gray_color(int dtype, int scol, int gray)
  */
 image_p create_gray_image(image_p src, int gray)
 {
-	uint32 y,x;
+	uint32_t y,x;
 	image_p pimg;
-	uint16 *p16 = NULL,*psrc16 = NULL;
-	uint32 *p32 = NULL,*psrc32 = NULL;
+	uint16_t *p16 = NULL,*psrc16 = NULL;
+	uint32_t *p32 = NULL,*psrc32 = NULL;
 
 	if(gray<0 || gray>100)
 	{
@@ -96,24 +96,24 @@ image_p create_gray_image(image_p src, int gray)
 	{
 		if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = (uint32 *)pimg->data + y*src->texw;
-			psrc32 = (uint32 *)src->data + y*src->texw;
+			p32 = (uint32_t *)pimg->data + y*src->texw;
+			psrc32 = (uint32_t *)src->data + y*src->texw;
 		}
 		else
 		{
-			p16 = (uint16 *)pimg->data + y*src->texw;
-			psrc16 = (uint16 *)src->data + y*src->texw;
+			p16 = (uint16_t *)pimg->data + y*src->texw;
+			psrc16 = (uint16_t *)src->data + y*src->texw;
 		}
 
 		for(x=0;x<src->w;x++)
 		{
 			if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 			{
-				*(p32 + x) = (uint32)get_gray_color(pimg->dtype, *(psrc32 + x), gray);
+				*(p32 + x) = (uint32_t)get_gray_color(pimg->dtype, *(psrc32 + x), gray);
 			}
 			else
 			{
-				*(p16 + x) = (uint16)get_gray_color(pimg->dtype, *(psrc16 + x), gray);
+				*(p16 + x) = (uint16_t)get_gray_color(pimg->dtype, *(psrc16 + x), gray);
 			}
 		}
 	}
@@ -218,10 +218,10 @@ cont001:
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {
-	uint32 y,x;
+	uint32_t y,x;
 	image_p pimg;
-	uint16 *p16,*psrc16;
-	uint32 *p32,*psrc32;
+	uint16_t *p16,*psrc16;
+	uint32_t *p32,*psrc32;
 
 	if(saturation<-100 || saturation>100)
 	{
@@ -239,8 +239,8 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 	if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 	{
-		p32 = (uint32 *)pimg->data;
-		psrc32 = (uint32 *)src->data;
+		p32 = (uint32_t *)pimg->data;
+		psrc32 = (uint32_t *)src->data;
 
 		for(y=0;y<src->h;y++)
 		{
@@ -249,14 +249,14 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 			for(x=0;x<src->w;x++)
 			{
-				*(p32 + x) = (uint32)get_saturation_brightness_color(pimg->dtype, *(psrc32 + x), saturation, brightness);
+				*(p32 + x) = (uint32_t)get_saturation_brightness_color(pimg->dtype, *(psrc32 + x), saturation, brightness);
 			}
 		}
 	}
 	else if (src->dtype == DISPLAY_PIXEL_FORMAT_4444)
 	{
-		p16 = (uint16 *)pimg->data;
-		psrc16 = (uint16 *)src->data;
+		p16 = (uint16_t *)pimg->data;
+		psrc16 = (uint16_t *)src->data;
 
 		for(y=0;y<src->h;y++)
 		{
@@ -265,7 +265,7 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 			for(x=0;x<src->w;x++)
 			{
-				*(p16 + x) = (uint16)get_saturation_brightness_color(pimg->dtype, *(psrc16 + x), saturation, brightness);
+				*(p16 + x) = (uint16_t)get_saturation_brightness_color(pimg->dtype, *(psrc16 + x), saturation, brightness);
 			}
 		}
 	}
@@ -279,21 +279,21 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 image_p image_conv(image_p src, int dtype)
 {
 	image_p dst;
-	uint32 i,j;
-	uint32 *src32, *dst32;
-	uint16 *src16, *dst16;
-	uint8 r,g,b,a;
+	uint32_t i,j;
+	uint32_t *src32, *dst32;
+	uint16_t *src16, *dst16;
+	uint8_t r,g,b,a;
 
-	if(src->dtype == (uint32)dtype)
+	if(src->dtype == (uint32_t)dtype)
 		return image_clone(src);
 
 	CHECK_AND_UNSWIZZLE(src);
 	dst = image_create(src->w, src->h, dtype);
 
-	src32 = (uint32*)src->data;
-	dst32 = (uint32*)dst->data;
-	src16 = (uint16*)src->data;
-	dst16 = (uint16*)dst->data;
+	src32 = (uint32_t*)src->data;
+	dst32 = (uint32_t*)dst->data;
+	src16 = (uint16_t*)src->data;
+	dst16 = (uint16_t*)dst->data;
 
 	for(i = 0; i < src->h; i++)
 	{
@@ -560,13 +560,13 @@ typedef struct
 typedef struct
 {
    C10n *row;  // Row (or column) of contribution weights
-   uint32 win_size,              // Filter window size (of affecting source pixels)
+   uint32_t win_size,              // Filter window size (of affecting source pixels)
 		  line_len;              // Length of line (no. or rows / cols)
 } Line_c10n;                // Contribution information for an entire line (row or column)
 
-Line_c10n* alloc_contributions (uint32 line_length, uint32 window_size)
+Line_c10n* alloc_contributions (uint32_t line_length, uint32_t window_size)
 {
-	uint32 i = 0;
+	uint32_t i = 0;
 	Line_c10n *res = (Line_c10n*)malloc(sizeof(Line_c10n));
 	// Init structure header
 	res->win_size = window_size;
@@ -584,7 +584,7 @@ Line_c10n* alloc_contributions (uint32 line_length, uint32 window_size)
 
 void free_contributions (Line_c10n *p)
 {
-	uint32 i = 0;
+	uint32_t i = 0;
 	for (; i < p->line_len; i++)
 	{
 		// Free contribs for every pixel
@@ -594,10 +594,10 @@ void free_contributions (Line_c10n *p)
 	free(p);                   // Free contribs header
 }
 
-Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, uint32 src_size, double scale)
+Line_c10n* calc_contributions (void* filter,int filter_type, uint32_t line_size, uint32_t src_size, double scale)
 {
 	//FilterClass CurFilter;
-	uint32 u;
+	uint32_t u;
 	int left, right , window_size, i;
 	double width, center, total_weight;
 	double fscale = 1.0;
@@ -671,26 +671,26 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 			GET_RGBA_##type(src##bit[ _src_n ],sr,sg,sb,sa);			\
 			if(sa==0)													\
 				continue;												\
-			r += (uint8)(contrib->row[ii].weights[i-left] * (double)(sr)); \
-			g += (uint8)(contrib->row[ii].weights[i-left] * (double)(sg)); \
-			b += (uint8)(contrib->row[ii].weights[i-left] * (double)(sb)); \
-			a += (uint8)(contrib->row[ii].weights[i-left] * (double)(sa)); \
+			r += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sr)); \
+			g += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sg)); \
+			b += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sb)); \
+			a += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sa)); \
 		}																\
 		dst##bit[ _dst_n ] = MAKE_RGBA_##type(r,g,b,a);					\
 	}
 
 #define SCALE_FUN_IMP(type, dw_or_dh, _sdata, _ddata, _src_n, _dst_n)	\
-	void scale_##type (uint8 *sdata, uint32 sw, uint8 *ddata, uint32 dw_or_dh, uint32 u, Line_c10n *contrib,uint32 pitch,uint32 dtype) \
+	void scale_##type (uint8_t *sdata, uint32_t sw, uint8_t *ddata, uint32_t dw_or_dh, uint32_t u, Line_c10n *contrib,uint32_t pitch,uint32_t dtype) \
 	{																	\
-		uint32 ii, i;													\
-		uint8 r,g,b,a,sr,sb,sg,sa;										\
-		uint32 left,right;												\
-		uint32 *src32,*dst32;											\
-		uint16 *src16,*dst16;											\
-		src32 = (uint32*) _sdata;										\
-		dst32 = (uint32*) _ddata;										\
-		src16 = (uint16*) _sdata;										\
-		dst16 = (uint16*) _ddata;										\
+		uint32_t ii, i;													\
+		uint8_t r,g,b,a,sr,sb,sg,sa;										\
+		uint32_t left,right;												\
+		uint32_t *src32,*dst32;											\
+		uint16_t *src16,*dst16;											\
+		src32 = (uint32_t*) _sdata;										\
+		dst32 = (uint32_t*) _ddata;										\
+		src16 = (uint16_t*) _sdata;										\
+		dst16 = (uint16_t*) _ddata;										\
 		if(dtype == DISPLAY_PIXEL_FORMAT_8888){							\
 			__SCALE_LOOP(8888, 32, dw_or_dh, _src_n, _dst_n);			\
 		}																\
@@ -709,16 +709,16 @@ SCALE_FUN_IMP(row, dw, sdata+u*pitch, ddata+u*dw, i, ii)
 SCALE_FUN_IMP(col, dh, sdata, ddata, i*sw+u, ii*pitch+u)
 
 #define DIRE_SCALE_FUN_IMP(type, stype, dire, dire2)                     \
-	void type##_scale (void* filter, int filter_type, uint8 *sdata, uint32 sw, uint32 sh, uint8 *ddata, uint32 dw, uint32 dh,uint32 pitch,uint32 dtype) \
+	void type##_scale (void* filter, int filter_type, uint8_t *sdata, uint32_t sw, uint32_t sh, uint8_t *ddata, uint32_t dw, uint32_t dh,uint32_t pitch,uint32_t dtype) \
 	{																	\
-		uint32  u;														\
+		uint32_t  u;														\
 		Line_c10n * contrib;											\
 		if (d##dire == s##dire)											\
 		{    /* No scaling required, just copy */						\
 			if(dtype == DISPLAY_PIXEL_FORMAT_8888)						\
-				memcpy (ddata, sdata, sizeof (uint32) * sw * sh);		\
+				memcpy (ddata, sdata, sizeof (uint32_t) * sw * sh);		\
 			else														\
-				memcpy (ddata, sdata, sizeof (uint16) * sw * sh);		\
+				memcpy (ddata, sdata, sizeof (uint16_t) * sw * sh);		\
 		}																\
 		/* Allocate and calculate the contributions */					\
 		contrib = calc_contributions (filter, filter_type, d##dire, s##dire, (double)d##dire / (double)s##dire); \
@@ -736,8 +736,8 @@ DIRE_SCALE_FUN_IMP(vert, col, h, w)
 image_p image_scale(image_p src, int w, int h,int mode)
 {
 	image_p dst;
-	uint8 * temp;
-	uint32 spitch, dpitch;
+	uint8_t * temp;
+	uint32_t spitch, dpitch;
 	void* filter = filter_create_funs[mode]();
 	dst = image_create(w,h,src->dtype);
 	dst->dontswizzle = 1;
@@ -885,10 +885,10 @@ int image_hue_rotate(image_p pimage, float rot)
 	float zsx, zsy;
 	float zrs, zrc;
 	int n;
-	uint16 *bmp16;
-	uint32 *bmp32;
-	uint16 ir, ig, ib;
-	uint16 r, g, b, a;
+	uint16_t *bmp16;
+	uint32_t *bmp32;
+	uint16_t ir, ig, ib;
+	uint16_t r, g, b, a;
 	
 	if(!pimage)	return 0;
 	
@@ -931,7 +931,7 @@ int image_hue_rotate(image_p pimage, float rot)
 	pimage->modified = 1;
 	switch(pimage->dtype)	{
 		case DISPLAY_PIXEL_FORMAT_565:
-			bmp16 = (uint16*)pimage->data;
+			bmp16 = (uint16_t*)pimage->data;
 			while(n--)	{
 				GET_RGBA_565(*bmp16, ir, ig, ib, a)
 				r = ir*mmat[0][0] + ig*mmat[1][0] + ib*mmat[2][0];
@@ -947,7 +947,7 @@ int image_hue_rotate(image_p pimage, float rot)
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_5551:
-			bmp16 = (uint16*)pimage->data;
+			bmp16 = (uint16_t*)pimage->data;
 			while(n--)	{
 				GET_RGBA_5551(*bmp16, ir, ig, ib, a)
 				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
@@ -963,7 +963,7 @@ int image_hue_rotate(image_p pimage, float rot)
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_4444:
-			bmp16 = (uint16*)pimage->data;
+			bmp16 = (uint16_t*)pimage->data;
 			while(n--)	{
 				GET_RGBA_4444(*bmp16, ir, ig, ib, a)
 				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
@@ -979,7 +979,7 @@ int image_hue_rotate(image_p pimage, float rot)
 			}
 			break;
 		case DISPLAY_PIXEL_FORMAT_8888:
-			bmp32 = (uint32*)pimage->data;
+			bmp32 = (uint32_t*)pimage->data;
 			while(n--)	{
 				GET_RGBA_8888(*bmp32, ir, ig, ib, a)
 				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];

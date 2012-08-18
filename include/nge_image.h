@@ -27,25 +27,25 @@
 #include "nge_color.h"
 
 typedef struct tagImage{
-	uint32  w;        /**< 图片原宽 */
-	uint32  h;        /**< 图片原高 */
-	uint32  texw;     /**< 图片贴图宽 */
-	uint32  texh;     /**< 图片贴图高 */
-	uint8   bpb;      /**< 每像素字节数(16位2字节,32位4字节) */
-	uint8   swizzle;  /**< 是否对data swizzle 优化*/
-	uint32  mode;     /**< GSM显示mode for psp */
-	uint32  dtype;    /**< 显示模式(DISPLAY_PIXEL_FORMAT_XXX的一种) */
-	uint8*  data;     /**< 图像数据 */
+	uint32_t  w;        /**< 图片原宽 */
+	uint32_t  h;        /**< 图片原高 */
+	uint32_t  texw;     /**< 图片贴图宽 */
+	uint32_t  texh;     /**< 图片贴图高 */
+	uint8_t   bpb;      /**< 每像素字节数(16位2字节,32位4字节) */
+	uint8_t   swizzle;  /**< 是否对data swizzle 优化*/
+	uint32_t  mode;     /**< GSM显示mode for psp */
+	uint32_t  dtype;    /**< 显示模式(DISPLAY_PIXEL_FORMAT_XXX的一种) */
+	uint8_t*  data;     /**< 图像数据 */
 	float   rcentrex; /**< 图像中心x */
 	float   rcentrey; /**< 图像中心y */
-	uint32  texid;    /**< 图像id */
-	uint8   modified; /**< 强制更新显存*/
-	uint8   dontswizzle; /**强制不swizzle 优化*/
+	uint32_t  texid;    /**< 图像id */
+	uint8_t   modified; /**< 强制更新显存*/
+	uint8_t   dontswizzle; /**强制不swizzle 优化*/
 	int     mask;     /**< 颜色遮罩,用于显示各种效果*/
-	uint8   filter;   /**< FILTER_NEAREST,FILTER_LINEAR(default) */
+	uint8_t   filter;   /**< FILTER_NEAREST,FILTER_LINEAR(default) */
 }image_t,*image_p;
 
-extern uint32 image_tid;
+extern uint32_t image_tid;
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,7 +129,7 @@ extern "C" {
  *@param[in] rle 是否保存为rle压缩格式的图片
  *@return int,返回0(加载失败)或1(加载成功)
  */
-	NGE_API int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
+	NGE_API int image_save(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle);
 
 /**
  *释放一个image
@@ -161,7 +161,7 @@ extern "C" {
  *@param[in] dy 目的内存图的y坐标
  *@return 无
  */
-	NGE_API void image_to_image(const image_p src,const image_p des,uint32 dx,uint32 dy);
+	NGE_API void image_to_image(const image_p src,const image_p des,uint32_t dx,uint32_t dy);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.
@@ -176,7 +176,7 @@ extern "C" {
  *@param[in] dy 目的内存图的y坐标
  *@return 无
  */
-	NGE_API void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy);
+	NGE_API void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy);
 
 /**
  *将源image_p src拷贝到image_p des 的alpha混合.
@@ -188,7 +188,7 @@ extern "C" {
  *@param[in] alpha alpha混合值,0-255(透明->不透明),例如128就是半透明
  *@return 无
  */
-	NGE_API void image_to_image_alpha(const image_p src,const image_p des,uint32 dx,uint32 dy,int alpha);
+	NGE_API void image_to_image_alpha(const image_p src,const image_p des,uint32_t dx,uint32_t dy,int alpha);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.
@@ -204,7 +204,7 @@ extern "C" {
  *@param[in] alpha alpha混合值,0-255(透明->不透明),例如128就是半透明
  *@return 无
  */
-	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha);
+	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy,int alpha);
 
 /**
  *将原始位图格式数据拷贝到image,考虑到效率问题,只支持同种displaymode,
@@ -217,7 +217,7 @@ extern "C" {
  *@param[in] h data的h
  *@return void,无返回
  */
-	NGE_API void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,uint32 h);
+	NGE_API void rawdata_to_image(void* data,const image_p des,uint32_t x,uint32_t y,uint32_t w,uint32_t h);
 
 /**
  * 将图像做水平翻转，图像坐标x不变

@@ -45,17 +45,11 @@
 #endif
 
 #include <stdint.h>
-typedef uint32_t uint32;
-typedef int32_t sint32;
-typedef uint16_t uint16;
-typedef int16_t sint16;
-typedef uint8_t uint8;
-typedef int8_t sint8;
 
 #ifdef _MSC_VER
 typedef int BOOL;
 #else
-typedef uint8 BOOL;
+typedef uint8_t BOOL;
 #endif
 
 #define SAFE_FREE(ptr) free(ptr);ptr = NULL

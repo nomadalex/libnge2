@@ -380,7 +380,7 @@ int NGEDirent::openDirent(string directory)
 			string shortFullPath=shortpath+dirItems[i].shortname;
 
 			//[longname] UTF-8->
-			nge_charsets_utf8_to_gbk((const uint8*)(dirItems[i].longname), (uint8*)buff, strlen(dirItems[i].longname), 1024);
+			nge_charsets_utf8_to_gbk((const uint8_t*)(dirItems[i].longname), (uint8_t*)buff, strlen(dirItems[i].longname), 1024);
 			strcpy((char*)dirItems[i].longname, (const char*)buff);
 
 			//创建 修改时间

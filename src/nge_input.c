@@ -108,7 +108,7 @@ void InitAnalog(AnalogProc analogproc)
 #define ANALOG_DOWN  3
 static char btn_analog[4] = {0};
 
-static uint8 GetAnalogX()
+static uint8_t GetAnalogX()
 {
 	if (btn_analog[ANALOG_LEFT]) return 0;
 	if (btn_analog[ANALOG_RIGHT]) return 0xff;
@@ -116,7 +116,7 @@ static uint8 GetAnalogX()
 	return 0x80;
 }
 
-static uint8 GetAnalogY()
+static uint8_t GetAnalogY()
 {
 	if (btn_analog[ANALOG_UP]) return 0;
 	if (btn_analog[ANALOG_DOWN]) return 0xff;
@@ -217,10 +217,10 @@ _DEF_INPUT_PROC(mouse_up)
 }
 #elif defined(NGE_PSP)
 typedef struct {
-	uint32 press;
-	uint32 held;
-	uint32 pspcode;
-	uint32 mapcode;
+	uint32_t press;
+	uint32_t held;
+	uint32_t pspcode;
+	uint32_t mapcode;
 }key_states;
 
 key_states nge_keymap[]={
@@ -413,7 +413,7 @@ void InputProc()
 
 #if defined(NGE_PSP)
 	static SceCtrlData pad;
-	uint32 Buttons;
+	uint32_t Buttons;
 	int i;
 	static int suspended = 0;
 

@@ -132,7 +132,7 @@ static void effect_draw_fadein(image_effect_p effector,image_p pimg,float dx,flo
 		pfadein->m_ptimer->start(pfadein->m_ptimer);
 		pfadein->m_lastticks = pfadein->m_ptimer->get_ticks(pfadein->m_ptimer);
 		pfadein->m_status = EFFECT_PLAY;
-		pfadein->m_color = CreateColor(255,255,255,(uint8)pfadein->m_delta,pimg->dtype);
+		pfadein->m_color = CreateColor(255,255,255,(uint8_t)pfadein->m_delta,pimg->dtype);
 		break;
 	case EFFECT_PLAY:
 		pfadein->m_currentticks = pfadein->m_ptimer->get_ticks(pfadein->m_ptimer);
@@ -140,10 +140,10 @@ static void effect_draw_fadein(image_effect_p effector,image_p pimg,float dx,flo
 			pfadein->m_lastticks = pfadein->m_currentticks;
 			pfadein->m_delta +=  pfadein->m_mins;
 			if(pfadein->m_delta < pfadein->m_des_alpha){
-				pfadein->m_color = CreateColor(255,255,255,(uint8)pfadein->m_delta,pimg->dtype);
+				pfadein->m_color = CreateColor(255,255,255,(uint8_t)pfadein->m_delta,pimg->dtype);
 			}
 			else{
-				pfadein->m_color = CreateColor(255,255,255,(uint8)pfadein->m_des_alpha,pimg->dtype);
+				pfadein->m_color = CreateColor(255,255,255,(uint8_t)pfadein->m_des_alpha,pimg->dtype);
 				pfadein->m_status = EFFECT_STOP;
 			}
 		}
@@ -284,7 +284,7 @@ static void effect_draw_fadeout(image_effect_p effector,image_p pimg,float dx,fl
 		pfadeout->m_lastticks = pfadeout->m_ptimer->get_ticks(pfadeout->m_ptimer);
 		pfadeout->m_delta = (float)pfadeout->m_src_alpha;
 		pfadeout->m_status = EFFECT_PLAY;
-		pfadeout->m_color = CreateColor(255,255,255,(uint8)pfadeout->m_delta,pimg->dtype);
+		pfadeout->m_color = CreateColor(255,255,255,(uint8_t)pfadeout->m_delta,pimg->dtype);
 		break;
 	case EFFECT_PLAY:
 		pfadeout->m_currentticks = pfadeout->m_ptimer->get_ticks(pfadeout->m_ptimer);
@@ -292,10 +292,10 @@ static void effect_draw_fadeout(image_effect_p effector,image_p pimg,float dx,fl
 			pfadeout->m_lastticks = pfadeout->m_currentticks;
 			pfadeout->m_delta -=  pfadeout->m_mins;
 			if(pfadeout->m_delta > pfadeout->m_des_alpha){
-				pfadeout->m_color = CreateColor(255,255,255,(uint8)pfadeout->m_delta,pimg->dtype);
+				pfadeout->m_color = CreateColor(255,255,255,(uint8_t)pfadeout->m_delta,pimg->dtype);
 			}
 			else{
-				pfadeout->m_color = CreateColor(255,255,255,(uint8)pfadeout->m_des_alpha,pimg->dtype);
+				pfadeout->m_color = CreateColor(255,255,255,(uint8_t)pfadeout->m_des_alpha,pimg->dtype);
 				pfadeout->m_status = EFFECT_STOP;
 			}
 		}
@@ -627,28 +627,28 @@ static float effect_getparam_blur(image_effect_p effector,int flags)
 	return ret;
 }
 
-void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8 a)
+void set_image_pixel(image_p image, int x, int y, uint8_t r,uint8_t g,uint8_t b ,uint8_t a)
 {
-	static uint16* p16 = 0;
-	static uint32* p32 = 0;
+	static uint16_t* p16 = 0;
+	static uint32_t* p32 = 0;
 	   if(x<(int)image->texw && y<(int)image->texh && x >= 0 && y >= 0)
 	{
 		switch(image->dtype)
 		{
 		case DISPLAY_PIXEL_FORMAT_4444:
-			p16 = (uint16*)image->data;
+			p16 = (uint16_t*)image->data;
 			p16[y*image->texw+x] = MAKE_RGBA_4444(r,g,b,a);
 			break;
 		case DISPLAY_PIXEL_FORMAT_8888:
-			p32 = (uint32*)image->data;
+			p32 = (uint32_t*)image->data;
 			p32[y*image->texw+x] = MAKE_RGBA_8888(r,g,b,a);
 			break;
 		case DISPLAY_PIXEL_FORMAT_5551:
-			p16 = (uint16*)image->data;
+			p16 = (uint16_t*)image->data;
 			p16[y*image->texw+x] = MAKE_RGBA_5551(r,g,b,a);
 			break;
 		case DISPLAY_PIXEL_FORMAT_565:
-			p16 = (uint16*)image->data;
+			p16 = (uint16_t*)image->data;
 			p16[y*image->texw+x] = MAKE_RGBA_565(r,g,b,a);
 			break;
 		}
@@ -672,14 +672,14 @@ void set_image_pixel(image_p image, int x, int y, uint8 r,uint8 g,uint8 b ,uint8
 	}                                                                   \
 	if(tn==0)                                                           \
 		break;                                                          \
-	*(pdes##bit + x) = CreateColor((uint8)(r/tn), (uint8)(g/tn), (uint8)(b/tn), has_alpha ? (uint8)(a/tn) :(uint8)(0xff/tn), pfblur->m_image->dtype)
+	*(pdes##bit + x) = CreateColor((uint8_t)(r/tn), (uint8_t)(g/tn), (uint8_t)(b/tn), has_alpha ? (uint8_t)(a/tn) :(uint8_t)(0xff/tn), pfblur->m_image->dtype)
 
-static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
+static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32_t* pdes32,uint16_t* pdes16,uint32_t* p32,uint16_t* p16, image_p pimg)
 {
 	// 不优化速度方式绘制模糊效果
 	int tn,a,b,r,g,bx,by,ss,se;
 	static char sr,sb,sg,sa;
-	uint32 x,y;
+	uint32_t x,y;
 	ss = -s/2;
 	se = s/2;
 	if(se==0)
@@ -688,13 +688,13 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			p32 = ((uint32_t*)pimg->data) + pimg->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
-			p16 = ((uint16*)pimg->data) + pimg->texw * y;
-			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
+			p16 = ((uint16_t*)pimg->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 
 		for(x=0;x<pimg->w;x++)
@@ -732,12 +732,12 @@ static void effect_draw_blur_op0(image_effect_blur_p pfblur,int s,uint32* pdes32
 		}
 	}
 }
-static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
+static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32_t* pdes32,uint16_t* pdes16,uint32_t* p32,uint16_t* p16, image_p pimg)
 {
 	// 以四关键点方式绘制模糊效果
 	int tn,a,b,r,g,bx,by,step,ss,se;
 	static char sr,sb,sg,sa;
-	uint32 x,y;
+	uint32_t x,y;
 	step =((s/2)>=1 ? s/2 : 1);
 	ss = -s/2;
 	se = s/2;
@@ -747,13 +747,13 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			p32 = ((uint32_t*)pimg->data) + pimg->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
-			p16 = ((uint16*)pimg->data) + pimg->texw * y;
-			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
+			p16 = ((uint16_t*)pimg->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		//pfblur->m_image->texid = image_tid++;
 		for(x=0;x<pimg->w;x++)
@@ -791,7 +791,7 @@ static void effect_draw_blur_op1(image_effect_blur_p pfblur,int s,uint32* pdes32
 		}
 	}
 }
-static uint32 effect_draw_blur_op2_transition(int dtype, int color1,int color2,int bs)
+static uint32_t effect_draw_blur_op2_transition(int dtype, int color1,int color2,int bs)
 {
 	// 参数 b  0 - 255, 0 返回 color1, 255 返回 color2;
 	int a,b,r,g;
@@ -856,7 +856,7 @@ static uint32 effect_draw_blur_op2_transition(int dtype, int color1,int color2,i
 	}
 	return 0;
 }
-static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
+static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32_t* pdes32,uint16_t* pdes16,uint32_t* p32,uint16_t* p16, image_p pimg)
 {
 	// 以单关键点差补方式绘制模糊效果
 	int by,col = 0,coll = 0,colt = 0,collt;
@@ -866,13 +866,13 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			p32 = ((uint32_t*)pimg->data) + pimg->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
-			p16 = ((uint16*)pimg->data) + pimg->texw * y;
-			pdes16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			p16 = ((uint16_t*)pimg->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		for(x=0;x<(int)pimg->w;x+=s)
 		{
@@ -957,18 +957,18 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 	}
 	// 绘制超出的 y
 	if(pimg->dtype==DISPLAY_PIXEL_FORMAT_8888)
-		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
+		p32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	else
-		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
+		p16 = ((uint16_t*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s-1);
 	for(y-=s;y<(int)pimg->h;y++)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
-			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		for(x=0;x<(int)pimg->w;x++)
 		{
@@ -986,23 +986,23 @@ static void effect_draw_blur_op2(image_effect_blur_p pfblur,int s,uint32* pdes32
 		}
 	}
 }
-static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32,uint16* pdes16,uint32* p32,uint16* p16, image_p pimg)
+static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32_t* pdes32,uint16_t* pdes16,uint32_t* p32,uint16_t* p16, image_p pimg)
 {
 	// 以单关键点方式绘制模糊效果
-	uint32 x,y,col = 0;
+	uint32_t x,y,col = 0;
 	int bx = 0,by = 0;
 
 	for(y=0;y<pimg->h;y+=s)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = ((uint32*)pimg->data) + pimg->texw * y;
-			pdes32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * y;
+			p32 = ((uint32_t*)pimg->data) + pimg->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * y;
 		}
 		else
 		{
-			p16 = ((uint16*)pimg->data) + pimg->texw * y;
-			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
+			p16 = ((uint16_t*)pimg->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		for(x=0;x<pimg->w;x+=s)
 		{
@@ -1069,18 +1069,18 @@ static void effect_draw_blur_op3(image_effect_blur_p pfblur,int s,uint32* pdes32
 	}
 	// 绘制超出的 y
 	if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
-		p32 = ((uint32*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
+		p32 = ((uint32_t*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
 	else
-		p16 = ((uint16*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
+		p16 = ((uint16_t*)pfblur->m_image->data) + pfblur->m_image->texw * (y-s);
 	for(y-=s;y<pimg->h;y++)
 	{
 		if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			pdes32 = ((uint32*)pfblur->m_image->data) + pimg->texw * y;
+			pdes32 = ((uint32_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		else
 		{
-			pdes16 = ((uint16*)pfblur->m_image->data) + pimg->texw * y;
+			pdes16 = ((uint16_t*)pfblur->m_image->data) + pimg->texw * y;
 		}
 		for(x=0;x<pimg->w;x++)
 		{
@@ -1102,10 +1102,10 @@ static void effect_draw_blur(image_effect_p effector,image_p pimg,float dx,float
 {
 	//int s,x,y,bx,by,r,g,b,a,tn;
 	int s = 0;
-	static uint16* p16 = 0;
-	static uint32* p32 = 0;
-	static uint16* pdes16 = 0;
-	static uint32* pdes32 = 0;
+	static uint16_t* p16 = 0;
+	static uint32_t* p32 = 0;
+	static uint16_t* pdes16 = 0;
+	static uint32_t* pdes32 = 0;
 	image_effect_blur_p pfblur = (image_effect_blur_p)effector;
 	if(pimg == NULL || pfblur == NULL )
 		return;
@@ -1162,13 +1162,13 @@ static void effect_draw_blur(image_effect_p effector,image_p pimg,float dx,float
 
 			if(pimg->dtype == DISPLAY_PIXEL_FORMAT_8888)
 			{
-				p32 = (uint32*)pimg->data;
-				pdes32 = (uint32*)pfblur->m_image->data;
+				p32 = (uint32_t*)pimg->data;
+				pdes32 = (uint32_t*)pfblur->m_image->data;
 			}
 			else
 			{
-				p16 = (uint16*)pimg->data;
-				pdes16 = (uint16*)pfblur->m_image->data;
+				p16 = (uint16_t*)pimg->data;
+				pdes16 = (uint16_t*)pfblur->m_image->data;
 			}
 			//pfblur->m_image->texid = image_tid++;
 			pfblur->m_image->modified = 1;
@@ -1401,13 +1401,13 @@ static void effect_destroy_transitions(image_effect_p effector)
 
 void HandleR2A(image_p bp)
 {
-	uint32 x = 0,y = 0;
+	uint32_t x = 0,y = 0;
 	int r,a,b,g;
-	uint32 *p32 = NULL;
+	uint32_t *p32 = NULL;
 	CHECK_AND_UNSWIZZLE(bp);
 	for(y = 0; y < bp->texh; y++)
 	{
-		p32 = (uint32 *)bp->data + y * bp->texw;
+		p32 = (uint32_t *)bp->data + y * bp->texw;
 		for(x = 0; x < bp->texw; x ++)
 		{
 			GET_RGBA_8888(*(p32 + x), r, g, b, a);

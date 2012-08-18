@@ -31,7 +31,7 @@ extern "C"{
  *设置字体系统当前的编码
  *@param[in] encoding 编码值(如NGE_ENCODING_GBK或NGE_ENCODING_UTF_8)
  */
-	NGE_API void NGE_SetFontEncoding(uint8 encoding);
+	NGE_API void NGE_SetFontEncoding(uint8_t encoding);
 
 /**
  *创建一个GBK(hzk)font,默认为GBK的点阵
@@ -123,7 +123,7 @@ extern "C"{
  *@param[in] color 字体颜色，颜色值与建立字体的dtype对应,例如建立是16位5551,这里就是MAKE_RGBA5551设置
  *@return int,上一个颜色
  */
-	NGE_API int font_setcolor(PFont pf,uint32 color);
+	NGE_API int font_setcolor(PFont pf,uint32_t color);
 /**
  *增强型设置字体颜色,视支持而定
  *@param[in, out] pfont 字体指针
@@ -132,7 +132,7 @@ extern "C"{
  *@param[in] color_sh 字体阴影色，颜色值与建立字体的dtype对应
  *@return 无
  */
-	NGE_API void font_setcolor_ex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color_sh );
+	NGE_API void font_setcolor_ex(PFont pfont, uint32_t color_fg,uint32_t color_bg ,uint32_t color_sh );
 /**
  *得到一段文字的范围
  *@param[in] pfont 字体指针

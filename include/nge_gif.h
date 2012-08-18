@@ -29,7 +29,7 @@
 
 typedef struct _image_chain{
 	image_p pimage;
-	uint32  frame_delay;
+	uint32_t  frame_delay;
 	struct _image_chain* next;
 }image_chains_t,*image_chains_p;
 
@@ -41,22 +41,22 @@ typedef struct _image_chain{
 
 typedef struct  tag_gif_desc_t{
 	image_chains_p gif_image_chains;
-	uint32	       gif_delay;
-	sint32		   gif_transparent;
-	uint32         gif_dispose;
-	uint32		   gif_loopcount;
-	sint32         gif_rgbtransparent;
-	sint32         gif_rgbbackgnd;
-	uint32         gif_w;
-	uint32         gif_h;
-	uint32         gif_texw;
-	uint32         gif_texh;
-	uint32         gif_framecount;
+	uint32_t	       gif_delay;
+	int32_t		   gif_transparent;
+	uint32_t         gif_dispose;
+	uint32_t		   gif_loopcount;
+	int32_t         gif_rgbtransparent;
+	int32_t         gif_rgbbackgnd;
+	uint32_t         gif_w;
+	uint32_t         gif_h;
+	uint32_t         gif_texw;
+	uint32_t         gif_texh;
+	uint32_t         gif_framecount;
 	/*for display*/
 	nge_timer*     gif_inner_timer;
-	uint32         gif_last_ticks;
-	uint32         gif_current_ticks;
-	uint32         gif_show_status;
+	uint32_t         gif_last_ticks;
+	uint32_t         gif_current_ticks;
+	uint32_t         gif_show_status;
 	image_p        gif_current_frame;
 	image_chains_p gif_current_chains;
 }gif_desc_t,*gif_desc_p;

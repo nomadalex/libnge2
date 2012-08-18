@@ -11,15 +11,15 @@ typedef struct {
 	void*		procs;	/* font-specific rendering routines*/
 	int			size;	/* font height in pixels*/
 	int			rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
+	uint32_t		disp;	/* diplaymode*/
 	int         flags;
 	workbuf     encodingBuf;
 
-	uint32      color_fg;
-	uint32      color_bg;
-	uint32      color_sh;
-	uint8*      cfont_raw;
-	uint8* 		afont_raw;
+	uint32_t      color_fg;
+	uint32_t      color_bg;
+	uint32_t      color_sh;
+	uint8_t*      cfont_raw;
+	uint8_t* 		afont_raw;
 	workbuf		bitbuf;
 
 //hzk special
@@ -247,10 +247,10 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
 	pf->font_height = height;
 
 	/* Load the font library to the system memory.*/
-	pf->cfont_raw = (uint8*)malloc(csize);
+	pf->cfont_raw = (uint8_t*)malloc(csize);
 	memcpy(pf->cfont_raw,cfbuf,csize);
 
-	pf->afont_raw = (uint8*)malloc(asize);
+	pf->afont_raw = (uint8_t*)malloc(asize);
 	memcpy(pf->afont_raw,afbuf,asize);
 
 	return (PFont)pf;

@@ -33,33 +33,33 @@
 
 #pragma pack(push, 1)
 typedef struct tagBITMAPCOREHEADER {
-	uint32    bcSize;
-	uint16    bcWidth;
-	uint16    bcHeight;
-	uint16    bcPlanes;
-	uint16    bcBitCnt;
+	uint32_t    bcSize;
+	uint16_t    bcWidth;
+	uint16_t    bcHeight;
+	uint16_t    bcPlanes;
+	uint16_t    bcBitCnt;
 } BITMAPCOREHEADER, *PBITMAPCOREHEADER;
 
 typedef struct tagBITMAPINFOHEADER { /* bmih */
-	uint32 biSize;
-	uint32 biWidth;
-	uint32 biHeight;
-	uint16 biPlanes;
-	uint16 biBitCount;
-	uint32 biCompression;
-	uint32 biSizeImage;
-	uint32 biXPelsPerMeter;
-	uint32 biYPelsPerMeter;
-	uint32 biClrUsed;
-	uint32 biClrImportant;
+	uint32_t biSize;
+	uint32_t biWidth;
+	uint32_t biHeight;
+	uint16_t biPlanes;
+	uint16_t biBitCount;
+	uint32_t biCompression;
+	uint32_t biSizeImage;
+	uint32_t biXPelsPerMeter;
+	uint32_t biYPelsPerMeter;
+	uint32_t biClrUsed;
+	uint32_t biClrImportant;
 } BITMAPINFOHEADER,*PBITMAPINFOHEADER;
 
 typedef struct tagBITMAPFILEHEADER {
-	uint16    bfType;
-	uint32    bfSize;
-	uint16    bfReserved1;
-	uint16    bfReserved2;
-	uint32    bfOffBits;
+	uint16_t    bfType;
+	uint32_t    bfSize;
+	uint16_t    bfReserved1;
+	uint16_t    bfReserved2;
+	uint32_t    bfOffBits;
 } BITMAPFILEHEADER, *PBITMAPFILEHEADER;
 #pragma pack(pop)
 
@@ -71,13 +71,13 @@ image_p image_load_bmp(const char* filename, int displaymode)
 {
 	image_p pimage = NULL;
 	int size ;
-	uint8* pbuf;
+	uint8_t* pbuf;
 
 	int fd = io_fopen(filename,IO_RDONLY);
 	if(fd == 0)
 		return 0;
 	size = io_fsize(fd);
-	pbuf = (uint8*)malloc(size);
+	pbuf = (uint8_t*)malloc(size);
 	io_fread(pbuf,1,size,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_buf((const char*)pbuf,size,displaymode);
@@ -88,12 +88,12 @@ image_p image_load_bmp(const char* filename, int displaymode)
 image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 {
 	image_p pimage = NULL;
-	uint8 *pdata,*data,*line;
+	uint8_t *pdata,*data,*line;
 	int dsize,w,h,texw,texh,bpb,size,x,y,done = 0;
-	uint32* p32;
-	uint16* p16;
-	uint16 color16;
-	uint32 color32;
+	uint32_t* p32;
+	uint16_t* p16;
+	uint16_t color16;
+	uint32_t color32;
 	PBITMAPFILEHEADER pbfh = (PBITMAPFILEHEADER)mbuf;
 	PBITMAPINFOHEADER pbih;
 
@@ -103,7 +103,7 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 	}
 	pbih = (PBITMAPINFOHEADER)(mbuf+sizeof(BITMAPFILEHEADER));
 	dsize = sizeof(BITMAPFILEHEADER)+pbih->biSize;
-	pdata =  (uint8*)mbuf+dsize;
+	pdata =  (uint8_t*)mbuf+dsize;
 	w = pbih->biWidth;
 	h = pbih->biHeight;
 	texw = roundpower2(w);
@@ -114,10 +114,10 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 	}
 	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight;
 	size = texw * texh * bpb;
-	data = (uint8*)malloc(size);
+	data = (uint8_t*)malloc(size);
 	memset(data,0,size);
-	p32 = (uint32*)data;
-	p16 = (uint16*) p32;
+	p32 = (uint32_t*)data;
+	p16 = (uint16_t*) p32;
 	line = NULL;
 	if(pbih->biBitCount == 24){
 		for (y = h;y>0;y--){
@@ -183,7 +183,7 @@ image_p image_load_bmp_buf(const char* mbuf,int bsize, int displaymode)
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)data;
+		pimage->data = (uint8_t *)data;
 		pimage->w    = w;
 		pimage->h    = h;
 		pimage->texw = texw;
@@ -220,13 +220,13 @@ image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colork
 {
 	image_p pimage = NULL;
 	int size;
-	uint8* pbuf;
+	uint8_t* pbuf;
 	int fd = io_fopen(filename,IO_RDONLY);
 
 	if(fd == 0)
 		return 0;
 	size = io_fsize(fd);
-	pbuf = (uint8*)malloc(size);
+	pbuf = (uint8_t*)malloc(size);
 	io_fread(pbuf,1,size,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_colorkey_buf((const char*)pbuf,size,displaymode,colorkey);
@@ -237,15 +237,15 @@ image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colork
 image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey)
 {
 	image_p pimage = NULL;
-	uint8 *pdata,*data,*line;
+	uint8_t *pdata,*data,*line;
 	int dsize,w,h,texw,texh,bpb,size,x,y,done = 0,pixcolor;
-	uint32* p32;
-	uint16* p16;
-	uint16 color16;
-	uint32 color32;
+	uint32_t* p32;
+	uint16_t* p16;
+	uint16_t color16;
+	uint32_t color32;
 	PBITMAPFILEHEADER pbfh = (PBITMAPFILEHEADER)mbuf;
 	PBITMAPINFOHEADER pbih;
-	uint8 alpha;
+	uint8_t alpha;
 
 	if(pbfh->bfType !=0x4d42){
 		nge_print("not bmp file\n");
@@ -254,7 +254,7 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 
 	pbih = (PBITMAPINFOHEADER)(mbuf+sizeof(BITMAPFILEHEADER));
 	dsize = sizeof(BITMAPFILEHEADER)+pbih->biSize;
-	pdata =  (uint8*)mbuf+dsize;
+	pdata =  (uint8_t*)mbuf+dsize;
 	w = pbih->biWidth;
 	h = pbih->biHeight;
 	texw = roundpower2(w);
@@ -265,10 +265,10 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	}
 	//int biSizeImage = ((((pbih->biWidth * pbih->biBitCount) + 31) & ~31) / 8) * pbih->biHeight;
 	size = texw * texh * bpb;
-	data = (uint8*)malloc(size);
+	data = (uint8_t*)malloc(size);
 	memset(data,0,size);
-	p32 = (uint32*)data;
-	p16 = (uint16*) p32;
+	p32 = (uint32_t*)data;
+	p16 = (uint16_t*) p32;
 	alpha = 0xff;
 	line = NULL;
 	if(pbih->biBitCount == 24){
@@ -345,7 +345,7 @@ image_p image_load_bmp_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)data;
+		pimage->data = (uint8_t *)data;
 		pimage->w    = w;
 		pimage->h    = h;
 		pimage->texw = texw;

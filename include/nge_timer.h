@@ -5,7 +5,7 @@
 
 struct tagTimer;
 
-typedef uint32 (*fp_proc_int)(struct tagTimer*);
+typedef uint32_t (*fp_proc_int)(struct tagTimer*);
 typedef void (*fp_proc_void)(struct tagTimer*);
 
 typedef struct tagTimer{
@@ -17,10 +17,10 @@ typedef struct tagTimer{
 	fp_proc_int		is_started;/**<  获取timer是否开始 */
 	fp_proc_int		is_paused; /**<  获取timer是否暂停 */
 	//privated
-	uint32 startTicks;
-    uint32 pausedTicks;
-    uint8  paused;
-    uint8  started;
+	uint32_t startTicks;
+    uint32_t pausedTicks;
+    uint8_t  paused;
+    uint8_t  started;
 }nge_timer;
 
 #ifdef __cplusplus
@@ -44,7 +44,7 @@ extern "C"{
  * 得到系统当前ticks
  *@return ticks
  */
-	NGE_API uint32 nge_get_tick();
+	NGE_API uint32_t nge_get_tick();
 
 #ifdef __cplusplus
 }

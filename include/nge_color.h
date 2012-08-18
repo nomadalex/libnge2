@@ -200,10 +200,10 @@ extern "C" {
 #define FONT_SH_8888 MAKE_RGBA_8888(0x7f,0x7f,0x7f,0xff)
 
 typedef struct{
-	uint8 r;
-	uint8 g;
-	uint8 b;
-	uint8 a;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
 }color4ub;
 
 /**
@@ -215,7 +215,7 @@ typedef struct{
  *@param[in] dtype 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
  *@return int,颜色值
  */
-NGE_API int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype); // it is in nge_image.c
+NGE_API int CreateColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a,int dtype); // it is in nge_image.c
 
 #ifdef __cplusplus
 }

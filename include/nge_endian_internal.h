@@ -39,7 +39,7 @@ inline static void doswap(int swap, void *p, size_t n)
 	}
 }
 
-#define DECL_ENDIAN() uint8 __swap__ = 0
+#define DECL_ENDIAN() uint8_t __swap__ = 0
 #define SET_ENDIAN(endian) __swap__ = doendian(endian)
 #define DO_ENDIAN(type, ptr)						\
 	doswap(__swap__, (void*)(ptr), sizeof(type))
@@ -52,7 +52,7 @@ inline static void doswap(int swap, void *p, size_t n)
 	mem += sizeof(type)
 
 #define PUSH_UINT8(val, mem)					\
-	mem[0] = (uint8)val;						\
+	mem[0] = (uint8_t)val;						\
 	mem += 1
 #define POP_UINT8(val, mem)						\
 	val = mem[0];								\
