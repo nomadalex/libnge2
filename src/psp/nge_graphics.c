@@ -1059,14 +1059,14 @@ void ScreenShot(const char* filename)
 	image_free(pimage);
 }
 
-static image_p targetIMG = NULL;
+static image_p target_image = NULL;
 
 BOOL BeginTarget(image_p _img){
 	unsigned int offset = getStaticVramOffset();
 	int width, height;
 	if(!_img)
 		return FALSE;
-	targetIMG = _img;
+	target_image = _img;
 	width = _img->texw; height = _img->texh;
 
 	if(_img->swizzle)
@@ -1075,27 +1075,31 @@ BOOL BeginTarget(image_p _img){
 	sceGuStart(GU_DIRECT,list);
 	
 	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, sceGeEdramGetAddr() + offset);
-//	sceGuDispBuffer(width,height,offset + width * height * (_img->mode<3?2:4),BUF_WIDTH);
+	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
 	sceGuOffset(2048 - (width/2), 2048 - (height/2));
 	sceGuViewport(2048, 2048, width, height);
 	// Scissoring
 	sceGuEnable(GU_SCISSOR_TEST);
 	sceGuScissor(0, 0, width, height);
+
+	sceGuStencilFunc(GU_ALWAYS, 255, 0xff);
+	sceGuStencilOp(GU_KEEP, GU_REPLACE, GU_REPLACE);
+	sceGuEnable(GU_STENCIL_TEST);
+	
+	sceGuAlphaFunc(GU_GREATER, 0, 0xff);
+	sceGuEnable(GU_ALPHA_TEST);
 	
 	return TRUE;
 }
 
 void EndTarget(){
-	int x,y;
-	uint32_t *vram32, *line32;
-	uint16_t *vram16, *line16;
-	int width;
-	int format;
-	if(!targetIMG)
+	int width, height;
+	unsigned int offset = getStaticVramOffset();
+	if(target_image == NULL)
 		return;
-	width = targetIMG->texw;
-	format = targetIMG->dtype;
+	width = target_image->texw;
+	height = target_image->texh;
 	sceGuDrawBufferList(GU_PSM_8888,m_drawbuf,BUF_WIDTH);
 	sceGuOffset(2048 - (SCREEN_WIDTH/2), 2048 - (SCREEN_HEIGHT/2));
 	sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -1104,48 +1108,13 @@ void EndTarget(){
 	sceGuEnable(GU_SCISSOR_TEST);
 	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
+	sceGuDisable(GU_STENCIL_TEST);
+	sceGuDisable(GU_ALPHA_TEST);
+	
 	sceGuFinish();
 	sceGuSync(0,0);
-	
-	vram32 = (uint32_t*) (sceGeEdramGetAddr() + getStaticVramOffset());
-	vram16 = (uint16_t*) vram32;
-	line16 = (uint16_t*)targetIMG->data;
-	line32 = (uint32_t*)line16;
-	switch (format) {
-		case DISPLAY_PIXEL_FORMAT_565:
-			for (y = 0; y < targetIMG->texh; y++) {
-				memcpy(line16, vram16, targetIMG->texw * 2);
-				vram16 += BUF_WIDTH;
-			}
-			break;
-		case DISPLAY_PIXEL_FORMAT_5551:
-			for (y = 0; y < targetIMG->texh; y++) {
-				memcpy(line16, vram16, targetIMG->texw * 2);
-				for (x = 0; x < targetIMG->texw; x++) {
-					*(line16++) |= 0x8000;
-				}
-				vram16 += BUF_WIDTH;
-			}
-			break;
-		case DISPLAY_PIXEL_FORMAT_4444:
-			for (y = 0; y < targetIMG->texh; y++) {
-				memcpy(line16, vram16, targetIMG->texw * 2);
-				for (x = 0; x < targetIMG->texw; x++) {
-					*(line16++) |= 0xF000;
-				}
-				vram16 += BUF_WIDTH;
-			}
-			break;
-		case DISPLAY_PIXEL_FORMAT_8888:
-			for (y = 0; y < targetIMG->texh; y++) {
-				memcpy(line32, vram32, targetIMG->texw * 4);
-				for (x = 0; x < targetIMG->texw; x++) {
-					*(line32++) |= 0xFF000000;
-				}
-				vram32 += BUF_WIDTH;
-			}
-			break;
-	}
-	targetIMG->modified = 1;
-	targetIMG = NULL;
+
+	target_image->modified = 1;
+	target_image = NULL;
 }
