@@ -118,13 +118,14 @@ extern "C"{
 	NGE_API void EndScene();
 
 /**
- * 屏幕绘制开始函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
- *@param[in] clear 清屏标志，默认为1清屏
+ * 绘制到图片开始函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
+ *@param[in] _img 所要绘制到的图片
  *@return 无
+ *@warning 如果所要使用的图片需要多次进行绘制，请务必将dontswizzle属性设置为1
  */
 	NGE_API BOOL BeginTarget(image_p _img);
 /**
- * 屏幕绘制结束函数,所有绘制到屏幕均在BeginScene,EndScene之间调用
+ * 绘制到图片结束函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
  *@return 无
  */
 	NGE_API void EndTarget();

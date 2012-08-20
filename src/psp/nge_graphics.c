@@ -321,6 +321,13 @@ void ResetTexBlend()
 void BeginScene(uint8_t clear)
 {
 	sceGuStart(GU_DIRECT,list);
+	
+	sceGuDrawBufferList(GU_PSM_8888,m_drawbuf,BUF_WIDTH);
+	sceGuOffset(2048 - (SCREEN_WIDTH/2), 2048 - (SCREEN_HEIGHT/2));
+	sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
 	if(clear){
 		sceGuDisable(GU_SCISSOR_TEST);
 		sceGuClearColor(screen_color);
@@ -339,15 +346,15 @@ uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 
 void EndScene()
 {
-	if(use_vblank == 1)
-		sceDisplayWaitVblankStart();
 	sceGuFinish();
 	sceGuSync(0,0);
+	if(use_vblank == 1)
+		sceDisplayWaitVblankStart();
 	if(show_fps == 1){
 		myShowFps();
 	}
 	else
-		sceGuSwapBuffers();
+		m_drawbuf = sceGuSwapBuffers();
 }
 
 void PutPix(float x, float y, int color,int dtype)
@@ -1071,16 +1078,14 @@ BOOL BeginTarget(image_p _img){
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
+
 	sceGuStart(GU_DIRECT,list);
 	
 	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
-	sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGBA);
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
 	sceGuOffset(2048 - (width/2), 2048 - (height/2));
 	sceGuViewport(2048, 2048, width, height);
 	// Scissoring
-	sceGuEnable(GU_SCISSOR_TEST);
 	sceGuScissor(0, 0, width, height);
 
 	sceGuStencilFunc(GU_ALWAYS, 255, 0xff);
@@ -1100,13 +1105,6 @@ void EndTarget(){
 		return;
 	width = target_image->texw;
 	height = target_image->texh;
-	sceGuDrawBufferList(GU_PSM_8888,m_drawbuf,BUF_WIDTH);
-	sceGuOffset(2048 - (SCREEN_WIDTH/2), 2048 - (SCREEN_HEIGHT/2));
-	sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-	// Scissoring
-	sceGuEnable(GU_SCISSOR_TEST);
-	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
 	sceGuDisable(GU_STENCIL_TEST);
