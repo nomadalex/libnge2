@@ -274,10 +274,10 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 		case DISPLAY_PIXEL_FORMAT_4444:
 			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
-				cpbegin32 += pimage->texw;
+				cpbegin16 += pimage->texw;
 			for(; j < height; j++){
 				for(i = 0; x + i < 0 && i < width; i++)
-					cpbegin32++;
+					cpbegin16++;
 				for(; i < width; i++)
 					*(cpbegin16++) = MAKE_RGBA_4444(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
 				cpbegin16 += pimage->texw - width;
@@ -287,10 +287,10 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 		case DISPLAY_PIXEL_FORMAT_5551:
 			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
-				cpbegin32 += pimage->texw;
+				cpbegin16 += pimage->texw;
 			for(; j < height; j++){
 				for(i = 0; x + i < 0 && i < width; i++)
-					cpbegin32++;
+					cpbegin16++;
 				for(; i < width; i++)
 					*(cpbegin16++) = MAKE_RGBA_5551(pf->r, pf->g, pf->b, (pf->a&(*(buf++)))?255:0);
 				cpbegin16 += pimage->texw - width;
@@ -300,10 +300,10 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 		case DISPLAY_PIXEL_FORMAT_565:
 			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
 			for(j = 0; y + j < 0 && j < height; j++)
-				cpbegin32 += pimage->texw;
+				cpbegin16 += pimage->texw;
 			for(; j < height; j++){
 				for(i = 0; x + i < 0 && i < width; i++)
-					cpbegin32++;
+					cpbegin16++;
 				for(; i < width; i++)
 					if(*(buf++))
 						*(cpbegin16++) = MAKE_RGBA_565(pf->r, pf->g, pf->b, 0);
