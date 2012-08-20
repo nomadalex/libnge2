@@ -1150,24 +1150,26 @@ void ScreenShot(const char* filename)
 	image_save(pimage,filename,1, 1);
 	image_free(pimage);
 }
+
 BOOL BeginTarget(image_p _img){
 	static int cacheid = 0;
 	static int ret = 0;
 	if(!_img)
 		return FALSE;
+	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0,nge_screen.ori_width,0,nge_screen.ori_height, -1, 1);
+	glOrtho(0,_img->w,0,_img->h, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-	glDisable(GL_SCISSOR_TEST);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0,0,_img->w, _img->h);
 
 	return TRUE;
 }
+
 void EndTarget(){
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
