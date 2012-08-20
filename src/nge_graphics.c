@@ -223,20 +223,6 @@ screen_context_p GetScreenContext()
 	return &nge_screen;
 }
 
-void SetScreenType(int type)
-{
-#ifdef NGE_IPHONE
-	if(type == 2){
-		nge_screen.fullscreen = 2;
-		SetSwapXY(1);
-	}
-	else{
-		nge_screen.fullscreen = 0;
-		SetSwapXY(0);
-	}
-#endif
-}
-
 void SetTexBlend(int src_blend, int des_blend)
 {
 	if(src_blend==0&&des_blend==0)
@@ -447,8 +433,8 @@ void InitGraphics()
 	int i = 0;
 
 	if (nge_screen.name == NULL) {
-		nge_screen.name = malloc(5);
-		strncpy(nge_screen.name, "NGE2", 5);
+		nge_screen.name = malloc(8);
+		strncpy(nge_screen.name, "NGE2", 8);
 	}
 
 #if defined NGE_WIN
@@ -555,9 +541,6 @@ void BeginScene(uint8_t clear)
 		glEnable(GL_SCISSOR_TEST);
 	}
 	glLoadIdentity();
-	if(nge_screen.fullscreen == 2){
-		ROTATE_2D(90, nge_screen.width/2,nge_screen.height/2);
-	}
 }
 
 void EndScene()
@@ -735,8 +718,6 @@ void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype)
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_LINE_LOOP, 4);
 }
 
@@ -748,8 +729,6 @@ void DrawRectEx(rectf rect,int color,int dtype)
 void FillRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 4);
 }
 
@@ -768,8 +747,6 @@ void FillRectEx(rectf rect,int color,int dtype)
 void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, 4);
 }
 
@@ -1185,14 +1162,20 @@ BOOL BeginTarget(image_p _img){
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,0,nge_screen.ori_height, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
+	glDisable(GL_SCISSOR_TEST);
+	glPushAttrib(GL_VIEWPORT_BIT);
+	glViewport(0,0,_img->w, _img->h);
 
 	return TRUE;
 }
 void EndTarget(){
+	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_SCISSOR_TEST);
 
 }
+
