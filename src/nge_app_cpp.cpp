@@ -25,22 +25,42 @@
 static nge_app_t s_app;
 static CNgeApp *s_App = 0;
 
-static int app_init() {
-	return s_App->Init();
-}
-
-static int app_mainloop() {
-	return s_App->Mainloop();
-}
-
-static int app_fini() {
-	return s_App->Fini();
-}
-
-void nge_registerApp(CNgeApp *app) {
-	s_App = app;
-	s_app.init = app_init;
-	s_app.mainloop = app_mainloop;
-	s_app.fini = app_fini;
-	nge_register_app(&s_app);
+static int app_init() {
+	return s_App->Init();
+}
+
+static int app_mainloop() {
+	return s_App->Mainloop();
+}
+
+static int app_fini() {
+	return s_App->Fini();
+}
+
+static int app_pause(){
+	return s_App->Pause();
+}
+
+static int app_resume(){
+	return s_App->Resume();
+}
+
+static int app_start(){
+	return s_App->Start();
+}
+
+static int app_stop(){
+	return s_App->Stop();
+}
+
+void nge_registerApp(CNgeApp *app) {
+	s_App          = app;
+	s_app.init     = app_init;
+	s_app.mainloop = app_mainloop;
+	s_app.fini     = app_fini;
+	s_app.pause    = app_pause;
+	s_app.resume   = app_resume;
+	s_app.start    = app_start;
+	s_app.stop     = app_stop;
+	nge_register_app(&s_app);
 }

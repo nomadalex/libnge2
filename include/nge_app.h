@@ -35,6 +35,10 @@ typedef struct nge_app {
 	int (*init) (void);
 	int (*mainloop) (void);
 	int (*fini) (void);
+	int (*pause)(void);
+	int (*resume)(void);
+	int (*start)(void);
+	int (*stop)(void);
 } nge_app_t;
 
 #ifdef __cplusplus

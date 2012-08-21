@@ -30,10 +30,13 @@ class CNgeApp
 {
 public:
 	CNgeApp() { mFps = 60; };
-	~CNgeApp() {};
+	virtual ~CNgeApp() {};
 	virtual	int Init() = 0;
 	virtual	int Mainloop() = 0;
 	virtual	int Fini() = 0;
+	virtual	int Pause() {return 0;}
+	virtual	int Resume(){return 0;}
+	virtual	int Start(){return 0;}	virtual	int Stop(){return 0;}
 public:
 	int mFps;
 };
