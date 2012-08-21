@@ -143,6 +143,8 @@ macro(prepare_dep_search PREFIX)
   # test cross-compile platform first
   if(ANDROID)
 	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/AndroidDepends")
+  elseif(IOS)
+	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/iOSDepends")
   else()
 	if(WIN32)
 	  list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/Win32Depends")
