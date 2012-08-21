@@ -658,6 +658,7 @@ void PutPix(float x,float y ,int color,int dtype)
 }
 
 #define DRAW_POLYGON_IMP(mode, count)					\
+	glDisable(GL_TEXTURE_2D);							\
 	BEFORE_DRAW();                                      \
 	GL_ARRAY_CHECK_V(count);							\
 	{                                                   \
@@ -669,9 +670,11 @@ void PutPix(float x,float y ,int color,int dtype)
 		SET_COLOR(color,dtype);							\
 		glDrawArrays(mode, 0, count);                   \
 	}                                                   \
-	AFTER_DRAW()
+	AFTER_DRAW();										\
+	glEnable(GL_TEXTURE_2D)
 
 #define DRAW_POLYGON_IMP_COLOR(mode, count)				\
+	glDisable(GL_TEXTURE_2D);							\
 	BEFORE_DRAW();                                      \
 	GL_ARRAY_EN(COLOR);									\
 	GL_ARRAY_CHECK_V(count);							\
@@ -687,7 +690,8 @@ void PutPix(float x,float y ,int color,int dtype)
 		glDrawArrays(mode, 0, count);                   \
 	}                                                   \
 	GL_ARRAY_DIS(COLOR);								\
-	AFTER_DRAW()
+	AFTER_DRAW();										\
+	glEnable(GL_TEXTURE_2D)
 
 void DrawPolygon(float* x, float* y, int count, int color,int dtype)
 {
