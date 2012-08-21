@@ -160,7 +160,7 @@ macro(prepare_dep_search PREFIX)
   	set(CMAKE_FRAMEWORK_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FRAMEWORK_PATH})
   endif()
 
-  if(ANDROID)
+  if(ANDROID OR IOS)
 	# fix for android toolchain only search toolchain libraries, CMAKE_PREFIX_PATH will not work
 	set(CMAKE_FIND_ROOT_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FIND_ROOT_PATH})
   endif()
