@@ -11,7 +11,7 @@ set(CMAKE_TEMPLATE_PATH "${CMAKE_SOURCE_DIR}/CMake/Templates")
 if(NOT BUILD_FOR)
   set(BUILD_FOR Normal CACHE STRING
 	"Choose the os of build, options are:
-     Normal PSP Android."
+     Normal PSP Android iPhone."
 	 FORCE)
 endif()
 
@@ -22,6 +22,8 @@ elseif(${BUILD_FOR} STREQUAL Android)
 	set(ANDROID_ABI armeabi)
   endif()
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
+elseif(${BUILD_FOR} STREQUAL iPhone)
+  set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/ios.toolchain.cmake")
 endif()
 
 option(BUILD_SAMPLES "Whether build samples" ON)
@@ -40,7 +42,7 @@ endif()
 include(SetupDepends)
 
 # Put libraries into `lib'.
-if(NOT WIN32)
+if(NOT WIN32 AND NOT IOS)
   if(ANDROID)
 	set_output_root(${CMAKE_BINARY_DIR}/Android)
   else()
