@@ -313,6 +313,21 @@ makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
+void ResetGraphicsCache(void)
+{
+	int i;	
+	tex_cache_fini();
+	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
+	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+		tex_cache_add(i,m_texcache[i]);
+		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+}
+
 void nge_graphics_reset(void)
 {
 	int i;
