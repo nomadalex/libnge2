@@ -622,9 +622,9 @@ inline uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {
 	return (h1 << 24) | (h2 << 16) | (h3 << 8) | (h4);
 }
 
-void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy,int alpha)
+void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int32_t sy,int32_t sw,int32_t sh,int32_t dx,int32_t dy,int alpha)
 {
-	uint32_t i,j;
+	int32_t i,j;
 	uint16_t *cpbegin16;
 	uint16_t *bmp16;
 	uint32_t *cpbegin32,*bmp32;
@@ -634,20 +634,20 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uin
 	}
 	if(alpha == 0)
 		return;
+	if(sw <= 0 || sh <= 0)
+		return;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
-	if(sw == 0 && sh == 0){
-		sw = src->w;
-		sh = src->h;
+	if(dx < 0) {
+		sw += dx;
+		sx -= dx;
+		dx = 0;
 	}
-	if(sw + sx > src->texw)
-		sw = src->texw - sx;
-	if(sh + sy > src->texh)
-		sh = src->texh - sy;
-	if(sw + dx > des->texw)
-		sw = des->texw - dx;
-	if(sh + dy > des->texh)
-		sh = des->texh - dy;
+	if(dy < 0) {
+		sh += dy;
+		sy -= dy;
+		dy = 0;
+	}
 	if(sx < 0) {
 		sw += sx;
 		sx = 0;
@@ -656,14 +656,14 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uin
 		sh += sy;
 		sy = 0;
 	}
-	if(dx < 0) {
-		sw += dx;
-		dx = 0;
-	}
-	if(dy < 0) {
-		sh += dy;
-		dy = 0;
-	}
+	if(sw + sx > (int32_t)src->texw)
+		sw = src->texw - sx;
+	if(sh + sy > (int32_t)src->texh)
+		sh = src->texh - sy;
+	if(sw + dx > (int32_t)des->texw)
+		sw = des->texw - dx;
+	if(sh + dy > (int32_t)des->texh)
+		sh = des->texh - dy;
 	if(sw <= 0 || sh <= 0)
 		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
@@ -725,13 +725,14 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uin
 
 }
 
-void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_t y,int alpha)
+void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t y,int alpha)
 {
-	uint32_t i,j;
+	int32_t i,j;
 	uint16_t *cpbegin16;
 	uint16_t *bmp16;
-	uint32_t w = src->w;
-	uint32_t h = src->h;
+	int32_t w = src->w;
+	int32_t h = src->h;
+	int32_t sx = 0, sy = 0;
 	uint32_t *cpbegin32,*bmp32;
 	if(alpha == 255) {
 		image_to_image(src, des, x, y);
@@ -741,23 +742,25 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_
 		return;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
-	if(w + x > des->texw)
-		w = des->texw - x;
-	if(h + y > des->texh)
-		h = des->texh - y;
 	if(x < 0) {
 		w += x;
+		sx = -x;
 		x = 0;
 	}
 	if(y < 0) {
 		h += y;
+		sy = -y;
 		y = 0;
 	}
+	if(w + x > (int32_t)des->texw)
+		w = des->texw - x;
+	if(h + y > (int32_t)des->texh)
+		h = des->texh - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		cpbegin16 = (uint16_t*)des->data + y * des->texw + x;
-		bmp16 = (uint16_t*)src->data;
+		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i =0; i < h; i++){
 			for(j =0; j < w; j++, bmp16++, cpbegin16++){
 				#ifdef NGE_PSP
@@ -774,7 +777,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		cpbegin16 = (uint16_t*)des->data + y * des->texw + x;
-		bmp16 = (uint16_t*)src->data;
+		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0;i < h; i++){
 			for(j = 0;j < w; j++, cpbegin16++, bmp16++){
 				#ifdef NGE_PSP
@@ -791,7 +794,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		cpbegin16 = (uint16_t*)des->data + y * des->texw + x;
-		bmp16 = (uint16_t*)src->data;
+		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < h; i++){
 			for(j = 0;j < w; j++, cpbegin16++, bmp16++)
 				*cpbegin16 = ALPHABLEND_565(*bmp16, *cpbegin16, alpha);
@@ -802,7 +805,7 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_
 	}
 	else{
 		cpbegin32 = (uint32_t*)des->data+y*des->texw+x;
-		bmp32 = (uint32_t*)src->data;
+		bmp32 = (uint32_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < h; i++){
 			for(j = 0; j < w; j++, bmp32++, cpbegin32++){
 				if((*bmp32) & 0xFF000000)
@@ -816,26 +819,26 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_
 }
 
 
-void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy)
+void image_to_image_ex(const image_p src,const image_p des,int32_t sx,int32_t sy,int32_t sw,int32_t sh,int32_t dx,int32_t dy)
 {
 	uint16_t *cpbegin16,*bmp16;
-	uint32_t i;
+	int32_t i;
 	uint32_t *cpbegin32,*bmp32;
 	uint32_t size;
-	if(sw == 0 && sh == 0){
-		sw = src->w;
-		sh = src->h;
-	}
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
-	if(sw + sx > src->texw)
-		sw = src->texw - sx;
-	if(sh + sy > src->texh)
-		sh = src->texh - sy;
-	if(sw + dx > des->texw)
-		sw = des->texw - dx;
-	if(sh + dy > des->texh)
-		sh = des->texh - dy;
+	if(sw <= 0 || sh <= 0)
+		return;
+	if(dx < 0) {
+		sw += dx;
+		sx -= dx;
+		dx = 0;
+	}
+	if(dy < 0) {
+		sh += dy;
+		sy -= dy;
+		dy = 0;
+	}
 	if(sx < 0) {
 		sw += sx;
 		sx = 0;
@@ -844,14 +847,14 @@ void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t 
 		sh += sy;
 		sy = 0;
 	}
-	if(dx < 0) {
-		sw += dx;
-		dx = 0;
-	}
-	if(dy < 0) {
-		sh += dy;
-		dy = 0;
-	}
+	if(sw + sx > (int32_t)src->texw)
+		sw = src->texw - sx;
+	if(sh + sy > (int32_t)src->texh)
+		sh = src->texh - sy;
+	if(sw + dx > (int32_t)des->texw)
+		sw = des->texw - dx;
+	if(sh + dy > (int32_t)des->texh)
+		sh = des->texh - dy;
 	if(sw <= 0 || sh <= 0)
 		return;
 	if(des->bpb==2){
@@ -871,80 +874,86 @@ void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t 
 }
 
 
-void image_to_image(const image_p src,const image_p des,uint32_t x,uint32_t y)
+void image_to_image(const image_p src,const image_p des,int32_t x,int32_t y)
 {
-	uint32_t w = src->w;
-	uint32_t h = src->h;
+	int32_t w = src->w;
+	int32_t h = src->h;
+	int32_t sx = 0, sy = 0;
 	uint16_t *cpbegin16,*bmp16;
-	uint32_t i;
-	uint32_t size;
+	int i, size;
 	uint32_t *cpbegin32,*bmp32;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
-	if(w + x > des->texw)
-		w = des->texw - x;
-	if(h + y > des->texh)
-		h = des->texh - y;
 	if(x < 0) {
 		w += x;
+		sx = -x;
 		x = 0;
 	}
 	if(y < 0) {
 		h += y;
+		sy = -y;
 		y = 0;
 	}
+	if(w + x > (int32_t)des->texw)
+		w = des->texw - x;
+	if(h + y > (int32_t)des->texh)
+		h = des->texh - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->bpb==2){
 		cpbegin16 = (uint16_t*)des->data + y * des->texw + x;
-		bmp16 = (uint16_t*)src->data;
+		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		size = w * sizeof(uint16_t);
 		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16 += src->texw)
 			memcpy(cpbegin16, bmp16, size);
 	}
 	else{
 		cpbegin32 = (uint32_t*)des->data + y * des->texw + x;
-		bmp32= (uint32_t*)src->data;
+		bmp32= (uint32_t*)src->data + sy * src->texw + sx;
 		size = w * sizeof(uint32_t);
 		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32 += src->texw)
 			memcpy(cpbegin32, bmp32, size);
 	}
 }
 
-void rawdata_to_image(void* data,const image_p des,uint32_t x,uint32_t y,uint32_t w,uint32_t h)
+void rawdata_to_image(void* data,const image_p des,int32_t x,int32_t y,int32_t w,int32_t h)
 {
 	uint16_t *cpbegin16,*bmp16;
 	uint32_t *cpbegin32,*bmp32;
-	uint32_t i;
-	uint32_t size;
+	int32_t i;
+	int32_t sx = 0, sy = 0;
+	int32_t bw = w, bh = h;
+	int32_t size;
 	CHECK_AND_UNSWIZZLE(des);
 	des->modified = 1;
-	if(w + x > des->texw)
-		w = des->texw - x;
-	if(h + y > des->texh)
-		h = des->texh - y;
 	if(x < 0) {
 		w += x;
+		sx = -x;
 		x = 0;
 	}
 	if(y < 0) {
 		h += y;
+		sy = -y;
 		y = 0;
 	}
+	if(w + x > (int32_t)des->texw)
+		w = des->texw - x;
+	if(h + y > (int32_t)des->texh)
+		h = des->texh - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->bpb==2){
 		cpbegin16 = (uint16_t*)des->data + y * des->texw + x;
-		bmp16 = (uint16_t*)data;
+		bmp16 = (uint16_t*)data + sy * bw + sx;
 		size = w * sizeof(uint16_t);
-		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16++)
+		for(i = 0; i < h; i++, cpbegin16 += des->texw, bmp16 += bw)
 			memcpy(cpbegin16, bmp16, size);
 	}
 	else{
 		cpbegin32 = (uint32_t*)des->data + y * des->texw + x;
-		bmp32= (uint32_t*)data;
+		bmp32= (uint32_t*)data + sy * bw + sx;
 		size = w * sizeof(uint32_t);
-		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32++)
+		for(i = 0; i < h; i++, cpbegin32 += des->texw, bmp32 += bw)
 			memcpy(cpbegin32, bmp32, size);
 	}
 }
@@ -1005,14 +1014,24 @@ int image_flipv(image_p pimage)
 	return 1;
 }
 
-void image_fillrect(image_p pimage, int x, int y, int w, int h, int color) {
+void image_fillrect(image_p pimage, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color) {
 	int i, j;
 	uint16_t *img16;
 	uint32_t *img32;
-	if(w + x > pimage->texw)
+	if(x < 0) {
+		w += x;
+		x = 0;
+	}
+	if(y < 0) {
+		h += y;
+		y = 0;
+	}
+	if(w + x > (int32_t)pimage->texw)
 		w = pimage->texw - x;
-	if(h + y > pimage->texh)
+	if(h + y > (int32_t)pimage->texh)
 		h = pimage->texh - y;
+	if(w <= 0 || h <= 0)
+		return;
 	pimage->modified = 1;
 	CHECK_AND_UNSWIZZLE(pimage)
 	if(pimage->bpb == 2) {
