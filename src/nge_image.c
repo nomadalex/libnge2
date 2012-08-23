@@ -656,14 +656,14 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 		sh += sy;
 		sy = 0;
 	}
-	if(sw + sx > (int32_t)src->texw)
-		sw = src->texw - sx;
-	if(sh + sy > (int32_t)src->texh)
-		sh = src->texh - sy;
-	if(sw + dx > (int32_t)des->texw)
-		sw = des->texw - dx;
-	if(sh + dy > (int32_t)des->texh)
-		sh = des->texh - dy;
+	if(sw + sx > (int32_t)src->w)
+		sw = src->w - sx;
+	if(sh + sy > (int32_t)src->h)
+		sh = src->h - sy;
+	if(sw + dx > (int32_t)des->w)
+		sw = des->w - dx;
+	if(sh + dy > (int32_t)des->h)
+		sh = des->h - dy;
 	if(sw <= 0 || sh <= 0)
 		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
@@ -752,10 +752,10 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 		sy = -y;
 		y = 0;
 	}
-	if(w + x > (int32_t)des->texw)
-		w = des->texw - x;
-	if(h + y > (int32_t)des->texh)
-		h = des->texh - y;
+	if(w + x > (int32_t)des->w)
+		w = des->w - x;
+	if(h + y > (int32_t)des->h)
+		h = des->h - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
@@ -847,14 +847,14 @@ void image_to_image_ex(const image_p src,const image_p des,int32_t sx,int32_t sy
 		sh += sy;
 		sy = 0;
 	}
-	if(sw + sx > (int32_t)src->texw)
-		sw = src->texw - sx;
-	if(sh + sy > (int32_t)src->texh)
-		sh = src->texh - sy;
-	if(sw + dx > (int32_t)des->texw)
-		sw = des->texw - dx;
-	if(sh + dy > (int32_t)des->texh)
-		sh = des->texh - dy;
+	if(sw + sx > (int32_t)src->w)
+		sw = src->w - sx;
+	if(sh + sy > (int32_t)src->h)
+		sh = src->h - sy;
+	if(sw + dx > (int32_t)des->w)
+		sw = des->w - dx;
+	if(sh + dy > (int32_t)des->h)
+		sh = des->h - dy;
 	if(sw <= 0 || sh <= 0)
 		return;
 	if(des->bpb==2){
@@ -894,10 +894,10 @@ void image_to_image(const image_p src,const image_p des,int32_t x,int32_t y)
 		sy = -y;
 		y = 0;
 	}
-	if(w + x > (int32_t)des->texw)
-		w = des->texw - x;
-	if(h + y > (int32_t)des->texh)
-		h = des->texh - y;
+	if(w + x > (int32_t)des->w)
+		w = des->w - x;
+	if(h + y > (int32_t)des->h)
+		h = des->h - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->bpb==2){
@@ -936,10 +936,10 @@ void rawdata_to_image(void* data,const image_p des,int32_t x,int32_t y,int32_t w
 		sy = -y;
 		y = 0;
 	}
-	if(w + x > (int32_t)des->texw)
-		w = des->texw - x;
-	if(h + y > (int32_t)des->texh)
-		h = des->texh - y;
+	if(w + x > (int32_t)des->w)
+		w = des->w - x;
+	if(h + y > (int32_t)des->h)
+		h = des->h - y;
 	if(w <= 0 || h <= 0)
 		return;
 	if(des->bpb==2){

@@ -252,10 +252,10 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 	uint32_t* cpbegin32;
 	uint16_t* cpbegin16;
 	unsigned char *buf = bitmap->buffer;
-	if(y + height > (int)pimage->texh)
-		height = pimage->texh - y;
-	if(x + width > (int)pimage->texw)
-		width = pimage->texw - x;
+	if(y + height > (int)pimage->h)
+		height = pimage->h - y;
+	if(x + width > (int)pimage->w)
+		width = pimage->w - x;
 
 	if(height <= 0 || width <= 0)
 		return;
