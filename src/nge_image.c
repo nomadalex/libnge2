@@ -1026,10 +1026,10 @@ void image_fillrect(image_p pimage, int32_t x, int32_t y, int32_t w, int32_t h, 
 		h += y;
 		y = 0;
 	}
-	if(w + x > (int32_t)pimage->texw)
-		w = pimage->texw - x;
-	if(h + y > (int32_t)pimage->texh)
-		h = pimage->texh - y;
+	if(w + x > (int32_t)pimage->w)
+		w = pimage->w - x;
+	if(h + y > (int32_t)pimage->h)
+		h = pimage->h - y;
 	if(w <= 0 || h <= 0)
 		return;
 	pimage->modified = 1;
