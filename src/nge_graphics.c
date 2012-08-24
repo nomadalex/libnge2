@@ -65,7 +65,7 @@ static float m_costable[360];
 static uint32_t m_frame = 0;
 static uint32_t m_t0 = 0;
 static int fps_last_ticks = 0;
-
+static char inited = 0;
 static int cacheid = 0;
 static uint8_t tex_ret = 0;
 
@@ -238,8 +238,8 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	float rate_w_ori = 1/nge_screen.rate_w;
-	float rate_h_ori = 1/nge_screen.rate_h;
+	float rate_w_ori = 1.0f*nge_screen.width/nge_screen.ori_width; //1/nge_screen.rate_w;
+	float rate_h_ori = 1.0f*nge_screen.height/nge_screen.ori_height; //1/nge_screen.rate_h;
 	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori*y-rate_h_ori*h),
 		ceil(w*rate_w_ori),ceil(h*rate_h_ori));
 }
@@ -335,17 +335,31 @@ void nge_graphics_reset(void)
 	m_frame = 0;
 	m_t0 = 0;
 	fps_last_ticks = nge_get_tick();
-
-	// reset cache
-	tex_cache_clear();
-	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
-	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
-		tex_cache_add(i,m_texcache[i]);
-		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if(inited == 0){
+		inited = 1;
+		tex_cache_init(MAX_TEX_CACHE_SIZE);
+		glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+				tex_cache_add(i,m_texcache[i]);
+				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
 	}
-
+	else{
+		tex_cache_fini();
+		tex_cache_init(MAX_TEX_CACHE_SIZE);
+		glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
+		glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+				tex_cache_add(i,m_texcache[i]);
+				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+		nge_print("cleared.\n");
+	}
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
@@ -393,8 +407,10 @@ void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
 	/* create and enable the render context (RC) */
 	*hRC = wglCreateContext( *hDC );
 	wglMakeCurrent( *hDC, *hRC );
-    glewInit();
+#if defined NGE_WIN || defined NGE_LINUX
+    	glewInit();
 	glGenFramebuffersEXT(1, &fbo);
+#endif
 }
 
 void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
@@ -402,7 +418,9 @@ void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
 	wglMakeCurrent( NULL, NULL );
 	wglDeleteContext( hRC );
 	ReleaseDC( hWnd, hDC );
+#if defined NGE_WIN || defined NGE_LINUX
 	glDeleteFramebuffersEXT(1, &fbo);
+#endif
 }
 
 static HWND hWnd;
@@ -475,7 +493,7 @@ void InitGraphics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 
-	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	
 	nge_graphics_reset();
 
 	nge_log("Init Graphics Ok\n");
@@ -1171,6 +1189,7 @@ void ScreenShot(const char* filename)
 }
 
 BOOL BeginTarget(image_p _img){
+#if defined NGE_WIN || defined NGE_LINUX	
 	static int cacheid = 0;
 	static int ret = 0;
 	if(!_img)
@@ -1184,12 +1203,14 @@ BOOL BeginTarget(image_p _img){
 	glOrtho(0,_img->w,0,_img->h, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushAttrib(GL_VIEWPORT_BIT);
-	glViewport(0,0,_img->w, _img->h);
 
+	glViewport(0,0,_img->w, _img->h);
+#endif
 	return TRUE;
 }
 
 void EndTarget(){
+#if defined NGE_WIN || defined NGE_LINUX
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glMatrixMode(GL_PROJECTION);
@@ -1197,6 +1218,6 @@ void EndTarget(){
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_SCISSOR_TEST);
-
+#endif
 }
 

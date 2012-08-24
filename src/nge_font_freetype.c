@@ -246,53 +246,121 @@ static void freetype2_destroyfont(PFont pfont)
 
 static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int x,int y)
 {
-	uint8_t   a,dgree;
-	uint32_t  height = bitmap->rows;
-	uint32_t  width = bitmap->width;
-	uint32_t  i,j;
+	int height = bitmap->rows;
+	int width = bitmap->width;
+	uint32_t i,j;
 	uint32_t* cpbegin32;
 	uint16_t* cpbegin16;
+	unsigned char *buf = bitmap->buffer;
+	if(y + height > (int)pimage->texh)
+		height = pimage->texh - y;
+	if(x + width > (int)pimage->texw)
+		width = pimage->texw - x;
 
-	if(pimage->dtype == DISPLAY_PIXEL_FORMAT_8888){
-		cpbegin32 = (uint32_t*)pimage->data+y*pimage->texw+x;
-		for(j=0; j < height ; j++){ 
-			for(i=0; i < width; i++){
-				if(x+i>pimage->texw||y+j>pimage->texh)
-					continue;
-				if(i>=width || j>=height){
-					a = 0;
-				}
-				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = (int)(dgree*pf->a*1.0f/255);
-				cpbegin32[i]=MAKE_RGBA_8888(pf->r,pf->g,pf->b,a);
+	if(height <= 0 || width <= 0)
+		return;
+
+	switch(pimage->dtype) {
+		case DISPLAY_PIXEL_FORMAT_8888:
+			cpbegin32 = (uint32_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin32 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
 			}
-			cpbegin32 += pimage->texw;
-		}
-	}
-	else{
-		cpbegin16 = (uint16_t*)pimage->data+y*pimage->texw+x;
-		for(j=0; j < height ; j++){ 
-			for(i=0; i < width; i++){
-				if(x+i>pimage->texw||y+j>pimage->texh)
-					continue;
-				if(i>=width || j>=height){
-					a = 0;
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin32 -= x;
+					buf -= x;
+					i = -x;
 				}
-				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = (int)(dgree*pf->a*1.0f/255);
-				if(pimage->dtype = DISPLAY_PIXEL_FORMAT_4444)
-					cpbegin16[i]=MAKE_RGBA_4444(pf->r,pf->g,pf->b,a);
-				else if(pimage->dtype = DISPLAY_PIXEL_FORMAT_5551){
-					cpbegin16[i]=MAKE_RGBA_5551(pf->r,pf->g,pf->b,a);
-				}
-				else{
-					cpbegin16[i]=MAKE_RGBA_565(pf->r,pf->g,pf->b,a);
-				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin32++) = MAKE_RGBA_8888(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				cpbegin32 += pimage->texw - width;
+				buf += bitmap->width - width;
 			}
-			cpbegin16 += pimage->texw;
-		}
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin16++) = MAKE_RGBA_4444(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin16++) = MAKE_RGBA_5551(pf->r, pf->g, pf->b, (pf->a&(*(buf++)))?255:0);
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_565:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					if(*(buf++))
+						*(cpbegin16++) = MAKE_RGBA_565(pf->r, pf->g, pf->b, 0);
+					else
+						*(cpbegin16++) = 0;
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		default:
+			break;
 	}
 }
+
 
 static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 							   const void *text, int cc, int flags)

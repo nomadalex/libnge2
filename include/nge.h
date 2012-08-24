@@ -60,12 +60,12 @@ extern "C"{
 	NGE_API void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full);
 
 /**
- *设置系统原生屏幕分辨率
+ *设置游戏制作时的原始分辨率
  *@param[in] width 宽度
  *@param[in] height 高度
  *@return 无
  */
-	NGE_API void NGE_SetNativeResolution(int width,int height);
+	NGE_API void NGE_SetOriginalResolution(int width,int height);
 
 /**
  *设置片头动画地址
