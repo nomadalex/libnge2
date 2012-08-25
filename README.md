@@ -1,38 +1,40 @@
-ï»¿NGE2
+NGE2
 ====
 
-NGE2(Not a Game Engineçš„é€’å½’ç¼©å†™)ï¼ŒNGEç¬¬ä¸€ç‰ˆåŽŸä¸ºåˆ¶ä½œä¸­å›½è±¡æ£‹PSPæ‰€å†™ï¼Œç¬¬äºŒç‰ˆå¾—åˆ°äº†æ›´å…¨é¢çš„å¼ºåŒ–ï¼ˆ2008å¹´åˆå®Œæˆï¼‰ï¼Œ
-æ˜¯PSP/Windows/iPhone/Linux/androidå¼€å‘çš„ä¸€ä¸ªç¨‹åºåº“ï¼Œè®¾è®¡çš„åˆè¡·ä¸æ˜¯ä¸€ä¸ªæ¸¸æˆå¼•æ“Žï¼Œè®¾è®¡æ€æƒ³æ˜¯ç®€å•æ˜“ç”¨ï¼Œ
-ç”¨æ¥åšå„ä¸ªæ˜¾ç¤ºç¨‹åºæˆ–è€…æ¸¸æˆå¼•æ“Žï¼ŒNGE2è¿½æ±‚çš„æ˜¯æ€§èƒ½ï¼Œæ‰€ä»¥å…¨éƒ¨ç”¨çš„cå‡½æ•°å†™ï¼Œè€Œæ˜¾ç¤ºå‡½æ•°ä¹Ÿåˆ†ä¸ºå„ä¸ªæ€§èƒ½è¦æ±‚ï¼Œ
-æä¾›ä¸åŒçš„æ˜¾ç¤ºå‡½æ•°ã€‚ 
-NGE2çš„æœ€åˆçš„è®¾è®¡å°±æ˜¯è®©å¼€å‘äººå‘˜ä¸éœ€è¦ç”¨PSPè°ƒè¯•å°±èƒ½å¼€å‘å‡ºPSPçš„åº”ç”¨ç¨‹åºã€‚åŽæ¥è¡ç”Ÿåˆ°äº†IOSå’ŒAndroidï¼Œ
-å°±æ˜¯è¯´åœ¨Windows/linuxä¸‹è°ƒè¯•ï¼Œåœ¨PSP/iphone/androidä¸Šè¿è¡Œï¼Œå¤§å¤§é™ä½Žäº†PSP/iphone/androidè°ƒè¯•ç¨‹åºæµªè´¹çš„æ—¶é—´ã€‚
+NGE2(Not a Game EngineµÄµÝ¹éËõÐ´)£¬NGEµÚÒ»°æÔ­ÎªÖÆ×÷ÖÐ¹úÏóÆåPSPËùÐ´£¬µÚ¶þ°æµÃµ½ÁË¸üÈ«ÃæµÄÇ¿»¯£¬
+ÊÇPSP/Windows/iPhone/Linux/android¿ª·¢µÄÒ»¸ö³ÌÐò¿â£¬Éè¼ÆµÄ³õÖÔ²»ÊÇÒ»¸öÓÎÏ·ÒýÇæ£¬Éè¼ÆË¼ÏëÊÇ¼òµ¥Ò×ÓÃ£¬
+ÓÃÀ´×ö¸÷¸öÏÔÊ¾³ÌÐò»òÕßÓÎÏ·ÒýÇæ£¬NGE2×·ÇóµÄÊÇÐÔÄÜ£¬ËùÒÔÈ«²¿ÓÃµÄcº¯ÊýÐ´£¬¶øÏÔÊ¾º¯ÊýÒ²·ÖÎª¸÷¸öÐÔÄÜÒªÇó£¬
+Ìá¹©²»Í¬µÄÏÔÊ¾º¯Êý¡£ 
+NGE2µÄ×î³õµÄÉè¼Æ¾ÍÊÇÈÃ¿ª·¢ÈËÔ±²»ÐèÒªÓÃPSPµ÷ÊÔ¾ÍÄÜ¿ª·¢³öPSPµÄÓ¦ÓÃ³ÌÐò¡£ºóÀ´ÑÜÉúµ½ÁËIOSºÍAndroid£¬
+¾ÍÊÇËµÔÚWindows/linuxÏÂµ÷ÊÔ£¬ÔÚPSP/iphone/androidÉÏÔËÐÐ£¬´ó´ó½µµÍÁËPSP/iphone/androidµ÷ÊÔ³ÌÐòÀË·ÑµÄÊ±¼ä¡£
+NGE2 v2.1²ÉÓÃBSDÐí¿ÉÖ¤¡£
 
-
-ç‰¹ç‚¹:
+ÌØµã:
 ---------
-* æ”¯æŒ16ä½ï¼ˆRGBA5650 RGBA5551 RGBA4444ï¼‰/32ä½(RGBA_8888)æ˜¾ç¤ºã€‚
-* æ”¯æŒJPG,BMP(24,32ä½),PNG,TGAï¼ˆ24,32ä½ï¼‰å›¾ç‰‡è¯»å–ï¼Œå¹¶è½¬åŒ–åˆ°ä¸Šè¿°æ˜¾ç¤ºæ¨¡å¼ã€‚
-* æ”¯æŒHZKï¼ŒGBKç‚¹é˜µå­—ä½“ï¼ŒFreeTypeå­—ä½“æ˜¾ç¤ºã€‚
-* æ”¯æŒé«˜æ•ˆçš„å›¾ç‰‡ç¼©æ”¾æ—‹è½¬ï¼Œalphaæ··è‰²æ•ˆæžœã€‚
-* å¤šç§æ˜¾ç¤ºå‡½æ•°ï¼Œæä¾›ä¸åŒçš„æ€§èƒ½ã€‚
-* ç›´çº¿ï¼ŒçŸ©å½¢ï¼Œä¸‰è§’å½¢ï¼Œåœ†å½¢ç­‰å‡ ä½•å›¾å½¢çš„ç»˜åˆ¶ã€‚
-* éŸ³é¢‘æ”¯æŒï¼Œç”¨äºŽæ’­æ”¾å£°éŸ³ï¼Œmp3ï¼Œwavï¼Œå¯æ‰©å±•ã€‚
-* åŠ¨ç”»æ”¯æŒï¼Œç”¨äºŽæ’­æ”¾åŠ¨ç”»ï¼Œæ”¯æŒgifã€‚
-* æ”¯æŒHGEçš„ç²’å­åº“ã€‚
-* J2MEçš„å¼€å‘è€…èƒ½å¾ˆå®¹æ˜“ä¸Šæ‰‹ï¼Œæ”¯æŒå›¾åƒè£å‰ªSetClipï¼Œç»˜å›¾å‡½æ•°DrawRegionã€‚
-* æä¾›ç¡¬ä»¶åŠ é€Ÿå›¾ç‰‡åˆ°å›¾ç‰‡ç»˜åˆ¶image_to_imageã€‚
-ä¸»é¡µ:
+* Ö§³Ö16Î»£¨RGBA5650 RGBA5551 RGBA4444£©/32Î»(RGBA_8888)ÏÔÊ¾¡£
+* Ö§³ÖJPG,BMP(24,32Î»),PNG,TGA£¨24,32Î»£©Í¼Æ¬¶ÁÈ¡£¬²¢×ª»¯µ½ÉÏÊöÏÔÊ¾Ä£Ê½¡£
+* Ö§³ÖHZK£¬GBKµãÕó×ÖÌå£¬FreeType×ÖÌåÏÔÊ¾¡£
+* Ö§³Ö¸ßÐ§µÄÍ¼Æ¬Ëõ·ÅÐý×ª£¬alpha»ìÉ«Ð§¹û¡£
+* ¶àÖÖÏÔÊ¾º¯Êý£¬Ìá¹©²»Í¬µÄÐÔÄÜ¡£
+* Ö±Ïß£¬¾ØÐÎ£¬Èý½ÇÐÎ£¬Ô²ÐÎµÈ¼¸ºÎÍ¼ÐÎµÄ»æÖÆ¡£
+* ÒôÆµÖ§³Ö£¬ÓÃÓÚ²¥·ÅÉùÒô£¬mp3£¬wav£¬¿ÉÀ©Õ¹¡£
+* ¶¯»­Ö§³Ö£¬ÓÃÓÚ²¥·Å¶¯»­£¬Ö§³Ögif¡£
+* Ö§³ÖHGEµÄÁ£×Ó¿â¡£
+* J2MEµÄ¿ª·¢ÕßÄÜºÜÈÝÒ×ÉÏÊÖ£¬Ö§³ÖÍ¼Ïñ²Ã¼ôSetClip£¬»æÍ¼º¯ÊýDrawRegion¡£
+* Ìá¹©Ó²¼þ¼ÓËÙÍ¼Æ¬µ½Í¼Æ¬»æÖÆimage_to_image¡£
+
+Ö÷Ò³:
 ----------
 http://www.iacger.com/
 
-å®‰è£…
+°²×°
 ---------
 
-nge2ä½¿ç”¨ CMake è¿›è¡Œæž„å»ºã€‚
-åœ¨windowsä¸ŠæŽ¨èä½¿ç”¨cmake-gui.
-åœ¨ç±»UNIXå¹³å°ä¸‹ï¼ˆpspã€androidã€linuxï¼‰æŽ¨èä½¿ç”¨é¡¹ç›®æ ¹ç›®å½•ä¸‹æä¾›çš„
-è„šæœ¬ï¼Œä¾‹ï¼š
+NGE2Ê¹ÓÃ CMake ½øÐÐ¹¹½¨¡£
+ÔÚwindowsÉÏÍÆ¼öÊ¹ÓÃcmake-gui£¬Éú³ÉVS200xµÄ¹¤³ÌÎÄ¼þºó±àÒë¡£
+Ä¿Ç°ÒÑÍ¨¹ý Windows£¬linux ¡¢android ºÍ PSP Æ½Ì¨µÄ¹¤³ÌÎÄ¼þµÄÉú³ÉºÍ±àÒë¡£iOsÆ½Ì¨Ä¿Ç°ÐèÒª×ÔÐÐÊÖ¶¯½¨Á¢xCoder¹¤³Ì¡£
+ÔÚÀàUNIXÆ½Ì¨ÏÂ£¨psp¡¢android¡¢linux£©ÍÆ¼öÊ¹ÓÃÏîÄ¿¸ùÄ¿Â¼ÏÂÌá¹©µÄ
+½Å±¾£¬Àý£º
 
 PSP:
 ./script/make-psp.sh
@@ -43,31 +45,50 @@ linux:
 android:
 ./script/make-android.sh
 
-æ›´è¯¦ç»†çš„ç”¨æ³•è¯·é€šè¿‡--helpé€‰é¡¹æŸ¥çœ‹ï¼Œä¾‹ï¼š
+¸üÏêÏ¸µÄÓÃ·¨ÇëÍ¨¹ý--helpÑ¡Ïî²é¿´£¬Àý£º
 
 ./script/make-android.sh --help
 
-å¦‚æžœä½ ç¼ºå¤±äº†ä»»ä½•ä¾èµ–ï¼ŒCMake ä¼šå°†å…¶æŒ‡å‡ºã€‚ä½ å¯ä»¥åœ¨å®‰è£…å®Œä¾èµ–åŽç»§ç»­æž„å»ºï¼Œå½“ç„¶ï¼Œä½ éœ€è¦å…ˆåˆ é™¤ `CMakeCache.txt` æ–‡ä»¶ã€‚
+Èç¹ûÄãÈ±Ê§ÁËÈÎºÎÒÀÀµ£¬CMake »á½«ÆäÖ¸³ö¡£Äã¿ÉÒÔÔÚ°²×°ÍêÒÀÀµºó¼ÌÐø¹¹½¨£¬µ±È»£¬ÄãÐèÒªÏÈÉ¾³ý `CMakeCache.txt` ÎÄ¼þ¡£
 
-cacheçš„ä¿®æ”¹ï¼š
-åœ¨ Unix/Mac å¹³å°ä¸Šï¼Œä½ å¯ä»¥ä½¿ç”¨ `ccmake` å›¾å½¢å¼è®¾å®šä½ éœ€è¦çš„é€‰é¡¹ã€‚
-åœ¨ windows ä¸Šï¼Œåˆ™å¯ä»¥ä½¿ç”¨ `cmake-gui` (å…³äºŽå¦‚ä½•ä½¿ç”¨cmake-guiï¼Œè¯·è‡ªè¡ŒGä¹‹)ã€‚
+cacheµÄÐÞ¸Ä£º
+ÔÚ Unix/Mac Æ½Ì¨ÉÏ£¬Äã¿ÉÒÔÊ¹ÓÃ `ccmake` Í¼ÐÎÊ½Éè¶¨ÄãÐèÒªµÄÑ¡Ïî¡£
+ÔÚ windows ÉÏ£¬Ôò¿ÉÒÔÊ¹ÓÃ `cmake-gui` (¹ØÓÚÈçºÎÊ¹ÓÃcmake-gui£¬Çë×ÔÐÐGÖ®)¡£
 
-ç›®å‰å·²é€šè¿‡ linux ã€android å’Œ psp å¹³å°çš„ç¼–è¯‘ã€‚
-
-windowså¹³å°ï¼š
-VS2003å·²é€šè¿‡,æŽ¨èä½¿ç”¨VS2003ä»¥ä¸Šã€‚
-VS2005ï¼ŒVS2008ç¼–è¯‘çŽ¯å¢ƒè¯·è‡ªè¡Œå°è¯•ï¼Œä¸ä¼šæœ‰å¤ªå¤§é—®é¢˜çš„ã€‚
-
-æ³¨ï¼š
-å¦‚éœ€ç¼–è¯‘ä¾‹å­ï¼Œè¯·å…ˆä¸‹è½½res.7zè§£åŽ‹åˆ°samplesç›®å½•ã€‚
-
-ä¾èµ–
+WindowsÆ½Ì¨µÄ±àÒëÁ÷³Ì£º
 ---------
-ä½ å¯ä»¥ç›´æŽ¥ä¸‹è½½ç”±æˆ‘ä»¬æ‰“åŒ…å¥½çš„åŽ‹ç¼©åŒ…è§£åŽ‹åˆ°é¡¹ç›®æ ¹ç›®å½•å³å¯ã€‚
-* [Win32Depends.7z](https://open.ge.tt/1/files/7Th6r3E/0/blob)
+* °²×°VS2003»òÕßÒÔÉÏ°æ±¾¡£
+* Ê¹ÓÃgitÏÂÔØlibnge2µÄÔ´´úÂë¡£
+* ÏÂÔØ[Win32Depends.7z](https://github.com/downloads/ifreedom/libnge2/Win32Depends.7z)
+ºó½âÑ¹µ½libnge2µÄ¸ùÄ¿Â¼¡£
+* ÏÂÔØÀý×ÓµÄ×ÊÔ´ÎÄ¼þ[res.7z](https://github.com/downloads/ifreedom/libnge2/res.7z)
+ºó½âÑ¹·Åµ½sampleÄ¿Â¼ÏÂ¡£
+* Ê¹ÓÃCMake-guiÑ¡Ôñlibnge2¸ùÄ¿Â¼Éú³ÉÒ»¸övs2003¹¤³Ì¡£
+* ´ò¿ªCMake-guiÉú³ÉµÄ¹¤³Ì±àÒë¼´¿É¡£
+
+AndroidÆ½Ì¨µÄ±àÒëÁ÷³Ì£º
+(NGE2²ÉÓÃµÄÊÇNDK·½Ê½£¬ËùÒÔÐèÒª´î½¨NDKµÄ¿ª·¢»·¾³£¬ÕâÀïÒÔubuntu×÷ÎªÊµÀý¡£)
+---------
+* ÏÂÔØNDK,Ð´±¾ÎÄµµÊ±×îÐÂµÄÎªandroid-ndk-r8b£¬ÕâÀïÒÔÕâ¸ö°æ±¾ÎªÀý£¬½âÑ¹µ½Ä¿Â¼£¬±¾ÀýÓÃµ±Ç°ÓÃ»§µÄhomeÄ¿Â¼(¼´~/Ä¿Â¼)¡£
+* ´ò¿ªÃüÁîÐÐÖÕ¶Ë£¬ÉèÖÃNDKµÄ»·¾³±äÁ¿export ANDROID_NDK=~/android-ndk-r8b¡£
+* Ê¹ÓÃgitÏÂÔØlibnge2¡£
+* ÏÂÔØ[AndroidDepends.7z](https://github.com/downloads/ifreedom/libnge2/AndroidDepends.7z)
+½âÑ¹µ½libnge2µÄ¸ùÄ¿Â¼¡£
+* ÏÂÔØÀý×ÓµÄ×ÊÔ´ÎÄ¼þ[res.7z](https://github.com/downloads/ifreedom/libnge2/res.7z)
+ºó½âÑ¹·Åµ½sampleÄ¿Â¼ÏÂ¡£
+* ÃüÁîÐÐÖÕ¶Ë½øÈëlibnge2µÄÄ¿Â¼ÏÂ£¬ÃüÁîÐÐÖ´ÐÐ./script/make-android.sh
+
+Èç¹ûÓÐÈÎºÎÒÉÎÊ£¬¿ÉÒÔµ½ÌÖÂÛ°æ£º
+http://www.iacger.com/forum.php?mod=forumdisplay&fid=180
+
+ÒÀÀµ
+---------
+Äã¿ÉÒÔÖ±½ÓÏÂÔØÓÉÎÒÃÇ´ò°üºÃµÄÑ¹Ëõ°ü½âÑ¹µ½ÏîÄ¿¸ùÄ¿Â¼¼´¿É¡£
+* [Win32Depends.7z](https://github.com/downloads/ifreedom/libnge2/Win32Depends.7z)
 * [AndroidDepends.7z](https://github.com/downloads/ifreedom/libnge2/AndroidDepends.7z)
 
+NGE2Ê¹ÓÃµÄ¿ª·¢¿â
+----------
 * zlib
 Simple data compression library
 http://www.zlib.net
@@ -104,12 +125,12 @@ http://www.sqlite.org/
 a library to uncompress .zip files
 on linux, you can download it from download page.
 
-é™„ï¼š PSP SDK
+¸½£º PSP SDK - ±àÒëPSPÓÃ
 ---------------
-æŽ¨èï¼š
+ÍÆ¼ö£º
 minpspw(pspsdk)(http://sourceforge.net/projects/minpspw/)
 
-äºŒè¿›åˆ¶ç‰ˆæœ¬ä¸‹è½½åœ°å€ï¼ˆæœªæ›´æ–°ï¼‰ï¼š
+¶þ½øÖÆ°æ±¾ÏÂÔØµØÖ·£¨Î´¸üÐÂ£©£º
 
 * [linux (ubuntu 32bit)](http://sourceforge.net/projects/minpspw/files/SDK%20%2B%20devpak/pspsdk%200.11.1/minpspw_0.11.1-1ubuntu0_i386.deb/download)
 
