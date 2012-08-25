@@ -56,6 +56,7 @@ cache的修改：
 在 windows 上，则可以使用 `cmake-gui` (关于如何使用cmake-gui，请自行G之)。
 
 Windows平台的编译流程：
+<<<<<<< HEAD
 ---------
 * 安装VS2003或者以上版本。
 * 使用git下载libnge2的源代码。
@@ -83,6 +84,29 @@ http://www.iacger.com/forum.php?mod=forumdisplay&fid=180
 
 依赖
 ---------
+=======
+1 安装VS2003或者以上版本。
+2 使用git下载libnge2的源代码。
+3 下载Win32Depends.7z(https://github.com/downloads/ifreedom/libnge2/Win32Depends.7z)后解压到libnge2的根目录。
+4 下载例子的资源文件res.7z(https://github.com/downloads/ifreedom/libnge2/res.7z)后解压放到sample目录下。
+5 使用CMake-gui选择libnge2根目录生成一个vs2003工程。
+6 打开CMake-gui生成的工程编译即可。
+
+Android平台的编译流程：
+NGE2采用的是NDK方式，所以需要搭建NDK的开发环境，这里以ubuntu作为实例。
+1 下载NDK,写本文档时最新的为android-ndk-r8b，这里以这个版本为例，解压到目录，本例用当前用户的home目录(即~/目录)。
+2 打开命令行终端，设置NDK的环境变量export ANDROID_NDK=~/android-ndk-r8b。
+3 使用git下载libnge2解压。
+4 下载[AndroidDepends.7z](https://github.com/downloads/ifreedom/libnge2/AndroidDepends.7z)解压到libnge2的根目录。
+5 下载例子的资源文件res.7z(https://github.com/downloads/ifreedom/libnge2/res.7z)后解压放到sample目录下。
+6 命令行终端进入libnge2的目录下，命令行执行./script/make-android.sh
+
+如果有任何疑问，可以到讨论版：
+http://www.iacger.com/forum.php?mod=forumdisplay&fid=180
+
+依赖
+---------
+>>>>>>> 9f6eafbaf8d5912f32ab285e67a9abee353ae1be
 你可以直接下载由我们打包好的压缩包解压到项目根目录即可。
 * [Win32Depends.7z](https://github.com/downloads/ifreedom/libnge2/Win32Depends.7z)
 * [AndroidDepends.7z](https://github.com/downloads/ifreedom/libnge2/AndroidDepends.7z)
