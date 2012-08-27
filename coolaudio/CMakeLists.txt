@@ -3,6 +3,8 @@ set(COOLAUDIO_SRCS)
 set(COOLAUDIO_LIBS)
 set(COOLAUDIO_VERSION 1.1)
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 if(PSP OR IPHONE)
   list(APPEND COOLAUDIO_SRCS libcoolaudio.c)
 endif()
@@ -65,5 +67,3 @@ if(ANDROID)
 	add_dependencies(${target} ${target}_android_coolaudio)
   endfunction()
 endif()
-
-install(FILES audio_interface.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
