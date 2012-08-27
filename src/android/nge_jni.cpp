@@ -24,23 +24,18 @@ extern "C" void nge_graphics_reset(void);
 extern MouseMoveProc mouse_move_proc;
 extern MouseButtonProc mouse_btn_proc;
 
-/* in nge.c */
-extern NotifyCallback _notifyCallback;
-extern void* _notifyCookie;
-
-char *main_argv[2] = { 0, 0};
+char *main_argv[2] = {0, 0};
 
 static nge_app_t *s_app = NULL;
 
 static unsigned char sPaused = 0;
-static unsigned char sResume = 0;
 
 static screen_context_p screen;
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetContext(JNIEnv* env,
 													   jobject thiz,jint w,jint h)
 {
-	NGE_SetNativeResolution(w,h);
+	NGE_SetScreenContext("NGE2 Andriod",w,h,32,1);
 	screen = GetScreenContext();
 }
 
@@ -92,16 +87,14 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeCreate(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 														 jobject thiz )
 {
-	if(sResume) {
-		nge_print("nge2 reset graphics.\n");
-		nge_graphics_reset();
-		sResume = 0;
-	}
+	nge_print("nge2 reset graphics.\n");
+	nge_graphics_reset();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
 {
+	chdir("/sdcard/libnge2");	
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }
@@ -122,53 +115,45 @@ JNIAPI void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
 	nge_print("nge2 finished normaly.\n");
 }
 
-#define NOTIFY_CALLBACK(type)						\
-	if (_notifyCallback)							\
-		_notifyCallback(type, NULL, _notifyCookie);
-
 JNIAPI void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
 												  jobject thiz )
 {
-	nge_print("Paused.\n");
-	sPaused = 1;
-	NOTIFY_CALLBACK(NGE_NOTIFY_PAUSE);
+	sPaused = 1;	
+	s_app->pause();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeStop(JNIEnv* env,
 												  jobject thiz )
 {
-	nge_print("Stoped.\n");
-	NOTIFY_CALLBACK(NGE_NOTIFY_STOP);
+	s_app->stop();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
 												   jobject thiz )
 {
-	nge_print("Resume.\n");
-	if (sPaused) {
-		sPaused = 0;
-		sResume = 1;
-	}
-	NOTIFY_CALLBACK(NGE_NOTIFY_RESUME);
+	sPaused = 0;	
+	s_app->resume();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,
 												  jobject thiz , jint action, jint x, jint y)
 {
+	float rate_w = 1.0f*screen->ori_width/screen->width;
+	float rate_h = 1.0f*screen->ori_height/screen->height;
 	switch (action)
 	{
 	case 0: // ACTION_DOWN
 		if (mouse_btn_proc)
-			mouse_btn_proc(MOUSE_LBUTTON_DOWN,int(x*screen->rate_w),int(y*screen->rate_h));
+			mouse_btn_proc(MOUSE_LBUTTON_DOWN,int(x*rate_w),int(y*rate_h));
 		break;
 
 	case 1: // ACTION_UP:
 		if (mouse_btn_proc)
-			mouse_btn_proc(MOUSE_LBUTTON_UP,int(x*screen->rate_w),int(y*screen->rate_h));
+			mouse_btn_proc(MOUSE_LBUTTON_UP,int(x*rate_w),int(y*rate_h));
 		break;
 	case 2: // ACTION_MOVE:
 		if (mouse_move_proc)
-			mouse_move_proc(int(x*screen->rate_w),int(y*screen->rate_h));
+			mouse_move_proc(int(x*rate_w),int(y*rate_h));
 		break;
 	default:
 		break;

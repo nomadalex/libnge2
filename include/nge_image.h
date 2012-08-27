@@ -26,6 +26,9 @@
 #include "nge_common.h"
 #include "nge_color.h"
 
+#define IMAGE_FLIP_H 1
+#define IMAGE_FLIP_V 2
+
 typedef struct tagImage{
 	uint32_t  w;        /**< 图片原宽 */
 	uint32_t  h;        /**< 图片原高 */
@@ -161,7 +164,7 @@ extern "C" {
  *@param[in] dy 目的内存图的y坐标
  *@return 无
  */
-	NGE_API void image_to_image(const image_p src,const image_p des,uint32_t dx,uint32_t dy);
+	NGE_API void image_to_image(const image_p src,const image_p des,int32_t dx,int32_t dy);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.
@@ -174,9 +177,10 @@ extern "C" {
  *@param[in] sh 源内存图的高
  *@param[in] dx 目的内存图的x坐标
  *@param[in] dy 目的内存图的y坐标
+ *@param[in] flag 翻转标志,IMAGE_FLIP_H表示对源图区域水平翻转,IMAGE_FLIP_V表示对源图区域垂直翻转,可以用|连接,不翻转请用0
  *@return 无
  */
-	NGE_API void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy);
+	NGE_API void image_to_image_ex(const image_p src,const image_p des,int32_t sx,int32_t sy,int32_t sw,int32_t sh,int32_t dx,int32_t dy,int flag);
 
 /**
  *将源image_p src拷贝到image_p des 的alpha混合.
@@ -188,7 +192,7 @@ extern "C" {
  *@param[in] alpha alpha混合值,0-255(透明->不透明),例如128就是半透明
  *@return 无
  */
-	NGE_API void image_to_image_alpha(const image_p src,const image_p des,uint32_t dx,uint32_t dy,int alpha);
+	NGE_API void image_to_image_alpha(const image_p src,const image_p des,int32_t dx,int32_t dy,int alpha);
 
 /**
  *将源image_p src的sx,sh,sw,sh拷贝到image_p des.
@@ -202,9 +206,10 @@ extern "C" {
  *@param[in] dx 目的内存图的x坐标
  *@param[in] dy 目的内存图的y坐标
  *@param[in] alpha alpha混合值,0-255(透明->不透明),例如128就是半透明
+ *@param[in] flag 翻转标志,IMAGE_FLIP_H表示对源图区域水平翻转,IMAGE_FLIP_V表示对源图区域垂直翻转,可以用|连接,不翻转请用0
  *@return 无
  */
-	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy,int alpha);
+	NGE_API void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int32_t sy,int32_t sw,int32_t sh,int32_t dx,int32_t dy,int alpha,int flag);
 
 /**
  *将原始位图格式数据拷贝到image,考虑到效率问题,只支持同种displaymode,
@@ -217,7 +222,7 @@ extern "C" {
  *@param[in] h data的h
  *@return void,无返回
  */
-	NGE_API void rawdata_to_image(void* data,const image_p des,uint32_t x,uint32_t y,uint32_t w,uint32_t h);
+	NGE_API void rawdata_to_image(void* data,const image_p des,int32_t x,int32_t y,int32_t w,int32_t h);
 
 /**
  * 将图像做水平翻转，图像坐标x不变
@@ -243,7 +248,7 @@ extern "C" {
  * @param[in] color 要填充的颜色
  * @return 无
  */
-	NGE_API void image_fillrect(image_p pimage, int x, int y, int w, int h, int color);
+	NGE_API void image_fillrect(image_p pimage, int32_t x, int32_t y, int32_t w, int32_t h, uint32_t color);
 
 //以下函数为内部使用
 int GET_PSM_COLOR_MODE(int dtype);

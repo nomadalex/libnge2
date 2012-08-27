@@ -1074,11 +1074,11 @@ BOOL BeginTarget(image_p _img){
 	if(!_img)
 		return FALSE;
 	target_image = _img;
-	width = _img->texw; height = _img->texh;
+	width = _img->w; height = _img->h;
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, _img->texw, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
 
 	sceGuStart(GU_DIRECT,list);
 	
@@ -1103,10 +1103,10 @@ void EndTarget(){
 	unsigned int offset = getStaticVramOffset();
 	if(target_image == NULL)
 		return;
-	width = target_image->texw;
-	height = target_image->texh;
+	width = target_image->w;
+	height = target_image->h;
 	
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, target_image->texw, target_image->data);
 	sceGuDisable(GU_STENCIL_TEST);
 	sceGuDisable(GU_ALPHA_TEST);
 	

@@ -453,11 +453,11 @@ extern "C"{
  */
 	NGE_API void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype);
 
+
 /**
- *设置屏幕类型
- *@param[in] type 0:通常,1:全屏,2:翻转横屏(ip)
+ *  清空显示缓存空间。
  */
-	NGE_API void SetScreenType(int type);
+	NGE_API void ResetGraphicsCache();
 
 #ifdef __cplusplus
 }
