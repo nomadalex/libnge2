@@ -6,6 +6,6 @@ set(NET_SRCS
   )
 
 add_definitions(-DNGE2_NET)
-add_addon_srcs(NGE2_SRCS NET_SRCS net)
-
-install(FILES net/event.h net/nge_net_common.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+add_addon_srcs(net
+  INCLUDE_THIS_DIR
+  SRCS ${NET_SRCS})
