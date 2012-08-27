@@ -44,7 +44,7 @@
 #endif
 #endif
 
-#include <stdint.h>
+#include <msvc/stdint.h>
 
 #ifdef _MSC_VER
 typedef int BOOL;
