@@ -28,7 +28,7 @@ static float m_costable[360];
 #define COSF(a)  (m_costable[a%360])
 
 
-static uint32 screen_color = 0;
+static uint32_t screen_color = 0;
 
 struct Vertex
 {
@@ -60,12 +60,12 @@ static int use_vblank = 0;;
 /**debug show fps*/
 u64 m_lasttick;
 u64 m_currtick;
-uint32 m_tickres;
+uint32_t m_tickres;
 float m_currms;
-uint32 m_fcount;
-static uint8 show_fps = 0;
-static uint32 m_tex_in_ram = -1;
-static uint32 m_tex_id = 0;
+uint32_t m_fcount;
+static uint8_t show_fps = 0;
+static uint32_t m_tex_in_ram = -1;
+static uint32_t m_tex_id = 0;
 
 static nge_timer* timer = NULL;
 
@@ -106,7 +106,7 @@ void ShowFps()
 	show_fps = 1;
 }
 
-void LimitFps(uint32 limit)
+void LimitFps(uint32_t limit)
 {
 	if(limit!=60){
 		if(limit == 0)
@@ -266,7 +266,7 @@ void GetVersion()
 
 }
 
-void InitGrahics()
+void InitGraphics()
 {
 	int i;
 	InitGu();
@@ -277,7 +277,7 @@ void InitGrahics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 }
-void FiniGrahics()
+void FiniGraphics()
 {
 	sceGuTerm();
 	timer_free(timer);
@@ -318,9 +318,16 @@ void ResetTexBlend()
 	sceGuBlendFunc(GU_ADD, BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA, 0, 0);
 }
 
-void BeginScene(uint8 clear)
+void BeginScene(uint8_t clear)
 {
 	sceGuStart(GU_DIRECT,list);
+	
+	sceGuDrawBufferList(GU_PSM_8888,m_drawbuf,BUF_WIDTH);
+	sceGuOffset(2048 - (SCREEN_WIDTH/2), 2048 - (SCREEN_HEIGHT/2));
+	sceGuViewport(2048, 2048, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	
 	if(clear){
 		sceGuDisable(GU_SCISSOR_TEST);
 		sceGuClearColor(screen_color);
@@ -329,9 +336,9 @@ void BeginScene(uint8 clear)
 	}
 }
 
-uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
+uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 {
-	uint32 u_lastcolor;
+	uint32_t u_lastcolor;
 	u_lastcolor = screen_color;
 	screen_color = MAKE_RGBA_8888(r,g,b,a);
 	return u_lastcolor;
@@ -339,15 +346,15 @@ uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 
 void EndScene()
 {
-	if(use_vblank == 1)
-		sceDisplayWaitVblankStart();
 	sceGuFinish();
 	sceGuSync(0,0);
+	if(use_vblank == 1)
+		sceDisplayWaitVblankStart();
 	if(show_fps == 1){
 		myShowFps();
 	}
 	else
-		sceGuSwapBuffers();
+		m_drawbuf = sceGuSwapBuffers();
 }
 
 void PutPix(float x, float y, int color,int dtype)
@@ -674,7 +681,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 {
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
-//é¡¶ç‚¹coloré¡ºåºä¸ºé€†æ—¶é’ˆæ–¹å‘0->3è®¾ç½®
+//¶¥µãcolorË³ĞòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -747,7 +754,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 
 	sceGumMatrixMode(GU_MODEL);
 	sceGumLoadIdentity();
-	//å¹³ç§»,æ—‹è½¬,æ”¾ç¼©å˜æ¢
+	//Æ½ÒÆ,Ğı×ª,·ÅËõ±ä»»
 	m_transmatrix.x = dx;
 	m_transmatrix.y = dy;
 	sceGumTranslate(&m_transmatrix);
@@ -779,7 +786,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	//sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	//sceGuTexFilter(GU_LINEAR,GU_LINEAR);
 
-	//psp dcacheä¼˜åŒ–
+	//psp dcacheÓÅ»¯
 	for(ustart = 0,step = 0;ustart<su;ustart += PSP_SLICE_F,step += swf * PSP_SLICE_F){
 		vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct VertexUV));
 		width = (ustart + PSP_SLICE_F ) < su ? (PSP_SLICE_F) : su-ustart;
@@ -810,7 +817,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		vertices[3].z = 0.0f;
 		sceGumDrawArray(GU_TRIANGLE_STRIP,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_3D,4,0,vertices);
 	}
-	//æ¢å¤åæ ‡
+	//»Ö¸´×ø±ê
 	sceGumMatrixMode(GU_VIEW);
 	sceGumLoadIdentity();
 
@@ -822,7 +829,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 /*
 void DrawLargeImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
 {
-	uint8 *data;
+	uint8_t *data;
 	float start, end;
 	float cur_u,cur_x,x_end,slice,ustep;
 	struct VertexUV *vertices;
@@ -910,7 +917,7 @@ void DrawImage(image_p tex,float sx , float sy, float sw, float sh, float dx, fl
 
 void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
 {
-	uint8 *data;
+	uint8_t *data;
 	float start, end;
 	float cur_u,cur_x,x_end,slice,ustep;
 	struct VertexUV *vertices;
@@ -998,19 +1005,19 @@ image_p ScreenToImage()
 	int width,format,dtype;
 	image_p pimage = NULL;
 	int i,x,y;
-	uint8 r,g,b;
-	uint32 color;
-	uint32 *vram32;
-	uint16 *vram16;
-	uint8 *line;
+	uint8_t r,g,b;
+	uint32_t color;
+	uint32_t *vram32;
+	uint16_t *vram16;
+	uint8_t *line;
 	sceDisplayWaitVblankStart();  // if framebuf was set with PSP_DISPLAY_SETBUF_NEXTFRAME, wait until it is changed
 	sceDisplayGetFrameBuf(&temp, &width, &format, PSP_DISPLAY_SETBUF_NEXTFRAME);
 	pimage = image_create(SCREEN_WIDTH,SCREEN_HEIGHT,DISPLAY_PIXEL_FORMAT_8888);
 	if(pimage == NULL)
 		return NULL;
-	vram32 = (uint32*) temp;
-	vram16 = (uint16*) vram32;
-	line = (uint8*)pimage->data;
+	vram32 = (uint32_t*) temp;
+	vram16 = (uint16_t*) vram32;
+	line = (uint8_t*)pimage->data;
 	for (y = 0; y < SCREEN_HEIGHT; y++) {
 				for (i = 0, x = 0; x < SCREEN_WIDTH; x++) {
 					   switch (format) {
@@ -1057,4 +1064,55 @@ void ScreenShot(const char* filename)
 		return;
 	image_save(pimage,filename,1,1);
 	image_free(pimage);
+}
+
+static image_p target_image = NULL;
+
+BOOL BeginTarget(image_p _img){
+	unsigned int offset = getStaticVramOffset();
+	int width, height;
+	if(!_img)
+		return FALSE;
+	target_image = _img;
+	width = _img->texw; height = _img->texh;
+
+	if(_img->swizzle)
+		unswizzle_swap(_img);
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
+
+	sceGuStart(GU_DIRECT,list);
+	
+	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
+	sceGuOffset(2048 - (width/2), 2048 - (height/2));
+	sceGuViewport(2048, 2048, width, height);
+	// Scissoring
+	sceGuScissor(0, 0, width, height);
+
+	sceGuStencilFunc(GU_ALWAYS, 255, 0xff);
+	sceGuStencilOp(GU_KEEP, GU_REPLACE, GU_REPLACE);
+	sceGuEnable(GU_STENCIL_TEST);
+	
+	sceGuAlphaFunc(GU_GREATER, 0, 0xff);
+	sceGuEnable(GU_ALPHA_TEST);
+	
+	return TRUE;
+}
+
+void EndTarget(){
+	int width, height;
+	unsigned int offset = getStaticVramOffset();
+	if(target_image == NULL)
+		return;
+	width = target_image->texw;
+	height = target_image->texh;
+	
+	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
+	sceGuDisable(GU_STENCIL_TEST);
+	sceGuDisable(GU_ALPHA_TEST);
+	
+	sceGuFinish();
+	sceGuSync(0,0);
+
+	target_image->modified = 1;
+	target_image = NULL;
 }

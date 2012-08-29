@@ -18,8 +18,8 @@
 //freetype private flags
 #define FONT_ANTIALIAS 32
 #define FONT_KERNING   64
-#define FLAGS_FREETYPE_BOLDER 1
-#define FLAGS_FREETYPE_NORMAL 0
+#define FLAGS_FREETYPE_BOLD 1
+#define FLAGS_FREETYPE_ITALICS (1 << 1)
 
 typedef struct {
 	/**
@@ -84,23 +84,23 @@ typedef struct {
 	 * information, the advance width of the string "AV" may differ from
 	 * the sum of the advance widths for the characters 'A' and 'V'.
 	 */
-	uint8 widths[256];
+	uint8_t widths[256];
 } FontInfo, *PFontInfo;
 
 struct _fontproc{
 	BOOL	(*GetFontInfo)(PFont pfont, PFontInfo pfontinfo);
 	void 	(*GetTextSize)(PFont pfont, const void *text, int cc,int flags, int *pwidth, int *pheight,int *pbase);
-	void	(*GetTextBits)(PFont pfont, int ch, const uint8 **retmap,int *pwidth, int *pheight,int *pbase);
+	void	(*GetTextBits)(PFont pfont, int ch, const uint8_t **retmap,int *pwidth, int *pheight,int *pbase);
 	void	(*DestroyFont)(PFont pfont);
 	void	(*DrawText)(PFont pfont, image_p pimage, int x, int y,const void *str, int count, int flags);
 	void	(*DrawTextShadow)(PFont pfont, image_p pimage, int x, int y,const void *str, int count, int flags);
-	uint32  (*SetFontColor)(PFont pfont, uint32 color);
+	uint32_t  (*SetFontColor)(PFont pfont, uint32_t color);
 	void    (*SetFontSize)(PFont pfont, int fontsize);
 	void    (*SetFontRotation)(PFont pfont, int rot);
 	void    (*SetFontAttr)(PFont pfont, int setflags, int clrflags);
 	PFont   (*Duplicate) (PFont psrcfont, int fontsize);
 	void    (*SetFlags)(PFont pfont,int flags);
-	void    (*SetShadowColor)(PFont pfont, uint32 color_fg,uint32 color_bg,uint32 color_sh);
+	void    (*SetShadowColor)(PFont pfont, uint32_t color_fg,uint32_t color_bg,uint32_t color_sh);
 };
 
 typedef struct _fontproc FontProcs;
@@ -115,7 +115,7 @@ struct _pfont { /* common hdr for all font structures*/
 	struct _fontproc* procs; /* font-specific rendering routines*/
 	int	size; /* font height in pixels*/
 	int	rotation; /* font rotation*/
-	uint32 disp; /* font attributes: kerning/antialias*/
+	uint32_t disp; /* font attributes: kerning/antialias*/
 	int flags;
 	workbuf	encodingBuf;
 
@@ -124,6 +124,6 @@ struct _pfont { /* common hdr for all font structures*/
 
 typedef struct _pfont TFont;
 
-extern uint8 nge_font_encoding;
+extern uint8_t nge_font_encoding;
 
 #endif /* _NGE_FONT_INTERNAL_H */

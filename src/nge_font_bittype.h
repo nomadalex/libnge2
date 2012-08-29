@@ -14,16 +14,16 @@ typedef struct {
 	void*		procs;	/* font-specific rendering routines*/
 	int			size;	/* font height in pixels*/
 	int			rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
+	uint32_t		disp;	/* diplaymode*/
 	int         flags;
 	workbuf     encodingBuf;
 
 /* bit spec */
-	uint32      color_fg;
-	uint32      color_bg;
-	uint32      color_sh;
-	uint8*      cfont_raw;
-	uint8* 		afont_raw;
+	uint32_t      color_fg;
+	uint32_t      color_bg;
+	uint32_t      color_sh;
+	uint8_t*      cfont_raw;
+	uint8_t* 		afont_raw;
 	workbuf		bitbuf;
 } FontBit,*PFontBit;
 
@@ -63,21 +63,21 @@ inline static int getnextchar(char* s, unsigned char* cc)
 		pf->buf.data = (char*)malloc(pf->buf.datalen);	\
 	}
 
-inline static uint8* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
-	uint8 *value;
+inline static uint8_t* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
+	uint8_t *value;
 
 	if (nge_font_encoding == NGE_ENCODING_UTF_8) {
 		int len = *pCC;
 
 		EXPAND_WORKBUF(pf, len, encodingBuf);
-		value = (uint8*)pf->encodingBuf.data;
+		value = (uint8_t*)pf->encodingBuf.data;
 
-		*pCC = nge_charsets_utf8_to_gbk((const uint8*)text, value, len, pf->encodingBuf.datalen);
+		*pCC = nge_charsets_utf8_to_gbk((const uint8_t*)text, value, len, pf->encodingBuf.datalen);
 
 		return value;
 	}
 	else
-		return (uint8*)text;
+		return (uint8_t*)text;
 }
 
 #define INIT_BITBUF(pf)										\
@@ -139,7 +139,7 @@ inline static uint8* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC
 		char *s,*sbegin;												\
 		unsigned char s1[3];											\
 		int ax=0;														\
-		uint8* value;													\
+		uint8_t* value;													\
 																		\
 		value = _nge_ft_conv_encoding(pfont, text, &cc);				\
 		if(cc > 0)														\
@@ -173,15 +173,15 @@ inline static uint8* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC
 			}															\
 		}																\
 																		\
-		*pwidth = ax;													\
-		*pheight = pf->font_height;										\
-		*pbase = pf->font_height-2;										\
+		if(pwidth) *pwidth = ax;										\
+		if(pheight) *pheight = pf->font_height;							\
+		if(pbase) *pbase = pf->font_height-2;							\
 	}
 
-static uint32 bit_setfontcolor(PFont pfont, uint32 color)
+static uint32_t bit_setfontcolor(PFont pfont, uint32_t color)
 {
 	PFontBit pf = (PFontBit)pfont;
-	uint32 last_color = pf->color_fg;
+	uint32_t last_color = pf->color_fg;
 	pf->color_fg = color;
 	return last_color;
 }
@@ -192,7 +192,7 @@ static void bit_setflags(PFont pfont,int flags)
 	pf->flags = flags;
 }
 
-static void bit_setcolorex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 color_sh )
+static void bit_setcolorex(PFont pfont, uint32_t color_fg,uint32_t color_bg ,uint32_t color_sh )
 {
 	PFontBit pf = (PFontBit)pfont;
 	pf->color_fg = color_fg;
@@ -207,19 +207,19 @@ static void bit_setcolorex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 
 			b = *font++;								\
 														\
 		if (b & (128 >> (x % 8)))						\
-			bitmap[i++]=(uint##bits)fg;					\
+			bitmap[i++]=(uint##bits##_t)fg;					\
 		else											\
-			bitmap[i++]=(uint##bits)bg;					\
+			bitmap[i++]=(uint##bits##_t)bg;					\
 	}
 
 #define MAKE_COPY_RAWDATA_IMAGE_FUNC(bits, var)							\
-	inline static void copy_rawdata_image_custom_##bits(void* data,const image_p des,int x,int y,uint32 w,uint32 h,uint##bits color_bg,uint##bits color_fg) \
+	inline static void copy_rawdata_image_custom_##bits(void* data,const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits##_t color_bg,uint##bits##_t color_fg) \
 	{																	\
-		uint##bits *bmp, *cpbegin;										\
-		uint32 i,j;														\
+		uint##bits##_t *bmp, *cpbegin;										\
+		uint32_t i,j;														\
 																		\
-		cpbegin = (uint##bits*)des->data+y*des->texw+x;					\
-		bmp = (uint##bits*)data;										\
+		cpbegin = (uint##bits##_t*)des->data+y*des->texw+x;					\
+		bmp = (uint##bits##_t*)data;										\
 		for(i =0;i<h;i++){												\
 			for(j =0;j<w;j++){											\
 				if(j+x>des->texw||i+y>des->texh)						\
@@ -231,12 +231,12 @@ static void bit_setcolorex(PFont pfont, uint32 color_fg,uint32 color_bg ,uint32 
 	}
 
 #define MAKE_PROCESS_SHADOW_FUNC(bits, var)								\
-	inline static void process_shadow_##bits(void* data, const image_p des,int x,int y,uint32 w,uint32 h,uint##bits color_bg,uint##bits color_fg,uint##bits color_sh) \
+	inline static void process_shadow_##bits(void* data, const image_p des,int x,int y,uint32_t w,uint32_t h,uint##bits##_t color_bg,uint##bits##_t color_fg,uint##bits##_t color_sh) \
 	{																	\
-		uint##bits *bmp, *cpbegin;										\
-		uint32 i,j;														\
-		bmp = (uint##bits*)data;										\
-		cpbegin = (uint##bits*)des->data+y*des->texw+x;					\
+		uint##bits##_t *bmp, *cpbegin;										\
+		uint32_t i,j;														\
+		bmp = (uint##bits##_t*)data;										\
+		cpbegin = (uint##bits##_t*)des->data+y*des->texw+x;					\
 		for(i = 1;i<h+1;i++){											\
 			for(j = 1;j<w+1;j++){										\
 				if(j+x+1>des->texw||i+y+1>des->texh)					\

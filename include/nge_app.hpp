@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file  nge_app.hpp
  * @author Kun Wang <ifreedom.cn@gmail.com>
  * @date 2011/08/08 13:25:02
@@ -30,14 +30,19 @@ class CNgeApp
 {
 public:
 	CNgeApp() { mFps = 60; };
-	~CNgeApp() {};
+	virtual ~CNgeApp() {};
 	virtual	int Init() = 0;
 	virtual	int Mainloop() = 0;
 	virtual	int Fini() = 0;
+	virtual	int Pause() {return 0;}
+	virtual	int Resume(){return 0;}
+	virtual	int Start(){return 0;}	virtual	int Stop(){return 0;}
 public:
 	int mFps;
 };
 
-extern "C" NGE_API void nge_registerApp(CNgeApp *app);
+extern "C" {
+	NGE_API void nge_registerApp(CNgeApp *app);
+}
 
 #endif /* _NGE_APP_HPP */

@@ -15,13 +15,6 @@
  */
 package org.libnge.nge2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -36,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.util.DisplayMetrics;
 
@@ -178,6 +172,29 @@ public class NGE2 extends Activity
 		}
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			new AlertDialog.Builder(this)
+			.setTitle("NGE2")
+			.setMessage("Quit this application?")
+			.setPositiveButton(android.R.string.ok,
+					new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							dialog.dismiss();
+							android.os.Process.killProcess(android.os.Process.myPid());
+						}
+					})
+			.setNegativeButton(android.R.string.cancel,null).
+			create().show();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	private class NGE2View extends GLSurfaceView
 	{
 		public NGE2View(Context context)
@@ -190,9 +207,15 @@ public class NGE2 extends Activity
 			super.setRenderer(renderer);
 		}
 
-		@Override public boolean onTouchEvent(MotionEvent event)
-		{
-			nativeTouch(event.getAction(), (int)event.getX(), (int)event.getY());
+		@Override
+		public boolean onTouchEvent(final MotionEvent event) {
+			queueEvent(new Runnable(){
+										public void run(){
+											nativeTouch(event.getAction(),(int)event.getX(),(int)event.getY());
+										}
+									 }
+			);
+
 			return true;
 		}
 	}

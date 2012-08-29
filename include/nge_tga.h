@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_tga.h
  *
  *  2011/03/25 05:05:01
@@ -47,18 +47,18 @@
 
 #pragma pack(push, 1)
 typedef struct {
-    uint8	ImageIDSize;
-    uint8	ColorMapType;
-    uint8	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
-    uint8	ColorMapOrigin[2];
-    uint8	ColorMapLength[2];                      // Palette Size
-    uint8	ColorMapESize;							// Size in bits of one Palette entry
-    uint8	OriginX[2];
-    uint8	OriginY[2];
-    uint8	Width[2];                               // Width of Image
-    uint8	Height[2];                              // Height of Image
-    uint8	Depth;                                  // Bits per Pixel of Image
-    uint8	ImageDescrip;
+    uint8_t	ImageIDSize;
+    uint8_t	ColorMapType;
+    uint8_t	ImageTypeCode;                          // Image Type (normal/paletted/grayscale/rle)
+    uint8_t	ColorMapOrigin[2];
+    uint8_t	ColorMapLength[2];                      // Palette Size
+    uint8_t	ColorMapESize;							// Size in bits of one Palette entry
+    uint8_t	OriginX[2];
+    uint8_t	OriginY[2];
+    uint8_t	Width[2];                               // Width of Image
+    uint8_t	Height[2];                              // Height of Image
+    uint8_t	Depth;                                  // Bits per Pixel of Image
+    uint8_t	ImageDescrip;
 } TGAFILEHEADER;
 #pragma pack(pop)
 
@@ -67,56 +67,74 @@ extern "C" {
 #endif
 
 /**
- *åŠ è½½tgaå›¾ç‰‡,ä»æ–‡ä»¶åŠ è½½
- *@param const char* filename,å›¾ç‰‡æ–‡ä»¶å
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØtgaÍ¼Æ¬,´ÓÎÄ¼ş¼ÓÔØ
+ *@param[in] filename Í¼Æ¬ÎÄ¼şÃû
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga(const char* filename, int displaymode);
 
 /**
- *åŠ è½½tgaå›¾ç‰‡,ä»å†…å­˜åŠ è½½
- *@param const char* mbuf,å†…å­˜åœ°å€
- *@param int bsize,ä¸Šè¿°bufferå¤§å°
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØtgaÍ¼Æ¬,´ÓÄÚ´æ¼ÓÔØ
+ *@param[in] mbuf ÄÚ´æµØÖ·
+ *@param[in] bsize ÉÏÊöbuffer´óĞ¡
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode);
 
 /**
- *åŠ è½½tgaå›¾ç‰‡,ä»æ–‡ä»¶æŒ‡é’ˆåŠ è½½
- *@param int handle,æ–‡ä»¶æŒ‡é’ˆ
- *@param int fsize,ä¸Šè¿°æ–‡ä»¶å¤§å°
- *@param int autoclose,æ˜¯å¦å…³é—­æ–‡ä»¶,æ˜¯å¦å…³é—­æ–‡ä»¶,0ä¸å…³é—­,1å…³é—­
- *@param int displaymode,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return image_p,è¿”å›0(åŠ è½½å¤±è´¥),åŠ è½½å›¾ç‰‡å¡«å……æ­¤ç»“æ„
+ *¼ÓÔØtgaÍ¼Æ¬,´ÓÎÄ¼şÖ¸Õë¼ÓÔØ
+ *@param[in] handle ÎÄ¼şÖ¸Õë
+ *@param[in] fsize ÉÏÊöÎÄ¼ş´óĞ¡
+ *@param[in] autoclose ÊÇ·ñ¹Ø±ÕÎÄ¼ş,ÊÇ·ñ¹Ø±ÕÎÄ¼ş,0²»¹Ø±Õ,1¹Ø±Õ
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga_fp(int handle,int fsize, int autoclose,int displaymode);
 
 /**
- * åŒimage_load_tgaå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_tgaº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
+ *@see image_load_tga
+ *@param[in] filename Í¼Æ¬ÎÄ¼şÃû
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] colorkey ¹Ø¼üÉ«,ÓÃMAKE_RGBÉè¶¨
+ *@return image_p,¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga_colorkey(const char* filename, int displaymode,int colorkey);
 
 /**
- * åŒimage_load_tga_bufå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_tga_bufº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
+ *@see image_load_tga_buf
+ *@param[in] mbuf ÄÚ´æµØÖ·
+ *@param[in] bsize ÉÏÊöbuffer´óĞ¡
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] colorkey ¹Ø¼üÉ«,ÓÃMAKE_RGBÉè¶¨
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,int colorkey);
 
 /**
- * åŒimage_load_png_fpå‡½æ•°,åªæ˜¯å¤šäº†ä¸€ä¸ªè®¾ç½®å…³é”®è‰²,colorkeyç”¨MAKE_RGBè®¾å®š
+ * Í¬image_load_png_fpº¯Êı,Ö»ÊÇ¶àÁËÒ»¸öÉèÖÃ¹Ø¼üÉ«,colorkeyÓÃMAKE_RGBÉè¶¨
+ *@see image_load_png_fp
+ *@param[in] handle ÎÄ¼şÖ¸Õë
+ *@param[in] fsize ÉÏÊöÎÄ¼ş´óĞ¡
+ *@param[in] autoclose ÊÇ·ñ¹Ø±ÕÎÄ¼ş,0²»¹Ø±Õ,1¹Ø±Õ
+ *@param[in] displaymode ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@param[in] colorkey ¹Ø¼üÉ«,ÓÃMAKE_RGBÉè¶¨
+ *@return image_p,·µ»Ø0(¼ÓÔØÊ§°Ü),¼ÓÔØÍ¼Æ¬Ìî³ä´Ë½á¹¹
  */
 	NGE_API image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displaymode,int colorkey);
 
 /**
- *å­˜å‚¨tgaå›¾ç‰‡,å°†image_pç»“æ„å†…å®¹å­˜å‚¨ä¸ºtgaæ–‡ä»¶
- *@param image_p,image_pç»“æ„æŒ‡é’ˆ,é‡Œé¢ä¿å­˜ä¸ºimage_tçš„æ•°æ®
- *@param const char*,ä¿å­˜æ–‡ä»¶å
- *@param uint8,æ˜¯å¦ä¿å­˜ä¸ºå«alphaé€šé“çš„å›¾ç‰‡
- *@param uint8,æ˜¯å¦é‡‡ç”¨rleç¼–ç å‹ç¼©
- *@return int,è¿”å›0(åŠ è½½å¤±è´¥)æˆ–1(åŠ è½½æˆåŠŸ)
+ *´æ´¢tgaÍ¼Æ¬,½«image_p½á¹¹ÄÚÈİ´æ´¢ÎªtgaÎÄ¼ş
+ *@param[in] pimage image_p½á¹¹Ö¸Õë,ÀïÃæ±£´æÎªimage_tµÄÊı¾İ
+ *@param[in] filename ±£´æÎÄ¼şÃû
+ *@param[in] alpha ÊÇ·ñ±£´æÎªº¬alphaÍ¨µÀµÄÍ¼Æ¬
+ *@param[in] rle ÊÇ·ñ²ÉÓÃrle±àÂëÑ¹Ëõ
+ *@return int,·µ»Ø0(¼ÓÔØÊ§°Ü)»ò1(¼ÓÔØ³É¹¦)
  */
-	NGE_API int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle);
+	NGE_API int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle);
 
 #ifdef __cplusplus
 }

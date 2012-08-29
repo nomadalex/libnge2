@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *            nge_tga.c
  *
  *  2011/03/27 06:18:18
@@ -29,7 +29,7 @@
 //////////////////////////////////////////////////////////////////////////
 //for tga load
 //////////////////////////////////////////////////////////////////////////
-#define RD16(x) (uint16)((uint16)x[0] | ((uint16)x[1] << 8))
+#define RD16(x) (uint16_t)((uint16_t)x[0] | ((uint16_t)x[1] << 8))
 image_p image_load_tga(const char* filename, int displaymode)
 {
 	image_p pimage = NULL;
@@ -53,18 +53,18 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 {
 	image_p pimage = NULL;
 	char *workptr;
-	sint32 width,height,bytesperline,rlesize;
-	uint32 texw,texh,fpos,color32,col32;
-	uint8 *tdata,*dst,*rle,*src,*xsrc;
-	uint8 done,bpb;
+	int32_t width,height,bytesperline,rlesize;
+	uint32_t texw,texh,fpos,color32,col32;
+	uint8_t *tdata,*dst,*rle,*src,*xsrc;
+	uint8_t done,bpb;
 	char TRUEVIS[] = "TRUEVISION-XFILE.";
 	long extoffs,devoffs;
-	uint32 *p32;
-	uint16 *p16;
+	uint32_t *p32;
+	uint16_t *p16;
 	int x = 0,y = 0,size;
-	sint32 ddelta,hdelta,vdelta;
-	uint16 color16;
-	static uint8 r,g,b,a;
+	int32_t ddelta,hdelta,vdelta;
+	uint16_t color16;
+	static uint8_t r,g,b,a;
 	TGAFILEHEADER tfh;
 
 	if (mbuf==NULL){
@@ -96,7 +96,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	texw = roundpower2(width);
 	texh = roundpower2(height);
 	bytesperline = ((width*tfh.Depth)>>3);
-	tdata = (uint8*) malloc( height * bytesperline );
+	tdata = (uint8_t*) malloc( height * bytesperline );
 	dst = NULL;
 	done = 0;
 	bpb = 4;
@@ -109,7 +109,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	{
 		// READ RLE ENCODED
 		rlesize = bsize-fpos;
-		rle = (uint8*) malloc( rlesize );
+		rle = (uint8_t*) malloc( rlesize );
 		if (rle==0)
 		{
 			free( tdata );
@@ -160,9 +160,9 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 			bpb = 2;
 		}
 		size = texw * texh * bpb;
-		dst = (uint8*)malloc(size);
+		dst = (uint8_t*)malloc(size);
 		memset(dst,0,size);
-		src = (uint8*)tdata;
+		src = (uint8_t*)tdata;
 		ddelta = (texw-width)*bpb;
 		hdelta = bytesperline;
 		if ((tfh.ImageDescrip & TGA_DESC_HORIZONTAL) == 0){
@@ -184,13 +184,13 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 			case 16:
 				break;
 			case 24:
-				p32 = (uint32*) dst;
-				p16 = (uint16*) p32;
+				p32 = (uint32_t*) dst;
+				p16 = (uint16_t*) p32;
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
 
-						col32 = (uint32)(((uint32)xsrc[2]<<16) | ((uint32)xsrc[1]<<8) | (uint32)xsrc[0] | (0xFF<<24));
+						col32 = (uint32_t)(((uint32_t)xsrc[2]<<16) | ((uint32_t)xsrc[1]<<8) | (uint32_t)xsrc[0] | (0xFF<<24));
 						//BGRA
 						a = (col32 >> 24) & 0xff;
 						b = col32 & 0xff;
@@ -222,12 +222,12 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 				}
 				break;
 			case 32:
-				p32 = (uint32*) dst;
-				p16 = (uint16*) p32;
+				p32 = (uint32_t*) dst;
+				p16 = (uint16_t*) p32;
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
-						col32 = *(uint32*)(xsrc);
+						col32 = *(uint32_t*)(xsrc);
 						//BGRA
 						a = (col32 >> 24) & 0xff;
 						b = col32 & 0xff;
@@ -264,7 +264,7 @@ image_p image_load_tga_buf(const char* mbuf,int bsize, int displaymode)
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)dst;
+		pimage->data = (uint8_t *)dst;
 		pimage->w    = width;
 		pimage->h    = height;
 		pimage->texw = texw;
@@ -323,18 +323,18 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 {
 	image_p pimage = NULL;
 	char *workptr;
-	sint32 width,height,bytesperline,rlesize,pixcolor;
-	uint32 texw,texh,fpos,color32,col32;
-	uint8 *tdata,*dst,*rle,*src,*xsrc;
-	uint8 done,bpb;
+	int32_t width,height,bytesperline,rlesize,pixcolor;
+	uint32_t texw,texh,fpos,color32,col32;
+	uint8_t *tdata,*dst,*rle,*src,*xsrc;
+	uint8_t done,bpb;
 	char TRUEVIS[] = "TRUEVISION-XFILE.";
 	long extoffs,devoffs;
-	uint32 *p32;
-	uint16 *p16;
+	uint32_t *p32;
+	uint16_t *p16;
 	int x = 0,y = 0,size;
-	sint32 ddelta,hdelta,vdelta;
-	uint16 color16;
-	static uint8 r,g,b,a;
+	int32_t ddelta,hdelta,vdelta;
+	uint16_t color16;
+	static uint8_t r,g,b,a;
 	TGAFILEHEADER tfh;
 
 	if (mbuf==NULL){
@@ -367,7 +367,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	texw = roundpower2(width);
 	texh = roundpower2(height);
 	bytesperline = ((width*tfh.Depth)>>3);
-	tdata = (uint8*) malloc( height * bytesperline );
+	tdata = (uint8_t*) malloc( height * bytesperline );
 	dst = NULL;
 	done = 0;
 	bpb = 4;
@@ -380,7 +380,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	{
 		// READ RLE ENCODED
 		rlesize = bsize-fpos;
-		rle = (uint8*) malloc( rlesize );
+		rle = (uint8_t*) malloc( rlesize );
 		if (rle==0)
 		{
 			free( tdata );
@@ -431,9 +431,9 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 			bpb = 2;
 		}
 		size = texw * texh * bpb;
-		dst = (uint8*)malloc(size);
+		dst = (uint8_t*)malloc(size);
 		memset(dst,0,size);
-		src = (uint8*)tdata;
+		src = (uint8_t*)tdata;
 
 		ddelta = (texw-width)*bpb;
 
@@ -457,13 +457,13 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 			case 16:
 				break;
 			case 24:
-				p32 = (uint32*) dst;
-				p16 = (uint16*) p32;
+				p32 = (uint32_t*) dst;
+				p16 = (uint16_t*) p32;
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
 
-						col32 = (uint32)(((uint32)xsrc[2]<<16) | ((uint32)xsrc[1]<<8) | (uint32)xsrc[0] | (0xFF<<24));
+						col32 = (uint32_t)(((uint32_t)xsrc[2]<<16) | ((uint32_t)xsrc[1]<<8) | (uint32_t)xsrc[0] | (0xFF<<24));
 						//BGRA
 						a = (col32 >> 24) & 0xff;
 						b = col32 & 0xff;
@@ -499,12 +499,12 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 				}
 				break;
 			case 32:
-				p32 = (uint32*) dst;
-				p16 = (uint16*) p32;
+				p32 = (uint32_t*) dst;
+				p16 = (uint16_t*) p32;
 				for (y = 0; y < (int)height; y++){
 					xsrc = src;
 					for (x = 0; x < (int)width; x++)  {
-						col32 = *(uint32*)(xsrc);
+						col32 = *(uint32_t*)(xsrc);
 						//BGRA
 						a = (col32 >> 24) & 0xff;
 						b = col32 & 0xff;
@@ -545,7 +545,7 @@ image_p image_load_tga_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	if (done){
 		pimage = (image_p)malloc(sizeof(image_t));
 		memset(pimage,0,sizeof(image_t));
-		pimage->data = (uint8 *)dst;
+		pimage->data = (uint8_t *)dst;
 		pimage->w    = width;
 		pimage->h    = height;
 		pimage->texw = texw;
@@ -583,17 +583,17 @@ image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displ
 //////////////////////////////////////////////////////////////////////////
 //to tga
 //////////////////////////////////////////////////////////////////////////
-int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
+int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle)
 {
 	int fd;
-	uint8 *line,*rleline;
+	uint8_t *line,*rleline;
 	TGAFILEHEADER tfh;
-	uint32 x,y;
-	static uint8 b,g,r,a;
-	uint8 *src;
-	uint16 col16;
+	uint32_t x,y;
+	static uint8_t b,g,r,a;
+	uint8_t *src;
+	uint16_t col16;
 
-	uint8* save_buf = NULL;
+	uint8_t* save_buf = NULL;
 	int   save_pos = 0;
 	if (pimage == 0)
 		return 0;
@@ -616,12 +616,12 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 	tfh.Height[0] = pimage->h%256;
 	//io_fwrite( &tfh, 1, sizeof(tfh), fd );
 
-	line = (uint8*) malloc(pimage->w * 4);
+	line = (uint8_t*) malloc(pimage->w * 4);
 	if (line == 0){
 		io_fclose(fd);
 		return 0;
 	}
-	save_buf = (uint8*)malloc(pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
+	save_buf = (uint8_t*)malloc(pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
 	memset(save_buf,0,pimage->w*pimage->h*4+sizeof(TGAFILEHEADER));
 	memcpy(save_buf+save_pos,&tfh,sizeof(TGAFILEHEADER));
 	save_pos += sizeof(TGAFILEHEADER);
@@ -629,10 +629,10 @@ int image_save_tga(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
 
 	rleline = 0;
 	if (rle){
-		rleline = (uint8*) malloc(pimage->w * 6);
+		rleline = (uint8_t*) malloc(pimage->w * 6);
 	}
 
-	src = (uint8*)pimage->data;
+	src = (uint8_t*)pimage->data;
 
 	for (y = 0;y<pimage->h;y++)
 	{

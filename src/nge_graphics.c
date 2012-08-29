@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_graphics.c
  *
  *  2011/03/27 09:29:04
@@ -41,7 +41,7 @@
 
 #define glOrtho glOrthof
 #elif defined NGE_WIN || defined NGE_LINUX
-
+#include <GL/glew.h>
 #include <GL/gl.h>
 
 #if defined NGE_LINUX
@@ -62,13 +62,16 @@ static float m_costable[360];
 #define COSF(a)  (m_costable[a%360])
 
 //fps count
-static uint32 m_frame = 0;
-static uint32 m_t0 = 0;
+static uint32_t m_frame = 0;
+static uint32_t m_t0 = 0;
 static int fps_last_ticks = 0;
+static char inited = 0;
+static int cacheid = 0;
+static uint8_t tex_ret = 0;
 
 #define MAX_TEX_CACHE_SIZE 32
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
-
+GLuint fbo = 0;
 // nge_screen *************************
 static screen_context_t nge_screen = {
 	NULL,
@@ -136,9 +139,9 @@ static Vectice2D_t *gl_vectices;
 static Color_t *gl_colors;
 static TexCoord_t *gl_tex_uvs;
 
-static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
+static uint32_t max_vectices=0,max_colors=0,max_tex_uvs=0;
 #define GL_ARRAY_CHECK_V(size)											\
-	if(((uint32)size) > max_vectices){									\
+	if(((uint32_t)size) > max_vectices){									\
 		max_vectices = size;											\
 		SAFE_FREE(gl_vectices);											\
 		gl_vectices = (Vectice2D_t*)malloc(size*sizeof(Vectice2D_t));	\
@@ -146,7 +149,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_C(size)											\
-	if(((uint32)size) > max_colors)										\
+	if(((uint32_t)size) > max_colors)										\
 	{																	\
 		max_colors = size;												\
 		SAFE_FREE(gl_colors);											\
@@ -155,7 +158,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 	}
 
 #define GL_ARRAY_CHECK_T(size)											\
-	if(((uint32)size) > max_tex_uvs)									\
+	if(((uint32_t)size) > max_tex_uvs)									\
 	{																	\
 		max_tex_uvs = size;												\
 		SAFE_FREE(gl_tex_uvs);											\
@@ -169,7 +172,7 @@ static uint32 max_vectices=0,max_colors=0,max_tex_uvs=0;
 #define GL_ARRAY_DIS(what)						\
 	glDisableClientState(GL_##what##_ARRAY);
 
-static inline void GetRGBA(int color,int dtype,uint8* r,uint8* g,uint8* b,uint8* a)
+static inline void GetRGBA(int color,int dtype,uint8_t* r,uint8_t* g,uint8_t* b,uint8_t* a)
 {
 	switch(dtype)
 	{
@@ -204,9 +207,9 @@ char* NGE_GetVersion()
 
 static Color_t screen_c = {0, 0, 0, 0};
 
-uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
+uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 {
-	uint32 u_lastcolor;
+	uint32_t u_lastcolor;
 	u_lastcolor = MAKE_RGBA_8888(((int)(COLOR_T_R(screen_c)*255)),((int)(COLOR_T_G(screen_c)*255)),((int)(COLOR_T_B(screen_c)*255)),((int)(COLOR_T_A(screen_c)*255)));
 	COLOR_T_R(screen_c) = r/255.0;
 	COLOR_T_G(screen_c) = g/255.0;
@@ -218,20 +221,6 @@ uint32 SetScreenColor(uint8 r,uint8 g,uint8 b,uint8 a)
 screen_context_p GetScreenContext()
 {
 	return &nge_screen;
-}
-
-void SetScreenType(int type)
-{
-#ifdef NGE_IPHONE
-	if(type == 2){
-		nge_screen.fullscreen = 2;
-		SetSwapXY(1);
-	}
-	else{
-		nge_screen.fullscreen = 0;
-		SetSwapXY(0);
-	}
-#endif
 }
 
 void SetTexBlend(int src_blend, int des_blend)
@@ -249,17 +238,18 @@ void ResetTexBlend()
 
 void SetClip(int x,int y,int w,int h)
 {
-	/* float rate_w_ori = 1/nge_screen.rate_w; */
-	/* float rate_h_ori = 1/nge_screen.rate_h; */
-	/* glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori* (y-h)), */
-	/* 		  ceil(w*rate_w_ori),ceil(h*rate_h_ori)); */
-	glScissor(x,nge_screen.height-y-h,w,h);
+	float rate_w_ori = 1.0f*nge_screen.width/nge_screen.ori_width; //1/nge_screen.rate_w;
+	float rate_h_ori = 1.0f*nge_screen.height/nge_screen.ori_height; //1/nge_screen.rate_h;
+	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori*y-rate_h_ori*h),
+		ceil(w*rate_w_ori),ceil(h*rate_h_ori));
 }
 
 void ResetClip()
 {
-	SetClip(0,0,nge_screen.width, nge_screen.height);
+	SetClip(0, 0, nge_screen.ori_width,nge_screen.ori_height);
 }
+
+
 
 #if defined NGE_LINUX
 Display *g_dpy;
@@ -323,16 +313,12 @@ makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
-void nge_graphics_reset(void)
+void ResetGraphicsCache(void)
 {
-	int i;
-	// reset for fps------------------
-	m_frame = 0;
-	m_t0 = 0;
-	fps_last_ticks = nge_get_tick();
-
-	// reset cache
-	tex_cache_clear();
+	int i;	
+	tex_cache_fini();
+	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
 	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
@@ -340,10 +326,43 @@ void nge_graphics_reset(void)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
+}
 
+void nge_graphics_reset(void)
+{
+	int i;
+	// reset for fps------------------
+	m_frame = 0;
+	m_t0 = 0;
+	fps_last_ticks = nge_get_tick();
+	if(inited == 0){
+		inited = 1;
+		tex_cache_init(MAX_TEX_CACHE_SIZE);
+		glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+				tex_cache_add(i,m_texcache[i]);
+				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+	}
+	else{
+		tex_cache_fini();
+		tex_cache_init(MAX_TEX_CACHE_SIZE);
+		glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
+		glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+				tex_cache_add(i,m_texcache[i]);
+				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+		nge_print("cleared.\n");
+	}
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0,nge_screen.width,nge_screen.height,0, -1, 1);
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 
 	glEnable(GL_SCISSOR_TEST);
@@ -388,6 +407,10 @@ void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
 	/* create and enable the render context (RC) */
 	*hRC = wglCreateContext( *hDC );
 	wglMakeCurrent( *hDC, *hRC );
+#if defined NGE_WIN || defined NGE_LINUX
+    	glewInit();
+	glGenFramebuffersEXT(1, &fbo);
+#endif
 }
 
 void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
@@ -395,6 +418,9 @@ void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
 	wglMakeCurrent( NULL, NULL );
 	wglDeleteContext( hRC );
 	ReleaseDC( hWnd, hDC );
+#if defined NGE_WIN || defined NGE_LINUX
+	glDeleteFramebuffersEXT(1, &fbo);
+#endif
 }
 
 static HWND hWnd;
@@ -435,13 +461,13 @@ void makeWindow(const char *name, int x, int y, int width, int height)
 }
 #endif
 
-void InitGrahics()
+void InitGraphics()
 {
 	int i = 0;
 
 	if (nge_screen.name == NULL) {
-		nge_screen.name = malloc(5);
-		strncpy(nge_screen.name, "NGE2", 5);
+		nge_screen.name = malloc(8);
+		strncpy(nge_screen.name, "NGE2", 8);
 	}
 
 #if defined NGE_WIN
@@ -467,13 +493,13 @@ void InitGrahics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 
-	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	
 	nge_graphics_reset();
 
 	nge_log("Init Graphics Ok\n");
 }
 
-void FiniGrahics()
+void FiniGraphics()
 {
 	tex_cache_fini();
 #ifndef NGE_ANDROID
@@ -521,7 +547,7 @@ void ShowFps()
 #endif
 }
 
-void LimitFps(uint32 limit)
+void LimitFps(uint32_t limit)
 {
 	int ticks = 0, sleep_ticks = 0;
 	if(limit == 0)
@@ -539,7 +565,7 @@ void LimitFps(uint32 limit)
 	glRotatef(angle,0,0,1);                     \
 	glTranslatef(-(xcent),-(ycent),0)
 
-void BeginScene(uint8 clear)
+void BeginScene(uint8_t clear)
 {
 	if(clear == 1){
 		glDisable(GL_SCISSOR_TEST);
@@ -548,9 +574,6 @@ void BeginScene(uint8 clear)
 		glEnable(GL_SCISSOR_TEST);
 	}
 	glLoadIdentity();
-	if(nge_screen.fullscreen == 2){
-		ROTATE_2D(90, nge_screen.width/2,nge_screen.height/2);
-	}
 }
 
 void EndScene()
@@ -564,7 +587,8 @@ void EndScene()
 #endif
 }
 
-static uint8 r,g,b,a;
+
+static uint8_t r,g,b,a;
 #define SET_COLOR(color, dtype)                 \
 	GetRGBA(color,dtype,&r,&g,&b,&a);           \
 	glColor4ub(r, g, b, a)
@@ -667,6 +691,7 @@ void PutPix(float x,float y ,int color,int dtype)
 }
 
 #define DRAW_POLYGON_IMP(mode, count)					\
+	glDisable(GL_TEXTURE_2D);							\
 	BEFORE_DRAW();                                      \
 	GL_ARRAY_CHECK_V(count);							\
 	{                                                   \
@@ -678,9 +703,11 @@ void PutPix(float x,float y ,int color,int dtype)
 		SET_COLOR(color,dtype);							\
 		glDrawArrays(mode, 0, count);                   \
 	}                                                   \
-	AFTER_DRAW()
+	AFTER_DRAW();										\
+	glEnable(GL_TEXTURE_2D)
 
 #define DRAW_POLYGON_IMP_COLOR(mode, count)				\
+	glDisable(GL_TEXTURE_2D);							\
 	BEFORE_DRAW();                                      \
 	GL_ARRAY_EN(COLOR);									\
 	GL_ARRAY_CHECK_V(count);							\
@@ -696,7 +723,8 @@ void PutPix(float x,float y ,int color,int dtype)
 		glDrawArrays(mode, 0, count);                   \
 	}                                                   \
 	GL_ARRAY_DIS(COLOR);								\
-	AFTER_DRAW()
+	AFTER_DRAW();										\
+	glEnable(GL_TEXTURE_2D)
 
 void DrawPolygon(float* x, float* y, int count, int color,int dtype)
 {
@@ -727,8 +755,6 @@ void FillPolygonGrad(float* x, float* y, int count, int* colors,int dtype)
 void DrawRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_LINE_LOOP, 4);
 }
 
@@ -740,8 +766,6 @@ void DrawRectEx(rectf rect,int color,int dtype)
 void FillRect(float dx, float dy, float width, float height,int color,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP(GL_TRIANGLE_FAN, 4);
 }
 
@@ -750,7 +774,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
 
-//é¡¶ç‚¹coloré¡ºåºä¸ºé€†æ—¶é’ˆæ–¹å‘0->3è®¾ç½®
+//¶¥µãcolorË³ÐòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -760,8 +784,6 @@ void FillRectEx(rectf rect,int color,int dtype)
 void FillRectGrad(float dx, float dy, float width, float height,int* colors,int dtype)
 {
 	SET_RECT_ARRAY();
-	if(dy == 0.0)
-		dy = 0.1;
 	DRAW_POLYGON_IMP_COLOR(GL_TRIANGLE_FAN, 4);
 }
 
@@ -770,13 +792,13 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 	FillRectGrad(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,colors,dtype);
 }
 
-/** å¡«å……ä¸‰è§’åž‹(å•è‰²)
- *@param pointf v0,é¡¶ç‚¹åæ ‡v1
- *@param pointf v2,é¡¶ç‚¹åæ ‡v2
- *@param pointf v2,é¡¶ç‚¹åæ ‡v3
- *@param int color,å¡«å……è‰²
- *@param int dtype,æ˜¾ç¤ºæ¨¡å¼,å¡«å……è‰²è¦ä¸Žä¹‹ç›¸å¯¹åº”
- *@return void ,æ— 
+/** Ìî³äÈý½ÇÐÍ(µ¥É«)
+ *@param[in] v1 ¶¥µã×ø±êv1
+ *@param[in] v2 ¶¥µã×ø±êv2
+ *@param[in] v3 ¶¥µã×ø±êv3
+ *@param[in] color Ìî³äÉ«
+ *@param[in] dtype ÏÔÊ¾Ä£Ê½,Ìî³äÉ«ÒªÓëÖ®Ïà¶ÔÓ¦
+ *@return void ,ÎÞ
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {
@@ -797,21 +819,28 @@ int PreLoadImage(image_p pimg)
 
 static inline void TexImage2D(image_p pimg)
 {
-	uint32 format = GL_RGBA;
+	uint32_t format = GL_RGBA;
 	if(pimg->dtype == DISPLAY_PIXEL_FORMAT_565){
 		format = GL_RGB;
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, format, pimg->texw, pimg->texh, 0, format, pimg->dtype, pimg->data);
 }
 
-static int cacheid = 0;
-static uint8 tex_ret = 0;
+
 #define BIND_AND_TEST_CACHE(tex)						\
 	do {												\
 		tex_ret = tex_cache_getid(tex->texid,&cacheid);	\
 		glBindTexture(GL_TEXTURE_2D, cacheid);			\
 		if(tex_ret == 0 ||tex->modified==1){			\
 			TexImage2D(tex);							\
+			if(tex->filter == FILTER_NEAREST){          \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
+			}                                                                      \
+			else{                                                                  \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  \
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  \
+			}                                                                      \
 			tex->modified = 0;							\
 		}												\
 	}while(0)
@@ -930,8 +959,6 @@ void DrawImageMask(image_p tex,float sx,float sy,float sw,float sh,float dx,floa
 
 void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float xscale ,float yscale,float angle,int mask)
 {
-	if(dy == 0.0f)
-		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
 
@@ -942,6 +969,16 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
+
+
+//static function for DrawRegion
+/* NGE_TRANS_x for private use */
+enum{
+	NGE_TRANS_NONE = 0,
+	NGE_TRANS_V,
+	NGE_TRANS_H,
+	NGE_TRANS_HV
+};
 
 #define SET_IMAGE_TRANS(trans, tex)					\
 	switch(trans){									\
@@ -958,45 +995,8 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3); \
 	}
 
-void ImageToScreenTrans(image_p tex,float dx,float dy,int trans)
+static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans)
 {
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	AFTER_DRAW_IMAGE();
-}
-
-void DrawImageTrans(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy,float dw,float dh,int trans)
-{
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-
-	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	}else{
-		SET_IMAGE_RECT(dx, dy, dw, dh);
-	}
-	AFTER_DRAW_IMAGE();
-}
-
-void DrawImageMaskTrans(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask,int trans)
-{
-	BEFORE_DRAW_IMAGE();
-	SET_IMAGE_TRANS(trans, tex);
-
-	if(dw==0&&dh==0){
-		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
-	}else{
-		SET_IMAGE_RECT(dx, dy, dw, dh);
-	}
-	SET_COLOR(mask,tex->dtype);
-	AFTER_DRAW_IMAGE();
-}
-
-void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float dx ,float dy ,float xscale  ,float yscale ,float angle ,int mask,int trans)
-{
-	if(dy == 0.0f)
-		dy = 0.1f;
 	BEFORE_DRAW_IMAGE();
 	SET_IMAGE_TRANS(trans, tex);
 
@@ -1007,6 +1007,166 @@ void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,float d
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
+
+void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor)
+{
+	if(pImage == NULL){
+		return ;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//ÃªµãµÄÕýÈ·ÐÔ
+	switch (anchor) {
+	case 0:
+	case ANCHOR_TOP | ANCHOR_LEFT:
+	case ANCHOR_TOP | ANCHOR_RIGHT:
+	case ANCHOR_BOTTOM | ANCHOR_LEFT:
+	case ANCHOR_BOTTOM | ANCHOR_RIGHT:
+	case ANCHOR_TOP | ANCHOR_HCENTER:
+	case ANCHOR_BOTTOM | ANCHOR_HCENTER:
+	case ANCHOR_LEFT | ANCHOR_VCENTER:
+	case ANCHOR_RIGHT | ANCHOR_VCENTER:
+	case ANCHOR_HCENTER | ANCHOR_VCENTER:
+		break;
+	default:
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	if (transform < TRANS_NONE || transform > TRANS_MIRROR_ROT90) {
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	if(width < 0 || height < 0 || x_src < 0 || y_src < 0 || x_src + width > pImage->w || y_src + height > pImage->h) {
+		//ASSERT("throw new IllegalArgumentException();");
+		return;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//ÒÆ¶¯Î»ÖÃ
+	if ((INVERTED_AXES & transform) != 0) {
+		//////////////////////////////////////////////////////////////////////////
+		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ
+		switch(transform){
+		case TRANS_ROT90:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+			}
+			break;
+		case TRANS_ROT270:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				if(width == 0){
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + (int)pImage->w;
+				}else{
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
+				}
+			}
+			break;
+		case TRANS_MIRROR_ROT90:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+			}
+			break;
+		case TRANS_MIRROR_ROT270:
+			{
+				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				if(width == 0){
+					y_dest	= y_dest + pImage->rcentrex - pImage->rcentrey;
+				}else{
+					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
+				}
+			}
+			break;
+		}
+	}else{
+		//////////////////////////////////////////////////////////////////////////
+		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ
+		switch(transform){
+		case TRANS_ROT180:
+			{
+				if(width != 0){
+					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
+				}
+			}
+			break;
+		case TRANS_MIRROR_ROT180:
+			{
+				if(width != 0){
+					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
+				}
+			}
+			break;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	//ÃªµãÈ·¶¨½ØÈ¡ÆÁÄ»µÄÎ»ÖÃ
+	if((INVERTED_AXES & transform) == 0) {
+		if(anchor != ANCHOR_SOLID) {
+			if((anchor & ANCHOR_BOTTOM) != 0) {
+				y_dest -= height;
+			}
+			if((anchor & ANCHOR_RIGHT) != 0) {
+				x_dest -= width;
+			}
+			if((anchor & ANCHOR_HCENTER) != 0) {
+				x_dest -= width / 2;
+			}
+			if((anchor & ANCHOR_VCENTER) != 0) {
+				y_dest -= height / 2;
+			}
+		}
+	}else{
+		if (anchor != ANCHOR_SOLID) {
+			if((anchor & ANCHOR_BOTTOM) != 0) {
+				y_dest -= width;
+			}
+			if((anchor & ANCHOR_RIGHT) != 0) {
+				x_dest -= height;
+			}
+			if((anchor & ANCHOR_HCENTER) != 0) {
+				x_dest -= height / 2;
+			}
+			if ((anchor & ANCHOR_VCENTER) != 0) {
+				y_dest -= width / 2;
+			}
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	switch (transform)
+	{
+	case TRANS_ROT90:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask);
+		break;
+	case TRANS_ROT180:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask);
+		break;
+	case TRANS_ROT270:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask);
+		break;
+	case TRANS_MIRROR:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT90:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT180:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	case TRANS_MIRROR_ROT270:
+		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask, NGE_TRANS_V);
+		break;
+	default:
+		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask);
+		break;
+	}
+}
+
 
 image_p ScreenToImage()
 {
@@ -1027,3 +1187,37 @@ void ScreenShot(const char* filename)
 	image_save(pimage,filename,1, 1);
 	image_free(pimage);
 }
+
+BOOL BeginTarget(image_p _img){
+#if defined NGE_WIN || defined NGE_LINUX	
+	static int cacheid = 0;
+	static int ret = 0;
+	if(!_img)
+		return FALSE;
+	glDisable(GL_SCISSOR_TEST);
+	BIND_AND_TEST_CACHE(_img);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,_img->w,0,_img->h, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushAttrib(GL_VIEWPORT_BIT);
+
+	glViewport(0,0,_img->w, _img->h);
+#endif
+	return TRUE;
+}
+
+void EndTarget(){
+#if defined NGE_WIN || defined NGE_LINUX
+	glPopAttrib();
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_SCISSOR_TEST);
+#endif
+}
+

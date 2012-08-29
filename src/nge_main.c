@@ -1,6 +1,8 @@
-﻿#include "nge_platform.h"
+#include "nge_platform.h"
 #include "nge_app.h"
 #include "nge.h"
+
+#include <stdio.h>
 
 #ifdef NGE_WIN
 #define WIN32_LEAN_AND_MEAN
@@ -18,7 +20,7 @@ extern int NGE_main(int argc, char *argv[]);
 int cbid = 0;
 
 PSP_MODULE_INFO("NGE APP", 0, 1, 1);
-PSP_MAIN_THREAD_ATTR(0);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU|THREAD_ATTR_USER);
 PSP_HEAP_SIZE_KB(18*1024);
 
 int nge_psp_exit_callback(int arg1, int arg2, void *common)
@@ -61,6 +63,11 @@ int main(int argc, char *argv[])
 #ifdef NGE_WIN
 	static int argc = 0;
 	static char* argv[] = { NULL };
+#ifdef _DEBUG_STDOUT
+    AllocConsole();
+    freopen("CONOUT$","w+t",stdout);
+    freopen("CONIN$","r+t",stdin);
+#endif
 #endif
 
 #ifdef NGE_PSP

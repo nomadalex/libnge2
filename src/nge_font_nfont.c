@@ -1,4 +1,4 @@
-﻿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_font.h"
 #include "nge_font_internal.h"
 #include "nge_io_file.h"
@@ -17,12 +17,12 @@ enum{
 //16 bytes header
 typedef struct  {
 	char magic[4];    //"NDOT"
-	uint8 hdrlen;     //current version header is 16
-	uint8 version;    //current version 1
-	uint8 size;       //dot font size,eg 12,14,16...
-	uint8 type;       //ASCII,GBK,UNICODE,OTHER
-	uint8 alignsize;  //memalign size.
-	uint16 gbkoffset; //gbkoffset
+	uint8_t hdrlen;     //current version header is 16
+	uint8_t version;    //current version 1
+	uint8_t size;       //dot font size,eg 12,14,16...
+	uint8_t type;       //ASCII,GBK,UNICODE,OTHER
+	uint8_t alignsize;  //memalign size.
+	uint16_t gbkoffset; //gbkoffset
 	char  reserved[5];//reserved
 }NfontHeader;
 
@@ -30,14 +30,14 @@ typedef struct {
 	void*	    procs;	/* font-specific rendering routines*/
 	int		    size;	/* font height in pixels*/
 	int		    rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
+	uint32_t		disp;	/* diplaymode*/
 	int         flags;
 	workbuf     encodingBuf;
 
 	/* bit font spec */
-	uint32      color_fg;
-	uint32      color_bg;
-	uint32      color_sh;
+	uint32_t      color_fg;
+	uint32_t      color_bg;
+	uint32_t      color_sh;
 	char*       cfont_raw;
 	char*       afont_raw;
 	workbuf     bitbuf;
@@ -84,7 +84,7 @@ static  FontProcs nfont_procs = {
 	font += 4
 
 #define MAKE_EXPANDCCHAR_FUNC(bits)										\
-	void expandcchar_##bits(PFontNfont pf, int bg, int fg, unsigned char* c, uint##bits* bitmap) \
+	void expandcchar_##bits(PFontNfont pf, int bg, int fg, unsigned char* c, uint##bits##_t* bitmap) \
 	{																	\
 		int c1, c2, seq;												\
 		int x,y, b = 0, i = 0;											\
@@ -103,7 +103,7 @@ static  FontProcs nfont_procs = {
 	}
 
 #define MAKE_EXPANDCHAR_FUNC(bits)										\
-	void expandchar_##bits(PFontNfont pf, int bg, int fg, int c, uint##bits* bitmap) \
+	void expandchar_##bits(PFontNfont pf, int bg, int fg, int c, uint##bits##_t* bitmap) \
 	{																	\
 		int i=0,b = 0;													\
 		int x,y;														\
@@ -133,7 +133,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, w)
 	void nfont_drawtext_##bits(PFontNfont pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		char *s,*sbegin;												\
 		int size;														\
@@ -148,13 +148,13 @@ MAKE_PROCESS_SHADOW_FUNC(32, w)
 																		\
 		sbegin=s;														\
 																		\
-		size = 2*pf->font_width*pf->size*sizeof(uint##bits);			\
+		size = 2*pf->font_width*pf->size*sizeof(uint##bits##_t);			\
 		if( size > pf->bitbuf.datalen){									\
 			pf->bitbuf.datalen = size * 2;								\
 			free(pf->bitbuf.data);										\
 			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);		\
 		}																\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\
@@ -187,7 +187,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, w)
 	void nfont_drawtext_shadow_##bits(PFontNfont pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		int size;														\
 		char *s,*sbegin;												\
@@ -201,13 +201,13 @@ MAKE_PROCESS_SHADOW_FUNC(32, w)
 		}																\
 																		\
 		sbegin=s;														\
-		size = 2*pf->font_width*pf->size*sizeof(uint##bits);			\
+		size = 2*pf->font_width*pf->size*sizeof(uint##bits##_t);			\
 		if( size > pf->bitbuf.datalen){									\
 			pf->bitbuf.datalen = size * 2;								\
 			free(pf->bitbuf.data);										\
 			pf->bitbuf.data = (char*)malloc(pf->bitbuf.datalen);		\
 		}																\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\

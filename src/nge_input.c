@@ -1,5 +1,6 @@
-Ôªø#include "nge_common.h"
+#include "nge_common.h"
 #include "nge_platform.h"
+#include "nge_debug_log.h"
 
 #if defined NGE_WIN
 #define WIN32_LEAN_AND_MEAN
@@ -7,7 +8,6 @@
 #include <windowsx.h>
 #endif
 
-#include "nge_debug_log.h"
 #include "nge_input.h"
 #include <stdlib.h>
 
@@ -22,7 +22,10 @@ static int game_quit = 0;
 
 #elif defined NGE_LINUX
 #include <X11/Xlib.h>
-
+// backward declarations
+// (in nge_graphics)
+extern Display *g_dpy;
+extern Window   g_win;
 #endif
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
@@ -31,6 +34,18 @@ static void btn_up_default(int keycode) { }
 
 static ButtonProc btn_down = btn_down_default;
 static ButtonProc btn_up   = btn_up_default;
+
+static touch_mode = 0;
+static istouched  = 0;
+
+void EmulateTouchMove(int flag)
+{
+	if(flag == 1)
+		touch_mode  = 1;
+	else
+		touch_mode  = 0;
+}
+
 
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {
@@ -41,6 +56,9 @@ void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 		sceCtrlSetSamplingMode(PSP_CTRL_MODE_ANALOG);
 		inited = 1;
 	}
+#elif defined NGE_LINUX
+	long mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | PointerMotionMask | StructureNotifyMask;
+	XSelectInput(g_dpy, g_win, mask);
 #endif
 	if(downproc != NULL)
 		btn_down  = downproc;
@@ -82,7 +100,7 @@ void InitAnalog(AnalogProc analogproc)
 		analog_proc = analogproc;
 }
 
-//Ê®°ÊãüÊëáÊùÜ
+//ƒ£ƒ‚“°∏À
 #if defined NGE_WIN || defined NGE_LINUX
 #define ANALOG_LEFT  0
 #define ANALOG_RIGHT 1
@@ -90,7 +108,7 @@ void InitAnalog(AnalogProc analogproc)
 #define ANALOG_DOWN  3
 static char btn_analog[4] = {0};
 
-static uint8 GetAnalogX()
+static uint8_t GetAnalogX()
 {
 	if (btn_analog[ANALOG_LEFT]) return 0;
 	if (btn_analog[ANALOG_RIGHT]) return 0xff;
@@ -98,7 +116,7 @@ static uint8 GetAnalogX()
 	return 0x80;
 }
 
-static uint8 GetAnalogY()
+static uint8_t GetAnalogY()
 {
 	if (btn_analog[ANALOG_UP]) return 0;
 	if (btn_analog[ANALOG_DOWN]) return 0xff;
@@ -152,11 +170,7 @@ static int SetAnalog(int key,char flag)
 #endif
 
 #if defined(NGE_LINUX)
-// backward declarations
-// (in nge_graphics)
-extern Display *g_dpy;
-extern Window   g_win;
-void FiniGrahics();
+void FiniGraphics();
 
 #define _DEF_INPUT_PROC(n) inline void _##n (XEvent *event)
 
@@ -203,10 +217,10 @@ _DEF_INPUT_PROC(mouse_up)
 }
 #elif defined(NGE_PSP)
 typedef struct {
-	uint32 press;
-	uint32 held;
-	uint32 pspcode;
-	uint32 mapcode;
+	uint32_t press;
+	uint32_t held;
+	uint32_t pspcode;
+	uint32_t mapcode;
 }key_states;
 
 key_states nge_keymap[]={
@@ -270,7 +284,7 @@ int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if (mouse_move_proc != NULL)
+	if ((mouse_move_proc != NULL) && ((istouched&&touch_mode == 1)||(touch_mode == 0)))
 		mouse_move_proc(xPos, yPos);
 	return 0;
 }
@@ -311,14 +325,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return nge_win_key_up_handle(hWnd, wParam, lParam);
 
 	case WM_LBUTTONDOWN:
+		 istouched = 1;
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_LBUTTON, lParam);
 	case WM_RBUTTONDOWN:
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_RBUTTON, lParam);
 	case WM_MBUTTONDOWN:
-		return nge_win_mouse_btn_down_handle(hWnd, wParam, lParam);
+		 return nge_win_mouse_btn_down_handle(hWnd, VK_MBUTTON, lParam);
 
 	case WM_LBUTTONUP:
+		 istouched = 0;
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_LBUTTON, lParam);
 	case WM_RBUTTONUP:
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_RBUTTON, lParam);
 	case WM_MBUTTONUP:
-		return nge_win_mouse_btn_up_handle(hWnd, wParam, lParam);
+		 return nge_win_mouse_btn_up_handle(hWnd, VK_MBUTTON, lParam);
 
 	case WM_MOUSEMOVE:
 		return nge_win_mouse_move_handle(hWnd, wParam, lParam);
@@ -348,7 +368,7 @@ void InputProc()
 		if (event.xany.window == g_win) {
 			switch (event.type) {
 			case DestroyNotify:
-				FiniGrahics();
+				FiniGraphics();
 				exit(0);
 				break;
 			case MotionNotify:
@@ -393,7 +413,7 @@ void InputProc()
 
 #if defined(NGE_PSP)
 	static SceCtrlData pad;
-	uint32 Buttons;
+	uint32_t Buttons;
 	int i;
 	static int suspended = 0;
 

@@ -6,9 +6,9 @@ set(HELPER_SRCS
   )
 
 if(SQLITE3_FOUND)
-  include_directories(${SQLITE3_INCLUDE_DIR})
-  add_addon_srcs(NGE2_SRCS HELPER_SRCS helper)
-  list(APPEND NGE2_LIBS ${SQLITE3_LIBRARIES})
+  add_addon_srcs(helper
+	HAS_SUBDIR_IN_INCLUDE
+	SRCS ${HELPER_SRCS}
+	LIBS ${SQLITE3_LIBRARIES}
+	INCLUDES ${SQLITE3_INCLUDE_DIR})
 endif()
-
-install(FILES CppSQLite3.h dictionary.h iniparser.h package.h  DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

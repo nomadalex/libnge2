@@ -1,4 +1,4 @@
-Ôªø#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_image_ext.h"
 #include <math.h>
 #include <assert.h>
@@ -72,17 +72,17 @@ int get_gray_color(int dtype, int scol, int gray)
 }
 
 /**
- * Âª∫Á´ã src ÂõæÂÉèÁöÑÁÅ∞Â∫¶ÁâàÊú¨
+ * Ω®¡¢ src ÕºœÒµƒª“∂»∞Ê±æ
  *
- * @param src Ê∫êÂõæÂÉè
- * @param gray ÁÅ∞Â∫¶ 0 Âà∞ 100, 0 ‰∏∫Ê∫êÂõæÂÉè, 100 ‰∏∫Á∫ØÁÅ∞Ëâ≤ÂõæÂÉè
+ * @param src ‘¥ÕºœÒ
+ * @param gray ª“∂» 0 µΩ 100, 0 Œ™‘¥ÕºœÒ, 100 Œ™¥øª“…´ÕºœÒ
  */
 image_p create_gray_image(image_p src, int gray)
 {
-	uint32 y,x;
+	uint32_t y,x;
 	image_p pimg;
-	uint16 *p16 = NULL,*psrc16 = NULL;
-	uint32 *p32 = NULL,*psrc32 = NULL;
+	uint16_t *p16 = NULL,*psrc16 = NULL;
+	uint32_t *p32 = NULL,*psrc32 = NULL;
 
 	if(gray<0 || gray>100)
 	{
@@ -96,24 +96,24 @@ image_p create_gray_image(image_p src, int gray)
 	{
 		if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 		{
-			p32 = (uint32 *)pimg->data + y*src->texw;
-			psrc32 = (uint32 *)src->data + y*src->texw;
+			p32 = (uint32_t *)pimg->data + y*src->texw;
+			psrc32 = (uint32_t *)src->data + y*src->texw;
 		}
 		else
 		{
-			p16 = (uint16 *)pimg->data + y*src->texw;
-			psrc16 = (uint16 *)src->data + y*src->texw;
+			p16 = (uint16_t *)pimg->data + y*src->texw;
+			psrc16 = (uint16_t *)src->data + y*src->texw;
 		}
 
 		for(x=0;x<src->w;x++)
 		{
 			if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 			{
-				*(p32 + x) = (uint32)get_gray_color(pimg->dtype, *(psrc32 + x), gray);
+				*(p32 + x) = (uint32_t)get_gray_color(pimg->dtype, *(psrc32 + x), gray);
 			}
 			else
 			{
-				*(p16 + x) = (uint16)get_gray_color(pimg->dtype, *(psrc16 + x), gray);
+				*(p16 + x) = (uint16_t)get_gray_color(pimg->dtype, *(psrc16 + x), gray);
 			}
 		}
 	}
@@ -142,7 +142,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 	default:
 		return 0;
 	}
-	// Â§ÑÁêÜÈ•±ÂíåÂ∫¶
+	// ¥¶¿Ì±•∫Õ∂»
 	if(saturation!=0)
 	{
 		maxcol = r>g ? (r>b?r:b):g;
@@ -172,7 +172,7 @@ int get_saturation_brightness_color(int dtype, int scol,int saturation, int brig
 		if(b<0)b=0;
 	}
 cont001:
-	// Â§ÑÁêÜ‰∫ÆÂ∫¶
+	// ¥¶¿Ì¡¡∂»
 	if(brightness!=0)
 	{
 		//gcol = ((r + g + b) / 3) & 0xff;
@@ -189,7 +189,7 @@ cont001:
 		if(b<0)b=0;
 	}
 
-	// ËæìÂá∫
+	//  ‰≥ˆ
 	switch(dtype)
 	{
 		case DISPLAY_PIXEL_FORMAT_8888:
@@ -210,18 +210,18 @@ cont001:
 }
 
 /**
- * Âª∫Á´ã src ÂõæÂÉèÁöÑ‰∫ÆÂ∫¶ÔºåÈ•±ÂíåÂ∫¶ÁâàÊú¨
+ * Ω®¡¢ src ÕºœÒµƒ¡¡∂»£¨±•∫Õ∂»∞Ê±æ
  *
- * @param src Ê∫êÂõæÂÉè
- * @param saturation È•±ÂêàÂ∫¶ -100(ÁÅ∞Â∫¶ÂõæÂÉè) Ëá≥ 100(È´òÂΩ©Ëâ≤ÊØîÂõæÂÉè)
- * @param brightness ‰∫ÆÂ∫¶ -100(ÂÖ®Èªë) Ëá≥ 100(ÂÖ®ÁôΩ)
+ * @param src ‘¥ÕºœÒ
+ * @param saturation ±•∫œ∂» -100(ª“∂»ÕºœÒ) ÷¡ 100(∏ﬂ≤ …´±»ÕºœÒ)
+ * @param brightness ¡¡∂» -100(»´∫⁄) ÷¡ 100(»´∞◊)
  */
 image_p create_saturation_brightness_image(image_p src, int saturation, int brightness)
 {
-	uint32 y,x;
+	uint32_t y,x;
 	image_p pimg;
-	uint16 *p16,*psrc16;
-	uint32 *p32,*psrc32;
+	uint16_t *p16,*psrc16;
+	uint32_t *p32,*psrc32;
 
 	if(saturation<-100 || saturation>100)
 	{
@@ -239,8 +239,8 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 	if(src->dtype == DISPLAY_PIXEL_FORMAT_8888)
 	{
-		p32 = (uint32 *)pimg->data;
-		psrc32 = (uint32 *)src->data;
+		p32 = (uint32_t *)pimg->data;
+		psrc32 = (uint32_t *)src->data;
 
 		for(y=0;y<src->h;y++)
 		{
@@ -249,14 +249,14 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 			for(x=0;x<src->w;x++)
 			{
-				*(p32 + x) = (uint32)get_saturation_brightness_color(pimg->dtype, *(psrc32 + x), saturation, brightness);
+				*(p32 + x) = (uint32_t)get_saturation_brightness_color(pimg->dtype, *(psrc32 + x), saturation, brightness);
 			}
 		}
 	}
 	else if (src->dtype == DISPLAY_PIXEL_FORMAT_4444)
 	{
-		p16 = (uint16 *)pimg->data;
-		psrc16 = (uint16 *)src->data;
+		p16 = (uint16_t *)pimg->data;
+		psrc16 = (uint16_t *)src->data;
 
 		for(y=0;y<src->h;y++)
 		{
@@ -265,7 +265,7 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 
 			for(x=0;x<src->w;x++)
 			{
-				*(p16 + x) = (uint16)get_saturation_brightness_color(pimg->dtype, *(psrc16 + x), saturation, brightness);
+				*(p16 + x) = (uint16_t)get_saturation_brightness_color(pimg->dtype, *(psrc16 + x), saturation, brightness);
 			}
 		}
 	}
@@ -279,21 +279,21 @@ image_p create_saturation_brightness_image(image_p src, int saturation, int brig
 image_p image_conv(image_p src, int dtype)
 {
 	image_p dst;
-	uint32 i,j;
-	uint32 *src32, *dst32;
-	uint16 *src16, *dst16;
-	uint8 r,g,b,a;
+	uint32_t i,j;
+	uint32_t *src32, *dst32;
+	uint16_t *src16, *dst16;
+	uint8_t r,g,b,a;
 
-	if(src->dtype == (uint32)dtype)
+	if(src->dtype == (uint32_t)dtype)
 		return image_clone(src);
 
 	CHECK_AND_UNSWIZZLE(src);
 	dst = image_create(src->w, src->h, dtype);
 
-	src32 = (uint32*)src->data;
-	dst32 = (uint32*)dst->data;
-	src16 = (uint16*)src->data;
-	dst16 = (uint16*)dst->data;
+	src32 = (uint32_t*)src->data;
+	dst32 = (uint32_t*)dst->data;
+	src16 = (uint16_t*)src->data;
+	dst16 = (uint16_t*)dst->data;
 
 	for(i = 0; i < src->h; i++)
 	{
@@ -560,13 +560,13 @@ typedef struct
 typedef struct
 {
    C10n *row;  // Row (or column) of contribution weights
-   uint32 win_size,              // Filter window size (of affecting source pixels)
+   uint32_t win_size,              // Filter window size (of affecting source pixels)
 		  line_len;              // Length of line (no. or rows / cols)
 } Line_c10n;                // Contribution information for an entire line (row or column)
 
-Line_c10n* alloc_contributions (uint32 line_length, uint32 window_size)
+Line_c10n* alloc_contributions (uint32_t line_length, uint32_t window_size)
 {
-	uint32 i = 0;
+	uint32_t i = 0;
 	Line_c10n *res = (Line_c10n*)malloc(sizeof(Line_c10n));
 	// Init structure header
 	res->win_size = window_size;
@@ -584,7 +584,7 @@ Line_c10n* alloc_contributions (uint32 line_length, uint32 window_size)
 
 void free_contributions (Line_c10n *p)
 {
-	uint32 i = 0;
+	uint32_t i = 0;
 	for (; i < p->line_len; i++)
 	{
 		// Free contribs for every pixel
@@ -594,10 +594,10 @@ void free_contributions (Line_c10n *p)
 	free(p);                   // Free contribs header
 }
 
-Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, uint32 src_size, double scale)
+Line_c10n* calc_contributions (void* filter,int filter_type, uint32_t line_size, uint32_t src_size, double scale)
 {
 	//FilterClass CurFilter;
-	uint32 u;
+	uint32_t u;
 	int left, right , window_size, i;
 	double width, center, total_weight;
 	double fscale = 1.0;
@@ -671,26 +671,26 @@ Line_c10n* calc_contributions (void* filter,int filter_type, uint32 line_size, u
 			GET_RGBA_##type(src##bit[ _src_n ],sr,sg,sb,sa);			\
 			if(sa==0)													\
 				continue;												\
-			r += (uint8)(contrib->row[ii].weights[i-left] * (double)(sr)); \
-			g += (uint8)(contrib->row[ii].weights[i-left] * (double)(sg)); \
-			b += (uint8)(contrib->row[ii].weights[i-left] * (double)(sb)); \
-			a += (uint8)(contrib->row[ii].weights[i-left] * (double)(sa)); \
+			r += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sr)); \
+			g += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sg)); \
+			b += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sb)); \
+			a += (uint8_t)(contrib->row[ii].weights[i-left] * (double)(sa)); \
 		}																\
 		dst##bit[ _dst_n ] = MAKE_RGBA_##type(r,g,b,a);					\
 	}
 
 #define SCALE_FUN_IMP(type, dw_or_dh, _sdata, _ddata, _src_n, _dst_n)	\
-	void scale_##type (uint8 *sdata, uint32 sw, uint8 *ddata, uint32 dw_or_dh, uint32 u, Line_c10n *contrib,uint32 pitch,uint32 dtype) \
+	void scale_##type (uint8_t *sdata, uint32_t sw, uint8_t *ddata, uint32_t dw_or_dh, uint32_t u, Line_c10n *contrib,uint32_t pitch,uint32_t dtype) \
 	{																	\
-		uint32 ii, i;													\
-		uint8 r,g,b,a,sr,sb,sg,sa;										\
-		uint32 left,right;												\
-		uint32 *src32,*dst32;											\
-		uint16 *src16,*dst16;											\
-		src32 = (uint32*) _sdata;										\
-		dst32 = (uint32*) _ddata;										\
-		src16 = (uint16*) _sdata;										\
-		dst16 = (uint16*) _ddata;										\
+		uint32_t ii, i;													\
+		uint8_t r,g,b,a,sr,sb,sg,sa;										\
+		uint32_t left,right;												\
+		uint32_t *src32,*dst32;											\
+		uint16_t *src16,*dst16;											\
+		src32 = (uint32_t*) _sdata;										\
+		dst32 = (uint32_t*) _ddata;										\
+		src16 = (uint16_t*) _sdata;										\
+		dst16 = (uint16_t*) _ddata;										\
 		if(dtype == DISPLAY_PIXEL_FORMAT_8888){							\
 			__SCALE_LOOP(8888, 32, dw_or_dh, _src_n, _dst_n);			\
 		}																\
@@ -709,16 +709,16 @@ SCALE_FUN_IMP(row, dw, sdata+u*pitch, ddata+u*dw, i, ii)
 SCALE_FUN_IMP(col, dh, sdata, ddata, i*sw+u, ii*pitch+u)
 
 #define DIRE_SCALE_FUN_IMP(type, stype, dire, dire2)                     \
-	void type##_scale (void* filter, int filter_type, uint8 *sdata, uint32 sw, uint32 sh, uint8 *ddata, uint32 dw, uint32 dh,uint32 pitch,uint32 dtype) \
+	void type##_scale (void* filter, int filter_type, uint8_t *sdata, uint32_t sw, uint32_t sh, uint8_t *ddata, uint32_t dw, uint32_t dh,uint32_t pitch,uint32_t dtype) \
 	{																	\
-		uint32  u;														\
+		uint32_t  u;														\
 		Line_c10n * contrib;											\
 		if (d##dire == s##dire)											\
 		{    /* No scaling required, just copy */						\
 			if(dtype == DISPLAY_PIXEL_FORMAT_8888)						\
-				memcpy (ddata, sdata, sizeof (uint32) * sw * sh);		\
+				memcpy (ddata, sdata, sizeof (uint32_t) * sw * sh);		\
 			else														\
-				memcpy (ddata, sdata, sizeof (uint16) * sw * sh);		\
+				memcpy (ddata, sdata, sizeof (uint16_t) * sw * sh);		\
 		}																\
 		/* Allocate and calculate the contributions */					\
 		contrib = calc_contributions (filter, filter_type, d##dire, s##dire, (double)d##dire / (double)s##dire); \
@@ -736,8 +736,8 @@ DIRE_SCALE_FUN_IMP(vert, col, h, w)
 image_p image_scale(image_p src, int w, int h,int mode)
 {
 	image_p dst;
-	uint8 * temp;
-	uint32 spitch, dpitch;
+	uint8_t * temp;
+	uint32_t spitch, dpitch;
 	void* filter = filter_create_funs[mode]();
 	dst = image_create(w,h,src->dtype);
 	dst->dontswizzle = 1;
@@ -753,3 +753,457 @@ image_p image_scale(image_p src, int w, int h,int mode)
 	CHECK_AND_SWIZZLE(src);
 	return dst;
 }
+
+#ifndef NGE_PSP
+
+//for image_hue_rotate
+//Thanks to Paul Haeberli
+#define M_PI	(3.1415926535f)
+#define RLUM    (0.3086f)
+#define GLUM    (0.6094f)
+#define BLUM    (0.0820f)
+
+//multiply two matrixes
+void matrixmult(float a[4][4], float b[4][4], float c[4][4])
+{
+    int x, y;
+    float temp[4][4];
+
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < 4; x++) {
+            temp[y][x] = b[y][0] * a[0][x]
+                       + b[y][1] * a[1][x]
+                       + b[y][2] * a[2][x]
+                       + b[y][3] * a[3][x];
+        }
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < 4; x++)
+            c[y][x] = temp[y][x];
+}
+
+//transpose a matrix
+void matrixtrans(float a[4][4])
+{
+    float temp;
+	int y, x;
+    for(y = 0; y < 4; y++)
+        for(x = 0; x < y; x++) {
+            temp = a[y][x];
+            a[y][x] = a[x][y];
+            a[x][y] = temp;
+        }   
+}
+
+//generate an identity matrix
+void identmat(float *matrix)
+{
+    *matrix++ = 1.0;    /* row 1        */
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 2        */
+    *matrix++ = 1.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 3        */
+    *matrix++ = 0.0;
+    *matrix++ = 1.0;
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;    /* row 4        */
+    *matrix++ = 0.0;
+    *matrix++ = 0.0;
+    *matrix++ = 1.0;
+}
+
+//transform a 3D point
+void xformpnt(float matrix[4][4], float x, float y, float z, float *tx, float *ty, float *tz)
+{
+    *tx = x*matrix[0][0] + y*matrix[1][0] + z*matrix[2][0] + matrix[3][0];
+    *ty = x*matrix[0][1] + y*matrix[1][1] + z*matrix[2][1] + matrix[3][1];
+    *tz = x*matrix[0][2] + y*matrix[1][2] + z*matrix[2][2] + matrix[3][2];
+}
+
+//shear a matrix
+void zshearmat(float mat[4][4], float dx, float dy)
+{
+    float mmat[4][4];
+
+    mmat[0][0] = 1.0;
+    mmat[0][1] = 0.0;
+    mmat[0][2] = dx;
+    mmat[0][3] = 0.0;
+
+    mmat[1][0] = 0.0;
+    mmat[1][1] = 1.0;
+    mmat[1][2] = dy;
+    mmat[1][3] = 0.0;
+
+    mmat[2][0] = 0.0;
+    mmat[2][1] = 0.0;
+    mmat[2][2] = 1.0;
+    mmat[2][3] = 0.0;
+
+    mmat[3][0] = 0.0;
+    mmat[3][1] = 0.0;
+    mmat[3][2] = 0.0;
+    mmat[3][3] = 1.0;
+    matrixmult(mmat,mat,mat);
+}
+
+//z-rotate a matrix
+void zrotatemat(float mat[4][4], float rs, float rc)
+{
+    float mmat[4][4];
+
+    mmat[0][0] = rc;
+    mmat[0][1] = rs;
+    mmat[0][2] = 0.0;
+    mmat[0][3] = 0.0;
+
+    mmat[1][0] = -rs;
+    mmat[1][1] = rc;
+    mmat[1][2] = 0.0;
+    mmat[1][3] = 0.0;
+
+    mmat[2][0] = 0.0;
+    mmat[2][1] = 0.0;
+    mmat[2][2] = 1.0;
+    mmat[2][3] = 0.0;
+
+    mmat[3][0] = 0.0;
+    mmat[3][1] = 0.0;
+    mmat[3][2] = 0.0;
+    mmat[3][3] = 1.0;
+    matrixmult(mmat,mat,mat);
+}
+
+int image_hue_rotate(image_p pimage, float rot)
+{
+	float mat1[4][4], mmat[4][4];
+	float lx, ly, lz;
+	float mag;
+	float zsx, zsy;
+	float zrs, zrc;
+	int n;
+	uint16_t *bmp16;
+	uint32_t *bmp32;
+	uint16_t ir, ig, ib;
+	uint16_t r, g, b, a;
+	
+	if(!pimage)	return 0;
+	
+	identmat(mat1);
+	identmat(mmat);
+	
+	/* rotate the grey vector into positive Z */
+	mag = sqrt(3.0f);
+	mag = 1.0f / mag;
+	mat1[0][0] = mat1[0][2] = mat1[1][2] = mat1[2][2] = mag;
+	mat1[1][0] = -mag;
+	mag = sqrt(2.0f);
+	mat1[0][0] *= mag;
+	mag = 1.0f / mag;
+	mat1[1][0] *= mag;
+	mat1[2][0] = mat1[1][0];
+	mat1[1][1] = mag;
+	mat1[2][1] = -mag;
+	
+	/* shear the space to make the luminance plane horizontal */
+	xformpnt(mat1, RLUM, GLUM, BLUM, &lx, &ly, &lz);
+	zsx = lx / lz;
+	zsy = ly / lz;
+	matrixmult(mmat, mat1, mmat);
+	zshearmat(mmat,zsx,zsy);
+	
+	matrixtrans(mat1);
+	
+	/* rotate the hue */
+	zrs = sin(rot*M_PI/180.0f);
+	zrc = cos(rot*M_PI/180.0f);
+	zrotatemat(mmat,zrs,zrc);
+	
+	/* unshear the space to put the luminance plane back */
+	zshearmat(mmat,-zsx,-zsy);
+	
+	matrixmult(mat1, mmat, mmat);
+	
+	n = pimage->texh * pimage->texw;
+	pimage->modified = 1;
+	switch(pimage->dtype)	{
+		case DISPLAY_PIXEL_FORMAT_565:
+			bmp16 = (uint16_t*)pimage->data;
+			while(n--)	{
+				GET_RGBA_565(*bmp16, ir, ig, ib, a)
+				r = ir*mmat[0][0] + ig*mmat[1][0] + ib*mmat[2][0];
+				g = ir*mmat[0][1] + ig*mmat[1][1] + ib*mmat[2][1];
+				b = ir*mmat[0][2] + ig*mmat[1][2] + ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_565(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			bmp16 = (uint16_t*)pimage->data;
+			while(n--)	{
+				GET_RGBA_5551(*bmp16, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_5551(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			bmp16 = (uint16_t*)pimage->data;
+			while(n--)	{
+				GET_RGBA_4444(*bmp16, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp16++) = MAKE_RGBA_4444(r, g, b, a);
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_8888:
+			bmp32 = (uint32_t*)pimage->data;
+			while(n--)	{
+				GET_RGBA_8888(*bmp32, ir, ig, ib, a)
+				r = 1.0f*ir*mmat[0][0] + 1.0f*ig*mmat[1][0] + 1.0f*ib*mmat[2][0];
+				g = 1.0f*ir*mmat[0][1] + 1.0f*ig*mmat[1][1] + 1.0f*ib*mmat[2][1];
+				b = 1.0f*ir*mmat[0][2] + 1.0f*ig*mmat[1][2] + 1.0f*ib*mmat[2][2];
+				if(r<0) r = 0;
+				if(r>255) r = 255;
+				if(g<0) g = 0;
+				if(g>255) g = 255;
+				if(b<0) b = 0;
+				if(b>255) b = 255;
+				*(bmp32++) = MAKE_RGBA_8888(r, g, b, a);
+			}
+			break;
+	}
+	return 1;
+}
+
+#else
+//hue rotate for PSP
+//VFPU accerleration
+void GetHueMatrix(ScePspFMatrix4 *mat, float rot)	{
+	__asm__ volatile (
+		"vfim.s		S000, 0.3086\n"
+		"vfim.s		S010, 0.6094\n"
+		"vfim.s		S020, 0.0820\n"
+		"vadd.s		S030, S030[0], S030[1]\n"
+		"vcst.s		S001, VFPU_SQRT1_2\n"
+		"vcst.s		S011, VFPU_SQRT3_2\n"
+		"vrcp.s		S011, S011\n"
+		"vmidt.q	M100\n"
+		"vmul.s		S100, S011, S001\n"
+		"vmul.s		S101, S100, S001\n"
+		"vadd.t		C120, C101[0, 0, 0], C101[x, x, x]\n"
+		"vmul.s		S101, S101, S001\n"
+		"vneg.s		S101, S101\n"
+		"vadd.s		S102, S101[0], S101[x]\n"
+		"vadd.s		S111, S001[0], S001[x]\n"
+		"vadd.s		S112, S001[0], S001[x]\n"
+		"vneg.s		S112, S112\n"
+		"vadd.s		S133, S133[0], S133[1]\n"
+		"vtfm4.q	R001, M100, R000\n"
+		"vrcp.s		S021, S021\n"
+		"vmul.p		R001, R001[x, y], R021[x, x]\n"
+		"vmidt.q	M200\n"
+		"vadd.s		S220, S001[0], S001[x]\n"
+		"vadd.s		S221, S011[0], S011[x]\n"
+		"vmmul.q	M000, M100, M200\n"
+		"mtv		%1, S500\n"
+		"vfim.s		S510, 90.0\n"
+		"vrcp.s		S510, S510\n"
+		"vmul.s		S500, S500, S510\n"
+		"vsin.s		S501, S500\n"
+		"vcos.s		S502, S500\n"
+		"vmidt.q	M300\n"
+		//y - sin  z - cos
+		"vadd.q		C300, C500[0, 0, 0, 0], C500[z, -y, 0, 0]\n"
+		"vadd.q		C310, C500[0, 0, 0, 0], C500[y,  z, 0, 0]\n"
+		"vmmul.q	M400, M000, M300\n"
+		"vneg.s		S220, S220\n"
+		"vneg.s		S221, S221\n"
+		"vmmul.q	M000, M400, M200\n"
+		"vmmul.q	M200, M000, E100\n"
+		
+		"sv.q		C200, 0(%0)\n"
+		"sv.q		C210, 16(%0)\n"
+		"sv.q		C220, 32(%0)\n"
+		"sv.q		C230, 48(%0)\n"
+		::"r"(mat), "r"(rot));
+}
+
+int image_hue_rotate(image_p pimage, float rot)	{
+	ScePspFMatrix4 hue_mat;
+	if(rot < 0.0001f && rot > -0.0001f)
+		return 1;
+	GetHueMatrix(&hue_mat, rot);
+	if(!pimage)	return 0;
+	pimage->modified = 1;
+	switch(pimage->dtype)	{
+		case DISPLAY_PIXEL_FORMAT_565:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 63.0\n"
+				"U565:"
+				"blez		%2, D565\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 10\n"
+				"andi		$t6, $t6, 0x3E\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 5\n"
+				"andi		$t6, $t6, 0x3F\n"
+				"mtv		$t6, S110\n"
+				"sll		$t6, $t5, 1\n"
+				"andi		$t6, $t6, 0x3E\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, $t5, 0x0\n"
+				"mfv		$t6, S101\n"
+				"srl		$t6, $t6, 1\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 5\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"srl		$t6, $t6, 1\n"
+				"sll		$t6, $t6, 11\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U565\n"
+				"D565:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 31.0\n"
+				"U5551:"
+				"blez		%2, D5551\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 10\n"
+				"andi		$t6, $t6, 0x1F\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 5\n"
+				"andi		$t6, $t6, 0x1F\n"
+				"mtv		$t6, S110\n"
+				"andi		$t6, $t5, 0x1F\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, 0x8000\n"
+				"mfv		$t6, S101\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 5\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"sll		$t6, $t6, 10\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U5551\n"
+				"D5551:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 15.0\n"
+				"U4444:"
+				"blez		%2, D4444\n"
+				"lhu		$t5, 0(%0)\n"
+				"srl		$t6, $t5, 8\n"
+				"andi		$t6, $t6, 0xF\n"
+				"mtv		$t6, S120\n"
+				"srl		$t6, $t5, 4\n"
+				"andi		$t6, $t6, 0xF\n"
+				"mtv		$t6, S110\n"
+				"andi		$t6, $t5, 0xF\n"
+				"mtv		$t6, S100\n"
+				"vi2f.q		R100, R100, 0\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2in.q	R101, R101, 0\n"
+				"andi		$t5, 0xF000\n"
+				"mfv		$t6, S101\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S111\n"
+				"sll		$t6, $t6, 4\n"
+				"or			$t5, $t5, $t6\n"
+				"mfv		$t6, S121\n"
+				"sll		$t6, $t6, 8\n"
+				"or			$t5, $t5, $t6\n"
+				"sh			$t5, 0(%0)\n"
+				"addi		%0, %0, 2\n"
+				"addi		%2, %2, -1\n"
+				"j			U4444\n"
+				"D4444:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+		case DISPLAY_PIXEL_FORMAT_8888:
+			__asm__ volatile (
+				"lv.q		C000, 0 + %1\n"
+				"lv.q		C010, 16 + %1\n"
+				"lv.q		C020, 32 + %1\n"
+				"lv.q		C030, 48 + %1\n"
+				"vfim.s		S102, 255.0\n"
+				"U8888:"
+				"blez		%2, D8888\n"
+				"lv.s		S200, 0(%0)\n"
+				".word		0xD0380000 | (8 << 8) | (36)\n"//"vuc2i.s	R100, S200\n"
+				"vi2f.q		R100, R100, 23\n"
+				"vtfm4.q	R101, M000, R100\n"
+				"vmax.q		R101, R101[x, y, z, w], R101[0, 0, 0, 0]\n"
+				"vmin.q		R101, R101[x, y, z, w], R102[x, x, x, x]\n"
+				"vf2iz.q	R101, R101, 23\n"
+				"vi2uc.q	S200, R101\n"
+				"sv.s		S200, 0(%0)\n"
+				"addi		%0, %0, 4\n"
+				"addi		%2, %2, -1\n"
+				"j			U8888\n"
+				"D8888:\n"
+				::"r"(pimage->data), "m"(hue_mat), "r"(pimage->texw * pimage->texh):"memory");
+			break;
+	}
+	return 1;
+}
+#endif

@@ -1,4 +1,4 @@
-﻿/*
+/*
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
 ** hge.relishgames.com
@@ -18,7 +18,7 @@
 */
 float InvSqrt(float x);
 
-class NGE_API hgeVector
+class NGE_CLASS hgeVector
 {
 public:
 	float	x,y;

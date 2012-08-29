@@ -1,11 +1,14 @@
-﻿#ifndef LIBNGE2PURE_H_
+#ifndef LIBNGE2PURE_H_
 #define LIBNGE2PURE_H_
 
 #include "nge_common.h"
 #include "nge_debug_log.h"
 #include "nge_sys_compatible.h"
+#include "nge_ref_handle.h"
 #include "nge_io_file.h"
 #include "nge_io_dir.h"
+#include "nge_package.h"
+#include "nge_package_zip.h"
 #include "nge_image.h"
 #include "nge_font.h"
 #include "nge_graphics.h"

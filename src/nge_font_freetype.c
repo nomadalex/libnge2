@@ -1,4 +1,4 @@
-﻿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_TRIGONOMETRY_H
@@ -14,20 +14,23 @@ typedef struct
 	void* procs;	/* font-specific rendering routines*/
 	int	size;	/* font height in pixels*/
 	int	rotation;	/* font rotation*/
-	uint32 disp;	/* diplaymode*/
+	uint32_t disp;	/* diplaymode*/
 	int flags;
 	workbuf	encodingBuf;
 
 /* freetype stuff */
 	//color
-	uint8  r;
-	uint8  g;
-	uint8  b;
-	uint8  a;
+	uint8_t  r;
+	uint8_t  g;
+	uint8_t  b;
+	uint8_t  a;
 	int   fix_width;
 	FT_Face face;
 	FT_Matrix matrix;
 	FT_Library library;
+	
+/* custom stuff */
+	uint8_t  alpha_table[256];
 }FontFreetype,*PFontFreetype;
 
 static BOOL freetype2_getfontinfo(PFont pfont, PFontInfo pfontinfo);
@@ -41,7 +44,8 @@ static void freetype2_setfontsize(PFont pfont, int fontsize);
 static void freetype2_setfontrotation(PFont pfont, int rot);
 static void freetype2_setfontattr(PFont pfont, int setflags, int clrflags);
 static PFont freetype2_duplicate(PFont psrcfont, int fontsize);
-static uint32  freetype2_setfontcolor(PFont pfont, uint32 color);
+static uint32_t  freetype2_setfontcolor(PFont pfont, uint32_t color);
+static void freetype2_calcalphatable(PFont pfont);
 static FontProcs freetype2_procs = {
 	freetype2_getfontinfo,
 	freetype2_gettextsize,
@@ -88,6 +92,7 @@ PFont create_font_freetype(const char* fname, int height,int disp)
 	pf->encodingBuf.datalen = 2048;
 	pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
 	memset(pf->encodingBuf.data,0,pf->encodingBuf.datalen);
+	memset(pf->alpha_table,0,256);
 	return (PFont)pf;
 }
 
@@ -115,6 +120,7 @@ PFont create_font_freetype_buf(const char* buf,int bsize, int height,int disp)
 	pf->encodingBuf.datalen = 2048;
 	pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
 	memset(pf->encodingBuf.data,0,pf->encodingBuf.datalen);
+	memset(pf->alpha_table,0,256);
 	return (PFont)pf;
 }
 
@@ -160,8 +166,8 @@ static FT_Error freetype2_get_glyph_size(PFontFreetype pf,
 		return 0;
 }
 
-inline static uint16* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
-	uint16 *value;
+inline static uint16_t* _nge_ft_conv_encoding(PFont pf, const void *text, int * pCC) {
+	uint16_t *value;
 	int len = *pCC;
 
 	if( len > pf->encodingBuf.datalen){
@@ -169,13 +175,13 @@ inline static uint16* _nge_ft_conv_encoding(PFont pf, const void *text, int * pC
 		free(pf->encodingBuf.data);
 		pf->encodingBuf.data = (char*)malloc(pf->encodingBuf.datalen);
 	}
-	value = (uint16*)pf->encodingBuf.data;
+	value = (uint16_t*)pf->encodingBuf.data;
 
 	if(nge_font_encoding == NGE_ENCODING_GBK){
-		*pCC = nge_charset_gbk_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
+		*pCC = nge_charset_gbk_to_ucs2((uint8_t*)text, value, len, pf->encodingBuf.datalen);
 	}
 	else if (nge_font_encoding == NGE_ENCODING_UTF_8) {
-		*pCC = nge_charset_utf8_to_ucs2((uint8*)text, value, len, pf->encodingBuf.datalen);
+		*pCC = nge_charset_utf8_to_ucs2((uint8_t*)text, value, len, pf->encodingBuf.datalen);
 	}
 	return value;
 }
@@ -185,7 +191,7 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 								  int *pbase)
 {
 	FT_Face face;
-	uint16* value;
+	uint16_t* value;
 	int char_index;
 	int total_advance;
 	int max_ascent;
@@ -223,9 +229,9 @@ static void freetype2_gettextsize(PFont pfont, const void *text, int cc,
 			max_descent = descent;
 	}
 
-	*pwidth = total_advance;
-	*pheight = max_ascent + max_descent;
-	*pbase = max_ascent;
+	if(pwidth) *pwidth = total_advance;
+	if(pheight) *pheight = max_ascent + max_descent;
+	if(pbase) *pbase = max_ascent;
 }
 
 static void freetype2_destroyfont(PFont pfont)
@@ -240,51 +246,118 @@ static void freetype2_destroyfont(PFont pfont)
 
 static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int x,int y)
 {
-	uint8 a,dgree;
-	uint32 height = bitmap->rows;
-	uint32 width = bitmap->width;
-	uint32 i,j;
-	uint32* cpbegin32;
-	uint16* cpbegin16;
+	int height = bitmap->rows;
+	int width = bitmap->width;
+	uint32_t i,j;
+	uint32_t* cpbegin32;
+	uint16_t* cpbegin16;
+	unsigned char *buf = bitmap->buffer;
+	if(y + height > (int)pimage->texh)
+		height = pimage->texh - y;
+	if(x + width > (int)pimage->texw)
+		width = pimage->texw - x;
 
-	if(pimage->dtype == DISPLAY_PIXEL_FORMAT_8888){
-		cpbegin32 = (uint32*)pimage->data+y*pimage->texw+x;
-		for(j=0; j < height ; j++){
-			for(i=0; i < width; i++){
-				if(x+i>pimage->texw||y+j>pimage->texh)
-					continue;
-				if(i>=width || j>=height){
-					a = 0;
-				}
-				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = (int)(dgree*pf->a*1.0f/255);
-				cpbegin32[i]=MAKE_RGBA_8888(pf->r,pf->g,pf->b,a);
+	if(height <= 0 || width <= 0)
+		return;
+
+	switch(pimage->dtype) {
+		case DISPLAY_PIXEL_FORMAT_8888:
+			cpbegin32 = (uint32_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin32 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
 			}
-			cpbegin32 += pimage->texw;
-		}
-	}
-	else{
-		cpbegin16 = (uint16*)pimage->data+y*pimage->texw+x;
-		for(j=0; j < height ; j++){
-			for(i=0; i < width; i++){
-				if(x+i>pimage->texw||y+j>pimage->texh)
-					continue;
-				if(i>=width || j>=height){
-					a = 0;
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin32 -= x;
+					buf -= x;
+					i = -x;
 				}
-				dgree = bitmap->buffer[i + bitmap->width*j];
-				a = (int)(dgree*pf->a*1.0f/255);
-				if(pimage->dtype == DISPLAY_PIXEL_FORMAT_4444)
-					cpbegin16[i]=MAKE_RGBA_4444(pf->r,pf->g,pf->b,a);
-				else if(pimage->dtype == DISPLAY_PIXEL_FORMAT_5551){
-					cpbegin16[i]=MAKE_RGBA_5551(pf->r,pf->g,pf->b,a);
-				}
-				else{
-					cpbegin16[i]=MAKE_RGBA_565(pf->r,pf->g,pf->b,a);
-				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin32++) = MAKE_RGBA_8888(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				cpbegin32 += pimage->texw - width;
+				buf += bitmap->width - width;
 			}
-			cpbegin16 += pimage->texw;
-		}
+			break;
+		case DISPLAY_PIXEL_FORMAT_4444:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin16++) = MAKE_RGBA_4444(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_5551:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					*(cpbegin16++) = MAKE_RGBA_5551(pf->r, pf->g, pf->b, (pf->a&(*(buf++)))?255:0);
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		case DISPLAY_PIXEL_FORMAT_565:
+			cpbegin16 = (uint16_t*)pimage->data + y * pimage->texw + x;
+			if(y < 0) {
+				cpbegin16 -= y * pimage->texw;
+				buf -= y * bitmap->width;
+				j = -y;
+			}
+			else
+				j = 0;
+			for(; j < height; j++){
+				if(x < 0) {
+					cpbegin16 -= x;
+					buf -= x;
+					i = -x;
+				}
+				else
+					i = 0;
+				for(; i < width; i++)
+					if(*(buf++))
+						*(cpbegin16++) = MAKE_RGBA_565(pf->r, pf->g, pf->b, 0);
+					else
+						*(cpbegin16++) = 0;
+				cpbegin16 += pimage->texw - width;
+				buf += bitmap->width - width;
+			}
+			break;
+		default:
+			break;
 	}
 }
 
@@ -293,7 +366,7 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 							   const void *text, int cc, int flags)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	uint16* value;
+	uint16_t* value;
 	FT_Glyph glyph;
 	int pen_x = x;
 	int pen_y = y + pf->size;
@@ -312,8 +385,10 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	pimage->modified =1;
 	for (i =0;i<cc;i++) {
 		FT_Load_Glyph( pf->face, FT_Get_Char_Index( pf->face, value[i] ), FT_LOAD_DEFAULT );
-		if(pf->flags == FLAGS_FREETYPE_BOLDER)
+		if(pf->flags & FLAGS_FREETYPE_BOLD)
 			FT_GlyphSlot_Embolden(pf->face->glyph);
+		if(pf->flags & FLAGS_FREETYPE_ITALICS)
+			FT_GlyphSlot_Oblique(pf->face->glyph);
 		FT_Get_Glyph( pf->face->glyph, &glyph );
 		FT_Render_Glyph( pf->face->glyph, ft_render_mode_normal );
 		FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
@@ -345,7 +420,16 @@ static void freetype2_setfontattr(PFont pfont, int attr, int setflags)
 		pf->fix_width = attr;
 		break;
 	case SET_ATTR_BOLD:
-		pf->flags = FLAGS_FREETYPE_BOLDER;
+		pf->flags |= FLAGS_FREETYPE_BOLD;
+		break;
+	case SET_ATTR_NOBOLD:
+		pf->flags &= ~FLAGS_FREETYPE_BOLD;
+		break;
+	case SET_ATTR_ITALICS:
+		pf->flags |= FLAGS_FREETYPE_ITALICS;
+		break;
+	case SET_ATTR_NOITALICS:
+		pf->flags &= ~FLAGS_FREETYPE_ITALICS;
 		break;
 	case SET_ATTR_MARGIN:
 		break;
@@ -363,10 +447,10 @@ static PFont freetype2_duplicate(PFont pfont, int fontsize)
 	return pfont;
 }
 
-uint32  freetype2_setfontcolor(PFont pfont, uint32 color)
+uint32_t  freetype2_setfontcolor(PFont pfont, uint32_t color)
 {
 	PFontFreetype pf = (PFontFreetype) pfont;
-	uint32 last_color;
+	uint32_t last_color;
 	switch(pf->disp)
 	{
 		case DISPLAY_PIXEL_FORMAT_5551:
@@ -387,5 +471,13 @@ uint32  freetype2_setfontcolor(PFont pfont, uint32 color)
 			GET_RGBA_8888(color,pf->r,pf->g,pf->b,pf->a);
 			break;
 	}
+	freetype2_calcalphatable(pfont);
 	return last_color;
+}
+
+void freetype2_calcalphatable(PFont pfont)	{
+	int i;
+	PFontFreetype pf = (PFontFreetype)pfont;
+	for(i = 0; i < 256; i++)
+		pf->alpha_table[i] = (i * pf->a) >> 8;
 }

@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *            nge_jpg.c
  *
  *  2011/03/27 06:19:25
@@ -52,7 +52,7 @@ static void jpg_skip_input_data(j_decompress_ptr cinfo, long num_bytes)
 
 }
 
-static void jpeg_mem_src(j_decompress_ptr cinfo, uint8 *mem, int len)
+static void jpeg_mem_src(j_decompress_ptr cinfo, uint8_t *mem, int len)
 {
 	cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
 	cinfo->src->init_source = jpg_null;
@@ -87,13 +87,13 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	image_p pimage = NULL;
 	struct jpeg_decompress_struct	cinfo;
 	struct jpeg_error_mgr jerr;
-	uint8 *rawdata,*scanline, *p,*data = NULL;
+	uint8_t *rawdata,*scanline, *p,*data = NULL;
 	int	rawsize,texw,texh,width,height,bpb=2,size;
 	int r,g,b,x;
-	uint32* p32;
-	uint16* p16;
-	uint16 color16;
-	uint32 color32;
+	uint32_t* p32;
+	uint16_t* p16;
+	uint16_t color16;
+	uint32_t color32;
 
 	if(mbuf == NULL||bsize==0)
 		return 0;
@@ -101,7 +101,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	memset(&jerr,0,sizeof(struct jpeg_error_mgr));
 
 	rawsize = bsize;
-	rawdata = (uint8*)mbuf;
+	rawdata = (uint8_t*)mbuf;
 
 	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
 	{
@@ -131,20 +131,20 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 		bpb = 4;
 	}
 	size = texw * texh * bpb;
-	data = (uint8*)malloc(size);
+	data = (uint8_t*)malloc(size);
 	memset(data,0,size);
-	scanline = (uint8*)malloc(cinfo.output_width * 3);
+	scanline = (uint8_t*)malloc(cinfo.output_width * 3);
 	if(!scanline){
 		jpeg_destroy_decompress(&cinfo);
 		SAFE_FREE (data);
 		return 0;
 	}
-	p32 = (uint32*)data;
-	p16 = (uint16*) p32;
+	p32 = (uint32_t*)data;
+	p16 = (uint16_t*) p32;
 
 	while(cinfo.output_scanline < cinfo.output_height){
 		jpeg_read_scanlines(&cinfo, &scanline, 1);
-		p = (uint8*)scanline;
+		p = (uint8_t*)scanline;
 		for(x=0; x<(int)cinfo.output_width; x++){
 
 			r = p[0];
@@ -178,7 +178,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	jpeg_destroy_decompress(&cinfo);
 	pimage = (image_p)malloc(sizeof(image_t));
 	memset(pimage,0,sizeof(image_t));
-	pimage->data = (uint8 *)data;
+	pimage->data = (uint8_t *)data;
 	pimage->w    = width;
 	pimage->h    = height;
 	pimage->texw = texw;
@@ -233,20 +233,20 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	image_p pimage = NULL;
 	struct jpeg_decompress_struct	cinfo;
 	struct jpeg_error_mgr jerr;
-	uint8 *rawdata,*scanline, *p,*data = NULL;
+	uint8_t *rawdata,*scanline, *p,*data = NULL;
 	int	rawsize,texw,texh,width,height,bpb=2,size;
 	int r,g,b,x,color;
-	uint32* p32;
-	uint16* p16;
-	uint16 color16;
-	uint32 color32;
-	uint8 alpha;
+	uint32_t* p32;
+	uint16_t* p16;
+	uint16_t color16;
+	uint32_t color32;
+	uint8_t alpha;
 
 	if(mbuf == NULL||bsize==0)
 		return 0;
 
 	rawsize = bsize;
-	rawdata = (uint8*)mbuf;
+	rawdata = (uint8_t*)mbuf;
 
 	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
 	{
@@ -278,20 +278,20 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 		bpb = 4;
 	}
 	size = texw * texh * bpb;
-	data = (uint8*)malloc(size);
+	data = (uint8_t*)malloc(size);
 	memset(data,0,size);
 
-	scanline = (uint8*)malloc(cinfo.output_width * 3);
+	scanline = (uint8_t*)malloc(cinfo.output_width * 3);
 	if(!scanline){
 		jpeg_destroy_decompress(&cinfo);
 		SAFE_FREE (data);
 		return 0;
 	}
-	p32 = (uint32*)data;
-	p16 = (uint16*) p32;
+	p32 = (uint32_t*)data;
+	p16 = (uint16_t*) p32;
 	while(cinfo.output_scanline < cinfo.output_height){
 		jpeg_read_scanlines(&cinfo, &scanline, 1);
-		p = (uint8*)scanline;
+		p = (uint8_t*)scanline;
 		for(x=0; x<(int)cinfo.output_width; x++){
 
 			r = p[0];
@@ -330,7 +330,7 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 	jpeg_destroy_decompress(&cinfo);
 	pimage = (image_p)malloc(sizeof(image_t));
 	memset(pimage,0,sizeof(image_t));
-	pimage->data = (uint8 *)data;
+	pimage->data = (uint8_t *)data;
 	pimage->w    = width;
 	pimage->h    = height;
 	pimage->texw = texw;

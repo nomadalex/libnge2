@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Thanks to Dr.Watson JGE++!
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
@@ -60,128 +60,45 @@ inline static void doswap(int swap, void *p, size_t n)
 	}
 }
 
-#define DECL_ENDIAN() uint8 __swap__ = 0
+#define DECL_ENDIAN() uint8_t __swap__ = 0
 #define SET_ENDIAN(endian) __swap__ = doendian(endian)
 
-#define PUSH_STRUCT(type, ptr, mem)				\
-	memcpy(mem, (ptr), sizeof(type));			\
-	mem += sizeof(type)
-#define POP_STRUCT(type, ptr, mem)				\
-	memcpy((ptr), mem, sizeof(type));			\
-	mem += sizeof(type)
-
-#define PUSH_UINT8(val, mem)					\
-	mem[0] = (uint8)val;						\
-	mem += 1
-#define POP_UINT8(val, mem)						\
-	val = mem[0];								\
-	mem += 1
-
-#define PUSH_FLOAT(val, mem)					\
-	memcpy(&(mem[0]), &(val), sizeof(float));	\
-	mem += sizeof(float)
-#define POP_FLOAT(val, mem)						\
-	memcpy(&(val), &(mem[0]), sizeof(float));	\
-	mem += sizeof(float)
-
-#define PUSH_FLOATS(ptr, mem, size)					\
-	memcpy(&(mem[0]), ptr, size * sizeof(float));	\
-	mem += size * sizeof(float)
-#define POP_FLOATS(ptr, mem, size)					\
-	memcpy(ptr, &(mem[0]), size * sizeof(float));	\
-	mem += size * sizeof(float)
-
-#define PUSH_TYPE(type, val, mem)				\
-	memcpy(&(mem[0]), &(val), sizeof(type));	\
-	doswap(__swap__, &(mem[0]), sizeof(type));	\
-	mem += sizeof(type)
-#define POP_TYPE(type, val, mem)				\
-	memcpy(&(val), &(mem[0]), sizeof(type));	\
-	doswap(__swap__, &(val), sizeof(type));		\
-	mem += sizeof(type)
-
-const int hgeParticleSystem::infoSize = 3 + 4 + 5*4 + 1 + 14*4 + sizeof(hgeColor) * 2 + 2*4;
-
-bool hgeParticleSystem::ReadInfoFromBuf(hgeParticleSystemInfo& info, const uint8* mem, uint32 len) {
-	DECL_ENDIAN();
-	uint8 hdr[3];
-
-	SET_ENDIAN(OP_LITTLEENDIAN);
-
-	if (len < infoSize)
-		return false;
-	memset(&info, 0, sizeof(hgeParticleSystemInfo));
-
-	POP_UINT8(hdr[0], mem);
-	POP_UINT8(hdr[1], mem);
-	POP_UINT8(hdr[2], mem);
-	if (hdr[0] != 'P' || hdr[1] != 'A' || hdr[2] != 'R')
-		return false;
-
-	// POP_STRUCT(rectf, &info.sprite->sprite_clip, mem);
-	// POP_STRUCT(pointf, &info.sprite->sprite_center, mem);
-	POP_TYPE(uint32, info.nEmission, mem);
-	POP_FLOATS(&info.fLifetime, mem, 5);
-	POP_UINT8(info.bRelative, mem);
-	POP_FLOATS(&info.fSpeedMin, mem, 14);
-	POP_STRUCT(hgeColor, &info.colColorStart, mem);
-	POP_STRUCT(hgeColor, &info.colColorEnd, mem);
-	POP_FLOATS(&info.fColorVar, mem, 2);
-	return true;
-}
+#define FIX_TYPE(type, val)						\
+	doswap(__swap__, &(val), sizeof(type))
 
 bool hgeParticleSystem::ReadInfoFromFile(hgeParticleSystemInfo& info, const char* filename) {
-	uint8 mem[infoSize];
-
 	int handle = io_fopen(filename,IO_RDONLY);
 	if(handle==0)
 		return false;
-	io_fread(mem,1,infoSize,handle);
+	io_fread(&info,1,sizeof(hgeParticleSystemInfo),handle);
 	io_fclose(handle);
 
-	return ReadInfoFromBuf(info, mem, infoSize);
-}
+	FixInfoEndian(info);
 
-uint32 hgeParticleSystem::SaveInfoToBuf(const hgeParticleSystemInfo& info, uint8* mem, uint32 len) {
-	DECL_ENDIAN();
-
-	SET_ENDIAN(OP_LITTLEENDIAN);
-
-	if (len < infoSize)
-		return 0;
-
-	PUSH_UINT8('P', mem);
-	PUSH_UINT8('A', mem);
-	PUSH_UINT8('R', mem);
-
-	// PUSH_STRUCT(rectf, &info.sprite->sprite_clip, mem);
-	// PUSH_STRUCT(pointf, &info.sprite->sprite_center, mem);
-	PUSH_TYPE(uint32, info.nEmission, mem);
-	PUSH_FLOATS(&info.fLifetime, mem, 5);
-	PUSH_UINT8(info.bRelative, mem);
-	PUSH_FLOATS(&info.fSpeedMin, mem, 14);
-	PUSH_STRUCT(hgeColor, &info.colColorStart, mem);
-	PUSH_STRUCT(hgeColor, &info.colColorEnd, mem);
-	PUSH_FLOATS(&info.fColorVar, mem, 2);
-
-	return infoSize;
+	return true;
 }
 
 bool hgeParticleSystem::SaveInfoToFile(hgeParticleSystemInfo& info, const char* filename) {
-	uint8 mem[infoSize];
-
 	int handle = io_fopen(filename,IO_WRONLY);
 	if(handle==0)
 		return false;
 
-	uint32 ret = SaveInfoToBuf(info, mem, infoSize);
-	if (ret == 0)
-		return false;
+	hgeParticleSystemInfo save = info;
+	FixInfoEndian(save);
 
-	io_fwrite(mem,1,infoSize,handle);
+	io_fwrite(&save,1,sizeof(hgeParticleSystemInfo),handle);
 	io_fclose(handle);
 
 	return true;
+}
+
+void hgeParticleSystem::FixInfoEndian(hgeParticleSystemInfo& info) {
+	DECL_ENDIAN();
+
+	SET_ENDIAN(OP_LITTLEENDIAN);
+
+	FIX_TYPE(int, info.nEmission);
+	FIX_TYPE(int, info.bRelative);
 }
 
 hgeParticleSystem::hgeParticleSystem(const char *filename, sprite_p sprite)

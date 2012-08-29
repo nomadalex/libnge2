@@ -1,4 +1,4 @@
-ï»¿/***************************************************************************
+/***************************************************************************
  *            nge_color.h
  *
  *  2011/03/25 05:01:45
@@ -36,7 +36,7 @@ extern "C" {
 #define DISPLAY_PIXEL_FORMAT_5551 GU_COLOR_5551
 #define DISPLAY_PIXEL_FORMAT_4444 GU_COLOR_4444
 #define DISPLAY_PIXEL_FORMAT_8888 GU_COLOR_8888
-//blend methord
+/*blend methord*/
 #define BLEND_ZERO					0x1000
 #define BLEND_ONE					0x1002
 #define BLEND_SRC_COLOR				GU_SRC_COLOR
@@ -75,6 +75,11 @@ extern "C" {
 #define BLEND_DST_COLOR				0x0306
 #define BLEND_ONE_MINUS_DST_COLOR	0x0307
 #define BLEND_SRC_ALPHA_SATURATE	0x0308
+
+#define FILTER_LINEAR			0
+#define FILTER_NEAREST			1
+
+
 //define for psp compatiable,no use on other
 #define PSM_5551 0
 #define PSM_565  1
@@ -96,7 +101,7 @@ extern "C" {
 #define GET_RGBA_B(col)	((col>>16)&0xFF)
 #define GET_RGBA_A(col)	((col>>24)&0xFF)
 
-//æ³¨æ„PSPæ˜¯ABGR(é«˜->ä½Ž)å…¶ä»–æ˜¯RGBA(é«˜->ä½Ž)æ­£å¥½ååº
+//×¢ÒâPSPÊÇABGR(¸ß->µÍ)ÆäËûÊÇRGBA(¸ß->µÍ)ÕýºÃ·´Ðò
 #if defined NGE_PSP
 #define MAKE_RGBA_5551(r,g,b,a)  ((r >> 3) | ((g >> 3) << 5) | ((b >> 3) << 10) | ((a >> 7) << 15))
 #define MAKE_RGBA_4444(r,g,b,a)  ((r >> 4) | ((g >> 4) << 4) | ((b >> 4) << 8) | ((a >> 4) << 12))
@@ -195,22 +200,22 @@ extern "C" {
 #define FONT_SH_8888 MAKE_RGBA_8888(0x7f,0x7f,0x7f,0xff)
 
 typedef struct{
-	uint8 r;
-	uint8 g;
-	uint8 b;
-	uint8 a;
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+	uint8_t a;
 }color4ub;
 
 /**
- *æ ¹æ®é¢œè‰²åˆ†é‡åˆ›å»ºä¸€ä¸ªdtypeå¯¹åº”çš„è‰²å½©
- *@param uint8 r,ré¢œè‰²åˆ†é‡
- *@param uint8 g,gé¢œè‰²åˆ†é‡
- *@param uint8 b,bé¢œè‰²åˆ†é‡
- *@param uint8 a,aé¢œè‰²åˆ†é‡
- *@param int dtype,æ˜¾ç¤ºæ¨¡å¼,(DISPLAY_PIXEL_FORMAT_XXXçš„ä¸€ç§)
- *@return int ,é¢œè‰²å€¼
+ *¸ù¾ÝÑÕÉ«·ÖÁ¿´´½¨Ò»¸ödtype¶ÔÓ¦µÄÉ«²Ê
+ *@param[in] r rÑÕÉ«·ÖÁ¿
+ *@param[in] g gÑÕÉ«·ÖÁ¿
+ *@param[in] b bÑÕÉ«·ÖÁ¿
+ *@param[in] a aÑÕÉ«·ÖÁ¿
+ *@param[in] dtype ÏÔÊ¾Ä£Ê½,(DISPLAY_PIXEL_FORMAT_XXXµÄÒ»ÖÖ)
+ *@return int,ÑÕÉ«Öµ
  */
-NGE_API int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype); // it is in nge_image.c
+NGE_API int CreateColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a,int dtype); // it is in nge_image.c
 
 #ifdef __cplusplus
 }

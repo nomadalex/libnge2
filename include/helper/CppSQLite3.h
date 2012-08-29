@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // CppSQLite3 - A C++ wrapper around the SQLite3 embedded database library.
 //
 // Copyright (c) 2004 Rob Groves. All Rights Reserved. rob.groves@btinternet.com
@@ -47,7 +47,7 @@
 /* #endif */
 
 
-class NGE_API CppSQLite3Exception
+class NGE_CLASS CppSQLite3Exception
 {
 public:
 
@@ -72,7 +72,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3Buffer
+class NGE_CLASS CppSQLite3Buffer
 {
 public:
 
@@ -92,7 +92,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3Binary
+class NGE_CLASS CppSQLite3Binary
 {
 public:
 
@@ -122,7 +122,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3Query
+class NGE_CLASS CppSQLite3Query
 {
 public:
 
@@ -183,7 +183,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3Table
+class NGE_CLASS CppSQLite3Table
 {
 public:
 
@@ -233,7 +233,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3Statement
+class NGE_CLASS CppSQLite3Statement
 {
 public:
 
@@ -271,7 +271,7 @@ private:
 };
 
 
-class NGE_API CppSQLite3DB
+class NGE_CLASS CppSQLite3DB
 {
 public:
 

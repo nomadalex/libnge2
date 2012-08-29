@@ -1,4 +1,4 @@
-﻿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_font.h"
 #include "nge_font_internal.h"
 #include "nge_io_file.h"
@@ -11,15 +11,15 @@ typedef struct {
 	void*		procs;	/* font-specific rendering routines*/
 	int			size;	/* font height in pixels*/
 	int			rotation;	/* font rotation*/
-	uint32		disp;	/* diplaymode*/
+	uint32_t		disp;	/* diplaymode*/
 	int         flags;
 	workbuf     encodingBuf;
 
-	uint32      color_fg;
-	uint32      color_bg;
-	uint32      color_sh;
-	uint8*      cfont_raw;
-	uint8* 		afont_raw;
+	uint32_t      color_fg;
+	uint32_t      color_bg;
+	uint32_t      color_sh;
+	uint8_t*      cfont_raw;
+	uint8_t* 		afont_raw;
 	workbuf		bitbuf;
 
 //hzk special
@@ -55,7 +55,7 @@ static  FontProcs hzk_procs = {
 static int use_big5 = 0;
 
 #define MAKE_EXPANDCCHAR_FUNC(bits)										\
-	static inline void expandcchar_##bits (PFontHzk pf, int bg, int fg, unsigned char* c, uint##bits * bitmap) \
+	static inline void expandcchar_##bits (PFontHzk pf, int bg, int fg, unsigned char* c, uint##bits##_t * bitmap) \
 	{																	\
 		int x,y, i=0, b = 0;											\
 		int c1, c2, seq;												\
@@ -96,7 +96,7 @@ static int use_big5 = 0;
 
 
 #define MAKE_EXPANDCHAR_FUNC(bits)										\
-	static inline void expandchar_##bits(PFontHzk pf, int bg, int fg, int c, uint##bits* bitmap) \
+	static inline void expandchar_##bits(PFontHzk pf, int bg, int fg, int c, uint##bits##_t* bitmap) \
 	{																	\
 		int x,y, i=0, b = 0;											\
 		unsigned char *font;											\
@@ -123,7 +123,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 	void hzk_drawtext_##bits(PFontHzk pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		char *s,*sbegin;												\
 		int size;														\
@@ -138,22 +138,22 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 		}																\
 																		\
 		sbegin=s;														\
-		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
+		size = pf->cfont_width * pf->font_height *sizeof(uint##bits##_t);	\
 		EXPAND_WORKBUF(pf, size, bitbuf);								\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\
 		{																\
 			if( c[1] != '\0'){											\
 				expandcchar_##bits(pf, pf->color_bg,pf->color_fg,c, bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
 				s += 2;													\
 				ax += pf->cfont_width;									\
 			}															\
 			else{														\
 				expandchar_##bits(pf, pf->color_bg,pf->color_fg,c[0], bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
 				s += 1;													\
 				ax += pf->afont_width;									\
 			}															\
@@ -166,7 +166,7 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 	void hzk_drawtext_shadow_##bits(PFontHzk pf, image_p pimage, int ax, int ay,const void *text, int cc, int flags) \
 	{																	\
 		unsigned char c[2];												\
-		uint##bits* bitmap = NULL;										\
+		uint##bits##_t* bitmap = NULL;										\
 		unsigned char s1[3];											\
 		int size;														\
 		char *s,*sbegin;												\
@@ -181,24 +181,24 @@ MAKE_PROCESS_SHADOW_FUNC(32, h)
 		}																\
 																		\
 		sbegin=s;														\
-		size = pf->cfont_width * pf->font_height *sizeof(uint##bits);	\
+		size = pf->cfont_width * pf->font_height *sizeof(uint##bits##_t);	\
 		EXPAND_WORKBUF(pf, size, bitbuf);								\
-		bitmap = (uint##bits*)pf->bitbuf.data;							\
+		bitmap = (uint##bits##_t*)pf->bitbuf.data;							\
 		memset(bitmap,0,size);											\
 																		\
 		while( getnextchar(s, c) )										\
 		{																\
 			if( c[1] != '\0'){											\
 				expandcchar_##bits(pf, pf->color_bg,pf->color_fg,c, bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
-				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg,(uint##bits)pf->color_sh); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
+				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg,(uint##bits##_t)pf->color_sh); \
 				s += 2;													\
 				ax += pf->cfont_width;									\
 			}															\
 			else{														\
 				expandchar_##bits(pf, pf->color_bg,pf->color_fg,c[0], bitmap); \
-				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg); \
-				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits)pf->color_bg,(uint##bits)pf->color_fg,(uint##bits)pf->color_sh); \
+				copy_rawdata_image_custom_##bits(bitmap,pimage,ax,ay,pf->afont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg); \
+				process_shadow_##bits(bitmap,pimage,ax,ay,pf->cfont_width,pf->font_height,(uint##bits##_t)pf->color_bg,(uint##bits##_t)pf->color_fg,(uint##bits##_t)pf->color_sh); \
 				s += 1;													\
 				ax += pf->afont_width;									\
 			}															\
@@ -247,10 +247,10 @@ PFont create_font_hzk_buf(const char *cfbuf,int csize,const char* afbuf,int asiz
 	pf->font_height = height;
 
 	/* Load the font library to the system memory.*/
-	pf->cfont_raw = (uint8*)malloc(csize);
+	pf->cfont_raw = (uint8_t*)malloc(csize);
 	memcpy(pf->cfont_raw,cfbuf,csize);
 
-	pf->afont_raw = (uint8*)malloc(asize);
+	pf->afont_raw = (uint8_t*)malloc(asize);
 	memcpy(pf->afont_raw,afbuf,asize);
 
 	return (PFont)pf;

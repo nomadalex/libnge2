@@ -1,4 +1,4 @@
-﻿#ifndef NGE_TEX_CACHE_H_
+#ifndef NGE_TEX_CACHE_H_
 #define NGE_TEX_CACHE_H_
 
 #include "nge_common.h"

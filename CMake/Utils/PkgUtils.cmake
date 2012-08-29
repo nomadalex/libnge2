@@ -136,18 +136,32 @@ macro(prepare_dep_search PREFIX)
 	)
 
   # Set hardcoded path guesses for various platforms
-  if(WIN32)
-	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/Win32Depends")
-  elseif(ANDROID)
+  # add user customised search path
+  if(PKG_PLATFORM)
+	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/${PKG_PLATFORM}Depends")
+  endif()
+  # test cross-compile platform first
+  if(ANDROID)
 	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/AndroidDepends")
-  elseif(UNIX)
-	list(APPEND ${PREFIX}_DEP_SEARCH_PATH "/usr/local")
+  else()
+	if(WIN32)
+	  list(APPEND ${PREFIX}_DEP_SEARCH_PATH "${CMAKE_SOURCE_DIR}/Win32Depends")
+	elseif(UNIX)
+	  list(APPEND ${PREFIX}_DEP_SEARCH_PATH "/usr/local")
+	endif()
   endif()
   message(STATUS "Search path: ${${PREFIX}_DEP_SEARCH_PATH}")
 
   # give guesses as hints to the find_package calls
   set(CMAKE_PREFIX_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_PREFIX_PATH})
-  set(CMAKE_FRAMEWORK_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FRAMEWORK_PATH})
+  if(APPLE)
+  	set(CMAKE_FRAMEWORK_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FRAMEWORK_PATH})
+  endif()
+
+  if(ANDROID)
+	# fix for android toolchain only search toolchain libraries, CMAKE_PREFIX_PATH will not work
+	set(CMAKE_FIND_ROOT_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_FIND_ROOT_PATH})
+  endif()
 endmacro()
 
 macro(add_package_include PKG_FIX)

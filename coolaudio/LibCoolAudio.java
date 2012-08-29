@@ -33,10 +33,6 @@ import android.util.Log;
 
 public class LibCoolAudio extends Object
 {
-	public LibCoolAudio()
-	{
-	}
-
 	private static final String TAG = "LibCoolAudio";
 	private MediaPlayer mplayer = null;
 	private Object mplayer_lock = new Object();

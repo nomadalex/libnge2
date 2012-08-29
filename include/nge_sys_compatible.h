@@ -1,4 +1,4 @@
-ï»¿#ifndef NGE_SYS_COMPATIBLE_H_
+#ifndef NGE_SYS_COMPATIBLE_H_
 #define NGE_SYS_COMPATIBLE_H_
 
 #include "nge_common.h"
@@ -15,13 +15,13 @@ typedef pspTime sys_time_t,*sys_time_p;
 #else
 #include "nge_common.h"
 typedef struct st_tm{
-	uint16  year;
-	uint16  month;
-	uint16  day;
-	uint16  hour;
-	uint16  minutes;
-	uint16  seconds;
-	uint32  microseconds;
+	uint16_t  year;
+	uint16_t  month;
+	uint16_t  day;
+	uint16_t  hour;
+	uint16_t  minutes;
+	uint16_t  seconds;
+	uint32_t  microseconds;
 }sys_time_t,*sys_time_p;
 #endif
 
@@ -30,40 +30,40 @@ extern "C"{
 #endif
 
 /**
- *è·å–ç³»ç»Ÿçš„æœ¬åœ°æ—¶é—´
- *@param sys_time_p tm,ç³»ç»Ÿæ—¶é—´ç»“æ„
- *@return int,æˆåŠŸè¿”å›1,å¤±è´¥è¿”å›0
+ *»ñÈ¡ÏµÍ³µÄ±¾µØÊ±¼ä
+ *@param[out] tm ÏµÍ³Ê±¼ä½á¹¹
+ *@return int,³É¹¦·µ»Ø1,Ê§°Ü·µ»Ø0
  */
 	NGE_API int sys_localtime(sys_time_p tm);
 
 /**
- *è·å–ç³»ç»Ÿçš„å”¯ä¸€çš„30ä½åºåˆ—å·.
- *@return char*,30ä½åºåˆ—å·çš„å­—ç¬¦ä¸².
+ *»ñÈ¡ÏµÍ³µÄÎ¨Ò»µÄ30Î»ĞòÁĞºÅ.
+ *@return char*,30Î»ĞòÁĞºÅµÄ×Ö·û´®.
  */
 	NGE_API char* sys_get_idstorage();
 
 /**
- *è·å–ç³»ç»Ÿçš„MACåœ°å€å­—ç¬¦ä¸².
- *@return char*,è¿”å›å­—ç¬¦ä¸²,XX:XX:XX:XX:XX:XX.
+ *»ñÈ¡ÏµÍ³µÄMACµØÖ·×Ö·û´®.
+ *@return char*,·µ»Ø×Ö·û´®,XX:XX:XX:XX:XX:XX.
  */
 	NGE_API char* sys_get_mac();
 
 /**
- *è·å–ç³»ç»Ÿçš„ç”¨æˆ·å.
- *@return char*,è¿”å›å­—ç¬¦ä¸².
+ *»ñÈ¡ÏµÍ³µÄÓÃ»§Ãû.
+ *@return char*,·µ»Ø×Ö·û´®.
  */
 	NGE_API char* sys_get_nickname();
 
 /**
- *è®¾ç½®CPUçš„é¢‘ç‡ç±»å‹.
- *@param int,ç±»å‹ä¸ºCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
- *@return int,1è®¾ç½®æˆåŠŸ,0è®¾ç½®å¤±è´¥.
+ *ÉèÖÃCPUµÄÆµÂÊÀàĞÍ.
+ *@param[in] type ÀàĞÍÎªCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
+ *@return int,1ÉèÖÃ³É¹¦,0ÉèÖÃÊ§°Ü.
  */
 	NGE_API int sys_set_frequency_type(int type);
 
 /**
- *å–å¾—CPUçš„é¢‘ç‡ç±»å‹.
- *@return int,ç±»å‹ä¸ºCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
+ *È¡µÃCPUµÄÆµÂÊÀàĞÍ.
+ *@return int,ÀàĞÍÎªCPU_TYPE_333MHZ,CPU_TYPE_222MHZ,CPU_TYPE_111MHZ
  */
 	NGE_API int sys_get_frequency_type();
 

@@ -1,4 +1,4 @@
-ï»¿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_tex_cache.h"
 #include "nge_rbtree.h"
 #include <stdio.h>
@@ -64,7 +64,7 @@ void tex_cache_clear()
 }
 
 /**
- * ä»Žfreelistä¸­èŽ·å–ä¸€ä¸ªcache
+ * ´ÓfreelistÖÐ»ñÈ¡Ò»¸öcache
  */
 static tex_node_p get_free_node()
 {
@@ -72,7 +72,7 @@ static tex_node_p get_free_node()
 	tex_node_p tex_node = NULL;
 	int i = 0;
 	if(free_tex_list == NULL){
-		//æ²¡æœ‰å‰©ä½™çš„cache,ä»Žæ ‘ä¸­é‡Šæ”¾ä¸€åŠçš„cache
+		//Ã»ÓÐÊ£ÓàµÄcache,´ÓÊ÷ÖÐÊÍ·ÅÒ»°ëµÄcache
 		//root = rbtRoot();
 		delete_count = 0;
 		rbtInorder(rb,rb->root, deleteNodeProc);

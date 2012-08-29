@@ -1,4 +1,4 @@
-ï»¿#include "libnge2.h"
+#include "libnge2.h"
 #include "nge_jpg.h"
 #include "unzip.h"
 #include <stdlib.h>
@@ -15,18 +15,18 @@ char filename[1024][256];
 int filenum=0;
 
 
-//txtæ–‡ä»¶
+//txtÎÄ¼ş
 char txtfilename[256];
 char txt[1024]={0};
 int txtsize = 0;
 
-//imgæ–‡ä»¶
+//imgÎÄ¼ş
 char imagefilename[256];
 	char *imagebuf;
 	int imagesize;
 
 
-//è·å–zip å†…æ–‡ä»¶ ç›®å½•
+//»ñÈ¡zip ÄÚÎÄ¼ş Ä¿Â¼
 int open_zip_filename(char* zipfile)
 {
 	unzFile unzf = unzOpen(zipfile);
@@ -58,7 +58,7 @@ int open_zip_filename(char* zipfile)
 
 	unzClose(unzf);
 
-	//æ˜¾ç¤ºæ–‡ä»¶å
+	//ÏÔÊ¾ÎÄ¼şÃû
 	for	(int i =0;i<filenum;i++)
 	{
 		font_drawtext(pf[0],filename[i],strlen(filename[i]),pimage_text,0,0+i*20,FONT_SHOW_NORMAL);
@@ -69,7 +69,7 @@ int open_zip_filename(char* zipfile)
 	return 1;
 }
 
-//è·å–zip å†…txtæ–‡ä»¶
+//»ñÈ¡zip ÄÚtxtÎÄ¼ş
 int open_zip_file(char* zipfile,char *zipfilename)
 {
 
@@ -109,7 +109,7 @@ int open_zip_file(char* zipfile,char *zipfilename)
 }
 
 
-//è·å–zip å†…imageæ–‡ä»¶
+//»ñÈ¡zip ÄÚimageÎÄ¼ş
 int open_zip_image(char* zipfile,char *zipimagename)
 {
 
@@ -181,7 +181,7 @@ void btn_down(int keycode)
 	case PSP_BUTTON_SELECT:
 		break;
 	case PSP_BUTTON_START:
-		//å¼€å§‹é”®é€€å‡º
+		//¿ªÊ¼¼üÍË³ö
 		game_quit = 1;
 		break;
 	}
@@ -229,17 +229,17 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	NGE_Init(INIT_ALL);
-	NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
+	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 
 	InitInput(btn_down,btn_up,1);
 
-	//åˆ›å»ºä¸€ä¸ªæ˜¾ç¤ºimage,å­—å°±æ˜¾ç¤ºåœ¨è¿™ä¸ªä¸Šé¢æ³¨æ„DISPLAY_PIXEL_FORMATå¿…é¡»ä¸åˆ›å»ºå­—ä½“çš„DISPLAY_PIXEL_FORMATä¸€è‡´
+	//´´½¨Ò»¸öÏÔÊ¾image,×Ö¾ÍÏÔÊ¾ÔÚÕâ¸öÉÏÃæ×¢ÒâDISPLAY_PIXEL_FORMAT±ØĞëÓë´´½¨×ÖÌåµÄDISPLAY_PIXEL_FORMATÒ»ÖÂ
 	pimage_text = image_create(512,512,DISPLAY_PIXEL_FORMAT_4444);
 
-	//åˆ›å»ºå­—ä½“
+	//´´½¨×ÖÌå
 	pf[0] = create_font_hzk("fonts/GBK12","fonts/ASC12",12,DISPLAY_PIXEL_FORMAT_4444);
 
-	//æ˜¾ç¤ºGBK Font
+	//ÏÔÊ¾GBK Font
 	font_setcolor(pf[0],MAKE_RGBA_4444(0,0,0,255));
 
 	open_zip_filename("database/data.zip");

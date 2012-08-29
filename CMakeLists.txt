@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+cmake_minimum_required(VERSION 2.8.5 FATAL_ERROR)
 
 # Search in the directorys for additional CMake modules.
 set(CMAKE_MODULE_PATH
@@ -21,6 +18,9 @@ endif()
 if(${BUILD_FOR} STREQUAL PSP)
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/psp.toolchain.cmake")
 elseif(${BUILD_FOR} STREQUAL Android)
+  if(NOT ANDROID_ABI)
+	set(ANDROID_ABI armeabi)
+  endif()
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/CMake/Utils/android.toolchain.cmake")
 endif()
 
@@ -34,19 +34,23 @@ set(NGE2_LIBS)
 set(NGE2_VERSION 2.1)
 
 include(Common)
+if(ANDROID)
+  include(AndroidCommon)
+endif()
 include(SetupDepends)
 
 # Put libraries into `lib'.
 if(NOT WIN32)
   if(ANDROID)
-	set_output_root(${CMAKE_SOURCE_DIR}/Android)
+	set_output_root(${CMAKE_BINARY_DIR}/Android)
   else()
 	set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
   endif()
 endif()
 
-if(BUILD_SHARED AND LINUX)
+if(LINUX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
 if(ANDROID)
@@ -58,7 +62,7 @@ set(NGE2_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE INTERNAL
   "Real variable for build." FORCE)
 
 if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
-  set(NGE2_IS_DEBUG 1)
+  set(NGE_IS_DEBUG 1)
 endif()
 
 # Search for C header files in these directories.
@@ -90,15 +94,13 @@ list(APPEND NGE2_SRCS
   src/nge_tex_cache.c
   src/nge_tga.c
   src/nge_timer.c
-  src/nge_graphics.c
   src/nge_app.c
-  src/nge_app.cpp
+  src/nge_app_cpp.cpp
+  src/nge_ref_handle.c
+  src/nge_package.c
+  src/nge_package_zip.c
   )
-list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS})
-
-if(MSVC AND NOT MSVC10)
-  include_directories(SYSTEM include/msvc)
-endif()
+list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS} ${UNZIP_LIBRARIES})
 
 if(NOT ANDROID)
   list(APPEND NGE2_SRCS
@@ -112,6 +114,10 @@ if(PSP)
   list(APPEND NGE2_SRCS
 	src/psp/nge_graphics.c
 	src/psp/vram.c
+	)
+else()
+  list(APPEND NGE2_SRCS
+	src/nge_graphics.c
 	)
 endif()
 
@@ -131,7 +137,7 @@ if(COMPILER_GCC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 endif()
 
-if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+if(NGE_IS_DEBUG)
   option(USE_STDOUT_DEBUG "debug logs use stdout." on)
   if(USE_STDOUT_DEBUG)
 	add_definitions(-D_DEBUG_STDOUT)
@@ -147,7 +153,11 @@ if(WIN32)
 elseif(ANDROID)
   list(APPEND NGE2_LIBS log GLESv1_CM)
 else()
-  list(APPEND NGE2_LIBS g c stdc++)
+  list(APPEND NGE2_LIBS g)
+  if(NOT PSP)
+	list(APPEND NGE2_LIBS c) # psp contains newlib's libc
+  endif()
+  list(APPEND NGE2_LIBS stdc++)
 endif()
 
 if(PSP)
@@ -167,19 +177,45 @@ if(ANDROID)
 endif()
 
 # addons
-macro(add_addon_srcs var src_var subdir)
-  foreach(s ${${src_var}})
-	list(APPEND ${var} ${subdir}/${s})
+macro(add_addon_srcs subdir)
+  set(_next "")
+  set(_need_subdir true)
+
+  foreach(s ${ARGN})
+	if(${s} STREQUAL "HAS_SUBDIR_IN_INCLUDE")
+	  include_directories(${CMAKE_SOURCE_DIR}/include/${subdir})
+	elseif(${s} STREQUAL "INCLUDE_THIS_DIR")
+	  include_directories(${subdir})
+	elseif(${s} STREQUAL "SRC_NO_SUBDIR")
+	  set(_need_subdir false)
+	elseif(${s} STREQUAL "SRCS")
+	  set(_next "SRC")
+	elseif(${s} STREQUAL "LIBS")
+	  set(_next "LIB")
+	elseif(${s} STREQUAL "INCLUDES")
+	  set(_next "INC")
+	else()
+	  if(${_next} STREQUAL "SRC")
+		if(_need_subdir)
+		  list(APPEND NGE2_SRCS ${subdir}/${s})
+		else()
+		  list(APPEND NGE2_SRCS ${s})
+		endif()
+	  elseif(${_next} STREQUAL "LIB")
+		list(APPEND NGE2_LIBS ${s})
+	  elseif(${_next} STREQUAL "INC")
+		include_directories(${s})
+	  endif()
+	endif()
   endforeach()
 endmacro()
 
 macro(add_addon subdir)
-  include_directories(${subdir})
   include(${subdir}/CMakeLists.txt)
 endmacro()
 
 # mmgr
-if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
+if(NGE_IS_DEBUG)
   option(USE_MMGR "Useful for debug." off)
   if(USE_MMGR)
 	add_definitions(-DMMGR)
@@ -196,15 +232,13 @@ add_addon(helper)
 if(PSP)
   add_addon(dirent)
   add_addon(movie)
-endif()
-
-if(PSP)
   add_addon(net)
 endif()
 
 if(BUILD_SHARED)
   add_our_library(nge2 SHARED ${NGE2_SRCS})
 else()
+  add_definitions(-DNGE_LIBTYPE_STATIC)
   add_our_library(nge2 STATIC ${NGE2_SRCS})
 endif()
 
@@ -212,10 +246,12 @@ if(WIN32)
   set_target_properties(nge2 PROPERTIES COMPILE_DEFINITIONS "NGE2_EXPORTS")
 endif()
 
-add_our_library(nge2_main STATIC src/nge_main.c)
+if(WIN32 OR UNIX OR PSP)
+  add_our_library(nge2_main STATIC src/nge_main.c)
+endif()
 
 if(MSVC)
-#  if(NGE2_IS_DEBUG)
+#  if(NGE_IS_DEBUG)
 #	msvc_force_link_runtime(nge2 MDd)
 #  else()
 	msvc_force_link_runtime(nge2 MD)
@@ -228,5 +264,3 @@ install(DIRECTORY include DESTINATION ${CMAKE_INSTALL_PREFIX})
 if(BUILD_SAMPLES)
   add_subdirectory(samples)
 endif()
-
-add_subdirectory(particle-conv)

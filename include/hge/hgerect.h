@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Thanks to Dr.Watson JGE++!
 ** Haaf's Game Engine 1.7
 ** Copyright (C) 2003-2007, Relish Games
@@ -13,7 +13,7 @@
 
 #include "nge_common.h"
 
-class NGE_API hgeRect
+class NGE_CLASS hgeRect
 {
 public:
 	float	x1, y1, x2, y2;

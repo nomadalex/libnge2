@@ -1,4 +1,4 @@
-ï»¿#include "nge_debug_log.h"
+#include "nge_debug_log.h"
 #include "nge_tga.h"
 #include "nge_bmp.h"
 #include "nge_png.h"
@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint32 image_tid = 0;
+uint32_t image_tid = 0;
 
 #if defined(NGE_PSP)
-static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsigned int height)
+static void swizzle_fast(uint8_t* out, const uint8_t* in, unsigned int width, unsigned int height)
 {
 	unsigned int blockx, blocky;
 	unsigned int j;
@@ -21,17 +21,17 @@ static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsign
 
 	unsigned int src_pitch = (width-16)/4;
 	unsigned int src_row = width * 8;
-	const uint8 *xsrc;
-	const uint32 *src;
-	const uint8 *ysrc = in;
-	uint32 *dst = (uint32*)out;
+	const uint8_t *xsrc;
+	const uint32_t *src;
+	const uint8_t *ysrc = in;
+	uint32_t *dst = (uint32_t*)out;
 
 	for (blocky = 0; blocky < height_blocks; ++blocky)
 	{
 		xsrc = ysrc;
 		for (blockx = 0; blockx < width_blocks; ++blockx)
 		{
-			src = (uint32*)xsrc;
+			src = (uint32_t*)xsrc;
 			for (j = 0; j < 8; ++j)
 			{
 				*(dst++) = *(src++);
@@ -47,7 +47,7 @@ static void swizzle_fast(uint8* out, const uint8* in, unsigned int width, unsign
 }
 
 //Thanks to Raphael
-static void unswizzle_fast(const uint8* out, const uint8* in, const int width, const int height)
+static void unswizzle_fast(const uint8_t* out, const uint8_t* in, const int width, const int height)
 {
 	int blockx, blocky;
 	int j;
@@ -58,19 +58,19 @@ static void unswizzle_fast(const uint8* out, const uint8* in, const int width, c
 	int dst_pitch = (width-16)/4;
 	int dst_row = width * 8;
 
-	uint32* src = (uint32*)in;
-	uint8* ydst = (uint8*)out;
+	uint32_t* src = (uint32_t*)in;
+	uint8_t* ydst = (uint8_t*)out;
 	sceKernelDcacheWritebackAll();
 	for (blocky = 0; blocky < height_blocks; ++blocky)
 	{
-		uint8* xdst = ydst;
+		uint8_t* xdst = ydst;
 		for (blockx = 0; blockx < width_blocks; ++blockx)
 		{
-			uint32* dst;
-			if ((uint32)out <= 0x04200000)
-				dst = (uint32*)((uint32)xdst | 0x40000000);
+			uint32_t* dst;
+			if ((uint32_t)out <= 0x04200000)
+				dst = (uint32_t*)((uint32_t)xdst | 0x40000000);
 			else
-				dst = (uint32*)xdst;
+				dst = (uint32_t*)xdst;
 			for (j = 0; j < 8; ++j)
 			{
 				*(dst++) = *(src++);
@@ -88,7 +88,7 @@ static void unswizzle_fast(const uint8* out, const uint8* in, const int width, c
 void swizzle_swap(image_p pimage)
 {
 	int bsize = pimage->texw*pimage->texh*pimage->bpb;
-	uint8* buffer = (uint8*)malloc(bsize);
+	uint8_t* buffer = (uint8_t*)malloc(bsize);
 	memset(buffer,0,bsize);
 	swizzle_fast(buffer,pimage->data,pimage->texw*pimage->bpb,pimage->texh);
 	SAFE_FREE(pimage->data);
@@ -99,7 +99,7 @@ void swizzle_swap(image_p pimage)
 void unswizzle_swap(image_p pimage)
 {
 	int bsize = pimage->texw*pimage->texh*pimage->bpb;
-	uint8* buffer = (uint8*)malloc(bsize);
+	uint8_t* buffer = (uint8_t*)malloc(bsize);
 	memset(buffer,0,bsize);
 	unswizzle_fast(buffer,pimage->data,pimage->texw*pimage->bpb,pimage->texh);
 	SAFE_FREE(pimage->data);
@@ -108,7 +108,7 @@ void unswizzle_swap(image_p pimage)
 }
 #endif
 
-int CreateColor(uint8 r,uint8 g,uint8 b,uint8 a,int dtype)
+int CreateColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a,int dtype)
 {
 	int color = 0;
 	switch(dtype)
@@ -168,7 +168,7 @@ int roundpower2(int width)
 //save image_p
 //support:png tga
 //////////////////////////////////////////////////////////////////////////
-int image_save(image_p pimage,const char* filename,uint8 alpha,uint8 rle)
+int image_save(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle)
 {
 	char* p = strrchr(filename, '.');
 	if(!strcmp(p+1, "tga"))
@@ -460,7 +460,7 @@ image_p image_create(int w,int h,int displaymode)
 	pimage->mask = CreateColor(255,255,255,255,displaymode);
 	pimage->texid = image_tid++;
 	size = pimage->texw*pimage->texh*pimage->bpb;
-	pimage->data = (uint8*)malloc(size);
+	pimage->data = (uint8_t*)malloc(size);
 	memset(pimage->data,0,size);
 	return pimage;
 }
@@ -468,10 +468,9 @@ image_p image_create(int w,int h,int displaymode)
 image_p image_create_ex(int w,int h,int color,int displaymode)
 {
 	image_p pimage = (image_p)malloc(sizeof(image_t));
-	int size;
-	uint32 i,j;
-	uint16* img16;
-	uint32* img32;
+	int size, block = 1, processed = 1;
+	uint16_t* img16;
+	uint32_t* img32;
 	memset(pimage,0,sizeof(image_t));
 	pimage->w = w;
 	pimage->h = h;
@@ -485,21 +484,30 @@ image_p image_create_ex(int w,int h,int color,int displaymode)
 	pimage->mask = CreateColor(255,255,255,255,displaymode);
 	pimage->texid = image_tid++;
 	size = pimage->texw*pimage->texh*pimage->bpb;
-	pimage->data = (uint8*)malloc(size);
+	pimage->data = (uint8_t*)malloc(size);
 	memset(pimage->data,0,size);
+	size = pimage->texw*pimage->texh;
+	if(size==0)
+		return pimage;
 	if(displaymode==DISPLAY_PIXEL_FORMAT_8888){
-		img32 = (uint32*)pimage->data;
-		for(i=0;i<pimage->h;i++)
-			for(j=0;j<pimage->w;j++){
-				*(img32+i*pimage->texw+j) = color;
-			}
+		img32 = (uint32_t*)pimage->data;
+		*img32 = color;
+		while(processed + block <= size)	{
+			memcpy(img32 + processed, img32, block * pimage->bpb);
+			processed += block;
+			block <<= 1;
+		}
+		memcpy(img32 + processed, img32, (size - processed) * pimage->bpb);
 	}
 	else{
-		img16 = (uint16*)pimage->data;
-		for(i=0;i<pimage->h;i++)
-			for(j=0;j<pimage->w;j++){
-				*(img16+i*pimage->texw+j) = (uint16)(color&0xffff);
-			}
+		img16 = (uint16_t*)pimage->data;
+		*img16 = (uint16_t)(color&0xFFFF);
+		while(processed + block <= size)	{
+			memcpy(img16 + processed, img16, block * pimage->bpb);
+			processed += block;
+			block <<= 1;
+		}
+		memcpy(img16 + processed, img16, (size - processed) * pimage->bpb);
 	}
 	return pimage;
 }
@@ -527,28 +535,30 @@ image_p image_clone(image_p pimage)
 	memcpy(clone,pimage,sizeof(image_t));
 	clone->texid = image_tid++;
 	size = pimage->texw*pimage->texh*pimage->bpb;
-	clone->data = (uint8*)malloc(size);
+	clone->data = (uint8_t*)malloc(size);
 	memcpy(clone->data,pimage->data,size);
 	return clone;
 }
 
-
 /*alpha blend!
- *0 å®Œå…¨é€æ˜Žï¼Œ255ä¸é€æ˜Ž
- *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
- *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
+*0 ÍêÈ«Í¸Ã÷£¬255²»Í¸Ã÷
+*Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
+*#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
 #define MAKEALPHA(SRC,DES,ALPHA) (( SRC*ALPHA + DES*(255-ALPHA) ) /255)
 
-void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy,int alpha)
+void image_to_image_alpha_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy,int alpha)
 {
-	uint8 sr,sg,sb,sa;
-	uint8 dr,dg,db,da;
-	uint32 i,j;
-	uint16 *cpbegin16;
-	uint16 *bmp16;
+	uint8_t sr,sg,sb,sa;
+	uint8_t dr,dg,db,da;
+	uint32_t i,j;
+	uint16_t *cpbegin16;
+	uint16_t *bmp16;
 
-	uint32 *cpbegin32,*bmp32;
-	CHECK_AND_UNSWIZZLE_ALL(src, des);
+	uint32_t *cpbegin32,*bmp32;
+	if(src->swizzle ==1)
+		unswizzle_swap(src);
+	if(des->swizzle ==1)
+		unswizzle_swap(des);
 	des->modified = 1;
 	if(sw == 0 && sh == 0){
 		sw = src->w;
@@ -556,8 +566,8 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 	}
 
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
-		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		cpbegin16 = (uint16_t*)des->data+dy*des->texw+dx;
+		bmp16 = (uint16_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
@@ -580,8 +590,8 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
-		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		cpbegin16 = (uint16_t*)des->data+dy*des->texw+dx;
+		bmp16 = (uint16_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
@@ -604,8 +614,8 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
-		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		cpbegin16 = (uint16_t*)des->data+dy*des->texw+dx;
+		bmp16 = (uint16_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
@@ -628,8 +638,8 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 
 	}
 	else{
-		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
-		bmp32 = (uint32*)src->data+sy*src->texw+sx;
+		cpbegin32 = (uint32_t*)des->data+dy*des->texw+dx;
+		bmp32 = (uint32_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
@@ -653,22 +663,25 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,uint32 sx,uint3
 
 }
 
-void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,int alpha)
+void image_to_image_alpha(const image_p src,const image_p des,uint32_t x,uint32_t y,int alpha)
 {
-	uint8 sr,sg,sb,sa;
-	uint8 dr,dg,db,da;
-	uint32 i,j;
-	uint16 *cpbegin16;
-	uint16 *bmp16;
-	uint32 w = src->w;
-	uint32 h = src->h;
-	uint32 *cpbegin32,*bmp32;
+	uint8_t sr,sg,sb,sa;
+	uint8_t dr,dg,db,da;
+	uint32_t i,j;
+	uint16_t *cpbegin16;
+	uint16_t *bmp16;
+	uint32_t w = src->w;
+	uint32_t h = src->h;
+	uint32_t *cpbegin32,*bmp32;
 
-	CHECK_AND_UNSWIZZLE_ALL(src, des);
+	if(src->swizzle ==1)
+		unswizzle_swap(src);
+	if(des->swizzle ==1)
+		unswizzle_swap(des);
 	des->modified = 1;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
-		cpbegin16 = (uint16*)des->data+y*des->texw+x;
-		bmp16 = (uint16*)src->data;
+		cpbegin16 = (uint16_t*)des->data+y*des->texw+x;
+		bmp16 = (uint16_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -690,8 +703,8 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
-		cpbegin16 = (uint16*)des->data+y*des->texw+x;
-		bmp16 = (uint16*)src->data;
+		cpbegin16 = (uint16_t*)des->data+y*des->texw+x;
+		bmp16 = (uint16_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -713,8 +726,8 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
-		cpbegin16 = (uint16*)des->data+y*des->texw+x;
-		bmp16 = (uint16*)src->data;
+		cpbegin16 = (uint16_t*)des->data+y*des->texw+x;
+		bmp16 = (uint16_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -736,8 +749,8 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 
 	}
 	else{
-		cpbegin32 = (uint32*)des->data+y*des->texw+x;
-		bmp32 = (uint32*)src->data;
+		cpbegin32 = (uint32_t*)des->data+y*des->texw+x;
+		bmp32 = (uint32_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -761,20 +774,23 @@ void image_to_image_alpha(const image_p src,const image_p des,uint32 x,uint32 y,
 }
 
 
-void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,uint32 sw,uint32 sh,uint32 dx,uint32 dy)
+void image_to_image_ex(const image_p src,const image_p des,uint32_t sx,uint32_t sy,uint32_t sw,uint32_t sh,uint32_t dx,uint32_t dy)
 {
-	uint16 *cpbegin16,*bmp16;
-	uint32 i,j;
-	uint32 *cpbegin32,*bmp32;
+	uint16_t *cpbegin16,*bmp16;
+	uint32_t i,j;
+	uint32_t *cpbegin32,*bmp32;
 	if(sw == 0 && sh == 0){
 		sw = src->w;
 		sh = src->h;
 	}
-	CHECK_AND_UNSWIZZLE_ALL(src, des);
+	if(src->swizzle ==1)
+		unswizzle_swap(src);
+	if(des->swizzle ==1)
+		unswizzle_swap(des);
 	des->modified = 1;
 	if(des->bpb==2){
-		cpbegin16 = (uint16*)des->data+dy*des->texw+dx;
-		bmp16 = (uint16*)src->data+sy*src->texw+sx;
+		cpbegin16 = (uint16_t*)des->data+dy*des->texw+dx;
+		bmp16 = (uint16_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>des->texw)||(i+dy>des->texh))
@@ -786,8 +802,8 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 		}
 	}
 	else{
-		cpbegin32 = (uint32*)des->data+dy*des->texw+dx;
-		bmp32 = (uint32*)src->data+sy*src->texw+sx;
+		cpbegin32 = (uint32_t*)des->data+dy*des->texw+dx;
+		bmp32 = (uint32_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i<sh;i++){
 			for(j = 0;j<sw;j++){
 				if((j+dx>=des->texw)||(i+dy>=des->texh))
@@ -801,18 +817,21 @@ void image_to_image_ex(const image_p src,const image_p des,uint32 sx,uint32 sy,u
 }
 
 
-void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
+void image_to_image(const image_p src,const image_p des,uint32_t x,uint32_t y)
 {
-	uint32 w = src->w;
-	uint32 h = src->h;
-	uint16 *cpbegin16,*bmp16;
-	uint32 i,j;
-	uint32 *cpbegin32,*bmp32;
-	CHECK_AND_UNSWIZZLE_ALL(src, des);
+	uint32_t w = src->w;
+	uint32_t h = src->h;
+	uint16_t *cpbegin16,*bmp16;
+	uint32_t i,j;
+	uint32_t *cpbegin32,*bmp32;
+	if(src->swizzle ==1)
+		unswizzle_swap(src);
+	if(des->swizzle ==1)
+		unswizzle_swap(des);
 	des->modified = 1;
 	if(des->bpb==2){
-		cpbegin16 = (uint16*)des->data+y*des->texw+x;
-		bmp16 = (uint16*)src->data;
+		cpbegin16 = (uint16_t*)des->data+y*des->texw+x;
+		bmp16 = (uint16_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -824,8 +843,8 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 
 	}
 	else{
-		cpbegin32 = (uint32*)des->data+y*des->texw+x;
-		bmp32 = (uint32*)src->data;
+		cpbegin32 = (uint32_t*)des->data+y*des->texw+x;
+		bmp32 = (uint32_t*)src->data;
 		for(i =0;i<h;i++){
 			for(j =0;j<w;j++){
 				if((j+x>=des->texw)||(i+y>=des->texh))
@@ -837,16 +856,17 @@ void image_to_image(const image_p src,const image_p des,uint32 x,uint32 y)
 	}
 }
 
-void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,uint32 h)
+void rawdata_to_image(void* data,const image_p des,uint32_t x,uint32_t y,uint32_t w,uint32_t h)
 {
-	uint16 *cpbegin16,*bmp16;
-	uint32 *cpbegin32,*bmp32;
-	uint32 i,j;
-	CHECK_AND_UNSWIZZLE(des);
+	uint16_t *cpbegin16,*bmp16;
+	uint32_t *cpbegin32,*bmp32;
+	uint32_t i,j;
+	if(des->swizzle ==1)
+		unswizzle_swap(des);
 	des->modified = 1;
 	if(des->bpb==2){
-		cpbegin16 = (uint16*)des->data+y*des->texw+x;
-		bmp16 = (uint16*)data;
+		cpbegin16 = (uint16_t*)des->data+y*des->texw+x;
+		bmp16 = (uint16_t*)data;
 		for(i = 0;i<h;i++){
 			for(j = 0;j<w;j++){
 				if((j+x>des->texw)||(i+y>des->texh))
@@ -858,8 +878,8 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 
 	}
 	else{
-		cpbegin32 = (uint32*)des->data+y*des->texw+x;
-		bmp32= (uint32*)data;
+		cpbegin32 = (uint32_t*)des->data+y*des->texw+x;
+		bmp32= (uint32_t*)data;
 		for(i = 0;i < h;i++){
 			for(j = 0;j < w;j++){
 				if((j+x >= des->texw)||(i+y >= des->texh))
@@ -873,9 +893,9 @@ void rawdata_to_image(void* data,const image_p des,uint32 x,uint32 y,uint32 w,ui
 
 int image_fliph(image_p pimage)
 {
-	uint32 line,width,height;
-	uint8 *new_bits,*bits;
-	uint32 y,c;
+	uint32_t line,width,height;
+	uint8_t *new_bits,*bits;
+	uint32_t y,c;
 	if (!pimage) return 0;
 	CHECK_AND_UNSWIZZLE(pimage);
 	pimage->modified = 1;
@@ -883,7 +903,7 @@ int image_fliph(image_p pimage)
 	width = pimage->w*pimage->bpb;
 	height	= pimage->texh;
 	// copy between aligned memories
-	new_bits = (uint8*)malloc(line * sizeof(uint8));
+	new_bits = (uint8_t*)malloc(line * sizeof(uint8_t));
 	if (!new_bits) return 0;
 	// mirror the buffer
 	for (y = 0; y < height; y++) {
@@ -899,9 +919,9 @@ int image_fliph(image_p pimage)
 
 int image_flipv(image_p pimage)
 {
-	uint8 *from, *mid;
-	uint32 pitch,height,line_s,line_t;
-	uint32 y;
+	uint8_t *from, *mid;
+	uint32_t pitch,height,line_s,line_t;
+	uint32_t y;
 
 	if (!pimage) return 0;
 	CHECK_AND_UNSWIZZLE(pimage);
@@ -910,7 +930,7 @@ int image_flipv(image_p pimage)
 	pitch  = pimage->texw*pimage->bpb;
 	height = pimage->h;
 	// copy between aligned memories
-	mid = (uint8*)malloc(pitch * sizeof(char));
+	mid = (uint8_t*)malloc(pitch * sizeof(char));
 	if (!mid) return 0;
 	from = pimage->data;
 	line_s = 0;
@@ -925,4 +945,32 @@ int image_flipv(image_p pimage)
 	free(mid);
 
 	return 1;
+}
+
+void image_fillrect(image_p pimage, int x, int y, int w, int h, int color) {
+	int i, j;
+	uint16_t *img16;
+	uint32_t *img32;
+	if(w + x > pimage->texw)
+		w = pimage->texw - x;
+	if(h + y > pimage->texh)
+		h = pimage->texh - y;
+	pimage->modified = 1;
+	CHECK_AND_UNSWIZZLE(pimage)
+	if(pimage->bpb == 2) {
+		img16 = ((uint16_t*)pimage->data) + y * pimage->texw + x;
+		for(i = 0; i < h && i < 1; i++)
+			for(j = 0; j < w; j++)
+				*(img16 + j) = (uint16_t)(color & 0xffff);
+		for(; i < h; i++)
+			memcpy(img16 + i * pimage->texw, img16, w * pimage->bpb);
+	}
+	else {
+		img32 = ((uint32_t*)pimage->data) + y * pimage->texw + x;
+		for(i = 0; i < h && i < 1; i++)
+			for(j = 0; j < w; j++)
+				*(img32 + j) = color;
+		for(; i < h; i++)
+			memcpy(img32 + i * pimage->texw, img32, w * pimage->bpb);
+	}
 }

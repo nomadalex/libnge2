@@ -1,4 +1,4 @@
-ï»¿#ifndef NGE_GRAPHICS_EXT_H
+#ifndef NGE_GRAPHICS_EXT_H
 #define NGE_GRAPHICS_EXT_H
 
 #include "nge_common.h"
@@ -9,39 +9,49 @@ extern "C"{
 #endif
 
 /**
- * å»ºç«‹ src å›¾åƒçš„ç°åº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄ»Ò¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param gray ç°åº¦ 0 åˆ° 100, 0 ä¸ºæºå›¾åƒ, 100 ä¸ºçº¯ç°è‰²å›¾åƒ
+ *@param[in] src Ô´Í¼Ïñ
+ *@param[in] gray »Ò¶È 0 µ½ 100, 0 ÎªÔ´Í¼Ïñ, 100 Îª´¿»ÒÉ«Í¼Ïñ
+ *@return image_p,Éú³ÉµÄÍ¼ÏñµÄ»Ò¶È°æ±¾
  */
 	NGE_API image_p create_gray_image(image_p src, int gray);
 
 /**
- * å»ºç«‹ src å›¾åƒçš„äº®åº¦ï¼Œé¥±å’Œåº¦ç‰ˆæœ¬
+ * ½¨Á¢ src Í¼ÏñµÄÁÁ¶È£¬±¥ºÍ¶È°æ±¾
  *
- * @param src æºå›¾åƒ
- * @param saturation é¥±åˆåº¦ -100(ç°åº¦å›¾åƒ) è‡³ 100(é«˜å½©è‰²æ¯”å›¾åƒ)
- * @param brightness äº®åº¦ -100(å…¨é»‘) è‡³ 100(å…¨ç™½)
+ * @param[in] src Ô´Í¼Ïñ
+ * @param[in] saturation ±¥ºÏ¶È -100(»Ò¶ÈÍ¼Ïñ) ÖÁ 100(¸ß²ÊÉ«±ÈÍ¼Ïñ)
+ * @param[in] brightness ÁÁ¶È -100(È«ºÚ) ÖÁ 100(È«°×)
  */
 	NGE_API image_p create_saturation_brightness_image(image_p src, int saturation, int brightness);
 
 /**
- * å»ºç«‹ src å›¾åƒçš„å…¶ä»–é¢œè‰²æ¨¡å¼å›¾ç‰‡
- * @param src æºå›¾åƒ
- * @param dtype é¢œè‰²æ¨¡å¼,DISPLAY_PIXEL_FORMAT_XXXXçš„ä¸€ç§
- * @return image_p ç”Ÿæˆçš„å›¾ç‰‡
+ * ½¨Á¢ src Í¼ÏñµÄÆäËûÑÕÉ«Ä£Ê½Í¼Æ¬
+ * @param[in] src Ô´Í¼Ïñ
+ * @param[in] dtype ÑÕÉ«Ä£Ê½,DISPLAY_PIXEL_FORMAT_XXXXµÄÒ»ÖÖ
+ * @return image_p Éú³ÉµÄÍ¼Æ¬
  */
 	NGE_API image_p image_conv(image_p src, int dtype);
 
 /**
- * å»ºç«‹ src å›¾åƒçš„ç¼©æ”¾å›¾ï¼Œæä¾›0-4å››ç§ç¼©æ”¾æ»¤é•œ
- * @param src æºå›¾åƒ
- * @param w ç¼©æ”¾çš„å®½
- * @param h ç¼©æ”¾çš„é«˜
- * @param mode ç¼©æ”¾æ¨¡å¼0-4
- * @return image_p ç¼©æ”¾å›¾
+ * ½¨Á¢ src Í¼ÏñµÄËõ·ÅÍ¼£¬Ìá¹©0-4ËÄÖÖËõ·ÅÂË¾µ
+ * @param[in] src Ô´Í¼Ïñ
+ * @param[in] w Ëõ·ÅµÄ¿í
+ * @param[in] h Ëõ·ÅµÄ¸ß
+ * @param[in] mode Ëõ·ÅÄ£Ê½0-4
+ * @return image_p Ëõ·ÅÍ¼
  */
 	NGE_API image_p image_scale(image_p src, int w, int h,int mode);
+
+/**
+ * ½«Í¼Æ¬½øĞĞ½Ç¶ÈÎªrotµÄÉ«ÏàĞı×ª
+ * @remark ¿ÉÄÜÓĞĞÔÄÜÎÊÌâ,ÇÒ¶à´ÎÊ¹ÓÃ»á¶ªÊ§Í¼Æ¬ÖÊÁ¿,ÇëÉ÷ÓÃ
+ * @param[in] pimage Ô´Í¼Ïñ
+ * @param[in] rot É«ÏàĞı×ªµÄ½Ç¶È
+ * @return int ³É¹¦1,Ê§°Ü0
+ */
+	NGE_API int image_hue_rotate(image_p pimage, float rot);
 
 #ifdef __cplusplus
 }

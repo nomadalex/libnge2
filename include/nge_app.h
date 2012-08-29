@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *            nge_app.h
  *
  *  2011/03/25 06:45:09
@@ -28,13 +28,17 @@
 
 enum{
 	NGE_APP_NORMAL = 0,
-	NGE_APP_QUIT,
+	NGE_APP_QUIT
 };
 
 typedef struct nge_app {
 	int (*init) (void);
 	int (*mainloop) (void);
 	int (*fini) (void);
+	int (*pause)(void);
+	int (*resume)(void);
+	int (*start)(void);
+	int (*stop)(void);
 } nge_app_t;
 
 #ifdef __cplusplus

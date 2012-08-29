@@ -1,4 +1,4 @@
-﻿#include "nge_platform.h"
+#include "nge_platform.h"
 #include "nge_debug_log.h"
 #include "nge_timer.h"
 #include <stdlib.h>
@@ -8,9 +8,9 @@
 #define NGE_UNIX
 #endif
 
-static uint32 TM_get_ticks(nge_timer* timer);
-static uint32 TM_is_started(nge_timer* timer);
-static uint32 TM_is_paused(nge_timer* timer);
+static uint32_t TM_get_ticks(nge_timer* timer);
+static uint32_t TM_is_started(nge_timer* timer);
+static uint32_t TM_is_paused(nge_timer* timer);
 static void TM_start(nge_timer* timer);
 static void TM_stop(nge_timer* timer);
 static void TM_pause(nge_timer* timer);
@@ -35,7 +35,7 @@ void timer_free(nge_timer* timer)
 	SAFE_FREE(timer);
 }
 
-static uint32 TM_get_ticks(nge_timer* timer)
+static uint32_t TM_get_ticks(nge_timer* timer)
 {
 	//If the timer is running
 	if( timer->started == 1 )
@@ -54,11 +54,11 @@ static uint32 TM_get_ticks(nge_timer* timer)
 	}
    	return 0;
 }
-static uint32 TM_is_started(nge_timer* timer)
+static uint32_t TM_is_started(nge_timer* timer)
 {
 	return timer->started;
 }
-static uint32 TM_is_paused(nge_timer* timer)
+static uint32_t TM_is_paused(nge_timer* timer)
 {
 	return timer->paused;
 }
@@ -112,12 +112,12 @@ static u64 mTickFrequency = 0;
 #include <sys/time.h>
 #endif
 
-uint32 nge_get_tick()
+uint32_t nge_get_tick()
 {
 #if defined NGE_UNIX
 	static struct timeval start;
-	static uint8 uninited = 1;
-	uint32 ticks;
+	static uint8_t uninited = 1;
+	uint32_t ticks;
 	struct timeval now;
 	if (uninited) {
 		uninited = 0;
@@ -133,7 +133,7 @@ uint32 nge_get_tick()
 	return now;
 #elif defined NGE_PSP
 	u64 ticks;
-	uint32 tick32;
+	uint32_t tick32;
 
 	if(mTickFrequency == 0)
 		mTickFrequency = sceRtcGetTickResolution();

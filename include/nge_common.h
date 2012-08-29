@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *            nge_common.h
  *
  *  2011/03/25 06:23:30
@@ -44,18 +44,18 @@
 #endif
 #endif
 
+#if _MSC_VER < 1600
+/* for vs before vs2010 */
+#include "msvc/stdint.h"
+#else
+/* for c99 compatible, include vs2010 */
 #include <stdint.h>
-typedef uint32_t uint32;
-typedef int32_t sint32;
-typedef uint16_t uint16;
-typedef int16_t sint16;
-typedef uint8_t uint8;
-typedef int8_t sint8;
+#endif
 
 #ifdef _MSC_VER
 typedef int BOOL;
 #else
-typedef uint8 BOOL;
+typedef uint8_t BOOL;
 #endif
 
 #define SAFE_FREE(ptr) free(ptr);ptr = NULL
