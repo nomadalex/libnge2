@@ -678,7 +678,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 		return;
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin16 = (uint16_t*)des->data + (dy + sh) * des->texw;
+			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
 			d1 = -((int32_t)des->texw - sw);
 		}
 		else {
@@ -710,7 +710,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin16 = (uint16_t*)des->data + (dy + sh) * des->texw;
+			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
 			d1 = -((int32_t)des->texw - sw);
 		}
 		else {
@@ -742,7 +742,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	}
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin16 = (uint16_t*)des->data + (dy + sh) * des->texw;
+			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
 			d1 = -((int32_t)des->texw - sw);
 		}
 		else {
@@ -767,7 +767,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	}
 	else{
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin32 = (uint32_t*)des->data + (dy + sh) * des->texw;
+			cpbegin32 = (uint32_t*)des->data + (dy + sh - 1) * des->texw;
 			d1 = -((int32_t)des->texw - sw);
 		}
 		else {
@@ -940,7 +940,7 @@ void image_to_image_ex(const image_p src,const image_p des,int32_t sx,int32_t sy
 		return;
 	if(des->bpb==2){
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin16 = (uint16_t*)des->data + (dy + sh) * des->texw + dx;
+			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw + dx;
 			delta = -(int32_t)des->texw;
 		}
 		else {
@@ -961,7 +961,7 @@ void image_to_image_ex(const image_p src,const image_p des,int32_t sx,int32_t sy
 	}
 	else{
 		if(flag & IMAGE_FLIP_V) {
-			cpbegin32 = (uint32_t*)des->data + (dy + sh) * des->texw + dx;
+			cpbegin32 = (uint32_t*)des->data + (dy + sh - 1) * des->texw + dx;
 			delta = -(int32_t)des->texw;
 		}
 		else {
