@@ -686,7 +686,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 			d1 = (int32_t)des->texw - sw;
 		}
 		if(flag & IMAGE_FLIP_H) {
-			cpbegin16 += dx + sw;
+			cpbegin16 += dx + sw - 1;
 			d2 = -1;
 		}
 		else {
@@ -718,7 +718,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 			d1 = des->texw - sw;
 		}
 		if(flag & IMAGE_FLIP_H) {
-			cpbegin16 += dx + sw;
+			cpbegin16 += dx + sw - 1;
 			d2 = -1;
 		}
 		else {
@@ -750,7 +750,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 			d1 = des->texw - sw;
 		}
 		if(flag & IMAGE_FLIP_H) {
-			cpbegin16 += dx + sw;
+			cpbegin16 += dx + sw - 1;
 			d2 = -1;
 		}
 		else {
@@ -775,7 +775,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 			d1 = des->texw - sw;
 		}
 		if(flag & IMAGE_FLIP_H) {
-			cpbegin32 += dx + sw;
+			cpbegin32 += dx + sw - 1;
 			d2 = -1;
 		}
 		else {
