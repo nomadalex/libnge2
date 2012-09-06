@@ -628,10 +628,6 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	int32_t d1, d2;
 	uint16_t *cpbegin16,*bmp16;
 	uint32_t *cpbegin32,*bmp32;
-	if(alpha == 255) {
-		image_to_image_ex(src, des, sx, sy, sw, sh, dx, dy, flag);
-		return;
-	}
 	if(alpha == 0)
 		return;
 	if(sw <= 0 || sh <= 0)
@@ -785,7 +781,11 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 		bmp32 = (uint32_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i < sh; i++){
 			for(j = 0;j < sw; j++,cpbegin32+=d2, bmp32++){
+				#ifdef NGE_PSP
 				if((*bmp32) & 0xFF000000)
+				#else
+				if((*bmp32) & 0xFF)
+				#endif
 					*cpbegin32 = ALPHABLEND_8888(*bmp32, *cpbegin32, alpha);
 			}
 			cpbegin32 += d1;
@@ -804,10 +804,6 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 	int32_t h = src->h;
 	int32_t sx = 0, sy = 0;
 	uint32_t *cpbegin32,*bmp32;
-	if(alpha == 255) {
-		image_to_image(src, des, x, y);
-		return;
-	}
 	if(alpha == 0)
 		return;
 	CHECK_AND_UNSWIZZLE_ALL(src, des);
@@ -878,7 +874,11 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 		bmp32 = (uint32_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < h; i++){
 			for(j = 0; j < w; j++, bmp32++, cpbegin32++){
+				#ifdef NGE_PSP
 				if((*bmp32) & 0xFF000000)
+				#else
+				if((*bmp32) & 0xFF)
+				#endif
 					*cpbegin32 = ALPHABLEND_8888(*bmp32, *cpbegin32, alpha);
 			}
 			cpbegin32 += des->texw - w;
