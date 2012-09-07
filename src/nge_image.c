@@ -697,7 +697,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 				#else
 				if((*bmp16) & 0x000F)
 				#endif
-					*cpbegin16 = ALPHABLEND_4444(*bmp16, *cpbegin16, alpha);
+					*cpbegin16 = ALPHABLEND_4444(*cpbegin16, *bmp16, alpha);
 			}
 			cpbegin16 += d1;
 			bmp16     += src->texw - sw;
@@ -729,7 +729,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 				#else
 				if((*bmp16) & 0x1)
 				#endif
-					*cpbegin16 = ALPHABLEND_5551(*bmp16, *cpbegin16, alpha);
+					*cpbegin16 = ALPHABLEND_5551(*cpbegin16, *bmp16, alpha);
 			}
 			cpbegin16 += d1;
 			bmp16     += src->texw - sw;
@@ -756,7 +756,7 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < sh; i++){
 			for(j = 0; j < sw; j++, cpbegin16+=d2, bmp16++)
-				*cpbegin16 = ALPHABLEND_565(*bmp16, *cpbegin16, alpha);
+				*cpbegin16 = ALPHABLEND_565(*cpbegin16, *bmp16, alpha);
 			cpbegin16 += d1;
 			bmp16     += src->texw - sw;
 		}
@@ -781,12 +781,8 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 		bmp32 = (uint32_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i < sh; i++){
 			for(j = 0;j < sw; j++,cpbegin32+=d2, bmp32++){
-				#ifdef NGE_PSP
 				if((*bmp32) & 0xFF000000)
-				#else
-				if((*bmp32) & 0xFF)
-				#endif
-					*cpbegin32 = ALPHABLEND_8888(*bmp32, *cpbegin32, alpha);
+					*cpbegin32 = ALPHABLEND_8888(*cpbegin32, *bmp32, alpha);
 			}
 			cpbegin32 += d1;
 			bmp32     += src->texw - sw;
@@ -834,7 +830,7 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 				#else
 				if((*bmp16) & 0x000F)
 				#endif
-					*cpbegin16 = ALPHABLEND_4444(*bmp16, *cpbegin16, alpha);
+					*cpbegin16 = ALPHABLEND_4444(*cpbegin16, *bmp16, alpha);
 			}
 			bmp16 += src->texw - w;
 			cpbegin16 += des->texw - w;
@@ -851,7 +847,7 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 				#else
 				if((*bmp16) & 0x1)
 				#endif
-					*cpbegin16 = ALPHABLEND_5551(*bmp16, *cpbegin16, alpha);
+					*cpbegin16 = ALPHABLEND_5551(*cpbegin16, *bmp16, alpha);
 			}
 			cpbegin16 += des->texw - w;
 			bmp16 += src->texw - w;
@@ -863,7 +859,7 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < h; i++){
 			for(j = 0;j < w; j++, cpbegin16++, bmp16++)
-				*cpbegin16 = ALPHABLEND_565(*bmp16, *cpbegin16, alpha);
+				*cpbegin16 = ALPHABLEND_565(*cpbegin16, *bmp16, alpha);
 			cpbegin16 += des->texw - w;
 			bmp16 += src->texw - w;
 		}
@@ -874,12 +870,8 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 		bmp32 = (uint32_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < h; i++){
 			for(j = 0; j < w; j++, bmp32++, cpbegin32++){
-				#ifdef NGE_PSP
 				if((*bmp32) & 0xFF000000)
-				#else
-				if((*bmp32) & 0xFF)
-				#endif
-					*cpbegin32 = ALPHABLEND_8888(*bmp32, *cpbegin32, alpha);
+					*cpbegin32 = ALPHABLEND_8888(*cpbegin32, *bmp32, alpha);
 			}
 			cpbegin32 += des->texw - w;
 			bmp32 += src->texw - w;
