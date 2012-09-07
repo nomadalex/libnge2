@@ -400,6 +400,7 @@ void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 24;
 	pfd.cDepthBits = 16;
+	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 	format = ChoosePixelFormat( *hDC, &pfd );
 	SetPixelFormat( *hDC, format, &pfd );
@@ -573,11 +574,14 @@ void BeginScene(uint8_t clear)
 		glClear( GL_COLOR_BUFFER_BIT);
 		glEnable(GL_SCISSOR_TEST);
 	}
+	glEnable(GL_STENCIL_TEST);
+	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 	glLoadIdentity();
 }
 
 void EndScene()
 {
+	glDisable(GL_STENCIL_TEST);
 #if defined NGE_LINUX
 	glXSwapBuffers(g_dpy, g_win);
 #elif defined NGE_WIN
@@ -1221,3 +1225,18 @@ void EndTarget(){
 #endif
 }
 
+void DrawStencil(image_p _img, int x, int y){
+#if defined NGE_WIN || defined NGE_LINUX	
+	if(!_img)
+		return;
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	glStencilFunc(GL_ALWAYS, 1, 0xff);
+	glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE);
+	ImageToScreen(_img, x, y);
+	glStencilFunc(GL_EQUAL, 1, 0xff);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glDisable(GL_ALPHA_TEST);
+//	glBlendFunc(GL_ONE, GL_ONE);
+#endif
+}

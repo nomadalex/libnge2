@@ -459,6 +459,15 @@ extern "C"{
  */
 	NGE_API void ResetGraphicsCache();
 
+/**
+ * 指定一幅图作为蒙版，蒙版可叠加，该图将被绘制在屏幕上
+ *@param[in] _img 蒙版图
+ *@param[in] x 左上角横坐标
+ *@param[in] y 左上角纵坐标
+ *@return
+ */
+	NGE_API void DrawStencil(image_p _img, int x, int y);
+
 #ifdef __cplusplus
 }
 #endif
