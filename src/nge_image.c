@@ -675,19 +675,21 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	if(des->dtype==DISPLAY_PIXEL_FORMAT_4444){
 		if(flag & IMAGE_FLIP_V) {
 			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
-			d1 = -((int32_t)des->texw - sw);
+			d1 = -(int32_t)des->texw;
 		}
 		else {
 			cpbegin16 = (uint16_t*)des->data + dy * des->texw;
-			d1 = (int32_t)des->texw - sw;
+			d1 = des->texw;
 		}
 		if(flag & IMAGE_FLIP_H) {
 			cpbegin16 += dx + sw - 1;
 			d2 = -1;
+			d1 += sw;
 		}
 		else {
 			cpbegin16 += dx;
 			d2 = 1;
+			d1 -= sw;
 		}
 		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < sh; i++){
@@ -707,19 +709,21 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_5551){
 		if(flag & IMAGE_FLIP_V) {
 			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
-			d1 = -((int32_t)des->texw - sw);
+			d1 = -(int32_t)des->texw;
 		}
 		else {
 			cpbegin16 = (uint16_t*)des->data + dy * des->texw;
-			d1 = des->texw - sw;
+			d1 = des->texw;
 		}
 		if(flag & IMAGE_FLIP_H) {
 			cpbegin16 += dx + sw - 1;
 			d2 = -1;
+			d1 += sw;
 		}
 		else {
 			cpbegin16 += dx;
 			d2 = 1;
+			d1 -= sw;
 		}
 		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < sh; i++){
@@ -739,19 +743,21 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	else if(des->dtype==DISPLAY_PIXEL_FORMAT_565){
 		if(flag & IMAGE_FLIP_V) {
 			cpbegin16 = (uint16_t*)des->data + (dy + sh - 1) * des->texw;
-			d1 = -((int32_t)des->texw - sw);
+			d1 = -(int32_t)des->texw;
 		}
 		else {
 			cpbegin16 = (uint16_t*)des->data + dy * des->texw;
-			d1 = des->texw - sw;
+			d1 = des->texw;
 		}
 		if(flag & IMAGE_FLIP_H) {
 			cpbegin16 += dx + sw - 1;
 			d2 = -1;
+			d1 += sw;
 		}
 		else {
 			cpbegin16 += dx;
 			d2 = 1;
+			d1 -= sw;
 		}
 		bmp16 = (uint16_t*)src->data + sy * src->texw + sx;
 		for(i = 0; i < sh; i++){
@@ -764,19 +770,21 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 	else{
 		if(flag & IMAGE_FLIP_V) {
 			cpbegin32 = (uint32_t*)des->data + (dy + sh - 1) * des->texw;
-			d1 = -((int32_t)des->texw - sw);
+			d1 = -(int32_t)des->texw;
 		}
 		else {
 			cpbegin32 = (uint32_t*)des->data + dy * des->texw;
-			d1 = des->texw - sw;
+			d1 = des->texw;
 		}
 		if(flag & IMAGE_FLIP_H) {
 			cpbegin32 += dx + sw - 1;
 			d2 = -1;
+			d1 += sw;
 		}
 		else {
 			cpbegin32 += dx;
 			d2 = 1;
+			d1 -= sw;
 		}
 		bmp32 = (uint32_t*)src->data+sy*src->texw+sx;
 		for(i = 0;i < sh; i++){
