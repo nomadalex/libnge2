@@ -125,7 +125,7 @@ inline static uint8_t* _nge_ft_conv_encoding(PFont pf, const void *text, int * p
 	if(handle != 0){										\
 		size = io_fsize(handle);							\
 		buf = (char*)malloc(size);							\
-		io_fread(buf,1,size,handle);						\
+		io_fread(buf,size,1,handle);						\
 		io_fclose(handle);									\
 	}														\
 	else													\

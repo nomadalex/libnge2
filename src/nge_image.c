@@ -184,7 +184,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 
 	if(fd ==0 )
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png(filename,displaymode);
@@ -300,7 +300,7 @@ image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int sw
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_buf(mbuf,fsize,displaymode,swizzle);
@@ -316,7 +316,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 
 	if(fd==0)
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png_colorkey(filename,displaymode,colorkey);
@@ -433,7 +433,7 @@ image_p image_load_colorkey_fp(int handle,int fsize, int autoclose,int displaymo
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_colorkey_buf(mbuf,fsize,displaymode,colorkey,swizzle);
@@ -546,7 +546,7 @@ image_p image_clone(image_p pimage)
  *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
  *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
 
-inline uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {	
+inline uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {
 	uint8_t h1, h2, h3;
 	uint32_t s, d;
 	int AL;
@@ -562,7 +562,7 @@ inline uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {
 }
 
 #ifdef NGE_PSP
-inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
+inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 	uint32_t s, d;
 	uint8_t h1, h2, h3, a;
 	int AL;
@@ -577,7 +577,7 @@ inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 	return (a << 15) | (h1 << 10) | (h2 << 5) | (h3);
 }
 #else
-inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
+inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 	uint32_t s, d;
 	uint8_t h1, h2, h3, a;
 	int AL;
@@ -593,7 +593,7 @@ inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 }
 #endif
 
-inline uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {	
+inline uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {
 	uint32_t s, d;
 	uint8_t h1, h2, h3, h4;
 	int AL;
@@ -609,7 +609,7 @@ inline uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {
 	return (h1 << 12) | (h2 << 8) | (h3 << 4) | (h4);
 }
 
-inline uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {	
+inline uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {
 	uint16_t h1, h2, h3, h4;
 	uint32_t s, d;
 	int AL = 255 - ALPHA;
