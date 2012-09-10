@@ -328,6 +328,9 @@ void BeginScene(uint8_t clear)
 	
 	sceGuScissor(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
+	sceGuEnable(GU_STENCIL_TEST);
+	ResetStencil();
+	
 	if(clear){
 		sceGuDisable(GU_SCISSOR_TEST);
 		sceGuClearColor(screen_color);
@@ -346,6 +349,7 @@ uint32_t SetScreenColor(uint8_t r,uint8_t g,uint8_t b,uint8_t a)
 
 void EndScene()
 {
+	sceGuDisable(GU_STENCIL_TEST);
 	sceGuFinish();
 	sceGuSync(0,0);
 	if(use_vblank == 1)
@@ -1115,4 +1119,23 @@ void EndTarget(){
 
 	target_image->modified = 1;
 	target_image = NULL;
+}
+
+void DrawStencil(image_p _img, int x, int y){
+	if(!_img)
+		return;
+	sceGuEnable(GU_ALPHA_TEST);
+	sceGuAlphaFunc(GU_NOTEQUAL,0);
+	sceGuStencilFunc(GU_ALWAYS, 1, 0xff);
+	sceGuStencilOp(GU_KEEP, GU_REPLACE, GU_REPLACE);
+	ImageToScreen(_img, x, y);
+	sceGuStencilFunc(GU_EQUAL, 1, 0xff);
+	sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);
+	sceGuDisable(GU_ALPHA_TEST);
+}
+
+void ResetStencil() {
+	sceGuClear(GU_DEPTH_BUFFER_BIT|GU_STENCIL_BUFFER_BIT);
+	sceGuStencilFunc(GU_ALWAYS, 0, 0);
+	sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);
 }
