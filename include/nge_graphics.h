@@ -467,6 +467,12 @@ extern "C"{
  *@return
  */
 	NGE_API void DrawStencil(image_p _img, int x, int y);
+	
+/**
+ * Çå³ıÒÑÓĞÃÉ°æ
+ *@return
+ */
+	NGE_API void ResetStencil();
 
 #ifdef __cplusplus
 }

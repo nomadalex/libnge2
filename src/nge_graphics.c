@@ -575,7 +575,7 @@ void BeginScene(uint8_t clear)
 		glEnable(GL_SCISSOR_TEST);
 	}
 	glEnable(GL_STENCIL_TEST);
-	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+	ResetStencil();
 	glLoadIdentity();
 }
 
@@ -1238,5 +1238,13 @@ void DrawStencil(image_p _img, int x, int y){
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	glDisable(GL_ALPHA_TEST);
 //	glBlendFunc(GL_ONE, GL_ONE);
+#endif
+}
+
+void ResetStencil() {
+#if defined NGE_WIN || defined NGE_LINUX	
+	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+	glStencilFunc(GL_ALWAYS, 0, 0);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 #endif
 }
