@@ -263,7 +263,7 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		pimage =  image_load_jpg_buf(mbuf,bsize,displaymode);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -340,7 +340,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 		}
 		return pimage;
 	}
-	else if(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
+	else if(flags[6]== 'E'||(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I')){
 		pimage = image_load_jpg_colorkey(filename,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -389,7 +389,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("bmp\n");
 		pimage =  image_load_bmp_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("bmp file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -397,11 +397,11 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		//printf("jpg\n");
 		pimage =  image_load_jpg_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("jpg file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -413,7 +413,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("tga\n");
 		pimage =  image_load_tga_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("tga file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){

@@ -103,11 +103,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	rawsize = bsize;
 	rawdata = (uint8_t*)mbuf;
 
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
-	{
-		return 0;
-	}
-
+	
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
 
@@ -247,11 +243,6 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 
 	rawsize = bsize;
 	rawdata = (uint8_t*)mbuf;
-
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
-	{
-		return 0;
-	}
 
 
 	cinfo.err = jpeg_std_error(&jerr);
