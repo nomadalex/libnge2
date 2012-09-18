@@ -44,19 +44,25 @@
 #endif
 #endif
 
-#if _MSC_VER < 1600
+#if defined(_MSC_VER) &&(_MSC_VER) < 1600
 /* for vs before vs2010 */
 #include "msvc/stdint.h"
 #else
 /* for c99 compatible, include vs2010 */
 #include <stdint.h>
 #endif
-
+/*
 #ifdef _MSC_VER
 typedef int BOOL;
 #else
 typedef uint8_t BOOL;
 #endif
+ */
+#ifndef BOOL
+#define BOOL int
+#endif
+
+
 
 #define SAFE_FREE(ptr) free(ptr);ptr = NULL
 

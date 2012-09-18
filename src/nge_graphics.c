@@ -69,7 +69,7 @@ static char inited = 0;
 static int cacheid = 0;
 static uint8_t tex_ret = 0;
 
-#define MAX_TEX_CACHE_SIZE 32
+#define MAX_TEX_CACHE_SIZE 256
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
 GLuint fbo = 0;
 // nge_screen *************************
@@ -564,7 +564,6 @@ void LimitFps(uint32_t limit)
 	glTranslatef(xcent,ycent,0);                \
 	glRotatef(angle,0,0,1);                     \
 	glTranslatef(-(xcent),-(ycent),0)
-
 void BeginScene(uint8_t clear)
 {
 	if(clear == 1){
@@ -934,6 +933,7 @@ void ImageToScreen(image_p tex,float dx,float dy)
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
+    SET_COLOR(tex->mask,tex->dtype);
 	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
@@ -942,7 +942,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-
+    SET_COLOR(tex->mask,tex->dtype);
 	if(dw==0&&dh==0){
 		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
