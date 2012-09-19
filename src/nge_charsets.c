@@ -29,10 +29,10 @@ typedef struct {
   uint16_t used; /* bitmask of used entries */
 } Summary16;
 
-#include "ascii.h"
-#include "utf8.h"
-#include "gbk.h"
-#include "ces_gbk.h"
+#include "charsets/ascii.h"
+#include "charsets/utf8.h"
+#include "charsets/gbk.h"
+#include "charsets/ces_gbk.h"
 
 int nge_charset_gbk_to_ucs2(const uint8_t* in, uint16_t* out, int len, int n) {
 	ucs4_t wc = 0;

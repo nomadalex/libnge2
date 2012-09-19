@@ -36,20 +36,20 @@ extern "C"{
 	NGE_API int io_fopen(const char* fname,int flag);
 
 /**
- *读文件,与fread类似
+ *读文件，与fread类似，总读取字节数为 count * size，返回值是对应于count的实际读取数
  *@param[in] buffer 保存读取数据的缓存
- *@param[in] count 读取个数
- *@param[in] size 读取大小
+ *@param[in] count 读取的单个块的个数
+ *@param[in] size 读取的单个块大小
  *@param[in] handle 文件句柄
  *@return,实际读取数量
  */
 	NGE_API int io_fread(void* buffer,int count,int size,int handle);
 
 /**
- *写文件,与fwrite类似
+ *写文件，与fwrite类似，总写入字节数为 count * size，返回值是对应于count的实际写入数
  *@param[in] buffer 待写数据的缓存
- *@param[in] count 待写块个数
- *@param[in] size 待写块大小
+ *@param[in] count 待写数据单个块的个数
+ *@param[in] size 待写数据单个块的大小
  *@param[in] handle 文件句柄
  *@return,实际写入数量
  */

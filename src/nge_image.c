@@ -184,7 +184,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 
 	if(fd ==0 )
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png(filename,displaymode);
@@ -300,7 +300,7 @@ image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int sw
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_buf(mbuf,fsize,displaymode,swizzle);
@@ -316,7 +316,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 
 	if(fd==0)
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png_colorkey(filename,displaymode,colorkey);
@@ -433,7 +433,7 @@ image_p image_load_colorkey_fp(int handle,int fsize, int autoclose,int displaymo
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_colorkey_buf(mbuf,fsize,displaymode,colorkey,swizzle);

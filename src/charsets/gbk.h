@@ -42,11 +42,11 @@
  * added new mappings to CP936...
  */
 
-#include "gb2312.h"
-#include "gbkext1.h"
-#include "gbkext2.h"
-#include "gbkext_inv.h"
-#include "cp936ext.h"
+#include "charsets/gb2312.h"
+#include "charsets/gbkext1.h"
+#include "charsets/gbkext2.h"
+#include "charsets/gbkext_inv.h"
+#include "charsets/cp936ext.h"
 
 inline static int
 gbk_mbtowc (ucs4_t *pwc, const unsigned char *s, int n)

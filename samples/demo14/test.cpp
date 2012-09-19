@@ -121,7 +121,7 @@ int init()
 	zfd = ngeOpenInPackage(NGE_REF_CAST(ngePackage*, handle), "1.txt", IO_RDONLY);
 	size = io_fsize(zfd);
 	txt = (char*)malloc(size+1);
-	size = io_fread(txt, 1, size, zfd);
+	size = io_fread(txt, size, 1, zfd);
 	txt[size+1] = '\0';
 	free(txt);
 	io_fclose(zfd);
