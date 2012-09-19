@@ -67,8 +67,8 @@ Windows平台的编译流程：
 * 打开CMake-gui生成的工程编译即可。
 
 Android平台的编译流程：
-(NGE2采用的是NDK方式，所以需要搭建NDK的开发环境，这里以ubuntu作为实例。)
 ---------
+(NGE2采用的是NDK方式，所以需要搭建NDK的开发环境，这里以ubuntu作为实例。)
 * 下载NDK,写本文档时最新的为android-ndk-r8b，这里以这个版本为例，解压到目录，本例用当前用户的home目录(即~/目录)。
 * 打开命令行终端，设置NDK的环境变量export ANDROID_NDK=~/android-ndk-r8b。
 * 使用git下载libnge2。
@@ -77,6 +77,11 @@ Android平台的编译流程：
 * 下载例子的资源文件[res.7z](https://github.com/downloads/ifreedom/libnge2/res.7z)
 后解压放到sample目录下。
 * 命令行终端进入libnge2的目录下，命令行执行./script/make-android.sh
+
+IOS平台的编译流程：
+---------
+* 下载download下的Xcoder.zip覆盖到libnge2的根目录。
+* 打开xcoder的工程即可，其中template下的工程demo是NGE2的干净模板。
 
 如果有任何疑问，可以到讨论版：
 http://www.iacger.com/forum.php?mod=forumdisplay&fid=180
