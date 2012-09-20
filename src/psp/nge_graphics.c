@@ -1074,15 +1074,14 @@ BOOL BeginTarget(image_p _img){
 	if(!_img)
 		return FALSE;
 	target_image = _img;
-	width = _img->w; height = _img->h;
+	width = _img->texw; height = _img->texh;
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, _img->texw, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
-
+	
 	sceGuStart(GU_DIRECT,list);
 	
-	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
+	sceGuDrawBufferList(_img->mode,(void*)offset,BUF_WIDTH);
 	sceGuOffset(2048 - (width/2), 2048 - (height/2));
 	sceGuViewport(2048, 2048, width, height);
 	// Scissoring
@@ -1103,10 +1102,10 @@ void EndTarget(){
 	unsigned int offset = getStaticVramOffset();
 	if(target_image == NULL)
 		return;
-	width = target_image->w;
-	height = target_image->h;
+	width = target_image->texw;
+	height = target_image->texh;
 	
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, target_image->texw, target_image->data);
+	sceGuCopyImage(target_image->mode, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
 	sceGuDisable(GU_STENCIL_TEST);
 	sceGuDisable(GU_ALPHA_TEST);
 	

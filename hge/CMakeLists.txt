@@ -1,8 +1,6 @@
-set(HGE_VERSION 1.7)
-string(REGEX MATCH "^[0-9]+[.][0-9]+" HGE_SOVERSION ${HGE_VERSION})
-set(HGE_DLL_SHORTVER 17)
+aux_source_directory(hge _HGE_SRCS)
 
-aux_source_directory(hge HGE_SRCS)
-list(APPEND NGE2_SRCS ${HGE_SRCS})
-
-install(FILES hge/hgecolor.h hge/hgeparticle.h hge/hgerect.h hge/hgevector.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+add_addon_srcs(hge
+  HAS_SUBDIR_IN_INCLUDE
+  SRC_NO_SUBDIR
+  SRCS ${_HGE_SRCS})

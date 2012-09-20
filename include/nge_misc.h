@@ -13,7 +13,7 @@
 #include <pspthreadman.h>
 #define nge_sleep(tick) sceKernelDelayThread((tick)*1000)
 
-#elif defined __linux__
+#elif defined __linux__ || defined NGE_IPHONE
 #include <unistd.h>
 #define nge_sleep(tick) usleep(tick)
 #endif

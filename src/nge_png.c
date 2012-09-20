@@ -85,7 +85,7 @@ image_p image_load_png(const char* filename, int displaymode)
 		return 0;
 	size = io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_png_buf(mbuf,size,displaymode);
 	SAFE_FREE(mbuf);
@@ -101,7 +101,7 @@ image_p image_load_png_fp(int handle,int fsize, int autoclose,int displaymode)
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_png_buf(mbuf,fsize,displaymode);
@@ -238,7 +238,7 @@ image_p image_load_png_colorkey(const char* filename, int displaymode,int colork
 		return 0;
 	size = io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_png_colorkey_buf(mbuf,size,displaymode,colorkey);
 	SAFE_FREE(mbuf);
@@ -254,7 +254,7 @@ image_p image_load_png_colorkey_fp(int handle,int fsize, int autoclose,int displ
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_png_colorkey_buf(mbuf,fsize,displaymode,colorkey);
@@ -408,7 +408,7 @@ static void png_custom_fwrite_fn(png_structp png_ptr, png_bytep data, png_size_t
 
 	int handle = (int)(png_ptr->io_ptr);
 
-	check = io_fwrite(data,1,length,handle);
+	check = io_fwrite(data,length,1,handle);
 	if (check != length)
 	{
 		nge_print("Read Error!");

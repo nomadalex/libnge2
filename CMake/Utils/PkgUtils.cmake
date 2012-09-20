@@ -154,6 +154,13 @@ macro(prepare_dep_search PREFIX)
   endif()
   message(STATUS "Search path: ${${PREFIX}_DEP_SEARCH_PATH}")
 
+  foreach(path ${${PREFIX}_DEP_SEARCH_PATH})
+	if(EXISTS ${path}/dep_setup.cmake)
+	  message(STATUS "Find Setup Script -- Do depends setup in ${path}")
+	  include(${path}/dep_setup.cmake)
+	endif()
+  endforeach()
+
   # give guesses as hints to the find_package calls
   set(CMAKE_PREFIX_PATH ${${PREFIX}_DEP_SEARCH_PATH} ${CMAKE_PREFIX_PATH})
   if(APPLE)

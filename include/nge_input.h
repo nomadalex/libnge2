@@ -25,7 +25,7 @@
 
 #include "nge_common.h"
 
-#if defined NGE_PSP || defined NGE_LINUX || defined NGE_WIN
+#if defined NGE_PSP || defined NGE_LINUX || defined NGE_WIN || defined NGE_IPHONE
 #define NGE_INPUT_BUTTON_SUPPORT
 #define NGE_INPUT_ANALOG_SUPPORT
 #if defined NGE_WIN

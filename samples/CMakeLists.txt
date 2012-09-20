@@ -114,10 +114,6 @@ foreach(i 10 11 12 13 14)
 endforeach()
 
 if(NOT ANDROID)
-  if(SQLITE3_FOUND)
-	add_subdirectory(demo5)
-  endif()
-
   if(UNZIP_FOUND)
 	add_subdirectory(demo9)
   endif()
