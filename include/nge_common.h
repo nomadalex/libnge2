@@ -28,6 +28,9 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.1.0"
 
+#include "nge_platform.h"
+#include "nge_dll_export.h"
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -66,16 +69,10 @@
 #endif
 
 
-
-
-
 #define SAFE_FREE(ptr) free(ptr);ptr = NULL
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
 #endif
-
-#include "nge_platform.h"
-#include "nge_dll_export.h"
 
 #endif /* _NGE_COMMON_H */
