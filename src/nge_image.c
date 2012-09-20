@@ -208,7 +208,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
+	else if(flags[6]=='E'||flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
 		pimage = image_load_jpg(filename,displaymode);
 		if(pimage == NULL){
 			nge_print("jpg file error!\n");
@@ -263,7 +263,7 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		pimage =  image_load_jpg_buf(mbuf,bsize,displaymode);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -340,7 +340,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 		}
 		return pimage;
 	}
-	else if(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
+	else if(flags[6]== 'E'||(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I')){
 		pimage = image_load_jpg_colorkey(filename,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -389,7 +389,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("bmp\n");
 		pimage =  image_load_bmp_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("bmp file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -397,11 +397,11 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		//printf("jpg\n");
 		pimage =  image_load_jpg_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("jpg file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -413,7 +413,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("tga\n");
 		pimage =  image_load_tga_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("tga file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -546,7 +546,7 @@ image_p image_clone(image_p pimage)
  *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
  *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
 
-inline uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {
+inline static uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {	
 	uint8_t h1, h2, h3;
 	uint32_t s, d;
 	int AL;
@@ -562,7 +562,7 @@ inline uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {
 }
 
 #ifdef NGE_PSP
-inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
+inline static uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
 	uint32_t s, d;
 	uint8_t h1, h2, h3, a;
 	int AL;
@@ -577,7 +577,7 @@ inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 	return (a << 15) | (h1 << 10) | (h2 << 5) | (h3);
 }
 #else
-inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
+inline static uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
 	uint32_t s, d;
 	uint8_t h1, h2, h3, a;
 	int AL;
@@ -593,7 +593,7 @@ inline uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {
 }
 #endif
 
-inline uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {
+inline static uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {	
 	uint32_t s, d;
 	uint8_t h1, h2, h3, h4;
 	int AL;
@@ -609,7 +609,7 @@ inline uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {
 	return (h1 << 12) | (h2 << 8) | (h3 << 4) | (h4);
 }
 
-inline uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {
+inline static uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {	
 	uint16_t h1, h2, h3, h4;
 	uint32_t s, d;
 	int AL = 255 - ALPHA;
