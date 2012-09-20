@@ -795,9 +795,10 @@ void matrixtrans(float a[4][4])
 }
 
 //generate an identity matrix
-void identmat(float *matrix)
+void identmat(float mat[4][4])
 {
-    *matrix++ = 1.0;    /* row 1        */
+    float *matrix = (float*)mat;
+	*matrix++ = 1.0;    /* row 1        */
     *matrix++ = 0.0;
     *matrix++ = 0.0;
     *matrix++ = 0.0;

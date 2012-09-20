@@ -1,7 +1,7 @@
 #include "nge_common.h"
 #include "nge_platform.h"
 #include "nge_debug_log.h"
-
+#include "nge_graphics.h"
 #if defined NGE_WIN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -20,6 +20,7 @@
 extern int psp_exit_callback_id;
 static int game_quit = 0;
 
+
 #elif defined NGE_LINUX
 #include <X11/Xlib.h>
 // backward declarations
@@ -37,6 +38,7 @@ static ButtonProc btn_up   = btn_up_default;
 
 static touch_mode = 0;
 static istouched  = 0;
+static screen_context_p screen = NULL;
 
 void EmulateTouchMove(int flag)
 {
@@ -88,6 +90,7 @@ void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 		mouse_move_proc = mouse_move;
 	if(mouse_btn != NULL)
 		mouse_btn_proc = mouse_btn;
+	screen = GetScreenContext();
 }
 #endif
 
@@ -267,7 +270,7 @@ static int ana_ret = 0;
 		break;										\
 	}												\
 	if (mouse_btn_proc != NULL)						\
-		mouse_btn_proc(mouse_btn_type, xPos, yPos);	\
+		mouse_btn_proc(mouse_btn_type, 1.0f*xPos*screen->ori_width/screen->width, 1.0f*yPos*screen->ori_height/screen->height);	\
 	return 0
 
 int nge_win_mouse_btn_down_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
@@ -285,7 +288,7 @@ int nge_win_mouse_move_handle(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
 	if ((mouse_move_proc != NULL) && ((istouched&&touch_mode == 1)||(touch_mode == 0)))
-		mouse_move_proc(xPos, yPos);
+		mouse_move_proc(1.0f*xPos*screen->ori_width/screen->width, 1.0f*yPos*screen->ori_height/screen->height);
 	return 0;
 }
 

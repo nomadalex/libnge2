@@ -69,7 +69,7 @@ static char inited = 0;
 static int cacheid = 0;
 static uint8_t tex_ret = 0;
 
-#define MAX_TEX_CACHE_SIZE 32
+#define MAX_TEX_CACHE_SIZE 256
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
 GLuint fbo = 0;
 // nge_screen *************************
@@ -564,7 +564,6 @@ void LimitFps(uint32_t limit)
 	glTranslatef(xcent,ycent,0);                \
 	glRotatef(angle,0,0,1);                     \
 	glTranslatef(-(xcent),-(ycent),0)
-
 void BeginScene(uint8_t clear)
 {
 	if(clear == 1){
@@ -606,17 +605,15 @@ static uint8_t r,g,b,a;
 
 void DrawLine(float x1, float y1, float x2, float y2, int color,int dtype)
 {
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
-	if(y1 == 0.0)
-		y1 = 0.1;
-	if(y2 == 0.0)
-		y2 = 0.1;
 	GL_ARRAY_CHECK_V(2);
 	VECT_2D_SET(gl_vectices[0], x1, y1);
 	VECT_2D_SET(gl_vectices[1], x2, y2);
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINES, 0, 2);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void DrawLineEx(pointf p1,pointf p2 ,int color,int dtype)
@@ -627,6 +624,7 @@ void DrawLineEx(pointf p1,pointf p2 ,int color,int dtype)
 void DrawCircle(float x, float y, float radius, int color,int dtype)
 {
 	int i;
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
@@ -636,11 +634,13 @@ void DrawCircle(float x, float y, float radius, int color,int dtype)
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINE_LOOP, 0, 360);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void FillCircle(float x, float y, float radius, int color,int dtype)
 {
 	int i;
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
@@ -650,11 +650,13 @@ void FillCircle(float x, float y, float radius, int color,int dtype)
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtype)
 {
 	int i;
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
@@ -664,11 +666,13 @@ void DrawEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_LINE_LOOP, 0, 360);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtype)
 {
 	int i;
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(360);
 	for(i=0; i<360;i++)
@@ -678,16 +682,19 @@ void FillEllipse(float x,float y ,float xradius,float yradius,int color,int dtyp
 	SET_COLOR(color, dtype);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 360);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void PutPix(float x,float y ,int color,int dtype)
 {
+	glDisable(GL_TEXTURE_2D);
 	BEFORE_DRAW();
 	GL_ARRAY_CHECK_V(1);
 	VECT_2D_SET(gl_vectices[0], x, y);
 	SET_COLOR(color,dtype);
 	glDrawArrays(GL_POINTS, 0, 1);
 	AFTER_DRAW();
+	glEnable(GL_TEXTURE_2D);
 }
 
 #define DRAW_POLYGON_IMP(mode, count)					\
@@ -926,6 +933,7 @@ void ImageToScreen(image_p tex,float dx,float dy)
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
+    SET_COLOR(tex->mask,tex->dtype);
 	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
@@ -934,7 +942,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-
+    SET_COLOR(tex->mask,tex->dtype);
 	if(dw==0&&dh==0){
 		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
