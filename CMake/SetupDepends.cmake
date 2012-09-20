@@ -52,12 +52,6 @@ if(LINUX AND NOT ANDROID)
 endif()
 
 ################################################################################
-# samples deps
-# for demo5
-find_package(SQLite3)
-log_feature(SQLITE3_FOUND "sqlite3" "a self-contained, serverless, zero-configuration, transactional SQL database engine" "http://www.sqlite.org/")
-
-################################################################################
 # Tools
 find_package(Doxygen)
 log_feature(DOXYGEN_FOUND "Doxygen" "Tool for building API documentation" "http://doxygen.org")

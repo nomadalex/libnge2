@@ -42,7 +42,7 @@ image_p image_load_tga(const char* filename, int displaymode)
 		return 0;
 	size = io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_tga_buf(mbuf,size,displaymode);
 	SAFE_FREE(mbuf);
@@ -291,7 +291,7 @@ image_p image_load_tga_fp(int handle,int fsize, int autoclose,int displaymode)
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_tga_buf(mbuf,fsize,displaymode);
@@ -312,7 +312,7 @@ image_p image_load_tga_colorkey(const char* filename, int displaymode,int colork
 		return 0;
 	size= io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_tga_colorkey_buf(mbuf,size,displaymode,colorkey);
 	SAFE_FREE(mbuf);
@@ -572,7 +572,7 @@ image_p image_load_tga_colorkey_fp(int handle,int fsize, int autoclose,int displ
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_tga_colorkey_buf(mbuf,fsize,displaymode,colorkey);
@@ -614,7 +614,7 @@ int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle
 	tfh.Width[0] = pimage->w%256;
 	tfh.Height[1] = pimage->h/256;
 	tfh.Height[0] = pimage->h%256;
-	//io_fwrite( &tfh, 1, sizeof(tfh), fd );
+	//io_fwrite( &tfh, sizeof(tfh), 1, fd );
 
 	line = (uint8_t*) malloc(pimage->w * 4);
 	if (line == 0){
@@ -714,12 +714,12 @@ int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle
 		if (rle)
 		{
 			long sz = encodeRLE( line, pimage->w*tfh.Depth>>3, 0, rleline, pimage->w*6, tfh.Depth );
-			//io_fwrite( rleline, 1, sz, fd );
+			//io_fwrite( rleline, sz, 1, fd );
 			memcpy(save_buf+save_pos,rleline,sz);
 			save_pos += sz;
 		}
 		else{
-			io_fwrite( line, 1, pimage->w*tfh.Depth>>3, fd );
+			io_fwrite( line, pimage->w*tfh.Depth>>3, 1, fd );
 			memcpy(save_buf+save_pos,line,pimage->w*tfh.Depth>>3);
 			save_pos += pimage->w*tfh.Depth>>3;
 		}
@@ -728,7 +728,7 @@ int image_save_tga(image_p pimage,const char* filename,uint8_t alpha,uint8_t rle
 	if (rle)
 		SAFE_FREE(rleline);
 	SAFE_FREE(line);
-	io_fwrite(save_buf,1,save_pos,fd);
+	io_fwrite(save_buf,save_pos,1,fd);
 	free(save_buf);
 	io_fclose(fd);
 	return 1;
