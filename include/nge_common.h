@@ -51,16 +51,21 @@
 /* for c99 compatible, include vs2010 */
 #include <stdint.h>
 #endif
-/*
-#ifdef _MSC_VER
-typedef int BOOL;
+
+
+#if defined(NGE_IPHONE)
+	#ifndef BOOL
+	#define BOOL int
+	#endif
 #else
-typedef uint8_t BOOL;
+	#ifdef _MSC_VER
+	typedef int BOOL;
+	#else
+	typedef uint8_t BOOL;
+	#endif
 #endif
- */
-#ifndef BOOL
-#define BOOL int
-#endif
+
+
 
 
 
