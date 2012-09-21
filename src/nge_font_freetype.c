@@ -259,7 +259,7 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 
 	if(height <= 0 || width <= 0)
 		return;
-	
+		
 	switch(pimage->dtype) {
 		case DISPLAY_PIXEL_FORMAT_8888:
 			cpbegin32 = (uint32_t*)pimage->data + y * pimage->texw + x;

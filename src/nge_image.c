@@ -184,7 +184,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 
 	if(fd ==0 )
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png(filename,displaymode);
@@ -208,7 +208,7 @@ image_p image_load(const char* filename, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
+	else if(flags[6]=='E'||flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
 		pimage = image_load_jpg(filename,displaymode);
 		if(pimage == NULL){
 			nge_print("jpg file error!\n");
@@ -263,7 +263,7 @@ image_p image_load_buf(const char* mbuf,int bsize, int displaymode,int swizzle)
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		pimage =  image_load_jpg_buf(mbuf,bsize,displaymode);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -300,7 +300,7 @@ image_p image_load_fp(int handle,int fsize, int autoclose,int displaymode,int sw
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_buf(mbuf,fsize,displaymode,swizzle);
@@ -316,7 +316,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 
 	if(fd==0)
 		return 0;
-	io_fread(flags,1,12,fd);
+	io_fread(flags,12,1,fd);
 	io_fclose(fd);
 	if(flags[0]==(char)0x89&&flags[1]=='P'&&flags[2]=='N'&&flags[3]=='G'){
 		pimage = image_load_png_colorkey(filename,displaymode,colorkey);
@@ -340,7 +340,7 @@ image_p image_load_colorkey(const char* filename, int displaymode,int colorkey,i
 		}
 		return pimage;
 	}
-	else if(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I'){
+	else if(flags[6]== 'E'||(flags[6]=='J'&&flags[7]=='F'&&flags[8]=='I')){
 		pimage = image_load_jpg_colorkey(filename,displaymode,colorkey);
 		if(pimage == NULL){
 			nge_print("png file error!\n");
@@ -389,7 +389,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("bmp\n");
 		pimage =  image_load_bmp_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("bmp file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -397,11 +397,11 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		}
 		return pimage;
 	}
-	else if(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I'){
+	else if(mbuf[6]== 'E'||(mbuf[6]=='J'&&mbuf[7]=='F'&&mbuf[8]=='I')){
 		//printf("jpg\n");
 		pimage =  image_load_jpg_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("jpg file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -413,7 +413,7 @@ image_p image_load_colorkey_buf(const char* mbuf,int bsize, int displaymode,int 
 		//printf("tga\n");
 		pimage =  image_load_tga_colorkey_buf(mbuf,bsize,displaymode,colorkey);
 		if(pimage == NULL){
-			nge_print("png file error!\n");
+			nge_print("tga file error!\n");
 			return NULL;
 		}
 		if(swizzle == 1){
@@ -433,7 +433,7 @@ image_p image_load_colorkey_fp(int handle,int fsize, int autoclose,int displaymo
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_colorkey_buf(mbuf,fsize,displaymode,colorkey,swizzle);
@@ -540,11 +540,87 @@ image_p image_clone(image_p pimage)
 	return clone;
 }
 
+
 /*alpha blend!
-*0 完全透明，255不透明
-*Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
-*#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
-#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*ALPHA + DES*(255-ALPHA) ) /255)
+ *0 完全透明，255不透明
+ *Dst=( Src0*(255-Alpha) + Src1*Alpha ) / 255
+ *#define MAKEALPHA(SRC,DES,ALPHA) (( SRC*(255-ALPHA) + DES*ALPHA ) /255)*/
+
+inline static uint16_t ALPHABLEND_565(uint16_t SRC,uint16_t DST,int ALPHA) {	
+	uint8_t h1, h2, h3;
+	uint32_t s, d;
+	int AL;
+	ALPHA >>= 2; AL = 64 - ALPHA;
+	h2 = ( ((SRC & 0x07E0) >> 5) * AL + ((DST & 0x07E0) >> 5) * ALPHA ) >> 6;
+	s = SRC & 0xF81F; d = DST & 0xF81F;
+	ALPHA >>= 1; AL >>= 1;
+	s *= AL; d *= ALPHA;
+	s += d;
+	h1 = (s & 0x3FF800) >> 16;
+	h3 = (s & 0x7FF) >> 5;
+	return (h1 << 11) | (h2 << 5) | (h3);
+}
+
+#ifdef NGE_PSP
+inline static uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
+	uint32_t s, d;
+	uint8_t h1, h2, h3, a;
+	int AL;
+	ALPHA >>= 3; AL = 32 - ALPHA;
+	s = ((SRC & 0x7C00) << 10) | ((SRC & 0x3E0) << 5) | (SRC & 0x1F);
+	d = ((DST & 0x7C00) << 10) | ((DST & 0x3E0) << 5) | (DST & 0x1F);
+	s *= AL; d *= ALPHA;
+	a = (ALPHA > 15)?(DST >> 15):(SRC >> 15);
+	h1 = ((s >> 20) + (d >> 20)) >> 5;
+	h2 = (((s & 0xFFC00) >> 10) + ((d & 0xFFC00) >> 10)) >> 5;
+	h3 = ((s & 0x3FF) + (d & 0x3FF)) >> 5;
+	return (a << 15) | (h1 << 10) | (h2 << 5) | (h3);
+}
+#else
+inline static uint16_t ALPHABLEND_5551(uint16_t SRC,uint16_t DST,int ALPHA) {	
+	uint32_t s, d;
+	uint8_t h1, h2, h3, a;
+	int AL;
+	ALPHA >>= 3; AL = 32 - ALPHA;
+	s = ((SRC & 0xF800) << 10) | ((SRC & 0x7C0) << 5) | (SRC & 0x3E);
+	d = ((DST & 0xF800) << 10) | ((DST & 0x7C0) << 5) | (DST & 0x3E);
+	s *= AL; d *= ALPHA;
+	a = (ALPHA > 15)?(DST & 0x1):(SRC & 0x1);
+	h1 = ((s >> 21) + (d >> 21)) >> 5;
+	h2 = (((s & 0x1FF800) >> 11) + ((d & 0x1FF800) >> 11)) >> 5;
+	h3 = (((s & 0x7FE) >> 1) + ((d & 0x7FE) >> 1)) >> 5;
+	return (h1 << 11) | (h2 << 6) | (h3 << 1) | (a);
+}
+#endif
+
+inline static uint16_t ALPHABLEND_4444(uint16_t SRC,uint16_t DST,int ALPHA) {	
+	uint32_t s, d;
+	uint8_t h1, h2, h3, h4;
+	int AL;
+	ALPHA >>= 4;
+	AL = 15 - ALPHA;
+	s = ((SRC & 0xF000) << 12) | ((SRC & 0x0F00) << 8) | ((SRC & 0x00F0) << 4) | (SRC & 0x000F);
+	d = ((DST & 0xF000) << 12) | ((DST & 0x0F00) << 8) | ((DST & 0x00F0) << 4) | (DST & 0x000F);
+	s *= AL; d *= ALPHA;
+	h1 = ((s >> 24) + (d >> 24)) /15;
+	h2 = (((s >> 16) & 0xFF) + ((d >> 16) & 0xFF)) /15;
+	h3 = (((s >> 8) & 0xFF) + ((d >> 8) & 0xFF)) /15;
+	h4 = ((s & 0xFF) + (d & 0xFF)) /15;
+	return (h1 << 12) | (h2 << 8) | (h3 << 4) | (h4);
+}
+
+inline static uint32_t ALPHABLEND_8888(uint32_t SRC,uint32_t DST,int ALPHA) {	
+	uint16_t h1, h2, h3, h4;
+	uint32_t s, d;
+	int AL = 255 - ALPHA;
+	s = ((SRC & 0xFF00FF00) >> 8) * AL; d = ((DST & 0xFF00FF00) >> 8) * ALPHA;
+	SRC = (SRC & 0x00FF00FF) * AL; DST = (DST & 0x00FF00FF) * ALPHA;
+	h1 = ((s >> 16) + (d >> 16)) >> 8;
+	h2 = ((SRC >> 16) + (DST >> 16)) >> 8;
+	h3 = ((s & 0x0000FFFF) + (d & 0x0000FFFF)) >> 8;
+	h4 = ((SRC & 0x0000FFFF) + (DST & 0x0000FFFF)) >> 8;
+	return (h1 << 24) | (h2 << 16) | (h3 << 8) | (h4);
+}
 
 void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int32_t sy,int32_t sw,int32_t sh,int32_t dx,int32_t dy,int alpha,int flag)
 {
@@ -690,7 +766,6 @@ void image_to_image_alpha_ex(const image_p src,const image_p des,int32_t sx,int3
 			cpbegin16 += d1;
 			bmp16     += src->texw - sw;
 		}
-
 	}
 	else{
 		if(flag & IMAGE_FLIP_V) {
@@ -765,7 +840,8 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 				#endif
 					*cpbegin16 = ALPHABLEND_4444(*cpbegin16, *bmp16, alpha);
 			}
-			cpbegin16 += des->texw;
+			bmp16 += src->texw - w;
+			cpbegin16 += des->texw - w;
 		}
 
 	}
@@ -781,7 +857,8 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 				#endif
 					*cpbegin16 = ALPHABLEND_5551(*cpbegin16, *bmp16, alpha);
 			}
-			cpbegin16 += des->texw;
+			cpbegin16 += des->texw - w;
+			bmp16 += src->texw - w;
 		}
 
 	}
@@ -804,7 +881,8 @@ void image_to_image_alpha(const image_p src,const image_p des,int32_t x,int32_t 
 				if((*bmp32) & 0xFF000000)
 					*cpbegin32 = ALPHABLEND_8888(*cpbegin32, *bmp32, alpha);
 			}
-			cpbegin32 += des->texw;
+			cpbegin32 += des->texw - w;
+			bmp32 += src->texw - w;
 		}
 	}
 
@@ -913,10 +991,7 @@ void image_to_image(const image_p src,const image_p des,int32_t x,int32_t y)
 	uint16_t *cpbegin16,*bmp16;
 	int i, size;
 	uint32_t *cpbegin32,*bmp32;
-	if(src->swizzle ==1)
-		unswizzle_swap(src);
-	if(des->swizzle ==1)
-		unswizzle_swap(des);
+	CHECK_AND_UNSWIZZLE_ALL(src, des);
 	des->modified = 1;
 	if(x < 0) {
 		w += x;

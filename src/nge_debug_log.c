@@ -29,6 +29,10 @@ inline void nge_printf (FILE** pFile, const char* filename, const char* pMessage
 	if(!(*pFile)){
 		*pFile = fopen (filename, "a+b");
 		fwrite (FirstLog, strlen (FirstLog), 1, *pFile);
+#if defined NGE_WIN && defined _DEBUG_STDOUT
+		freopen("CONOUT$","w+t",stdout);
+		freopen("CONIN$","r+t",stdin);
+#endif
 	}
 	_vsnprintf (Message, sizeof (Message), pMessage, ArgPtr);
 

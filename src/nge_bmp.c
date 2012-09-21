@@ -78,7 +78,7 @@ image_p image_load_bmp(const char* filename, int displaymode)
 		return 0;
 	size = io_fsize(fd);
 	pbuf = (uint8_t*)malloc(size);
-	io_fread(pbuf,1,size,fd);
+	io_fread(pbuf,size,1,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_buf((const char*)pbuf,size,displaymode);
 	SAFE_FREE(pbuf);
@@ -208,7 +208,7 @@ image_p image_load_bmp_fp(int handle,int fsize, int autoclose,int displaymode)
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_bmp_buf(mbuf,fsize,displaymode);
@@ -227,7 +227,7 @@ image_p image_load_bmp_colorkey(const char* filename, int displaymode,int colork
 		return 0;
 	size = io_fsize(fd);
 	pbuf = (uint8_t*)malloc(size);
-	io_fread(pbuf,1,size,fd);
+	io_fread(pbuf,size,1,fd);
 	io_fclose(fd);
 	pimage = image_load_bmp_colorkey_buf((const char*)pbuf,size,displaymode,colorkey);
 	SAFE_FREE(pbuf);
@@ -370,7 +370,7 @@ image_p image_load_bmp_colorkey_fp(int handle,int fsize, int autoclose,int displ
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_bmp_colorkey_buf(mbuf,fsize,displaymode,colorkey);

@@ -1074,11 +1074,10 @@ BOOL BeginTarget(image_p _img){
 	if(!_img)
 		return FALSE;
 	target_image = _img;
-	width = _img->w; height = _img->h;
+	width = _img->texw; height = _img->texh;
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-
 	sceGuStart(GU_DIRECT,list);
 	
 	sceGuDrawBufferList(_img->mode,(void*)offset,BUF_WIDTH);
@@ -1102,8 +1101,8 @@ void EndTarget(){
 	unsigned int offset = getStaticVramOffset();
 	if(target_image == NULL)
 		return;
-	width = target_image->w;
-	height = target_image->h;
+	width = target_image->texw;
+	height = target_image->texh;
 	
 	sceGuCopyImage(target_image->mode, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
 	sceGuDisable(GU_STENCIL_TEST);

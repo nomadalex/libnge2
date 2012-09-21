@@ -10,7 +10,7 @@
 #endif
 
 #include <stdlib.h>
-#include <nge_io_file.h>
+#include "nge_io_file.h"
 #include "package.h"
 
 #ifdef __cplusplus

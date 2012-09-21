@@ -28,6 +28,9 @@
 #define NGE_PATCHLEVEL		0
 #define NGE_VERSION "2.1.0"
 
+#include "nge_platform.h"
+#include "nge_dll_export.h"
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -44,7 +47,7 @@
 #endif
 #endif
 
-#if _MSC_VER < 1600
+#if defined(_MSC_VER) &&(_MSC_VER) < 1600
 /* for vs before vs2010 */
 #include "msvc/stdint.h"
 #else
@@ -52,19 +55,24 @@
 #include <stdint.h>
 #endif
 
-#ifdef _MSC_VER
-typedef int BOOL;
+
+#if defined(NGE_IPHONE)
+	#ifndef BOOL
+	#define BOOL int
+	#endif
 #else
-typedef uint8_t BOOL;
+	#ifdef _MSC_VER
+	typedef int BOOL;
+	#else
+	typedef uint8_t BOOL;
+	#endif
 #endif
+
 
 #define SAFE_FREE(ptr) free(ptr);ptr = NULL
 
 #if defined(_MSC_VER) && !defined(__cplusplus)
 #define inline __inline
 #endif
-
-#include "nge_platform.h"
-#include "nge_dll_export.h"
 
 #endif /* _NGE_COMMON_H */

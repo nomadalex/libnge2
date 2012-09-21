@@ -9,22 +9,28 @@
 #ifndef _NGE_PLATFORM_H
 #define _NGE_PLATFORM_H
 
-#if defined WIN32
-#define NGE_WIN
-
-#elif defined _PSP
+#if defined _PSP
 #define NGE_PSP
 
-#elif defined __linux__
-#if !defined IPHONEOS && !defined ANDROID
-#define NGE_LINUX
-
-#elif defined IPHONEOS
+#elif defined TARGET_OS_IPHONE || defined TARGET_IPHONE_SIMULATOR
 #define NGE_IPHONE
 
-#elif defined ANDROID
+#elif defined __ANDROID_API__ || defined ANDROID
 #define NGE_ANDROID
-#endif
+
+#elif defined _WIN32
+#define NGE_WIN
+
+#elif defined __APPLE__
+#define NGE_MAC
+
+/*
+  put linux to last one, because some other platform
+  is build on top of linux, like android
+*/
+#elif defined __linux__
+#define NGE_LINUX
+
 #endif
 
 #endif /* _NGE_PLATFORM_H */

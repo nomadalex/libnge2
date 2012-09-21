@@ -13,7 +13,7 @@
 #ifndef NGE_API
  #ifdef NGE_LIBTYPE_STATIC
   #define NGE_API
-  #define NGE_CLASS NGE_API
+  #define NGE_CLASS
  #elif defined WIN32
   #ifdef NGE2_EXPORTS
     #define NGE_API __declspec(dllexport)
