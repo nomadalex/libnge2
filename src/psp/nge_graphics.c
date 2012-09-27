@@ -1078,7 +1078,6 @@ BOOL BeginTarget(image_p _img){
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	
 	sceGuStart(GU_DIRECT,list);
 	
 	sceGuDrawBufferList(_img->mode,(void*)offset,BUF_WIDTH);
