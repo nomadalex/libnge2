@@ -72,6 +72,7 @@ static uint8_t tex_ret = 0;
 #define MAX_TEX_CACHE_SIZE 32
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
 GLuint fbo = 0;
+GLuint dsb = 0;
 // nge_screen *************************
 static screen_context_t nge_screen = {
 	NULL,
@@ -1202,6 +1203,18 @@ BOOL BeginTarget(image_p _img){
 	BIND_AND_TEST_CACHE(_img);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
+
+	glGenRenderbuffersEXT(1, &dsb);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, dsb);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH24_STENCIL8_EXT, _img->texw, _img->texh);
+	
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, dsb);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, dsb);
+	
+	if(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT) {
+		nge_error("Error: Graphic Card does not support stencil attachment!\n");
+		return FALSE;
+	}
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,_img->w,0,_img->h, -1, 1);
@@ -1209,14 +1222,20 @@ BOOL BeginTarget(image_p _img){
 	glPushAttrib(GL_VIEWPORT_BIT);
 
 	glViewport(0,0,_img->w, _img->h);
+
+	glEnable(GL_STENCIL_TEST);
+	ResetStencil();
 #endif
 	return TRUE;
 }
 
 void EndTarget(){
 #if defined NGE_WIN || defined NGE_LINUX
+	glDisable(GL_STENCIL_TEST);
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+	glDeleteRenderbuffersEXT(1, &dsb);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
