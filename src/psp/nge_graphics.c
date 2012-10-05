@@ -1142,6 +1142,9 @@ void ResetStencil() {
 		DrawRect(0, 0, target_image->texw, target_image->texh, MAKE_RGBA_8888(0, 0, 0, 0), DISPLAY_PIXEL_FORMAT_8888);
 		
 		sceGuEnable(GU_ALPHA_TEST);
+		
+		sceGuStencilFunc(GU_ALWAYS, 255, 0xff);
+		sceGuStencilOp(GU_KEEP, GU_REPLACE, GU_REPLACE);
 	}
 	else {
 		sceGuStencilFunc(GU_ALWAYS, 0, 0);
