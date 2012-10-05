@@ -75,7 +75,7 @@ image_p image_load_jpg(const char* filename, int displaymode)
 		return 0;
 	size = io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_jpg_buf(mbuf,size,displaymode);
 	SAFE_FREE(mbuf);
@@ -103,11 +103,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 	rawsize = bsize;
 	rawdata = (uint8_t*)mbuf;
 
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
-	{
-		return 0;
-	}
-
+	
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_decompress(&cinfo);
 
@@ -202,7 +198,7 @@ image_p image_load_jpg_fp(int handle,int fsize, int autoclose,int displaymode)
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_jpg_buf(mbuf,fsize,displaymode);
@@ -221,7 +217,7 @@ image_p image_load_jpg_colorkey(const char* filename, int displaymode,int colork
 		return 0;
 	size = io_fsize(handle);
 	mbuf = (char*) malloc(size);
-	io_fread(mbuf,1,size,handle);
+	io_fread(mbuf,size,1,handle);
 	io_fclose(handle);
 	pimage = image_load_jpg_colorkey_buf(mbuf,size,displaymode,colorkey);
 	SAFE_FREE(mbuf);
@@ -247,11 +243,6 @@ image_p image_load_jpg_colorkey_buf(const char* mbuf,int bsize, int displaymode,
 
 	rawsize = bsize;
 	rawdata = (uint8_t*)mbuf;
-
-	if (rawdata[6] != 'J' || rawdata[7] != 'F' || rawdata[8] != 'I' || rawdata[9] != 'F')
-	{
-		return 0;
-	}
 
 
 	cinfo.err = jpeg_std_error(&jerr);
@@ -354,7 +345,7 @@ image_p image_load_jpg_colorkey_fp(int handle,int fsize, int autoclose,int displ
 		return 0;
 
 	mbuf = (char*) malloc(fsize);
-	io_fread(mbuf,1,fsize,handle);
+	io_fread(mbuf,fsize,1,handle);
 	if(autoclose)
 		io_fclose(handle);
 	pimage = image_load_jpg_colorkey_buf(mbuf,fsize,displaymode,colorkey);

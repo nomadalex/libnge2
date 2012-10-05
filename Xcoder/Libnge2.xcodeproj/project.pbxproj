@@ -1,0 +1,513 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FD176D2B1607198000BFCA52 /* libcoolaudio.c in Sources */ = {isa = PBXBuildFile; fileRef = FD176D0D1607198000BFCA52 /* libcoolaudio.c */; };
+		FD176D2D1607198000BFCA52 /* libLSAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = FD176D0F1607198000BFCA52 /* libLSAudio.m */; };
+		FD176D2E1607198000BFCA52 /* LSAudioDeleCall.h in Headers */ = {isa = PBXBuildFile; fileRef = FD176D101607198000BFCA52 /* LSAudioDeleCall.h */; };
+		FD176D2F1607198000BFCA52 /* LSAudioDeleCall.m in Sources */ = {isa = PBXBuildFile; fileRef = FD176D111607198000BFCA52 /* LSAudioDeleCall.m */; };
+		FD176D4716071A6200BFCA52 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = FD176D4016071A6200BFCA52 /* ioapi.c */; };
+		FD176D4916071A6200BFCA52 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = FD176D4216071A6200BFCA52 /* unzip.c */; };
+		FD176D4B16071A6200BFCA52 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = FD176D4416071A6200BFCA52 /* zip.c */; };
+		FD176D5016071ACB00BFCA52 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = FD176D4E16071ACB00BFCA52 /* sqlite3.c */; };
+		FD2F5F451607018F00A291AE /* ascii.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F1B1607018F00A291AE /* ascii.h */; };
+		FD2F5F461607018F00A291AE /* ces_gbk.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F1C1607018F00A291AE /* ces_gbk.h */; };
+		FD2F5F471607018F00A291AE /* cp936ext.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F1D1607018F00A291AE /* cp936ext.h */; };
+		FD2F5F481607018F00A291AE /* gb2312.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F1E1607018F00A291AE /* gb2312.h */; };
+		FD2F5F491607018F00A291AE /* gbk.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F1F1607018F00A291AE /* gbk.h */; };
+		FD2F5F4A1607018F00A291AE /* gbkext_inv.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F201607018F00A291AE /* gbkext_inv.h */; };
+		FD2F5F4B1607018F00A291AE /* gbkext1.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F211607018F00A291AE /* gbkext1.h */; };
+		FD2F5F4C1607018F00A291AE /* gbkext2.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F221607018F00A291AE /* gbkext2.h */; };
+		FD2F5F4D1607018F00A291AE /* nge_app_cpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F231607018F00A291AE /* nge_app_cpp.cpp */; };
+		FD2F5F4E1607018F00A291AE /* nge_app.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F241607018F00A291AE /* nge_app.c */; };
+		FD2F5F4F1607018F00A291AE /* nge_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F251607018F00A291AE /* nge_bmp.c */; };
+		FD2F5F501607018F00A291AE /* nge_charsets.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F261607018F00A291AE /* nge_charsets.c */; };
+		FD2F5F511607018F00A291AE /* nge_debug_log.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F271607018F00A291AE /* nge_debug_log.c */; };
+		FD2F5F521607018F00A291AE /* nge_font_bittype.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F281607018F00A291AE /* nge_font_bittype.h */; };
+		FD2F5F531607018F00A291AE /* nge_font_freetype.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F291607018F00A291AE /* nge_font_freetype.c */; };
+		FD2F5F541607018F00A291AE /* nge_font_hzk.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2A1607018F00A291AE /* nge_font_hzk.c */; };
+		FD2F5F551607018F00A291AE /* nge_font_nfont.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2B1607018F00A291AE /* nge_font_nfont.c */; };
+		FD2F5F561607018F00A291AE /* nge_font.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2C1607018F00A291AE /* nge_font.c */; };
+		FD2F5F571607018F00A291AE /* nge_gif_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2D1607018F00A291AE /* nge_gif_animation.c */; };
+		FD2F5F581607018F00A291AE /* nge_gif_show.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2E1607018F00A291AE /* nge_gif_show.c */; };
+		FD2F5F591607018F00A291AE /* nge_graphics.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F2F1607018F00A291AE /* nge_graphics.c */; };
+		FD2F5F5A1607018F00A291AE /* nge_image_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F301607018F00A291AE /* nge_image_effect.c */; };
+		FD2F5F5B1607018F00A291AE /* nge_image_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F311607018F00A291AE /* nge_image_ext.c */; };
+		FD2F5F5C1607018F00A291AE /* nge_image.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F321607018F00A291AE /* nge_image.c */; };
+		FD2F5F5D1607018F00A291AE /* nge_input.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F331607018F00A291AE /* nge_input.c */; };
+		FD2F5F5E1607018F00A291AE /* nge_io_dir.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F341607018F00A291AE /* nge_io_dir.c */; };
+		FD2F5F5F1607018F00A291AE /* nge_io_file.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F351607018F00A291AE /* nge_io_file.c */; };
+		FD2F5F601607018F00A291AE /* nge_jpg.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F361607018F00A291AE /* nge_jpg.c */; };
+		FD2F5F611607018F00A291AE /* nge_main.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F371607018F00A291AE /* nge_main.c */; };
+		FD2F5F621607018F00A291AE /* nge_misc.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F381607018F00A291AE /* nge_misc.c */; };
+		FD2F5F631607018F00A291AE /* nge_package_zip.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F391607018F00A291AE /* nge_package_zip.c */; };
+		FD2F5F641607018F00A291AE /* nge_package.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3A1607018F00A291AE /* nge_package.c */; };
+		FD2F5F651607018F00A291AE /* nge_png.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3B1607018F00A291AE /* nge_png.c */; };
+		FD2F5F661607018F00A291AE /* nge_rbtree.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3C1607018F00A291AE /* nge_rbtree.c */; };
+		FD2F5F671607018F00A291AE /* nge_ref_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3D1607018F00A291AE /* nge_ref_handle.c */; };
+		FD2F5F681607018F00A291AE /* nge_rle.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3E1607018F00A291AE /* nge_rle.c */; };
+		FD2F5F691607018F00A291AE /* nge_sys_compatible.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F3F1607018F00A291AE /* nge_sys_compatible.c */; };
+		FD2F5F6A1607018F00A291AE /* nge_tex_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F401607018F00A291AE /* nge_tex_cache.c */; };
+		FD2F5F6B1607018F00A291AE /* nge_tga.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F411607018F00A291AE /* nge_tga.c */; };
+		FD2F5F6C1607018F00A291AE /* nge_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F421607018F00A291AE /* nge_timer.c */; };
+		FD2F5F6D1607018F00A291AE /* nge.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F431607018F00A291AE /* nge.c */; };
+		FD2F5F6E1607018F00A291AE /* utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = FD2F5F441607018F00A291AE /* utf8.h */; };
+		FD2F5FC116070F5D00A291AE /* CppSQLite3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F9A16070F5D00A291AE /* CppSQLite3.cpp */; };
+		FD2F5FC216070F5D00A291AE /* dictionary.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F9B16070F5D00A291AE /* dictionary.c */; };
+		FD2F5FC316070F5D00A291AE /* iniparser.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F9C16070F5D00A291AE /* iniparser.c */; };
+		FD2F5FC416070F5D00A291AE /* package.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5F9D16070F5D00A291AE /* package.cpp */; };
+		FD2F5FC516070F5D00A291AE /* hgecolor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5FA016070F5D00A291AE /* hgecolor.cpp */; };
+		FD2F5FC616070F5D00A291AE /* hgeparticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5FA116070F5D00A291AE /* hgeparticle.cpp */; };
+		FD2F5FC716070F5D00A291AE /* hgepmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5FA216070F5D00A291AE /* hgepmanager.cpp */; };
+		FD2F5FC816070F5D00A291AE /* hgerect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5FA316070F5D00A291AE /* hgerect.cpp */; };
+		FD2F5FC916070F5D00A291AE /* hgevector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD2F5FA416070F5D00A291AE /* hgevector.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FD176D0D1607198000BFCA52 /* libcoolaudio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = libcoolaudio.c; sourceTree = "<group>"; };
+		FD176D0F1607198000BFCA52 /* libLSAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = libLSAudio.m; sourceTree = "<group>"; };
+		FD176D101607198000BFCA52 /* LSAudioDeleCall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LSAudioDeleCall.h; sourceTree = "<group>"; };
+		FD176D111607198000BFCA52 /* LSAudioDeleCall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LSAudioDeleCall.m; sourceTree = "<group>"; };
+		FD176D4016071A6200BFCA52 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		FD176D4216071A6200BFCA52 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		FD176D4416071A6200BFCA52 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		FD176D4E16071ACB00BFCA52 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
+		FD2F5EAE1606FD2800A291AE /* Libnge2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = Libnge2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD2F5F1B1607018F00A291AE /* ascii.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ascii.h; path = ../src/ascii.h; sourceTree = "<group>"; };
+		FD2F5F1C1607018F00A291AE /* ces_gbk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ces_gbk.h; path = ../src/ces_gbk.h; sourceTree = "<group>"; };
+		FD2F5F1D1607018F00A291AE /* cp936ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cp936ext.h; path = ../src/cp936ext.h; sourceTree = "<group>"; };
+		FD2F5F1E1607018F00A291AE /* gb2312.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gb2312.h; path = ../src/gb2312.h; sourceTree = "<group>"; };
+		FD2F5F1F1607018F00A291AE /* gbk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gbk.h; path = ../src/gbk.h; sourceTree = "<group>"; };
+		FD2F5F201607018F00A291AE /* gbkext_inv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gbkext_inv.h; path = ../src/gbkext_inv.h; sourceTree = "<group>"; };
+		FD2F5F211607018F00A291AE /* gbkext1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gbkext1.h; path = ../src/gbkext1.h; sourceTree = "<group>"; };
+		FD2F5F221607018F00A291AE /* gbkext2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gbkext2.h; path = ../src/gbkext2.h; sourceTree = "<group>"; };
+		FD2F5F231607018F00A291AE /* nge_app_cpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nge_app_cpp.cpp; path = ../src/nge_app_cpp.cpp; sourceTree = "<group>"; };
+		FD2F5F241607018F00A291AE /* nge_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_app.c; path = ../src/nge_app.c; sourceTree = "<group>"; };
+		FD2F5F251607018F00A291AE /* nge_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_bmp.c; path = ../src/nge_bmp.c; sourceTree = "<group>"; };
+		FD2F5F261607018F00A291AE /* nge_charsets.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_charsets.c; path = ../src/nge_charsets.c; sourceTree = "<group>"; };
+		FD2F5F271607018F00A291AE /* nge_debug_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_debug_log.c; path = ../src/nge_debug_log.c; sourceTree = "<group>"; };
+		FD2F5F281607018F00A291AE /* nge_font_bittype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nge_font_bittype.h; path = ../src/nge_font_bittype.h; sourceTree = "<group>"; };
+		FD2F5F291607018F00A291AE /* nge_font_freetype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_font_freetype.c; path = ../src/nge_font_freetype.c; sourceTree = "<group>"; };
+		FD2F5F2A1607018F00A291AE /* nge_font_hzk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_font_hzk.c; path = ../src/nge_font_hzk.c; sourceTree = "<group>"; };
+		FD2F5F2B1607018F00A291AE /* nge_font_nfont.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_font_nfont.c; path = ../src/nge_font_nfont.c; sourceTree = "<group>"; };
+		FD2F5F2C1607018F00A291AE /* nge_font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_font.c; path = ../src/nge_font.c; sourceTree = "<group>"; };
+		FD2F5F2D1607018F00A291AE /* nge_gif_animation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_gif_animation.c; path = ../src/nge_gif_animation.c; sourceTree = "<group>"; };
+		FD2F5F2E1607018F00A291AE /* nge_gif_show.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_gif_show.c; path = ../src/nge_gif_show.c; sourceTree = "<group>"; };
+		FD2F5F2F1607018F00A291AE /* nge_graphics.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_graphics.c; path = ../src/nge_graphics.c; sourceTree = "<group>"; };
+		FD2F5F301607018F00A291AE /* nge_image_effect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_image_effect.c; path = ../src/nge_image_effect.c; sourceTree = "<group>"; };
+		FD2F5F311607018F00A291AE /* nge_image_ext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_image_ext.c; path = ../src/nge_image_ext.c; sourceTree = "<group>"; };
+		FD2F5F321607018F00A291AE /* nge_image.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_image.c; path = ../src/nge_image.c; sourceTree = "<group>"; };
+		FD2F5F331607018F00A291AE /* nge_input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_input.c; path = ../src/nge_input.c; sourceTree = "<group>"; };
+		FD2F5F341607018F00A291AE /* nge_io_dir.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_io_dir.c; path = ../src/nge_io_dir.c; sourceTree = "<group>"; };
+		FD2F5F351607018F00A291AE /* nge_io_file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_io_file.c; path = ../src/nge_io_file.c; sourceTree = "<group>"; };
+		FD2F5F361607018F00A291AE /* nge_jpg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_jpg.c; path = ../src/nge_jpg.c; sourceTree = "<group>"; };
+		FD2F5F371607018F00A291AE /* nge_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_main.c; path = ../src/nge_main.c; sourceTree = "<group>"; };
+		FD2F5F381607018F00A291AE /* nge_misc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_misc.c; path = ../src/nge_misc.c; sourceTree = "<group>"; };
+		FD2F5F391607018F00A291AE /* nge_package_zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_package_zip.c; path = ../src/nge_package_zip.c; sourceTree = "<group>"; };
+		FD2F5F3A1607018F00A291AE /* nge_package.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_package.c; path = ../src/nge_package.c; sourceTree = "<group>"; };
+		FD2F5F3B1607018F00A291AE /* nge_png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_png.c; path = ../src/nge_png.c; sourceTree = "<group>"; };
+		FD2F5F3C1607018F00A291AE /* nge_rbtree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_rbtree.c; path = ../src/nge_rbtree.c; sourceTree = "<group>"; };
+		FD2F5F3D1607018F00A291AE /* nge_ref_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_ref_handle.c; path = ../src/nge_ref_handle.c; sourceTree = "<group>"; };
+		FD2F5F3E1607018F00A291AE /* nge_rle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_rle.c; path = ../src/nge_rle.c; sourceTree = "<group>"; };
+		FD2F5F3F1607018F00A291AE /* nge_sys_compatible.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_sys_compatible.c; path = ../src/nge_sys_compatible.c; sourceTree = "<group>"; };
+		FD2F5F401607018F00A291AE /* nge_tex_cache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_tex_cache.c; path = ../src/nge_tex_cache.c; sourceTree = "<group>"; };
+		FD2F5F411607018F00A291AE /* nge_tga.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_tga.c; path = ../src/nge_tga.c; sourceTree = "<group>"; };
+		FD2F5F421607018F00A291AE /* nge_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge_timer.c; path = ../src/nge_timer.c; sourceTree = "<group>"; };
+		FD2F5F431607018F00A291AE /* nge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = nge.c; path = ../src/nge.c; sourceTree = "<group>"; };
+		FD2F5F441607018F00A291AE /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf8.h; path = ../src/utf8.h; sourceTree = "<group>"; };
+		FD2F5F9A16070F5D00A291AE /* CppSQLite3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CppSQLite3.cpp; sourceTree = "<group>"; };
+		FD2F5F9B16070F5D00A291AE /* dictionary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dictionary.c; sourceTree = "<group>"; };
+		FD2F5F9C16070F5D00A291AE /* iniparser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iniparser.c; sourceTree = "<group>"; };
+		FD2F5F9D16070F5D00A291AE /* package.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = package.cpp; sourceTree = "<group>"; };
+		FD2F5FA016070F5D00A291AE /* hgecolor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hgecolor.cpp; sourceTree = "<group>"; };
+		FD2F5FA116070F5D00A291AE /* hgeparticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hgeparticle.cpp; sourceTree = "<group>"; };
+		FD2F5FA216070F5D00A291AE /* hgepmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hgepmanager.cpp; sourceTree = "<group>"; };
+		FD2F5FA316070F5D00A291AE /* hgerect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hgerect.cpp; sourceTree = "<group>"; };
+		FD2F5FA416070F5D00A291AE /* hgevector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hgevector.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FD2F5EAB1606FD2800A291AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FD176CFE1607198000BFCA52 /* coolaudio */ = {
+			isa = PBXGroup;
+			children = (
+				FD176D0D1607198000BFCA52 /* libcoolaudio.c */,
+				FD176D0F1607198000BFCA52 /* libLSAudio.m */,
+				FD176D101607198000BFCA52 /* LSAudioDeleCall.h */,
+				FD176D111607198000BFCA52 /* LSAudioDeleCall.m */,
+			);
+			name = coolaudio;
+			path = ../coolaudio;
+			sourceTree = "<group>";
+		};
+		FD176D3E16071A6200BFCA52 /* unzip */ = {
+			isa = PBXGroup;
+			children = (
+				FD176D4016071A6200BFCA52 /* ioapi.c */,
+				FD176D4216071A6200BFCA52 /* unzip.c */,
+				FD176D4416071A6200BFCA52 /* zip.c */,
+			);
+			name = unzip;
+			path = iOSDepends/unzip;
+			sourceTree = "<group>";
+		};
+		FD176D4D16071ACB00BFCA52 /* sqlite3 */ = {
+			isa = PBXGroup;
+			children = (
+				FD176D4E16071ACB00BFCA52 /* sqlite3.c */,
+			);
+			name = sqlite3;
+			path = iOSDepends/sqlite3;
+			sourceTree = "<group>";
+		};
+		FD2F5EA31606FD2800A291AE = {
+			isa = PBXGroup;
+			children = (
+				FD176D4D16071ACB00BFCA52 /* sqlite3 */,
+				FD176D3E16071A6200BFCA52 /* unzip */,
+				FD176CFE1607198000BFCA52 /* coolaudio */,
+				FD2F5F9816070F5D00A291AE /* helper */,
+				FD2F5F9E16070F5D00A291AE /* hge */,
+				FD2F5F161606FDF700A291AE /* core */,
+				FD2F5EAF1606FD2800A291AE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FD2F5EAF1606FD2800A291AE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FD2F5EAE1606FD2800A291AE /* Libnge2.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD2F5F161606FDF700A291AE /* core */ = {
+			isa = PBXGroup;
+			children = (
+				FD2F5F1B1607018F00A291AE /* ascii.h */,
+				FD2F5F1C1607018F00A291AE /* ces_gbk.h */,
+				FD2F5F1D1607018F00A291AE /* cp936ext.h */,
+				FD2F5F1E1607018F00A291AE /* gb2312.h */,
+				FD2F5F1F1607018F00A291AE /* gbk.h */,
+				FD2F5F201607018F00A291AE /* gbkext_inv.h */,
+				FD2F5F211607018F00A291AE /* gbkext1.h */,
+				FD2F5F221607018F00A291AE /* gbkext2.h */,
+				FD2F5F231607018F00A291AE /* nge_app_cpp.cpp */,
+				FD2F5F241607018F00A291AE /* nge_app.c */,
+				FD2F5F251607018F00A291AE /* nge_bmp.c */,
+				FD2F5F261607018F00A291AE /* nge_charsets.c */,
+				FD2F5F271607018F00A291AE /* nge_debug_log.c */,
+				FD2F5F281607018F00A291AE /* nge_font_bittype.h */,
+				FD2F5F291607018F00A291AE /* nge_font_freetype.c */,
+				FD2F5F2A1607018F00A291AE /* nge_font_hzk.c */,
+				FD2F5F2B1607018F00A291AE /* nge_font_nfont.c */,
+				FD2F5F2C1607018F00A291AE /* nge_font.c */,
+				FD2F5F2D1607018F00A291AE /* nge_gif_animation.c */,
+				FD2F5F2E1607018F00A291AE /* nge_gif_show.c */,
+				FD2F5F2F1607018F00A291AE /* nge_graphics.c */,
+				FD2F5F301607018F00A291AE /* nge_image_effect.c */,
+				FD2F5F311607018F00A291AE /* nge_image_ext.c */,
+				FD2F5F321607018F00A291AE /* nge_image.c */,
+				FD2F5F331607018F00A291AE /* nge_input.c */,
+				FD2F5F341607018F00A291AE /* nge_io_dir.c */,
+				FD2F5F351607018F00A291AE /* nge_io_file.c */,
+				FD2F5F361607018F00A291AE /* nge_jpg.c */,
+				FD2F5F371607018F00A291AE /* nge_main.c */,
+				FD2F5F381607018F00A291AE /* nge_misc.c */,
+				FD2F5F391607018F00A291AE /* nge_package_zip.c */,
+				FD2F5F3A1607018F00A291AE /* nge_package.c */,
+				FD2F5F3B1607018F00A291AE /* nge_png.c */,
+				FD2F5F3C1607018F00A291AE /* nge_rbtree.c */,
+				FD2F5F3D1607018F00A291AE /* nge_ref_handle.c */,
+				FD2F5F3E1607018F00A291AE /* nge_rle.c */,
+				FD2F5F3F1607018F00A291AE /* nge_sys_compatible.c */,
+				FD2F5F401607018F00A291AE /* nge_tex_cache.c */,
+				FD2F5F411607018F00A291AE /* nge_tga.c */,
+				FD2F5F421607018F00A291AE /* nge_timer.c */,
+				FD2F5F431607018F00A291AE /* nge.c */,
+				FD2F5F441607018F00A291AE /* utf8.h */,
+			);
+			name = core;
+			sourceTree = "<group>";
+		};
+		FD2F5F9816070F5D00A291AE /* helper */ = {
+			isa = PBXGroup;
+			children = (
+				FD2F5F9A16070F5D00A291AE /* CppSQLite3.cpp */,
+				FD2F5F9B16070F5D00A291AE /* dictionary.c */,
+				FD2F5F9C16070F5D00A291AE /* iniparser.c */,
+				FD2F5F9D16070F5D00A291AE /* package.cpp */,
+			);
+			name = helper;
+			path = ../helper;
+			sourceTree = "<group>";
+		};
+		FD2F5F9E16070F5D00A291AE /* hge */ = {
+			isa = PBXGroup;
+			children = (
+				FD2F5FA016070F5D00A291AE /* hgecolor.cpp */,
+				FD2F5FA116070F5D00A291AE /* hgeparticle.cpp */,
+				FD2F5FA216070F5D00A291AE /* hgepmanager.cpp */,
+				FD2F5FA316070F5D00A291AE /* hgerect.cpp */,
+				FD2F5FA416070F5D00A291AE /* hgevector.cpp */,
+			);
+			name = hge;
+			path = ../hge;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		FD2F5EAC1606FD2800A291AE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD2F5F451607018F00A291AE /* ascii.h in Headers */,
+				FD2F5F461607018F00A291AE /* ces_gbk.h in Headers */,
+				FD2F5F471607018F00A291AE /* cp936ext.h in Headers */,
+				FD2F5F481607018F00A291AE /* gb2312.h in Headers */,
+				FD2F5F491607018F00A291AE /* gbk.h in Headers */,
+				FD2F5F4A1607018F00A291AE /* gbkext_inv.h in Headers */,
+				FD2F5F4B1607018F00A291AE /* gbkext1.h in Headers */,
+				FD2F5F4C1607018F00A291AE /* gbkext2.h in Headers */,
+				FD2F5F521607018F00A291AE /* nge_font_bittype.h in Headers */,
+				FD2F5F6E1607018F00A291AE /* utf8.h in Headers */,
+				FD176D2E1607198000BFCA52 /* LSAudioDeleCall.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		FD2F5EAD1606FD2800A291AE /* Libnge2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD2F5EBB1606FD2800A291AE /* Build configuration list for PBXNativeTarget "Libnge2" */;
+			buildPhases = (
+				FD2F5EAA1606FD2800A291AE /* Sources */,
+				FD2F5EAB1606FD2800A291AE /* Frameworks */,
+				FD2F5EAC1606FD2800A291AE /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Libnge2;
+			productName = Libnge2;
+			productReference = FD2F5EAE1606FD2800A291AE /* Libnge2.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FD2F5EA51606FD2800A291AE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = FD2F5EA81606FD2800A291AE /* Build configuration list for PBXProject "Libnge2" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FD2F5EA31606FD2800A291AE;
+			productRefGroup = FD2F5EAF1606FD2800A291AE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FD2F5EAD1606FD2800A291AE /* Libnge2 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FD2F5EAA1606FD2800A291AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD2F5F4D1607018F00A291AE /* nge_app_cpp.cpp in Sources */,
+				FD2F5F4E1607018F00A291AE /* nge_app.c in Sources */,
+				FD2F5F4F1607018F00A291AE /* nge_bmp.c in Sources */,
+				FD2F5F501607018F00A291AE /* nge_charsets.c in Sources */,
+				FD2F5F511607018F00A291AE /* nge_debug_log.c in Sources */,
+				FD2F5F531607018F00A291AE /* nge_font_freetype.c in Sources */,
+				FD2F5F541607018F00A291AE /* nge_font_hzk.c in Sources */,
+				FD2F5F551607018F00A291AE /* nge_font_nfont.c in Sources */,
+				FD2F5F561607018F00A291AE /* nge_font.c in Sources */,
+				FD2F5F571607018F00A291AE /* nge_gif_animation.c in Sources */,
+				FD2F5F581607018F00A291AE /* nge_gif_show.c in Sources */,
+				FD2F5F591607018F00A291AE /* nge_graphics.c in Sources */,
+				FD2F5F5A1607018F00A291AE /* nge_image_effect.c in Sources */,
+				FD2F5F5B1607018F00A291AE /* nge_image_ext.c in Sources */,
+				FD2F5F5C1607018F00A291AE /* nge_image.c in Sources */,
+				FD2F5F5D1607018F00A291AE /* nge_input.c in Sources */,
+				FD2F5F5E1607018F00A291AE /* nge_io_dir.c in Sources */,
+				FD2F5F5F1607018F00A291AE /* nge_io_file.c in Sources */,
+				FD2F5F601607018F00A291AE /* nge_jpg.c in Sources */,
+				FD2F5F611607018F00A291AE /* nge_main.c in Sources */,
+				FD2F5F621607018F00A291AE /* nge_misc.c in Sources */,
+				FD2F5F631607018F00A291AE /* nge_package_zip.c in Sources */,
+				FD2F5F641607018F00A291AE /* nge_package.c in Sources */,
+				FD2F5F651607018F00A291AE /* nge_png.c in Sources */,
+				FD2F5F661607018F00A291AE /* nge_rbtree.c in Sources */,
+				FD2F5F671607018F00A291AE /* nge_ref_handle.c in Sources */,
+				FD2F5F681607018F00A291AE /* nge_rle.c in Sources */,
+				FD2F5F691607018F00A291AE /* nge_sys_compatible.c in Sources */,
+				FD2F5F6A1607018F00A291AE /* nge_tex_cache.c in Sources */,
+				FD2F5F6B1607018F00A291AE /* nge_tga.c in Sources */,
+				FD2F5F6C1607018F00A291AE /* nge_timer.c in Sources */,
+				FD2F5F6D1607018F00A291AE /* nge.c in Sources */,
+				FD2F5FC116070F5D00A291AE /* CppSQLite3.cpp in Sources */,
+				FD2F5FC216070F5D00A291AE /* dictionary.c in Sources */,
+				FD2F5FC316070F5D00A291AE /* iniparser.c in Sources */,
+				FD2F5FC416070F5D00A291AE /* package.cpp in Sources */,
+				FD2F5FC516070F5D00A291AE /* hgecolor.cpp in Sources */,
+				FD2F5FC616070F5D00A291AE /* hgeparticle.cpp in Sources */,
+				FD2F5FC716070F5D00A291AE /* hgepmanager.cpp in Sources */,
+				FD2F5FC816070F5D00A291AE /* hgerect.cpp in Sources */,
+				FD2F5FC916070F5D00A291AE /* hgevector.cpp in Sources */,
+				FD176D2B1607198000BFCA52 /* libcoolaudio.c in Sources */,
+				FD176D2D1607198000BFCA52 /* libLSAudio.m in Sources */,
+				FD176D2F1607198000BFCA52 /* LSAudioDeleCall.m in Sources */,
+				FD176D4716071A6200BFCA52 /* ioapi.c in Sources */,
+				FD176D4916071A6200BFCA52 /* unzip.c in Sources */,
+				FD176D4B16071A6200BFCA52 /* zip.c in Sources */,
+				FD176D5016071ACB00BFCA52 /* sqlite3.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FD2F5EB91606FD2800A291AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		FD2F5EBA1606FD2800A291AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FD2F5EBC1606FD2800A291AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				DSTROOT = /tmp/Libnge2.dst;
+				EXECUTABLE_PREFIX = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FT_CONFIG_OPTION_NO_ASSEMBLER,
+					USE_LIBUNGIF_STATIC,
+					NGE_IPHONE,
+				);
+				HEADER_SEARCH_PATHS = ./iOSDepends/include/;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "../include/ ../include/helper/ ../include/hge/";
+				VERSION_INFO_BUILDER = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FD2F5EBD1606FD2800A291AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					armv6,
+					armv7,
+				);
+				DSTROOT = /tmp/Libnge2.dst;
+				EXECUTABLE_PREFIX = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					FT_CONFIG_OPTION_NO_ASSEMBLER,
+					USE_LIBUNGIF_STATIC,
+					NGE_IPHONE,
+				);
+				HEADER_SEARCH_PATHS = ./iOSDepends/include/;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "../include/ ../include/helper/ ../include/hge/";
+				VERSION_INFO_BUILDER = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FD2F5EA81606FD2800A291AE /* Build configuration list for PBXProject "Libnge2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD2F5EB91606FD2800A291AE /* Debug */,
+				FD2F5EBA1606FD2800A291AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD2F5EBB1606FD2800A291AE /* Build configuration list for PBXNativeTarget "Libnge2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD2F5EBC1606FD2800A291AE /* Debug */,
+				FD2F5EBD1606FD2800A291AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FD2F5EA51606FD2800A291AE /* Project object */;
+}

@@ -1080,11 +1080,9 @@ BOOL BeginTarget(image_p _img){
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, width, _img->data, 0, 0, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset));
-
 	sceGuStart(GU_DIRECT,list);
 	
-	sceGuDrawBufferList(GU_PSM_8888,(void*)offset,BUF_WIDTH);
+	sceGuDrawBufferList(_img->mode,(void*)offset,BUF_WIDTH);
 	sceGuOffset(2048 - (width/2), 2048 - (height/2));
 	sceGuViewport(2048, 2048, width, height);
 	// Scissoring
