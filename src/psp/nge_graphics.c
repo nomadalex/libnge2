@@ -921,11 +921,9 @@ void DrawImage(image_p tex,float sx , float sy, float sw, float sh, float dx, fl
 
 void DrawImageMask(image_p tex,float sx , float sy, float sw, float sh, float dx, float dy, float dw, float dh,int mask)
 {
-	uint8_t *data;
 	float start, end;
 	float cur_u,cur_x,x_end,slice,ustep;
 	struct VertexUV *vertices;
-	float poly_width,source_width;
 	float u1 ,v1;
 
 	if (tex==0 || tex->w==0 || tex->h==0) return;
@@ -1006,7 +1004,7 @@ void ImageToScreen(image_p tex,float dx,float dy)
 image_p ScreenToImage()
 {
 	void* temp;
-	int width,format,dtype;
+	int width,format;
 	image_p pimage = NULL;
 	int i,x,y;
 	uint8_t r,g,b;
@@ -1110,6 +1108,8 @@ void EndTarget(){
 	width = target_image->texw;
 	height = target_image->texh;
 	
+	ResetStencil();
+	
 	sceGuCopyImage(GU_PSM_8888, 0, 0, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, width, target_image->data);
 	sceGuDisable(GU_STENCIL_TEST);
 	sceGuDisable(GU_ALPHA_TEST);
@@ -1121,21 +1121,33 @@ void EndTarget(){
 	target_image = NULL;
 }
 
-void DrawStencil(image_p _img, int x, int y){
+void DrawStencil(image_p _img, float x, float y){
 	if(!_img)
 		return;
 	sceGuEnable(GU_ALPHA_TEST);
-	sceGuAlphaFunc(GU_NOTEQUAL,0);
-	sceGuStencilFunc(GU_ALWAYS, 1, 0xff);
+	sceGuAlphaFunc(GU_GREATER, 0, 0xff);
+	sceGuStencilFunc(GU_ALWAYS, 254, 0xff);
 	sceGuStencilOp(GU_KEEP, GU_REPLACE, GU_REPLACE);
 	ImageToScreen(_img, x, y);
-	sceGuStencilFunc(GU_EQUAL, 1, 0xff);
+	sceGuStencilFunc(GU_EQUAL, 254, 0xff);
 	sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);
-	sceGuDisable(GU_ALPHA_TEST);
+	if(target_image == NULL)
+		sceGuDisable(GU_ALPHA_TEST);
 }
 
 void ResetStencil() {
-	sceGuClear(GU_DEPTH_BUFFER_BIT|GU_STENCIL_BUFFER_BIT);
-	sceGuStencilFunc(GU_ALWAYS, 0, 0);
-	sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);
+	if(target_image != NULL) {
+		sceGuStencilFunc(GU_EQUAL, 254, 0xff);
+		sceGuStencilOp(GU_KEEP, GU_INCR, GU_INCR);
+		sceGuDisable(GU_ALPHA_TEST);
+		
+		DrawRect(0, 0, target_image->texw, target_image->texh, MAKE_RGBA_8888(0, 0, 0, 0), DISPLAY_PIXEL_FORMAT_8888);
+		
+		sceGuEnable(GU_ALPHA_TEST);
+	}
+	else {
+		sceGuStencilFunc(GU_ALWAYS, 0, 0);
+		sceGuStencilOp(GU_KEEP, GU_KEEP, GU_KEEP);
+		sceGuClear(GU_DEPTH_BUFFER_BIT|GU_STENCIL_BUFFER_BIT);
+	}
 }
