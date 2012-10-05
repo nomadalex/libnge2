@@ -44,7 +44,7 @@
 #endif
 #endif
 
-#if _MSC_VER < 1600
+#if defined(_MSC_VER) && _MSC_VER < 1600
 /* for vs before vs2010 */
 #include "msvc/stdint.h"
 #else
