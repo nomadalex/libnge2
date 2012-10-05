@@ -466,7 +466,7 @@ extern "C"{
  *@param[in] y 左上角纵坐标
  *@return
  */
-	NGE_API void DrawStencil(image_p _img, int x, int y);
+	NGE_API void DrawStencil(image_p _img, float x, float y);
 	
 /**
  * 清除已有蒙版

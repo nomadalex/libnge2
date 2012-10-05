@@ -1244,7 +1244,7 @@ void EndTarget(){
 #endif
 }
 
-void DrawStencil(image_p _img, int x, int y){
+void DrawStencil(image_p _img, float x, float y){
 #if defined NGE_WIN || defined NGE_LINUX	
 	if(!_img)
 		return;
