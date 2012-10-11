@@ -123,7 +123,7 @@ extern "C"{
  *@return 无
  *@warning 如果所要使用的图片需要多次进行绘制，请务必将dontswizzle属性设置为1
  */
-	NGE_API BOOL BeginTarget(image_p _img);
+	NGE_API BOOL BeginTarget(image_p _img,uint8_t clear);
 /**
  * 绘制到图片结束函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
  *@return 无
