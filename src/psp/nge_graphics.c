@@ -1078,7 +1078,7 @@ BOOL BeginTarget(image_p _img){
 
 	if(_img->swizzle)
 		unswizzle_swap(_img);
-	
+	_img->dontswizzle = 1;
 	sceGuStart(GU_DIRECT,list);
 	
 	sceGuDrawBufferList(_img->mode,(void*)offset,BUF_WIDTH);
