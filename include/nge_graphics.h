@@ -81,18 +81,6 @@ typedef struct{
 	float y;
 } pointf;
 
-typedef struct
-{
-	float u, v;
-	unsigned int color;
-	float x,y,z;
-} vertexf;
-
-typedef struct{
-	vertexf v[4];
-	image_p tex;
-} quadf;
-
 typedef struct{
 	float top;
 	float left;
