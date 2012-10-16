@@ -17,11 +17,18 @@
 #define HGEDISP_TOPLEFT		1
 #define HGEDISP_CENTER		2
 
+struct hgeVertex
+{
+	float		x, y;
+	float		z;
+	uint32_t	col;
+	float		tx, ty;
+};
+
 struct hgeQuad
 {
 	hgeVertex		v[4];
 	image_p			tex;
-	int				blend;
 };
 
 /*
@@ -41,16 +48,12 @@ public:
 
      void		SetTexture(image_p tex);
      void		SetTextureRect(float x, float y, float w, float h);
-     void		SetBlendMode(int blend);
-     void		SetZ(int col, int row, float z);
      void		SetColor(int col, int row, uint32_t color);
      void		SetDisplacement(int col, int row, float dx, float dy, int ref);
 
-     HTEXTURE	GetTexture() const {return quad.tex;}
+     image_p	GetTexture() const {return quad.tex;}
      void		GetTextureRect(float *x, float *y, float *w, float *h) const { *x=tx; *y=ty; *w=width; *h=height; }
-     int		GetBlendMode() const { return quad.blend; }
-     float		GetZ(int col, int row) const;
-     uint32_t		GetColor(int col, int row) const;
+     uint32_t	GetColor(int col, int row) const;
      void		GetDisplacement(int col, int row, float *dx, float *dy, int ref) const;
 
 	 int		GetRows() { return nRows; }
@@ -65,6 +68,10 @@ private:
 	float		tx,ty,width,height;
 	hgeQuad		quad;
 };
+
+#ifdef NGE_PSP
+#else
+#endif
 
 
 #endif

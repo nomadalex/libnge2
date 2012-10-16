@@ -1229,3 +1229,8 @@ void EndTarget(){
 #endif
 }
 
+void RealRenderQuad(quadf quad) {
+	int i;
+	for(i = 0; i < 4; i++) {
+		
+}

@@ -17,7 +17,6 @@ hgeDistortionMesh::hgeDistortionMesh(int cols, int rows)
 	nCols=cols;
 	cellw=cellh=0;
 	quad.tex=0;
-	quad.blend=BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_ZWRITE;
 	disp_array=new hgeVertex[rows*cols];
 
 	for(i=0;i<rows*cols;i++)
@@ -53,7 +52,6 @@ hgeDistortionMesh::hgeDistortionMesh(const hgeDistortionMesh &dm)
 hgeDistortionMesh::~hgeDistortionMesh()
 {
 	delete[] disp_array;
-	hge->Release();
 }
 
 hgeDistortionMesh& hgeDistortionMesh::operator= (const hgeDistortionMesh &dm)
@@ -79,7 +77,7 @@ hgeDistortionMesh& hgeDistortionMesh::operator= (const hgeDistortionMesh &dm)
 	
 }
 
-void hgeDistortionMesh::SetTexture(HTEXTURE tex)
+void hgeDistortionMesh::SetTexture(image_p tex)
 {
 	quad.tex=tex;
 }
@@ -93,8 +91,8 @@ void hgeDistortionMesh::SetTextureRect(float x, float y, float w, float h)
 
 	if (quad.tex)
 	{
-		tw=(float)hge->Texture_GetWidth(quad.tex);
-		th=(float)hge->Texture_GetHeight(quad.tex);
+		tw=(float)(quad.tex)->w;
+		th=(float)(quad.tex)->h;
 	}
 	else
 	{
@@ -114,11 +112,6 @@ void hgeDistortionMesh::SetTextureRect(float x, float y, float w, float h)
 			disp_array[j*nCols+i].x=i*cellw;
 			disp_array[j*nCols+i].y=j*cellh;
 		}
-}
-
-void hgeDistortionMesh::SetBlendMode(int blend)
-{
-	quad.blend=blend;
 }
 
 void hgeDistortionMesh::Clear(DWORD col, float z)
@@ -148,37 +141,32 @@ void hgeDistortionMesh::Render(float x, float y)
 			quad.v[0].ty=disp_array[idx].ty;
 			quad.v[0].x=x+disp_array[idx].x;
 			quad.v[0].y=y+disp_array[idx].y;
-			quad.v[0].z=disp_array[idx].z;
+			quad.v[0].z=0;
 			quad.v[0].col=disp_array[idx].col;
 
 			quad.v[1].tx=disp_array[idx+1].tx;
 			quad.v[1].ty=disp_array[idx+1].ty;
 			quad.v[1].x=x+disp_array[idx+1].x;
 			quad.v[1].y=y+disp_array[idx+1].y;
-			quad.v[1].z=disp_array[idx+1].z;
+			quad.v[1].z=0;
 			quad.v[1].col=disp_array[idx+1].col;
 
 			quad.v[2].tx=disp_array[idx+nCols+1].tx;
 			quad.v[2].ty=disp_array[idx+nCols+1].ty;
 			quad.v[2].x=x+disp_array[idx+nCols+1].x;
 			quad.v[2].y=y+disp_array[idx+nCols+1].y;
-			quad.v[2].z=disp_array[idx+nCols+1].z;
+			quad.v[2].z=0;
 			quad.v[2].col=disp_array[idx+nCols+1].col;
 
 			quad.v[3].tx=disp_array[idx+nCols].tx;
 			quad.v[3].ty=disp_array[idx+nCols].ty;
 			quad.v[3].x=x+disp_array[idx+nCols].x;
 			quad.v[3].y=y+disp_array[idx+nCols].y;
-			quad.v[3].z=disp_array[idx+nCols].z;
+			quad.v[3].z=0;
 			quad.v[3].col=disp_array[idx+nCols].col;
 
 			hge->Gfx_RenderQuad(&quad);
 		}
-}
-
-void hgeDistortionMesh::SetZ(int col, int row, float z)
-{
-	if(row<nRows && col<nCols) disp_array[row*nCols+col].z=z;
 }
 
 void hgeDistortionMesh::SetColor(int col, int row, DWORD color)
@@ -202,13 +190,7 @@ void hgeDistortionMesh::SetDisplacement(int col, int row, float dx, float dy, in
 	}
 }
 
-float hgeDistortionMesh::GetZ(int col, int row) const
-{
-	if(row<nRows && col<nCols) return disp_array[row*nCols+col].z;
-	else return 0.0f;
-}
-
-DWORD hgeDistortionMesh::GetColor(int col, int row) const
+uint32_t hgeDistortionMesh::GetColor(int col, int row) const
 {
 	if(row<nRows && col<nCols) return disp_array[row*nCols+col].col;
 	else return 0;
