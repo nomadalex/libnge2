@@ -471,6 +471,11 @@ extern "C"{
  */
 	NGE_API void ResetGraphicsCache();
 
+/**
+ *  Internal Use Only
+ */
+	NGE_API void RealRenderQuad(quadf quad);
+
 #ifdef __cplusplus
 }
 #endif

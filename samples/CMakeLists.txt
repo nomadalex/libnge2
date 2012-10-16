@@ -104,7 +104,7 @@ endfunction()
 
 if(NOT ANDROID)
   #demo 3 need pmp mod library.
-  foreach(i 0 1 2 4 6 7 8)
+  foreach(i 0 1 2 4 6 7 8 15)
 	add_subdirectory(demo${i})
   endforeach()
 endif()

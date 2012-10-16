@@ -12,24 +12,11 @@
 
 
 #include "nge_common.h"
+#include "nge_graphics.h"
 
 #define HGEDISP_NODE		0
 #define HGEDISP_TOPLEFT		1
 #define HGEDISP_CENTER		2
-
-struct hgeVertex
-{
-	float		x, y;
-	float		z;
-	uint32_t	col;
-	float		tx, ty;
-};
-
-struct hgeQuad
-{
-	hgeVertex		v[4];
-	image_p			tex;
-};
 
 /*
 ** HGE Distortion mesh class
@@ -44,7 +31,7 @@ public:
 	 hgeDistortionMesh&	operator= (const hgeDistortionMesh &dm);
 
      void		Render(float x, float y);
-     void		Clear(uint32_t col=0xFFFFFFFF, float z=0.5f);
+     void		Clear(uint32_t col=0xFFFFFFFF, float z=0.0f);
 
      void		SetTexture(image_p tex);
      void		SetTextureRect(float x, float y, float w, float h);
@@ -62,16 +49,10 @@ public:
 private:
 	hgeDistortionMesh();
 
-	hgeVertex	*disp_array;
+	vertexf	*disp_array;
 	int			nRows, nCols;
 	float		cellw,cellh;
 	float		tx,ty,width,height;
-	hgeQuad		quad;
+	quadf		quad;
 };
-
-#ifdef NGE_PSP
-#else
-#endif
-
-
 #endif

@@ -85,7 +85,6 @@ void DrawScene()
 	BeginScene(1);
 		//RenderQuad(img,0,0,0,0,0,0,1,1,0,0x7fffffff);
 		//RenderQuad(img,0,0,0,0,0,0,1,1,120,0x7fffffff);
-	ImageToScreen(p_p070,0,0);
 	EndScene();
 }
 
@@ -121,15 +120,6 @@ p_p070->dontswizzle = 1;
 	{
 		ShowFps();
 		InputProc();
-	BeginTarget(p_p070);
-	DrawStencil(p_logo, 20, 20);
-		ImageToScreen(p_bg,0,0);
-		ResetStencil();
-		ImageToScreen(p_bg,300,0);
-		
-	DrawStencil(p_logo, 70, 80);
-		ImageToScreen(p_bg,0,0);
-		EndTarget();
 		DrawScene();
 	}
 	image_free(p_bg);

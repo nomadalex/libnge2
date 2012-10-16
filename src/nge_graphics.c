@@ -833,7 +833,6 @@ static inline void TexImage2D(image_p pimg)
 	glTexImage2D(GL_TEXTURE_2D, 0, format, pimg->texw, pimg->texh, 0, format, pimg->dtype, pimg->data);
 }
 
-
 #define BIND_AND_TEST_CACHE(tex)						\
 	do {												\
 		tex_ret = tex_cache_getid(tex->texid,&cacheid);	\
@@ -928,6 +927,39 @@ static inline void TexImage2D(image_p pimg)
 	VECT_2D_SET( gl_vectices[1], dx, dy+dh );		\
 	VECT_2D_SET( gl_vectices[2], dx+dw, dy+dh );	\
 	VECT_2D_SET( gl_vectices[3], dx+dw, dy )
+
+#define TRANSLATE_QUAD()								\
+	TEX_C_T_SET( gl_tex_uvs[0], quad.v[0].u, quad.v[0].v );	\
+	TEX_C_T_SET( gl_tex_uvs[1], quad.v[1].u, quad.v[1].v );	\
+	TEX_C_T_SET( gl_tex_uvs[2], quad.v[2].u, quad.v[2].v );	\
+	TEX_C_T_SET( gl_tex_uvs[3], quad.v[3].u, quad.v[3].v );	\
+	VECT_2D_SET( gl_vectices[0], quad.v[0].x, quad.v[0].y );\
+	VECT_2D_SET( gl_vectices[1], quad.v[1].x, quad.v[1].y );\
+	VECT_2D_SET( gl_vectices[2], quad.v[2].x, quad.v[2].y );\
+	VECT_2D_SET( gl_vectices[3], quad.v[3].x, quad.v[3].y );\
+	GetRGBA(quad.v[0].color,tex->dtype,&r,&g,&b,&a);		\
+	COLOR_T_SET( gl_colors[0], r, g, b, a );			\
+	GetRGBA(quad.v[1].color,tex->dtype,&r,&g,&b,&a);		\
+	COLOR_T_SET( gl_colors[1], r, g, b, a );			\
+	GetRGBA(quad.v[2].color,tex->dtype,&r,&g,&b,&a);		\
+	COLOR_T_SET( gl_colors[2], r, g, b, a );			\
+	GetRGBA(quad.v[3].color,tex->dtype,&r,&g,&b,&a);		\
+	COLOR_T_SET( gl_colors[3], r, g, b, a )			
+
+#define BEFORE_DRAW_QUAD()								\
+	image_p tex = quad.tex;								\
+	BEFORE_DRAW_IMAGE();								\
+	GL_ARRAY_CHECK_C(4)
+
+#define AFTER_DRAW_QUAD()								\
+	SET_COLOR(0xFFFFFFFF,tex->dtype);					\
+	GL_ARRAY_EN(COLOR);									\
+	GL_ARRAY_EN(TEXTURE_COORD);							\
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);				\
+	GL_ARRAY_DIS(TEXTURE_COORD);						\
+	GL_ARRAY_DIS(COLOR);								\
+	glPopMatrix();										\
+	AFTER_DRAW()
 
 void ImageToScreen(image_p tex,float dx,float dy)
 {
@@ -1230,7 +1262,7 @@ void EndTarget(){
 }
 
 void RealRenderQuad(quadf quad) {
-	int i;
-	for(i = 0; i < 4; i++) {
-		
+	BEFORE_DRAW_QUAD();
+	TRANSLATE_QUAD();
+	AFTER_DRAW_QUAD();
 }
