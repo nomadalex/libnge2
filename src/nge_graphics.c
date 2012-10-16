@@ -1215,17 +1215,14 @@ void ScreenShot(const char* filename)
 	image_free(pimage);
 }
 
-static image_p target_image = NULL;
-
 BOOL BeginTarget(image_p _img,uint8_t clear){
     static int cacheid = 0;
 	static int ret = 0;
 	if(!_img)
 		return FALSE;
-	target_image = _img;
 	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
-	glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+	glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
@@ -1254,18 +1251,12 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 void EndTarget(){
 #if defined NGE_WIN || defined NGE_LINUX
 	glPopAttrib();
-	glReadPixels(0, 0, target_image->texw, target_image->texh,
-		target_image->dtype == DISPLAY_PIXEL_FORMAT_565?GL_RGB:GL_RGBA,
-		target_image->dtype, target_image->data);
-	target_image->modified = 1;
-	target_image = NULL;
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_SCISSOR_TEST);
-	glBlendEquation(GL_FUNC_ADD);
 #elif defined NGE_IPHONE
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glMatrixMode(GL_PROJECTION);
@@ -1274,5 +1265,6 @@ void EndTarget(){
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_SCISSOR_TEST);
 #endif
+	glBlendEquation(GL_FUNC_ADD);
 }
 

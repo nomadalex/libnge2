@@ -109,7 +109,7 @@ extern "C" {
  *创建一个image结构,显示模式是displaymode
  *@param[in] w image的宽
  *@param[in] h image的高
- *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] displaymode 显示模式,(DISPLAY_PIXEL_FORMAT_XXX的一种)，可以与DISPLAY_RENDER_TARGET进行位与运算。这样生成的图将不分配data空间，只用于BeginTarget/EndTarget
  *@return image_p,返回image指针
  */
 	NGE_API image_p image_create(int w,int h,int displaymode);
@@ -119,7 +119,7 @@ extern "C" {
  *@param[in] w image的宽
  *@param[in] h image的高
  *@param[in] color 颜色,为保证兼容性请用MAKE_RGBA_XXXX生成这个颜色
- *@param[in] displaymode 显示模式,与颜色一致,(DISPLAY_PIXEL_FORMAT_XXX的一种)
+ *@param[in] displaymode 显示模式,与颜色一致,(DISPLAY_PIXEL_FORMAT_XXX的一种)，可以与DISPLAY_RENDER_TARGET进行位与运算。这样生成的图将不分配data空间，只用于BeginTarget/EndTarget
  *@return image_p,返回image指针
  */
 	NGE_API image_p image_create_ex(int w,int h,int color,int displaymode);

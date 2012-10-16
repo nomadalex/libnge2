@@ -120,7 +120,9 @@ extern "C"{
 /**
  * 绘制到图片开始函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
  *@param[in] _img 所要绘制到的图片
+ *@param[in] clear 清屏标志，默认为1清屏
  *@return 无
+ *@remark 请使用创建时带有DISPLAY_RENDER_TARGET属性的图片进行绘制
  */
 	NGE_API BOOL BeginTarget(image_p _img,uint8_t clear);
 /**

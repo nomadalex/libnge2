@@ -452,14 +452,16 @@ image_p image_create(int w,int h,int displaymode)
 	pimage->h = h;
 	pimage->texw = roundpower2(w);
 	pimage->texh = roundpower2(h);
-	pimage->bpb  = (displaymode==DISPLAY_PIXEL_FORMAT_8888)?4:2;
-	pimage->dtype = displaymode;
+	pimage->bpb  = ((displaymode&(~DISPLAY_RENDER_TARGET))==DISPLAY_PIXEL_FORMAT_8888)?4:2;
+	pimage->dtype = displaymode&(~DISPLAY_RENDER_TARGET);
 	pimage->rcentrex = pimage->w*1.0f/2;
 	pimage->rcentrey = pimage->h*1.0f/2;
-	pimage->mode = GET_PSM_COLOR_MODE(displaymode);
-	pimage->mask = CreateColor(255,255,255,255,displaymode);
+	pimage->mode = GET_PSM_COLOR_MODE(pimage->dtype);
+	pimage->mask = CreateColor(255,255,255,255,pimage->dtype);
 	pimage->texid = image_tid++;
 	size = pimage->texw*pimage->texh*pimage->bpb;
+	if(displaymode&DISPLAY_RENDER_TARGET)
+		return pimage;
 	pimage->data = (uint8_t*)malloc(size);
 	memset(pimage->data,0,size);
 	return pimage;
@@ -476,14 +478,16 @@ image_p image_create_ex(int w,int h,int color,int displaymode)
 	pimage->h = h;
 	pimage->texw = roundpower2(w);
 	pimage->texh = roundpower2(h);
-	pimage->bpb  = (displaymode==DISPLAY_PIXEL_FORMAT_8888)?4:2;
-	pimage->dtype = displaymode;
+	pimage->bpb  = ((displaymode&(~DISPLAY_RENDER_TARGET))==DISPLAY_PIXEL_FORMAT_8888)?4:2;
+	pimage->dtype = displaymode&(~DISPLAY_RENDER_TARGET);
 	pimage->rcentrex = pimage->w*1.0f/2;
 	pimage->rcentrey = pimage->h*1.0f/2;
-	pimage->mode = GET_PSM_COLOR_MODE(displaymode);
-	pimage->mask = CreateColor(255,255,255,255,displaymode);
+	pimage->mode = GET_PSM_COLOR_MODE(pimage->dtype);
+	pimage->mask = CreateColor(255,255,255,255,pimage->dtype);
 	pimage->texid = image_tid++;
 	size = pimage->texw*pimage->texh*pimage->bpb;
+	if(displaymode&DISPLAY_RENDER_TARGET)
+		return pimage;
 	pimage->data = (uint8_t*)malloc(size);
 	memset(pimage->data,0,size);
 	size = pimage->texw*pimage->texh;
