@@ -1114,3 +1114,24 @@ void EndTarget(){
 	target_image->modified = 1;
 	target_image = NULL;
 }
+
+void RealRenderQuad(quadf quad) {
+	image_p tex = quad.tex;
+	struct VertexUV* vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct Vertex));
+	memcpy(vertices, quad.v, sizeof(vertexf) * 4);
+	if(tex->swizzle == 0 && tex->dontswizzle ==0){
+		swizzle_swap(tex);
+	}
+	sceGuTexMode(tex->mode, 0, 0, tex->swizzle);
+
+	if((tex->modified==1)||tex->texid != m_tex_in_ram){
+		m_tex_in_ram = tex->texid;
+		tex->modified = 0;
+		sceGuTexImage(0, tex->texw,tex->texh,tex->texw, tex->data);
+		sceKernelDcacheWritebackAll();
+		//nge_print("hit \n");
+	}
+	sceGuEnable(GU_TEXTURE_2D);
+	
+	sceGuDrawArray(GU_TRIANGLE_FAN,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_2D,2,0,vertices);
+}

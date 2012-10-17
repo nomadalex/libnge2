@@ -80,10 +80,11 @@ typedef struct{
 	float x;
 	float y;
 } pointf;
+
 typedef struct
 {
 	float u, v;
-	unsigned int color;
+	uint32_t color;
 	float x,y,z;
 }vertexf;
 
