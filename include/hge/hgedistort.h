@@ -21,7 +21,7 @@
 /*
 ** HGE Distortion mesh class
 */
-class hgeDistortionMesh
+class NGE_CLASS hgeDistortionMesh
 {
 public:
      hgeDistortionMesh(int cols, int rows);
