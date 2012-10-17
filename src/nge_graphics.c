@@ -1254,6 +1254,8 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 		return FALSE;
 	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
+	//GL_MAX is not define in OPENGLES
+    glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
@@ -1296,6 +1298,7 @@ void EndTarget(){
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_SCISSOR_TEST);
 #endif
+    glBlendEquation(GL_FUNC_ADD);
 }
 
 void RealRenderQuad(quadf quad) {

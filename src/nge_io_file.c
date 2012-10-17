@@ -20,6 +20,8 @@ static ngeVFBlock *currentBlock = &firstBlock;
 static int nextHandle = 0;
 
 int ngeVFAdd(ngeVF* f) {
+	int idx;
+
 	ngeVFBlock *b = currentBlock;
 	while (1) { /* find last */
 		if (b->next == NULL)
@@ -31,7 +33,10 @@ int ngeVFAdd(ngeVF* f) {
 	if (b->len == 0) { /* empty, so reset start */
 		b->start = nextHandle;
 	}
-	else if (b->len == 10) { /* full */
+
+	idx = nextHandle - b->start;
+
+	if (idx > 9) { /* full */
 		ngeVFBlock* next = (ngeVFBlock*)malloc(sizeof(ngeVFBlock));
 		memset(next, 0, sizeof(ngeVFBlock));
 		next->start = nextHandle;
@@ -40,9 +45,10 @@ int ngeVFAdd(ngeVF* f) {
 		next->prev = b;
 		b->next = next;
 		b = next;
+		idx = 0;
 	}
 
-	b->f[b->len] = f;
+	b->f[idx] = f;
 	b->len++;
 
 	currentBlock = b;

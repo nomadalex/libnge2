@@ -1068,7 +1068,7 @@ void ScreenShot(const char* filename)
 
 static image_p target_image = NULL;
 
-BOOL BeginTarget(image_p _img){
+BOOL BeginTarget(image_p _img,uint8_t clear){
 	unsigned int offset = getStaticVramOffset();
 	int width, height;
 	if(!_img)
@@ -1093,6 +1093,13 @@ BOOL BeginTarget(image_p _img){
 	
 	sceGuAlphaFunc(GU_GREATER, 0, 0xff);
 	sceGuEnable(GU_ALPHA_TEST);
+	
+	if(clear){
+		sceGuDisable(GU_SCISSOR_TEST);
+		sceGuClearColor(screen_color);
+		sceGuClear(GU_COLOR_BUFFER_BIT);
+		sceGuEnable(GU_SCISSOR_TEST);
+	}
 	
 	return TRUE;
 }
