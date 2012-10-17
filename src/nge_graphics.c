@@ -35,6 +35,12 @@
 #ifdef NGE_IPHONE
 #include <OpenGLES/ES1/gl.h>
 #include <OpenGLES/ES1/glext.h>
+#include <OpenGLES/ES2/glext.h>
+#include <OpenGLES/ES2/glext.h>
+
+//this 2 functions implement in ***ViewController.m
+extern void NGE_SetFramebuffer();
+extern void NGE_PresentFramebuffer();
 #else
 #include <GLES/gl.h>
 #endif
@@ -345,6 +351,10 @@ void nge_graphics_reset(void)
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		}
+        #if defined NGE_IPHONE
+            glGenFramebuffers(1, &fbo);
+        #endif
+
 	}
 	else{
 		tex_cache_fini();
@@ -359,7 +369,7 @@ void nge_graphics_reset(void)
 		}
 		nge_print("cleared.\n");
 	}
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
@@ -529,6 +539,10 @@ void FiniGraphics()
 	XDestroyWindow(g_dpy, g_win);
 	XCloseDisplay(g_dpy);
 #endif
+    
+#if defined NGE_IPHONE
+    glDeleteFramebuffers(1, &fbo);
+#endif
 }
 
 void ShowFps()
@@ -566,7 +580,10 @@ void LimitFps(uint32_t limit)
 	glTranslatef(-(xcent),-(ycent),0)
 void BeginScene(uint8_t clear)
 {
-	if(clear == 1){
+#if defined NGE_IPHONE
+    NGE_SetFramebuffer();
+#endif
+    if(clear == 1){
 		glDisable(GL_SCISSOR_TEST);
 		glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
 		glClear( GL_COLOR_BUFFER_BIT);
@@ -577,7 +594,9 @@ void BeginScene(uint8_t clear)
 
 void EndScene()
 {
-#if defined NGE_LINUX
+#if defined NGE_IPHONE
+    NGE_PresentFramebuffer();
+#elif defined NGE_LINUX
 	glXSwapBuffers(g_dpy, g_win);
 #elif defined NGE_WIN
 	SwapBuffers( hDC );
@@ -1228,24 +1247,35 @@ void ScreenShot(const char* filename)
 	image_free(pimage);
 }
 
-BOOL BeginTarget(image_p _img){
-#if defined NGE_WIN || defined NGE_LINUX	
-	static int cacheid = 0;
+BOOL BeginTarget(image_p _img,uint8_t clear){
+    static int cacheid = 0;
 	static int ret = 0;
 	if(!_img)
 		return FALSE;
 	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+#if defined NGE_WIN || defined NGE_LINUX	
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,_img->w,0,_img->h, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushAttrib(GL_VIEWPORT_BIT);
-
+	glViewport(0,0,_img->w, _img->h);
+#elif defined NGE_IPHONE
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, cacheid, 0);
+    glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,_img->w,0,_img->h, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
 	glViewport(0,0,_img->w, _img->h);
 #endif
+    if(clear){
+        glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
+        glClear( GL_COLOR_BUFFER_BIT);
+    }
 	return TRUE;
 }
 
@@ -1253,6 +1283,13 @@ void EndTarget(){
 #if defined NGE_WIN || defined NGE_LINUX
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_SCISSOR_TEST);
+#elif defined NGE_IPHONE
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
