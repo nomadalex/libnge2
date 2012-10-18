@@ -8,6 +8,7 @@
 
 #include "hgedistort.h"
 #include "nge_graphics.h"
+#include <string.h>
 
 hgeDistortionMesh::hgeDistortionMesh(int cols, int rows)
 {

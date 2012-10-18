@@ -10,6 +10,7 @@
 #include "nge_timer.h"
 #include "nge_misc.h"
 #include <math.h>
+#include <string.h>
 static unsigned int __attribute__((aligned(16))) list[262144];
 
 #define BUF_WIDTH (512)
@@ -1125,8 +1126,8 @@ void EndTarget(){
 
 void RealRenderQuad(quadf quad) {
 	image_p tex = quad.tex;
-	struct VertexUV* vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct Vertex));
-	memcpy(vertices, quad.v, sizeof(vertexf) * 4);
+	struct VertexUV* vertices = (struct VertexUV*)sceGuGetMemory(4 * sizeof(struct VertexUV));
+	memcpy(vertices, quad.v, sizeof(struct VertexUV) * 4);
 	if(tex->swizzle == 0 && tex->dontswizzle ==0){
 		swizzle_swap(tex);
 	}
@@ -1141,5 +1142,5 @@ void RealRenderQuad(quadf quad) {
 	}
 	sceGuEnable(GU_TEXTURE_2D);
 	
-	sceGuDrawArray(GU_TRIANGLE_FAN,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_2D,2,0,vertices);
+	sceGumDrawArray(GU_TRIANGLE_FAN,GU_TEXTURE_32BITF|(tex->dtype)|GU_VERTEX_32BITF|GU_TRANSFORM_3D,4,0,vertices);
 }
