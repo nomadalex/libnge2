@@ -1269,3 +1269,15 @@ void EndTarget(){
     glBlendEquation(GL_FUNC_ADD);
 }
 
+image_p TargetToImage(int x,int y,int width,int height)
+{
+	image_p image = NULL;
+	if(width < 0 && height < 0 && x < 0 && y < 0)
+		return NULL;
+	image = image_create(width,height,DISPLAY_PIXEL_FORMAT_8888);
+	if(image){
+		glReadPixels(x, y, image->texw, image->texh,GL_RGBA,image->dtype, image->data);
+		image->modified = 1;
+	}
+	return image;
+}

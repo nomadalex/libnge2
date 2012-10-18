@@ -457,6 +457,15 @@ extern "C"{
  *  清空显示缓存空间。
  */
 	NGE_API void ResetGraphicsCache();
+/**
+ *在BeginTarget和EndTarget之间使用,取得当前target中的像素,截取到一个新创建image中
+ *@param[in] x 横坐标
+ *@param[in] y 纵坐标
+ *@param[in] w 宽
+ *@param[in] h 高
+ *@return image_p，返回一个创建的image_p,注意需要释放这个image_p
+ */
+	NGE_API image_p TargetToImage(int x,int y,int width,int height); 
 
 #ifdef __cplusplus
 }
