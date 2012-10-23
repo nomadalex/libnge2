@@ -467,6 +467,55 @@ extern "C"{
  */
 	NGE_API image_p TargetToImage(int x,int y,int width,int height); 
 
+/*高级用户使用的模式,批处理模式:
+  在BeginScene(Target)/EndScene(Target)之间使用
+  流程大致是:
+  PushMatrix();//保存环境
+  Identity();  //初始化重置
+  Translate/Rotate/Scale
+  DrawImageBatch(Image1,NULL);
+  Identity();  //初始化重置
+  Translate/Rotate/Scale
+  DrawImageBatch(Image2,NULL);
+  PopMatrix();//恢复环境
+*/
+/**
+ * 平移变换
+ *@param[in] x 横坐标
+ *@param[in] y 纵坐标
+ */
+NGE_API void Translate(float x,float y);
+/**
+ * 缩放变换
+ *@param[in] x 缩放比率
+ *@param[in] y 缩放比率
+ */
+NGE_API void Scale(float x,float y);
+/**
+ * 旋转变换
+ *@param[in] angel 旋转角度
+ */
+NGE_API void Rotate(float angle);
+/**
+ * 矩阵重置
+ */
+NGE_API void Identity();
+/**
+ * 保存矩阵
+ */
+NGE_API void PushMatrix();
+/**
+ * 弹出矩阵
+ */
+NGE_API void PopMatrix();
+/**
+ * 批处理画图
+ *@param[in] image image_p图片指针
+ *@param[in] uv_rect uv的坐标rectf(left,top)，(right,bottom),填写NULL说明使用整个图片
+ */
+NGE_API void DrawImageBatch(image_p image,rectf* uv_rect);
+
+
 #ifdef __cplusplus
 }
 #endif
