@@ -989,7 +989,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale/2, dy+tex->rcentrey*yscale/2);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
@@ -1027,7 +1027,7 @@ static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale/2, dy+tex->rcentrey*yscale/2);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
