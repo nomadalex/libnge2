@@ -11,6 +11,7 @@
 #include "audio_android.h"
 
 #include "android_mediaplayer.h"
+#include "android_wav.h"
 
 #include <unistd.h>
 #include <stdio.h>
@@ -22,11 +23,13 @@ static JNIEnv* env;
 
 void CoolAudioDefaultInit()
 {
+	load_wav();
 	load_CA();
 }
 
 void CoolAudioDefaultFini()
 {
+	release_wav();
 	release_CA();
 }
 
@@ -49,7 +52,8 @@ jobject createFD(JNIEnv* env, int fd)
 
 audio_play_p CreateWavPlayer()
 {
-	return (audio_play_p) android_mediaplayer_create();
+	LOGI("Create wav player\n");
+	return (audio_play_p) android_wav_create();
 }
 
 audio_play_p CreateMp3Player()
