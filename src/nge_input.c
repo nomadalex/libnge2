@@ -29,6 +29,8 @@ extern Display *g_dpy;
 extern Window   g_win;
 #endif
 
+static screen_context_p screen = NULL;
+
 #ifdef NGE_INPUT_BUTTON_SUPPORT
 static void btn_down_default(int keycode) { }
 static void btn_up_default(int keycode) { }
@@ -38,7 +40,6 @@ static ButtonProc btn_up   = btn_up_default;
 
 static touch_mode = 0;
 static istouched  = 0;
-static screen_context_p screen = NULL;
 
 void EmulateTouchMove(int flag)
 {
