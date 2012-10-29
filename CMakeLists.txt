@@ -128,6 +128,11 @@ else()
 	)
 endif()
 
+if(ANDROID)
+  include_directories(and_jni_base)
+  add_library(and_jni_base and_jni_base/nge_android_jni.c)
+endif()
+
 # depends
 include_directories(coolaudio)
 add_subdirectory(coolaudio)
@@ -138,6 +143,10 @@ else()
 endif()
 if(COOLAUDIO_LIBS)
   list(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
+endif()
+
+if(ANDROID)
+  LIST(APPEND NGE2_LIBS and_jni_base)
 endif()
 
 if(COMPILER_GCC)
