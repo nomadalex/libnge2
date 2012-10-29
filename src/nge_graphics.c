@@ -989,7 +989,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+tex->rcentrex*xscale/2, dy+tex->rcentrey*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale, dy+tex->rcentrey*yscale);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
@@ -1027,7 +1027,7 @@ static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+tex->rcentrex*xscale/2, dy+tex->rcentrey*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale, dy+tex->rcentrey*yscale);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
@@ -1234,7 +1234,7 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
 	//GL_MAX is not define in OPENGLES
-    glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
+    //glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
@@ -1277,7 +1277,7 @@ void EndTarget(){
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_SCISSOR_TEST);
 #endif
-    glBlendEquation(GL_FUNC_ADD);
+    //glBlendEquation(GL_FUNC_ADD);
 }
 
 image_p TargetToImage(int x,int y,int width,int height)
