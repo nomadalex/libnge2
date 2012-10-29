@@ -113,7 +113,7 @@ typedef struct {
 
 	void* obj;
 	wav_info_t info;
-	int times;
+	int maxFrames;
 	BOOLEAN isEof;
 } android_wav;
 
@@ -171,7 +171,6 @@ audio_play_p android_wav_create()
 #undef SET_METHOD
 
 	a->obj = NULL;
-	a->times = 0;
 	a->isEof = FALSE;
 
 	return (audio_play_p)a;
@@ -189,30 +188,6 @@ static inline void exactStop(void* obj)
 	}
 }
 
-static void on_complete(void* pCookie)
-{
-	/* int state; */
-	android_wav* This = (android_wav*)pCookie;
-
-	LOGI("Notify\n");
-
-	if (This->times == 1)
-	{
-		This->isEof = TRUE;
-		LOGI("wav playing complete\n");
-		return;
-	}
-
-	/* times == 0 is infinite loop */
-	if (This->times != 0)
-	{
-		This->times--;
-	}
-
-	_METHOD(rewind)(This);
-	ngeRA_play(This->obj);
-}
-
 MAKE_METHOD(int, load, (THIS_DEF, const char* filename)) {
 	int fd = io_fopen(filename, IO_RDONLY);
 	int ret = _METHOD(load_fp)(This, fd, TRUE);
@@ -223,12 +198,9 @@ MAKE_METHOD(int, load, (THIS_DEF, const char* filename)) {
 MAKE_METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
 	wav_info_t* info = &This->info;
 	int channel, format, pos = 0;
-	int maxFrames;
 
 	if (parse_wav_hdr(buf, size, &pos, info) < 0)
 		goto error;
-
-	maxFrames = info->size/(info->bps/8)/info->channels;
 
 	if (info->bps == 8)
 		format = NGE_RA_FORMAT_PCM_8;
@@ -254,12 +226,10 @@ MAKE_METHOD(int, load_buf, (THIS_DEF, const char* buf, int size)) {
 
 	LOGI("rate %d, channel %d, format %d, size %d\n",
 		 info->rate, channel, format, info->size);
-	ngeRA_setListener(This->obj, on_complete, (void*)This);
 
-	LOGI("Set Marker %d\n", maxFrames);
-	ngeRA_setMarker(This->obj, maxFrames-1);
+	This->maxFrames = info->size/(info->bps/8)/info->channels;
 
-	LOGI("Write buf %p size %d\n", buf+pos, info->size);
+	LOGI("Write buf %p size %d MaxFrames %d\n", buf+pos, info->size, This->maxFrames);
 	ngeRA_write(This->obj, buf+pos, 0, info->size);
 
 	return 0;
@@ -284,13 +254,21 @@ MAKE_METHOD(int, load_fp, (THIS_DEF, int fd, char closed_by_me)) {
 }
 
 MAKE_METHOD(int, play, (THIS_DEF, int times, int free_when_stop)) {
-	This->times = times;
+	int state;
+
+	state = ngeRA_getPlayState(This->obj);
+	if (state == NGE_RA_STATE_PLAYING) {
+		exactStop(This->obj);
+		ngeRA_reloadStaticData(This->obj);
+	}
+
+	/* 0 is loop forever */
+	ngeRA_setLoopPoints(This->obj, 0, This->maxFrames, times-1);
+	ngeRA_play(This->obj);
+	LOGI("wav playing play %d times, state %d\n", times, state);
 
 	This->isEof = FALSE;
 
-	ngeRA_play(This->obj);
-
-	LOGI("wav playing play %d times\n", times);
 	return 0;
 }
 
@@ -323,6 +301,7 @@ MAKE_METHOD(int, volume, (THIS_DEF, int volume)) {
 MAKE_METHOD(void, rewind, (THIS_DEF)) {
 	exactStop(This->obj);
 	ngeRA_reloadStaticData(This->obj);
+	ngeRA_play(This->obj);
 }
 
 MAKE_METHOD(void, seek, (THIS_DEF, int ms, int flag)) {
@@ -359,6 +338,16 @@ play:
 }
 
 MAKE_METHOD(int, iseof, (THIS_DEF)) {
+	int pos;
+
+	if (This->isEof) return This->isEof;
+
+	pos = ngeRA_getPosition(This->obj);
+	if (pos >= This->maxFrames)
+	{
+		This->isEof = TRUE;
+	}
+	LOGI("Position %d\n", pos);
 	return This->isEof;
 }
 
