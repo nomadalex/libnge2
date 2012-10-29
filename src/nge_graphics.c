@@ -326,8 +326,8 @@ void ResetGraphicsCache(void)
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
 		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 }
 
@@ -345,8 +345,8 @@ void nge_graphics_reset(void)
 		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 				tex_cache_add(i,m_texcache[i]);
 				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
         #if defined NGE_IPHONE
             glGenFramebuffers(1, &fbo);
@@ -361,8 +361,8 @@ void nge_graphics_reset(void)
 		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 				tex_cache_add(i,m_texcache[i]);
 				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
 		nge_print("cleared.\n");
 	}
@@ -1231,10 +1231,9 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	static int ret = 0;
 	if(!_img)
 		return FALSE;
-	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
 	//GL_MAX is not define in OPENGLES
-    //glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
+    glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
@@ -1268,16 +1267,14 @@ void EndTarget(){
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_SCISSOR_TEST);
 #elif defined NGE_IPHONE
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_SCISSOR_TEST);
 #endif
-    //glBlendEquation(GL_FUNC_ADD);
+    glBlendEquation(GL_FUNC_ADD);
 }
 
 image_p TargetToImage(int x,int y,int width,int height)
