@@ -159,7 +159,7 @@ static void effect_destroy_fadein(image_effect_p effector)
 	image_effect_fade_p pfadein = (image_effect_fade_p)effector;
 	if(pfadein){
 		if(pfadein->m_ptimer)
-			timer_free(pfadein->m_ptimer);
+			nge_timer_free(pfadein->m_ptimer);
 	}
 	SAFE_FREE(pfadein);
 }
@@ -195,7 +195,7 @@ image_effect_p effect_create_fadein(int src_alpha,int des_alpha,int timeticks)
 	pfadein->m_status = EFFECT_INIT;
 	pfadein->m_type = IMAGE_EFFECT_FADEIN;
 	pfadein->m_effect_fps = DEFAULT_FPS;
-	pfadein->m_ptimer = timer_create();
+	pfadein->m_ptimer = nge_timer_create();
 
 	//计算一些参数
 	pfadein->m_mins = (float)((pfadein->m_des_alpha - pfadein->m_src_alpha)*1000.0/(pfadein->m_timeticks*pfadein->m_effect_fps));
@@ -312,7 +312,7 @@ static void effect_destroy_fadeout(image_effect_p effector)
 	image_effect_fade_p pfadeout = (image_effect_fade_p)effector;
 	if(pfadeout){
 		if(pfadeout->m_ptimer)
-			timer_free(pfadeout->m_ptimer);
+			nge_timer_free(pfadeout->m_ptimer);
 	}
 	SAFE_FREE(pfadeout);
 }
@@ -348,7 +348,7 @@ image_effect_p effect_create_fadeout(int src_alpha,int des_alpha,int timeticks)
 	pfadeout->m_status = EFFECT_INIT;
 	pfadeout->m_type = IMAGE_EFFECT_FADEOUT;
 	pfadeout->m_effect_fps = DEFAULT_FPS;
-	pfadeout->m_ptimer = timer_create();
+	pfadeout->m_ptimer = nge_timer_create();
 
 	//计算一些参数
 	pfadeout->m_mins = (float)((pfadeout->m_src_alpha - pfadeout->m_des_alpha)*1000.0/(pfadeout->m_timeticks*pfadeout->m_effect_fps));
@@ -495,7 +495,7 @@ static void effect_destroy_shake(image_effect_p effector)
 	image_effect_shake_p pshake = (image_effect_shake_p)effector;
 	if(pshake){
 		if(pshake->m_ptimer)
-			timer_free(pshake->m_ptimer);
+			nge_timer_free(pshake->m_ptimer);
 	}
 	SAFE_FREE(pshake);
 }
@@ -526,7 +526,7 @@ image_effect_p effect_create_shake(float shake_x,float shake_y,int timeticks)
 	pshake->m_status = EFFECT_INIT;
 	pshake->m_type = IMAGE_EFFECT_SHAKE;
 	pshake->m_effect_fps = DEFAULT_FPS;
-	pshake->m_ptimer = timer_create();
+	pshake->m_ptimer = nge_timer_create();
 	//计算一些参数
 	return (image_effect_p)pshake;
 }
@@ -1200,7 +1200,7 @@ static void effect_destroy_blur(image_effect_p effector)
 	image_effect_blur_p pfblur = (image_effect_blur_p)effector;
 	if(pfblur){
 		if(pfblur->m_ptimer)
-			timer_free(pfblur->m_ptimer);
+			nge_timer_free(pfblur->m_ptimer);
 		if(pfblur->m_image)
 			image_free(pfblur->m_image);
 	}
@@ -1237,7 +1237,7 @@ image_effect_p effect_create_blur(int src_blur,int des_blur,int timeticks,int op
 	pfblur->m_status = EFFECT_INIT;
 	pfblur->m_type = IMAGE_EFFECT_BLUR;
 	pfblur->m_effect_fps = DEFAULT_FPS;
-	pfblur->m_ptimer = timer_create();
+	pfblur->m_ptimer = nge_timer_create();
 	pfblur->m_lasts = -1;
 	//计算一些参数
 	return (image_effect_p)pfblur;
@@ -1285,7 +1285,7 @@ static void effect_draw_transitions(image_effect_p effector,image_p pimg,float d
 	{
 	case EFFECT_INIT:
 		//printf("init begin\n");
-		pftran->m_ptimer = timer_create();
+		pftran->m_ptimer = nge_timer_create();
 		pftran->m_ptimer->start(pftran->m_ptimer);
 		pftran->m_status = EFFECT_PLAY;
 		//printf("init ok\n");
@@ -1392,7 +1392,7 @@ static void effect_destroy_transitions(image_effect_p effector)
 	image_effect_transitions_p pftran = (image_effect_transitions_p)effector;
 	if(pftran){
 		if(pftran->m_ptimer)
-			timer_free(pftran->m_ptimer);
+			nge_timer_free(pftran->m_ptimer);
 		if(pftran->m_effect_img)
 			image_free(pftran->m_effect_img);
 	}

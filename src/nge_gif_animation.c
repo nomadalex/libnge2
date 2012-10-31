@@ -87,7 +87,7 @@ gif_desc_p gif_animation_load(const char* filename,int displaymode,int swizzle)
 		 return NULL;
 
 	 memset(pgif,0,sizeof(gif_desc_t));
-	 pgif->gif_inner_timer = timer_create();
+	 pgif->gif_inner_timer = nge_timer_create();
 	 pgif->gif_delay = 10;
 	 pgif->gif_dispose = 0;
 	 pgif->gif_transparent = GIF_NOT_TRANSPARENT;
@@ -295,6 +295,7 @@ void gif_animation_free(gif_desc_p pgif)
 		pnext = pchain->next;
 		SAFE_FREE(pchain);
 	}
+	nge_timer_free(pgif->gif_inner_timer);
 	SAFE_FREE(pgif);
 }
 
