@@ -65,6 +65,20 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetPackname(JNIEnv* env,
 	main_argv[0] = jstringTostring(env, packname);
 }
 
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetWorkPath(JNIEnv* env,
+	        jobject thiz,jstring packname){
+			screen = GetScreenContext();
+			char* name = jstringTostring(env, packname);
+			chdir(name);
+			nge_print("nge2 set workpath:%s.\n",name);
+			memset(screen->pathname,0,256);
+			strncpy(screen->pathname,name,256);
+			if(name)
+				free(name);
+			
+}
+
+
 inline static void setOP_PathToJava(JNIEnv* env, jobject thiz) {
 	if (NGE_OP_Path) {
 		jclass cls = env->GetObjectClass(thiz);
@@ -94,7 +108,7 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
 {
-	chdir("/sdcard/libnge2");	
+	//chdir("/sdcard/libnge2");	
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }

@@ -25,7 +25,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <android/log.h>
-
+#include "libnge2.h"
+#include "jni_android.h"
 #define FALSE 0
 #define TRUE 1
 
@@ -48,11 +49,13 @@ static inline void LOGE(const char* fmt, ...) {
 static JavaVM* javaVM = NULL;
 static JNIEnv* env = NULL;
 
-jint JNI_OnLoad(JavaVM* vm, void* reserved)
+static screen_context_p screen = NULL;
+//mov to jni_android.h
+/*jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
 	javaVM = vm;
 	return JNI_VERSION_1_2;
-}
+}*/
 
 inline static JNIEnv* GetEnv()
 {
@@ -86,6 +89,7 @@ MAKE_CA_METHOD(ispaused);
  */
 inline void load_ca_methods()
 {
+	javaVM = GetJaveVM();	
 	GetEnv();
 
 	cLibCoolAudio = (*env)->FindClass(env, "org/libnge/nge2/LibCoolAudio");
@@ -121,6 +125,7 @@ inline void load_ca_methods()
 void CoolAudioDefaultInit()
 {
 	load_ca_methods();
+	screen = GetScreenContext();
 }
 
 void CoolAudioDefaultFini()
@@ -172,11 +177,11 @@ typedef struct audio_media_player
 MAKE_METHOD(int, load, (audio_media_player_t* p, const char* filename))
 {
 	jstring fn;
-
+	char fullname[256]={0};
 	DEBUGME();
 	GetEnv();
-
-	fn = (*env)->NewStringUTF(env, filename);
+	sprintf(fullname,"%s/%s",screen->pathname,filename);
+	fn = (*env)->NewStringUTF(env, fullname);
 	(*env)->CallVoidMethod(env, p->obj, CA_METHOD(load), fn);
 	(*env)->DeleteLocalRef(env, fn);
 	return 0;
@@ -312,7 +317,7 @@ MAKE_METHOD(int, destroy, (audio_media_player_t* p))
 {
 	DEBUGME();
 	GetEnv();
-
+	(*env)->CallBooleanMethod(env, p->obj, CA_METHOD(stop));
 	(*env)->DeleteGlobalRef(env, p->obj);
 	if (p->fd)
 		close(p->fd);

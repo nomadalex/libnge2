@@ -11,7 +11,8 @@ endif()
 
 if(ANDROID)
   list(APPEND COOLAUDIO_SRCS
-	audio_android.c)
+	audio_android.c
+	jni_android.c)
 elseif(PSP)
   list(APPEND COOLAUDIO_SRCS
 	audio_codec.cpp

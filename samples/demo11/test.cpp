@@ -109,7 +109,7 @@ int init() {
 	mParticleSys = new hgeParticleSystem(RES_PATH("par/particle1.psi"), mParticle);
 	mParticleSys->MoveTo(480.0f/2, 272.0f/2,0);
 	mParticleSys->Fire();
-	timer = timer_create();
+	timer = nge_timer_create();
 	timer->start(timer);
 
 	return 0;
@@ -140,7 +140,7 @@ int fini() {
 	delete mParticleSys;
 	mParticleSys = NULL;
 	NGE_Quit();
-
+	nge_timer_free(timer);
 	return 0;
 }
 

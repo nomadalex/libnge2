@@ -110,7 +110,7 @@ if(NOT ANDROID)
 endif()
 
 foreach(i 10 11 12 13 14)
-  add_subdirectory(demo${i})
+ add_subdirectory(demo${i})
 endforeach()
 
 if(NOT ANDROID)

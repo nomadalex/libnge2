@@ -43,6 +43,9 @@ extern void NGE_SetFramebuffer();
 extern void NGE_PresentFramebuffer();
 #else
 #include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 #endif
 
 #define glOrtho glOrthof
@@ -348,7 +351,7 @@ void nge_graphics_reset(void)
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
-        #if defined NGE_IPHONE
+        #if defined NGE_IPHONE || defined NGE_ANDROID
             glGenFramebuffers(1, &fbo);
         #endif
 
@@ -1243,7 +1246,7 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	glMatrixMode(GL_MODELVIEW);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0,0,_img->w, _img->h);
-#elif defined NGE_IPHONE
+#elif defined NGE_IPHONE || defined NGE_ANDROID
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, cacheid, 0);
     glMatrixMode(GL_PROJECTION);
@@ -1267,7 +1270,7 @@ void EndTarget(){
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-#elif defined NGE_IPHONE
+#elif defined NGE_IPHONE || defined NGE_ANDROID
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

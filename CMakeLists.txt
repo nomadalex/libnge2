@@ -107,6 +107,13 @@ if(NOT ANDROID)
 	src/nge_gif_animation.c
 	src/nge_gif_show.c
 	)
+else()
+#android 
+#need jni_android.c
+list(APPEND NGE2_SRCS
+#if no need toolskit # the line below
+	src/android/nge_utilskit.c
+	)	
 endif()
 
 if(PSP)
@@ -151,7 +158,7 @@ endif()
 if(WIN32)
   list(APPEND NGE2_LIBS ${SDLMAIN_LIBRARY})
 elseif(ANDROID)
-  list(APPEND NGE2_LIBS log GLESv1_CM)
+  list(APPEND NGE2_LIBS log GLESv1_CM GLESv2)
 else()
   list(APPEND NGE2_LIBS g)
   if(NOT PSP)

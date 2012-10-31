@@ -74,6 +74,7 @@ typedef struct {
 	int ori_height;
 	float rate_w;
 	float rate_h;
+	char  pathname[256];
 }screen_context_t, *screen_context_p;
 
 typedef struct{
