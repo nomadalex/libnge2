@@ -66,8 +66,8 @@ if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 # Search for C header files in these directories.
-include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(include src)
 
 # common src files
 list(APPEND NGE2_SRCS
@@ -108,12 +108,12 @@ if(NOT ANDROID)
 	src/nge_gif_show.c
 	)
 else()
-#android 
+#android
 #need jni_android.c
 list(APPEND NGE2_SRCS
 #if no need toolskit # the line below
 	src/android/nge_utilskit.c
-	)	
+	)
 endif()
 
 if(PSP)
