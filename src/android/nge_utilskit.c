@@ -26,7 +26,8 @@
 #include <android/log.h>
 #include "libnge2.h"
 #include "nge_utilskit.h"
-#include "jni_android.h"
+#include "nge_android_jni.h"
+
 #define  LOG_TAG    "nge_utilskit"
 static inline void LOGI(const char* fmt, ...) {
 	va_list args;
@@ -43,18 +44,13 @@ static inline void LOGE(const char* fmt, ...) {
 
 #define WARN_UN_IMP() LOGI("%s not implementation!\n", __FUNCTION__)
 
-static JavaVM* javaVM = NULL;
 static JNIEnv* env = NULL;
+#define GetEnv() env = nge_GetEnv()
+
 static jobject obj = NULL;
 static screen_context_p screen = NULL;
 static PayFeedBackCall pPayFeedBackCall = NULL;
 static void* pUserData = NULL;
-
-inline static JNIEnv* GetEnv()
-{
-	if (javaVM) (*javaVM)->GetEnv(javaVM, (void**)&env, JNI_VERSION_1_2);
-	return env;
-}
 
 static jclass cLibUtilsKit = NULL;
 
@@ -81,8 +77,8 @@ MAKE_CA_METHOD(MoreGame);
  */
 inline static void load_methods()
 {
-	javaVM  = GetJaveVM();
 	GetEnv();
+
 	cLibUtilsKit = (*env)->FindClass(env, "org/libnge/nge2/UtilsKit");
 	if (!cLibUtilsKit)
 	{
@@ -116,7 +112,7 @@ int CreateAdHandle(const char* adKey,const char* adType)
 	GetEnv();
 	jadKey  = (*env)->NewStringUTF(env, adKey);
 	jadType = (*env)->NewStringUTF(env, adType);
-	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(CreateAdHandle), jadKey,jadType);	
+	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(CreateAdHandle), jadKey,jadType);
 	(*env)->DeleteLocalRef(env, jadKey);
 	(*env)->DeleteLocalRef(env, jadType);
 	return handle;
@@ -150,8 +146,8 @@ int CreatePayHandle(const char* payType,const char* partner,const char* seller,c
 	jseller   = (*env)->NewStringUTF(env, seller);
 	jprivateRSA  = (*env)->NewStringUTF(env, privateRSA);
 	jpublicRSA   = (*env)->NewStringUTF(env, publicRSA);
-	
-	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(CreatePayHandle), jpayType,jpartner,jseller,jprivateRSA,jpublicRSA);	
+
+	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(CreatePayHandle), jpayType,jpartner,jseller,jprivateRSA,jpublicRSA);
 	(*env)->DeleteLocalRef(env, jpayType);
 	(*env)->DeleteLocalRef(env, jpartner);
 	(*env)->DeleteLocalRef(env, jseller);
@@ -168,8 +164,8 @@ int Pay(int payHandle,const char* title,const char* body,const char* total,PayFe
 	jtitle  = (*env)->NewStringUTF(env, title);
 	jbody   = (*env)->NewStringUTF(env, body);
 	jtotal  = (*env)->NewStringUTF(env, total);
-	
-	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(Pay),payHandle, jtitle,jbody,jtotal);	
+
+	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(Pay),payHandle, jtitle,jbody,jtotal);
 	(*env)->DeleteLocalRef(env, jtitle);
 	(*env)->DeleteLocalRef(env, jbody);
 	(*env)->DeleteLocalRef(env, jtotal);
@@ -187,7 +183,7 @@ int Share(int shareHandle,const char* str,const char* imgName)
 	jstr  = (*env)->NewStringUTF(env, str);
 	jimgName   = (*env)->NewStringUTF(env, imgName);
 
-	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(Share),shareHandle, jstr,jimgName);	
+	handle = (*env)->CallIntMethod(env, obj, CA_METHOD(Share),shareHandle, jstr,jimgName);
 	(*env)->DeleteLocalRef(env, jstr);
 	(*env)->DeleteLocalRef(env, jimgName);
 	return handle;
@@ -207,7 +203,7 @@ void Java_org_libnge_nge2_UtilsKit_nativePayFeedBack(JNIEnv* env,jobject thiz,ji
 void MoreGame(int type)
 {
 	GetEnv();
-	(*env)->CallVoidMethod(env, obj, CA_METHOD(MoreGame),type);	
+	(*env)->CallVoidMethod(env, obj, CA_METHOD(MoreGame),type);
 }
 
 void UtilsKitDefaultInit()
