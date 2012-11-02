@@ -75,7 +75,7 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetWorkPath(JNIEnv* env,
 			strncpy(screen->pathname,name,256);
 			if(name)
 				free(name);
-			
+
 }
 
 
@@ -108,7 +108,7 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
 {
-	//chdir("/sdcard/libnge2");	
+	//chdir("/sdcard/libnge2");
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }

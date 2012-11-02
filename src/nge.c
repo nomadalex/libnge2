@@ -60,7 +60,7 @@ void NGE_SetOriginalResolution(int width,int height)
 	screen->ori_height = height;
 	screen->rate_w = 1.0f * width/screen->width;
 	screen->rate_h = 1.0f * height/screen->height;
-	set_ori_default = 1; 
+	set_ori_default = 1;
 }
 
 char *NGE_OP_Path = NULL;
