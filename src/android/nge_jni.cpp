@@ -132,21 +132,24 @@ JNIAPI void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
 												  jobject thiz )
 {
-	sPaused = 1;	
-	s_app->pause();
+	sPaused = 1;
+	if (s_app->pause != NULL)
+		s_app->pause();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeStop(JNIEnv* env,
 												  jobject thiz )
 {
-	s_app->stop();
+	if (s_app->stop != NULL)
+		s_app->stop();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
 												   jobject thiz )
 {
-	sPaused = 0;	
-	s_app->resume();
+	sPaused = 0;
+	if (s_app->resume != NULL)
+		s_app->resume();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,

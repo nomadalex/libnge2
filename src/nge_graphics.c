@@ -321,7 +321,7 @@ makeWindow(const char *name, int x, int y, int width, int height)
 
 void ResetGraphicsCache(void)
 {
-	int i;	
+	int i;
 	tex_cache_fini();
 	tex_cache_init(MAX_TEX_CACHE_SIZE);
 	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
@@ -503,7 +503,7 @@ void InitGraphics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 
-	
+
 	nge_graphics_reset();
 
 	nge_log("Init Graphics Ok\n");
@@ -539,7 +539,7 @@ void FiniGraphics()
 	XDestroyWindow(g_dpy, g_win);
 	XCloseDisplay(g_dpy);
 #endif
-    
+
 #if defined NGE_IPHONE
     glDeleteFramebuffers(1, &fbo);
 #endif
@@ -1235,9 +1235,12 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	if(!_img)
 		return FALSE;
 	BIND_AND_TEST_CACHE(_img);
-	//GL_MAX is not define in OPENGLES
+	/* GL_MAX is not define in OPENGLES */
+#if defined NGE_ANDROID && !defined GL_ES_VERSION_2_0
+#else
     glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
-#if defined NGE_WIN || defined NGE_LINUX	
+#endif
+#if defined NGE_WIN || defined NGE_LINUX
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
 	glMatrixMode(GL_PROJECTION);
@@ -1277,7 +1280,10 @@ void EndTarget(){
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 #endif
+#if defined NGE_ANDROID && !defined GL_ES_VERSION_2_0
+#else
     glBlendEquation(GL_FUNC_ADD);
+#endif
 }
 
 image_p TargetToImage(int x,int y,int width,int height)

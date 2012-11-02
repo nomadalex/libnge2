@@ -23,6 +23,16 @@
 
 static nge_app_t *s_app = 0;
 
+void nge_init_app(nge_app_t *app) {
+	app->init = NULL;
+	app->mainloop = NULL;
+	app->fini = NULL;
+	app->pause = NULL;
+	app->resume = NULL;
+	app->start = NULL;
+	app->stop = NULL;
+}
+
 void nge_register_app(nge_app_t *app) {
 	s_app = app;
 }
