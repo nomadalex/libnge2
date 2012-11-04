@@ -47,8 +47,18 @@ function(add_nge_executable nm)
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
 
-	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
-	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
+	execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+	  "${CMAKE_SOURCE_DIR}/Android/assets"
+	  "${nm}/assets"
+	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+
+	execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+	  "${CMAKE_SOURCE_DIR}/Android/res"
+	  "${nm}/res"
+	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
+	  "${nm}/res/values/strings.xml" @ONLY)
+	set(project_name "${nm}")
 
 	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
 	  "${nm}/default.properties" COPYONLY)
@@ -56,12 +66,11 @@ function(add_nge_executable nm)
 	configure_file("${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
 	  "${nm}/AndroidManifest.xml" @ONLY)
 	set(app_name "${nm}")
-	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
-	  "${nm}/res/values/strings.xml" @ONLY)
-	set(project_name "${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
 	  "${nm}/project_create.sh" @ONLY)
 
+	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
+	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
 
 	add_custom_command(
 	  TARGET ${nm}
@@ -69,7 +78,6 @@ function(add_nge_executable nm)
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
 	  "${CMAKE_CURRENT_BINARY_DIR}/${nm}/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
-	  COMMAND "./project_create.sh"
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${nm}"
 	  )
   endif()
@@ -89,7 +97,7 @@ function(copy_res_files target)
   set(files)
 
   if(ANDROID)
-	set(prefix res/)
+	set(prefix Resources/)
   else()
 	set(prefix "")
   endif()

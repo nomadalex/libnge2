@@ -102,17 +102,17 @@ list(APPEND NGE2_SRCS
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS} ${UNZIP_LIBRARIES})
 
+if (ANDROID)
+list(APPEND NGE2_SRCS
+#if no need toolskit # the line below
+	src/android/nge_utilskit.c
+	)
+endif()
+
 if(NOT ANDROID)
   list(APPEND NGE2_SRCS
 	src/nge_gif_animation.c
 	src/nge_gif_show.c
-	)
-else()
-#android
-#need jni_android.c
-list(APPEND NGE2_SRCS
-#if no need toolskit # the line below
-	src/android/nge_utilskit.c
 	)
 endif()
 
@@ -182,12 +182,20 @@ endif()
 
 if(ANDROID)
   include(CopyFile)
-  function(copy_nge_android_java_files target dir)
-	set(fromfile "${CMAKE_SOURCE_DIR}/src/android/NGE2.java")
-	set(tofile "${dir}/src/org/libnge/nge2/NGE2.java")
-	copy_file("NGE2.java for ${nm}" ${fromfile} ${tofile})
-	add_custom_target(${target}_nge_java DEPENDS "NGE2.java for ${nm}")
-	add_dependencies(${target} ${target}_nge_java)
+  function(copy_nge_android_java_files app_name dir)
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/NGE2.java"
+	  "${dir}/src/org/libnge/nge2/NGE2.java" COPYONLY)
+
+	set(nge_app_name ${app_name})
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/UnZipFile.java.in"
+	  "${dir}/src/org/libnge/nge2/UnZipFile.java"  @ONLY)
+	set(nge_app_name)
+
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/UtilsKit.java"
+	  "${dir}/src/org/libnge/nge2/UtilsKit.java" COPYONLY)
   endfunction()
   set(NGE_ANDROID_JNI_FILE ${CMAKE_SOURCE_DIR}/src/android/nge_jni.cpp)
 endif()

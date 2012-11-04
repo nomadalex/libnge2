@@ -60,18 +60,12 @@ endif()
 if(ANDROID)
   include(CopyFile)
   set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
-  function(copy_coolaudio_android_files target android_dir)
-	copy_file("LibCoolAudio.java for ${target}"
+  function(copy_coolaudio_android_files app_name android_dir)
+	configure_file(
 	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
-	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java")
-	copy_file("RawAudio.java for ${target}"
+	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java" COPYONLY)
+	configure_file(
 	  "${COOLAUDIO_DIR}/RawAudio.java"
-	  "${android_dir}/src/org/libnge/nge2/RawAudio.java")
-	add_custom_target(${target}_android_coolaudio
-	  DEPENDS
-	  "LibCoolAudio.java for ${target}"
-	  "RawAudio.java for ${target}")
-	add_dependencies(${target}_android_coolaudio coolaudio)
-	add_dependencies(${target} ${target}_android_coolaudio)
+	  "${android_dir}/src/org/libnge/nge2/RawAudio.java" COPYONLY)
   endfunction()
 endif()
