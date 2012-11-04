@@ -52,20 +52,21 @@ function(add_nge_executable nm)
 	  "${nm}/assets"
 	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
+	set(app_name "${nm}")
+	set(project_name "${nm}")
+	set(package_name "org.libnge.nge2.${nm}")
+
 	execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
 	  "${CMAKE_SOURCE_DIR}/Android/res"
 	  "${nm}/res"
 	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
 	  "${nm}/res/values/strings.xml" @ONLY)
-	set(project_name "${nm}")
 
 	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
 	  "${nm}/default.properties" COPYONLY)
-	set(package_name "org.libnge.nge2.${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
 	  "${nm}/AndroidManifest.xml" @ONLY)
-	set(app_name "${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
 	  "${nm}/project_create.sh" @ONLY)
 
