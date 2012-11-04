@@ -109,7 +109,7 @@ public class NGE2 extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		mPathName = Environment.getExternalStorageDirectory() + File.separator + "sinoiplay/" + getPackageName() + File.separator;
+		mPathName = Environment.getExternalStorageDirectory() + File.separator + getPackageName() + File.separator;
 		super.onCreate(savedInstanceState);
 		UtilsKit.app = this;
 		//UtilsKit.registeredDevices();

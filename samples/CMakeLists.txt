@@ -47,10 +47,10 @@ function(add_nge_executable nm)
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
 
-	execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
-	  "${CMAKE_SOURCE_DIR}/Android/assets"
-	  "${nm}/assets"
-	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+	# execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+	#   "${CMAKE_SOURCE_DIR}/Android/assets"
+	#   "${nm}/assets"
+	#   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
 	set(app_name "${nm}")
 	set(project_name "${nm}")
