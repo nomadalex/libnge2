@@ -33,4 +33,16 @@
 
 #endif
 
+#if defined NGE_PSP
+#define NGE_PLATFORM_CONSOLE
+#endif
+
+#if defined NGE_IPHONE || defined NGE_ANDROID
+#define NGE_PLATFORM_MOBILE
+#endif
+
+#if defined NGE_WIN || defined NGE_LINUX || defined NGE_MAC
+#define NGE_PLATFORM_DESKTOP
+#endif
+
 #endif /* _NGE_PLATFORM_H */
