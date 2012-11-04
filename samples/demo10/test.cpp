@@ -1,11 +1,17 @@
 #include "libnge2.h"
 #include "nge_app.hpp"
 #include <stdio.h>
-// #define DEBUG_HERE() nge_print("%s %s %d\n",__FUNCTION__,  __FILE__, __LINE__)
+
 /**
- * nge_test:最简单的nge程序:显示一张图片
+ * 测试图片显示
  * 同时作为C++ Style App的例子
  */
+
+#ifdef ANDROID
+#define RES_PATH(path) ("/sdcard/libnge2/demo10/" path)
+#else
+#define RES_PATH(path) (path)
+#endif
 
 //退出标识
 int game_quit = 0;
@@ -60,12 +66,6 @@ void DrawScene()
 	DrawImageMask(p_logo,0,0,0,0,480-128/*dx*/,0/*dy*/,128/*dw*/,128/*dh*/,logomask2);
 	EndScene();
 }
-
-#ifdef ANDROID
-#define RES_PATH(path) ("/sdcard/libnge2/demo10/" path)
-#else
-#define RES_PATH(path) (path)
-#endif
 
 int init() {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL

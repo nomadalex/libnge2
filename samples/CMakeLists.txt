@@ -110,19 +110,7 @@ function(copy_res_files target)
   add_dependencies(${target} ${target}_res)
 endfunction()
 
-if(NOT ANDROID)
-  #demo 3 need pmp mod library.
-  foreach(i 0 1 2 4 6 7 8)
-	add_subdirectory(demo${i})
-  endforeach()
-endif()
-
-foreach(i 10 11 12 13 14)
+# demo6 is gif demo
+foreach(i 10 11 12 13 14 15 16)
  add_subdirectory(demo${i})
 endforeach()
-
-if(NOT ANDROID)
-  if(UNZIP_FOUND)
-	add_subdirectory(demo9)
-  endif()
-endif()

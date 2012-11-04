@@ -3,9 +3,17 @@ aux_source_directory(. ${D_NAME}_SRCS)
 add_nge_executable(${D_NAME} ${${D_NAME}_SRCS})
 
 add_resource(${D_NAME}_all_res images
-  nge2logo.png)
-add_resource(${D_NAME}_all_res par
-  particles.png
-  particle1.psi)
+  demo1_bg.jpg
+  demo1_box.jpg
+  demo1_icon0.bmp
+  demo1_icon1.png)
+
+add_resource(${D_NAME}_all_res movies
+  OP.mp4)
+
+add_resource(${D_NAME}_all_res fonts
+  GBK14
+  ASC14
+  simfang.ttf)
 
 copy_res_files(${D_NAME} ${${D_NAME}_all_res})
