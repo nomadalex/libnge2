@@ -9,11 +9,7 @@
  * 测试nge2的文件系统
  */
 
-#ifdef ANDROID
-#define RES_PATH(path) ("/sdcard/libnge2/demo14/" path)
-#else
 #define RES_PATH(path) (path)
-#endif
 
 int game_quit = 0;
 

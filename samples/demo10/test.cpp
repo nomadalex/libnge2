@@ -7,11 +7,7 @@
  * 同时作为C++ Style App的例子
  */
 
-#ifdef ANDROID
-#define RES_PATH(path) ("/sdcard/libnge2/demo10/" path)
-#else
 #define RES_PATH(path) (path)
-#endif
 
 //退出标识
 int game_quit = 0;

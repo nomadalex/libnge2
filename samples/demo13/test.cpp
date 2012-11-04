@@ -9,11 +9,7 @@
  * ≤‚ ‘“Ù∆µΩ”ø⁄
  */
 
-#ifdef ANDROID
-#define RES_PATH(path) ("/sdcard/libnge2/demo13/" path)
-#else
 #define RES_PATH(path) (path)
-#endif
 
 int game_quit = 0;
 
