@@ -16,21 +16,6 @@
 #define INIT_AUDIO 2
 #define INIT_ALL   INIT_VIDEO|INIT_AUDIO
 
-enum NotifyType
-{
-	NGE_NOTIFY_PAUSE = 0,
-	NGE_NOTIFY_RESUME,
-	NGE_NOTIFY_STOP
-};
-
-/**
- *回调函数
- *@param[in] type 通知类型
- *@param[in] data 通知数据
- *@param[out] pCookie 用户数据
- */
-typedef void (*NotifyCallback)(int type, void* data, void* pCookie);
-
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -72,13 +57,6 @@ extern "C"{
  *@param[in] path 地址
  */
 	NGE_API void NGE_SetOPMoviePath(const char* path);
-
-/**
- *注册通知回调函数
- *@param[in] cb 回调函数
- *@param[out] pCookie 用户数据
- */
-	NGE_API void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie);
 
 #ifdef NGE_PSP
 /**
