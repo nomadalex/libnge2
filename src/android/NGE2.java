@@ -136,8 +136,17 @@ public class NGE2 extends Activity {
 		g_width = displayMetrics.widthPixels;
 		nativeSetContext(g_height, g_width);
 		if (OP_Path != null) {
-			OP_View = new VideoView(getApplicationContext());
-			OP_View.setVideoPath(OP_Path);
+			OP_View = new VideoView(NGE2.this);
+
+			//Fix relative path to absolute
+			File file = new File(OP_Path);
+			String fn = null;
+			if (file.isAbsolute())
+				fn = OP_Path;
+			else
+				fn = mPathName + OP_Path;
+
+			OP_View.setVideoPath(fn);
 			OP_View.setMediaController(new MediaController(this));
 			OP_View.requestFocus();
 			OP_View.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
