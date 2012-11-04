@@ -20,7 +20,9 @@ CAnimation::CAnimation(const char* filename)
     //Initialize animation variables
     frame = 0;
     status = ANI_RIGHT;
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 	InitInput(btn_down,btn_up,1);
+#endif
 }
 
 CAnimation::~CAnimation()
@@ -30,6 +32,7 @@ CAnimation::~CAnimation()
 
 void CAnimation::btn_down(int keycode)
 {
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 	switch(keycode)
     {
 	case PSP_BUTTON_UP:
@@ -59,10 +62,12 @@ void CAnimation::btn_down(int keycode)
 		game_quit = 1;
 		break;
     }
+#endif
 }
 
 void CAnimation::btn_up(int keycode)
 {
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 	switch(keycode)
     {
 	case PSP_BUTTON_UP:
@@ -92,6 +97,7 @@ void CAnimation::btn_up(int keycode)
 		game_quit = 1;
 		break;
     }
+#endif
 }
 
 
