@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import android.util.Log;
 
 import org.libnge.nge2.@nge_app_name@.R;
 
@@ -21,6 +22,8 @@ import android.widget.TextView;
  * 解压数据库文件操作类
  */
 public class UnZipFile extends AsyncTask<String, Integer, Integer> {
+	private String TAG = "nge2";
+
 	private Context mContext = null;
 	private ProgressBar progress = null;
 	private TextView progress_label = null;
@@ -42,35 +45,43 @@ public class UnZipFile extends AsyncTask<String, Integer, Integer> {
 	@Override
 	protected Integer doInBackground(String... params) {
 		int byteLength = 4096*1000;
+		byte data[] = new byte[byteLength];
+		BufferedOutputStream bufferStream = null; // 缓冲输出流
+
 		int progress = 0;
+
 		try {
 			InputStream ZipIs = mContext.getAssets().open(params[0]);// 获取文件流
-			BufferedOutputStream bufferStream = null; // 缓冲输出流
 			ZipInputStream zis = new ZipInputStream(new BufferedInputStream(ZipIs));
+
 			streamLength = (int)(ZipIs.available()*2);// 获取文件大小
+
 			ZipEntry entry; // 每个zip条目的实例
 			while ((entry = zis.getNextEntry()) != null) {
 				try {
-					int count;
-					byte data[] = new byte[byteLength];
 					String entryFileName = entry.getName();
-					File saveFile = new File(params[1] + "/" + entryFileName);
 			        if(entry.isDirectory()){
-		                String dirstr = params[1] + entryFileName;
-		                dirstr = new String(dirstr.getBytes("8859_1"), "GB2312");
-					    File f=new File(dirstr);
-					    f.mkdirs();
-		                continue;
+						continue;
 			        }
-					FileOutputStream fos = new FileOutputStream(saveFile);
-					bufferStream = new BufferedOutputStream(fos, byteLength);
-					while ((count = zis.read(data, 0, byteLength)) != -1) {
-						bufferStream.write(data, 0, count);
-						progress += count;
-						publishProgress(progress); // 更新进度条
+					else {
+						int count;
+						File file = new File(params[1] + "/" + entryFileName);
+
+						File parent = file.getParentFile();
+						if(parent!=null && !parent.exists()) {
+							parent.mkdirs();
+						}
+
+ 						FileOutputStream fos = new FileOutputStream(file);
+						bufferStream = new BufferedOutputStream(fos, byteLength);
+						while ((count = zis.read(data, 0, byteLength)) != -1) {
+							bufferStream.write(data, 0, count);
+							progress += count;
+							publishProgress(progress); // 更新进度条
+						}
+						bufferStream.flush();
+						bufferStream.close();
 					}
-					bufferStream.flush();
-					bufferStream.close();
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
