@@ -12,6 +12,9 @@
 #include <jni.h>
 #include "nge_android_jni.h"
 #include "audio_android.h"
+#include "nge_graphics.h"
+
+static screen_context_p screen = NULL;
 
 static JNIEnv* env;
 
@@ -41,6 +44,8 @@ MAKE_CA_METHOD(ispaused);
 void load_CA()
 {
 	GetEnv();
+
+	screen = GetScreenContext();
 
 	cLibCoolAudio = (*env)->FindClass(env, "org/libnge/nge2/LibCoolAudio");
 	if (!cLibCoolAudio)
@@ -108,11 +113,14 @@ typedef struct audio_media_player
 MAKE_METHOD(int, load, (audio_media_player_t* p, const char* filename))
 {
 	jstring fn;
+	char fullname[256]={0};
 
 	DEBUGME();
 	GetEnv();
 
-	fn = (*env)->NewStringUTF(env, filename);
+	sprintf(fullname,"%s/%s",screen->pathname,filename);
+	fn = (*env)->NewStringUTF(env, fullname);
+
 	(*env)->CallVoidMethod(env, p->obj, CA_METHOD(load), fn);
 	(*env)->DeleteLocalRef(env, fn);
 	return 0;
@@ -249,6 +257,7 @@ MAKE_METHOD(int, destroy, (audio_media_player_t* p))
 	DEBUGME();
 	GetEnv();
 
+	(*env)->CallBooleanMethod(env, p->obj, CA_METHOD(stop));
 	(*env)->DeleteGlobalRef(env, p->obj);
 	if (p->fd)
 		close(p->fd);
