@@ -88,8 +88,7 @@ public class NGE2 extends Activity {
 		m_view = new NGE2View(this);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		// 計算屏幕比例，以滿足自适应
-		int scrWidth = dm.widthPixels;
+		// 計算屏幕比例，以滿足自�?�?		int scrWidth = dm.widthPixels;
 		int scrHeight = dm.heightPixels;
 		if ((scrWidth / (double) scrHeight) >= (640 / 960.0)) {
 			scrWidth = scrHeight * 2 / 3;
@@ -113,10 +112,9 @@ public class NGE2 extends Activity {
 		super.onCreate(savedInstanceState);
 		UtilsKit.app = this;
 		//UtilsKit.registeredDevices();
-		//检查资源文件是否存在，如果存在直接启动
-		if (new File(mPathName).exists()) {
+		//�?��资源文件是否存在，如果存在直接启�?		if (new File(mPathName).exists()) {
 			init();
-		} else {//如果不存在则解压一份
+		} else {//如果不存在则解压�?��
 			new UnZipFile(this, new UnZipFile.CallBack() {
 				@Override
 				public void onCallBack() {
@@ -221,7 +219,7 @@ public class NGE2 extends Activity {
 			if (now - lastback <= 2500) {
 				android.os.Process.killProcess(android.os.Process.myPid());
 			} else {
-				Toast.makeText(NGE2.this, "再按一次退出游戏", Toast.LENGTH_LONG).show();
+				Toast.makeText(NGE2.this, "再按�?���?��游戏", Toast.LENGTH_LONG).show();
 				lastback = now;
 			}
 			return true;
@@ -254,6 +252,7 @@ public class NGE2 extends Activity {
 	}
 
 	private class NGE2Renderer implements Renderer {
+		long startTime, endTime;
 		@Override
 		public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 			Log.i(TAG, "onSurfaceCreated.");
@@ -261,6 +260,7 @@ public class NGE2 extends Activity {
 				m_need_init = false;
 				Log.i(TAG, "nativeInitialize.");
 				nativeInitialize();
+				startTime = System.currentTimeMillis();
 			}
 		}
 
@@ -272,10 +272,22 @@ public class NGE2 extends Activity {
 			gl.glViewport(0, 0, width, height);
 			nativeSetContext(width, height);
 			nativeResetContext();
+			startTime = System.currentTimeMillis();
 		}
 
 		@Override
 		public void onDrawFrame(GL10 gl) {
+			endTime = System.currentTimeMillis();
+		    long dt = endTime - startTime;
+		    if (dt < 30)
+				try {
+					Thread.sleep(30 - dt);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    startTime = System.currentTimeMillis();
+
 			if (nativeUpdate() == APP_QUIT)
 				onDestroy();
 		}
