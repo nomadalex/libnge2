@@ -47,6 +47,7 @@ extern "C" {
 
 	NGE_API void nge_register_app(nge_app_t *app);
 	NGE_API nge_app_t* nge_get_app();
+	NGE_API void nge_init_app(nge_app_t *app);
 
 #ifdef __cplusplus
 }
