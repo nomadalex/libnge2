@@ -3,7 +3,7 @@ set(COOLAUDIO_SRCS)
 set(COOLAUDIO_LIBS)
 set(COOLAUDIO_VERSION 1.1)
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(. ../and_jni_base ../include)
 
 if(PSP OR IPHONE)
   list(APPEND COOLAUDIO_SRCS libcoolaudio.c)
@@ -11,8 +11,10 @@ endif()
 
 if(ANDROID)
   list(APPEND COOLAUDIO_SRCS
-	audio_android.c
-	jni_android.c)
+	android_rawaudio.c
+	android_wav.c
+	android_mediaplayer.c
+	audio_android.c)
 elseif(PSP)
   list(APPEND COOLAUDIO_SRCS
 	audio_codec.cpp
@@ -58,13 +60,12 @@ endif()
 if(ANDROID)
   include(CopyFile)
   set(COOLAUDIO_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "" FORCE)
-  function(copy_coolaudio_android_files target android_dir)
-	copy_file("LibCoolAudio.java for ${target}"
+  function(copy_coolaudio_android_files app_name android_dir)
+	configure_file(
 	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
-	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java")
-	add_custom_target(${target}_android_coolaudio
-	  DEPENDS "LibCoolAudio.java for ${target}")
-	add_dependencies(${target}_android_coolaudio coolaudio)
-	add_dependencies(${target} ${target}_android_coolaudio)
+	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java" COPYONLY)
+	configure_file(
+	  "${COOLAUDIO_DIR}/RawAudio.java"
+	  "${android_dir}/src/org/libnge/nge2/RawAudio.java" COPYONLY)
   endfunction()
 endif()

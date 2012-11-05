@@ -9,8 +9,6 @@ import android.util.Log;
 public class UtilsKit extends Object{
 	private static final String TAG = "LibUtilsKit";
 
-	private static String appId = "69147";
-
 	public int init() {
 		return 0;
 	}
