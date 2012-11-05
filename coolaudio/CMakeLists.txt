@@ -11,8 +11,6 @@ endif()
 
 if(ANDROID)
   list(APPEND COOLAUDIO_SRCS
-	android_rawaudio.c
-	android_wav.c
 	android_mediaplayer.c
 	audio_android.c)
 elseif(PSP)
@@ -64,8 +62,5 @@ if(ANDROID)
 	configure_file(
 	  "${COOLAUDIO_DIR}/LibCoolAudio.java"
 	  "${android_dir}/src/org/libnge/nge2/LibCoolAudio.java" COPYONLY)
-	configure_file(
-	  "${COOLAUDIO_DIR}/RawAudio.java"
-	  "${android_dir}/src/org/libnge/nge2/RawAudio.java" COPYONLY)
   endfunction()
 endif()
