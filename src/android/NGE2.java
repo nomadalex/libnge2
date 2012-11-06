@@ -88,7 +88,8 @@ public class NGE2 extends Activity {
 		m_view = new NGE2View(this);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		// 計算屏幕比例，以滿足自�?�?		int scrWidth = dm.widthPixels;
+		// 計算屏幕比例，以滿足自适应
+		int scrWidth = dm.widthPixels;
 		int scrHeight = dm.heightPixels;
 		if ((scrWidth / (double) scrHeight) >= (640 / 960.0)) {
 			scrWidth = scrHeight * 2 / 3;
@@ -112,9 +113,10 @@ public class NGE2 extends Activity {
 		super.onCreate(savedInstanceState);
 		UtilsKit.app = this;
 		//UtilsKit.registeredDevices();
-		//�?��资源文件是否存在，如果存在直接启�?		if (new File(mPathName).exists()) {
+		//检查资源文件是否存在，如果存在直接启动
+		if (new File(mPathName).exists()) {
 			init();
-		} else {//如果不存在则解压�?��
+		} else {//如果不存在则解压一份
 			new UnZipFile(this, new UnZipFile.CallBack() {
 				@Override
 				public void onCallBack() {
@@ -219,7 +221,7 @@ public class NGE2 extends Activity {
 			if (now - lastback <= 2500) {
 				android.os.Process.killProcess(android.os.Process.myPid());
 			} else {
-				Toast.makeText(NGE2.this, "再按�?���?��游戏", Toast.LENGTH_LONG).show();
+				Toast.makeText(NGE2.this, "再按一次退出游戏", Toast.LENGTH_LONG).show();
 				lastback = now;
 			}
 			return true;
