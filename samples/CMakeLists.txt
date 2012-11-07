@@ -112,6 +112,6 @@ function(copy_res_files target)
 endfunction()
 
 # demo6 is gif demo
-foreach(i 10 11 12 13 14 15 16)
+foreach(i 10 11 12 13 14 15 16 17)
  add_subdirectory(demo${i})
 endforeach()
