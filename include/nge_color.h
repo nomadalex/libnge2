@@ -76,6 +76,12 @@ extern "C" {
 #define BLEND_ONE_MINUS_DST_COLOR	0x0307
 #define BLEND_SRC_ALPHA_SATURATE	0x0308
 
+#define FUNC_ADD					0x8006
+#define FUNC_SUBTRACT				0x800A
+#define FUNC_REVERSE_SUBTRACT		0x800B
+#define FUNC_MAX					0x8008
+#define FUNC_MIN					0x8007
+
 #define FILTER_LINEAR			0
 #define FILTER_NEAREST			1
 

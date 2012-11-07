@@ -362,6 +362,24 @@ extern "C"{
 	NGE_API void ResetTexBlend();
 
 /**
+ * 设置当前的混合方程\n
+ * 混合方程的取值可以是\n
+ * FUNC_ADD: 分量相加，最常用\n
+ * FUNC_SUBTRACT: 源分量减去目标分量\n
+ * FUNC_REVERSE_SUBTRACT: 目标分量减去源分量\n
+ * FUNC_MAX: 取分量中较大的那个\n
+ * FUNC_MIN: 取分量中较小的那个\n
+ *@param[in] color_equation 颜色方程,即颜色参与运算的方程
+ *@param[in] alpha_equation 透明度方程,即透明度参与运算的方程
+ */
+	NGE_API void SetTexBlendEquation(int color_equation, int alpha_equation);
+/**
+ *将混合方程恢复为默认方式
+ */
+	NGE_API void ResetTexBlendEquation();
+
+
+/**
  * 在屏幕上画一个点的函数
  *@param[in] x 横坐标
  *@param[in] y 纵坐标
@@ -464,7 +482,8 @@ extern "C"{
  *@param[in] y 纵坐标
  *@param[in] w 宽
  *@param[in] h 高
- *@return image_p，返回一个创建的image_p,注意需要释放这个image_p
+ *@return image_p 返回一个创建的image_p,注意需要释放这个image_p
+ *@remark 此操作将会使TexBlendEquation改为颜色FUNC_ADD,透明度FUNC_MAX,若有需要更改，请自行修改
  */
 	NGE_API image_p TargetToImage(int x,int y,int width,int height); 
 

@@ -242,6 +242,21 @@ void ResetTexBlend()
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
+void SetTexBlendEquation(int color_equation, int alpha_equation)
+{
+	glBlendEquationSeparate(color_equation, alpha_equation);
+}
+
+void ResetTexBlendEquation()
+{
+	int bindingFbo;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &bindingFbo);
+	if(bindingFbo == 0)
+		glBlendEquation(GL_FUNC_ADD);
+	else
+		glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
+}
+
 void SetClip(int x,int y,int w,int h)
 {
 	float rate_w_ori = 1.0f*nge_screen.width/nge_screen.ori_width; //1/nge_screen.rate_w;
