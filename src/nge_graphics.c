@@ -43,6 +43,9 @@ extern void NGE_SetFramebuffer();
 extern void NGE_PresentFramebuffer();
 #else
 #include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 #endif
 
 #define glOrtho glOrthof
@@ -231,15 +234,27 @@ screen_context_p GetScreenContext()
 
 void SetTexBlend(int src_blend, int des_blend)
 {
-	if(src_blend==0&&des_blend==0)
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-	else
-		glBlendFunc(src_blend,des_blend);
+	glBlendFunc(src_blend,des_blend);
 }
 
 void ResetTexBlend()
 {
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void SetTexBlendEquation(int color_equation, int alpha_equation)
+{
+	glBlendEquationSeparate(color_equation, alpha_equation);
+}
+
+void ResetTexBlendEquation()
+{
+	int bindingFbo;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &bindingFbo);
+	if(bindingFbo == 0)
+		glBlendEquation(GL_FUNC_ADD);
+	else
+		glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 }
 
 void SetClip(int x,int y,int w,int h)
@@ -329,8 +344,8 @@ void ResetGraphicsCache(void)
 	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 		tex_cache_add(i,m_texcache[i]);
 		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 }
 
@@ -348,10 +363,10 @@ void nge_graphics_reset(void)
 		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 				tex_cache_add(i,m_texcache[i]);
 				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
-        #if defined NGE_IPHONE
+        #if defined NGE_IPHONE || defined NGE_ANDROID
             glGenFramebuffers(1, &fbo);
         #endif
 
@@ -364,8 +379,8 @@ void nge_graphics_reset(void)
 		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
 				tex_cache_add(i,m_texcache[i]);
 				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		}
 		nge_print("cleared.\n");
 	}
@@ -984,7 +999,7 @@ void ImageToScreen(image_p tex,float dx,float dy)
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
-    SET_COLOR(tex->mask,tex->dtype);
+    //SET_COLOR(tex->mask,tex->dtype);
 	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
@@ -993,7 +1008,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-    SET_COLOR(tex->mask,tex->dtype);
+    //SET_COLOR(tex->mask,tex->dtype);
 	if(dw==0&&dh==0){
 		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
@@ -1024,7 +1039,7 @@ void RenderQuad(image_p tex,float sx,float sy,float sw,float sh,float dx,float d
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale, dy+tex->rcentrey*yscale);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
@@ -1062,14 +1077,15 @@ static void RenderQuadTrans(image_p tex,float sx ,float sy ,float sw ,float sh ,
 	if (sw == 0) sw = tex->w;
 	if (sh == 0) sh = tex->h;
 	SET_IMAGE_RECT(dx, dy, sw*xscale, sh*yscale);
-	ROTATE_2D(angle, dx+sw*xscale/2, dy+sh*yscale/2);
+	ROTATE_2D(angle, dx+tex->rcentrex*xscale, dy+tex->rcentrey*yscale);
 	SET_COLOR(mask,tex->dtype);
 	AFTER_DRAW_IMAGE();
 }
 
-void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor)
+//////////////////////////////////////////////////////////////////////////
+void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor)
 {
-	if(pImage == NULL){
+	if(tex == NULL){
 		return ;
 	}
 
@@ -1088,17 +1104,14 @@ void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int
 	case ANCHOR_HCENTER | ANCHOR_VCENTER:
 		break;
 	default:
-		//ASSERT("throw new IllegalArgumentException();");
 		return;
 	}
 
 	if (transform < TRANS_NONE || transform > TRANS_MIRROR_ROT90) {
-		//ASSERT("throw new IllegalArgumentException();");
 		return;
 	}
 
-	if(width < 0 || height < 0 || x_src < 0 || y_src < 0 || x_src + width > pImage->w || y_src + height > pImage->h) {
-		//ASSERT("throw new IllegalArgumentException();");
+	if(width < 0 || height < 0 || x_src < 0 || y_src < 0 || x_src + width > tex->w || y_src + height > tex->h) {
 		return;
 	}
 
@@ -1106,38 +1119,39 @@ void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int
 	//移动位置
 	if ((INVERTED_AXES & transform) != 0) {
 		//////////////////////////////////////////////////////////////////////////
-		//高宽度坐标,位置偏移
+		//高宽度坐标,位置偏移 目标是新的坐标要算到老的位置去
 		switch(transform){
 		case TRANS_ROT90:
 			{
-				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
-				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+				//调试通过
+				//偏移(x_dest - (int)(m_pImage->rcentrex - m_pImage->rcentrey)*10/10 - y_src)，最后在剪掉剩下的值(m_pImage->h - y_src - height)
+				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
+				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
 			break;
 		case TRANS_ROT270:
 			{
-				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
+				//调试通过
+				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
 				if(width == 0){
-					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + (int)pImage->w;
+					y_dest	= y_dest - (int)(tex->rcentrex + tex->rcentrey)*10/10 + (int)tex->w;
 				}else{
-					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
+					y_dest	= y_dest - (int)(tex->rcentrex + tex->rcentrey)*10/10 + width;
 				}
 			}
 			break;
 		case TRANS_MIRROR_ROT90:
 			{
-				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
-				y_dest	= y_dest + (pImage->rcentrex - pImage->rcentrey);
+				//调试通过
+				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
+				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10 - (tex->w - width);
 			}
 			break;
 		case TRANS_MIRROR_ROT270:
 			{
-				x_dest	= x_dest - (pImage->rcentrex - pImage->rcentrey);
-				if(width == 0){
-					y_dest	= y_dest + pImage->rcentrex - pImage->rcentrey;
-				}else{
-					y_dest	= y_dest - (pImage->rcentrex + pImage->rcentrey) + width;
-				}
+				//调试通过
+				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
+				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
 			break;
 		}
@@ -1147,16 +1161,26 @@ void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int
 		switch(transform){
 		case TRANS_ROT180:
 			{
-				if(width != 0){
-					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
-				}
+				//调试通过
+				//if(width != 0){
+				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
+				y_dest	= y_dest - (tex->h - height);
+				//}
 			}
 			break;
 		case TRANS_MIRROR_ROT180:
 			{
-				if(width != 0){
-					x_dest	= x_dest - ((int)pImage->w - (/*x_src + */width));
-				}
+				//调试通过
+				// 				if(width != 0){
+				// 					x_dest	= x_dest - ((int)m_pImage->w - (/*x_src + */width));
+				// 				}
+			}
+			break;
+		case TRANS_MIRROR:
+			{
+				//调试通过
+				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
+				y_dest	= y_dest - (tex->h - height);
 			}
 			break;
 		}
@@ -1200,31 +1224,36 @@ void DrawRegion(image_p	pImage, int x_src, int y_src, int width, int height, int
 	switch (transform)
 	{
 	case TRANS_ROT90:
-		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask);
+		RenderQuad(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, tex->mask);
 		break;
 	case TRANS_ROT180:
-		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask);
+		RenderQuad(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, tex->mask);
 		break;
 	case TRANS_ROT270:
-		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask);
+		RenderQuad(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, tex->mask);
 		break;
 	case TRANS_MIRROR:
-		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask, NGE_TRANS_V);
+		//RenderQuadTrans(m_pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, m_pImage->mask, NGE_TRANS_V);
+		RenderQuadTrans(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, tex->mask, NGE_TRANS_V);
 		break;
 	case TRANS_MIRROR_ROT90:
-		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, pImage->mask, NGE_TRANS_V);
+		//RenderQuadTrans(m_pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, m_pImage->mask, NGE_TRANS_V);
+		RenderQuadTrans(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, tex->mask, NGE_TRANS_V);
 		break;
 	case TRANS_MIRROR_ROT180:
-		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, pImage->mask, NGE_TRANS_V);
+		//RenderQuadTrans(m_pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 180.0f, m_pImage->mask, NGE_TRANS_V);
+		RenderQuadTrans(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, tex->mask, NGE_TRANS_V);
 		break;
 	case TRANS_MIRROR_ROT270:
-		RenderQuadTrans(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, pImage->mask, NGE_TRANS_V);
+		//RenderQuadTrans(m_pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 270.0f, m_pImage->mask, NGE_TRANS_V);
+		RenderQuadTrans(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 90.0f, tex->mask, NGE_TRANS_V);
 		break;
 	default:
-		RenderQuad(pImage, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, pImage->mask);
+		RenderQuad(tex, x_src, y_src, width, height, x_dest, y_dest, 1.0f, 1.0f, 0.0f, tex->mask);
 		break;
 	}
 }
+
 
 
 image_p ScreenToImage()
@@ -1252,7 +1281,6 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	static int ret = 0;
 	if(!_img)
 		return FALSE;
-	glDisable(GL_SCISSOR_TEST);
 	BIND_AND_TEST_CACHE(_img);
 	//GL_MAX is not define in OPENGLES
     glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
@@ -1265,7 +1293,7 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 	glMatrixMode(GL_MODELVIEW);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0,0,_img->w, _img->h);
-#elif defined NGE_IPHONE
+#elif defined NGE_IPHONE || defined NGE_ANDROID
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, cacheid, 0);
     glMatrixMode(GL_PROJECTION);
@@ -1289,17 +1317,75 @@ void EndTarget(){
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_SCISSOR_TEST);
-#elif defined NGE_IPHONE
+#elif defined NGE_IPHONE || defined NGE_ANDROID
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_SCISSOR_TEST);
 #endif
     glBlendEquation(GL_FUNC_ADD);
 }
+
+image_p TargetToImage(int x,int y,int width,int height)
+{
+	image_p image = NULL;
+	if(width < 0 && height < 0 && x < 0 && y < 0)
+		return NULL;
+	image = image_create(width,height,DISPLAY_PIXEL_FORMAT_8888);
+	if(image){
+		glReadPixels(x, y, image->texw, image->texh,GL_RGBA,image->dtype, image->data);
+		image->modified = 1;
+	}
+	return image;
+}
+
+
+/*高级用户使用的模式,批处理模式*/
+void Translate(float x,float y)
+{
+	glTranslatef(x,y,0);
+}
+
+void Scale(float x,float y)
+{
+	glScalef(x,y,1.0f);
+}
+
+void Rotate(float angle)
+{
+	glRotatef(angle,0,0,1); 
+}
+
+void Identity()
+{
+	glLoadIdentity();
+}
+
+void PushMatrix()
+{
+	glPushMatrix();
+}
+
+void PopMatrix()
+{
+	glPopMatrix();
+}
+
+void DrawImageBatch(image_p tex,rectf* uv_rect)
+{
+	BEFORE_DRAW_IMAGE();
+	if(uv_rect == NULL){
+		SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
+	}
+	else{
+		SET_TEX_COORD(tex, uv_rect->left, uv_rect->top, uv_rect->left - uv_rect->right, 
+		                uv_rect->bottom - uv_rect->top, 0, 1, 2, 3);
+	}
+	SET_IMAGE_RECT_BY_TEX(tex, 0, 0);
+	AFTER_DRAW_IMAGE();
+}
+/*批处理模式END*/
 
 void RealRenderQuad(quadf quad) {
 	BEFORE_DRAW_QUAD();

@@ -65,6 +65,20 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetPackname(JNIEnv* env,
 	main_argv[0] = jstringTostring(env, packname);
 }
 
+JNIAPI void Java_org_libnge_nge2_NGE2_nativeSetWorkPath(JNIEnv* env,
+	        jobject thiz,jstring packname){
+			screen = GetScreenContext();
+			char* name = jstringTostring(env, packname);
+			chdir(name);
+			nge_print("nge2 set workpath:%s.\n",name);
+			memset(screen->pathname,0,256);
+			strncpy(screen->pathname,name,256);
+			if(name)
+				free(name);
+
+}
+
+
 inline static void setOP_PathToJava(JNIEnv* env, jobject thiz) {
 	if (NGE_OP_Path) {
 		jclass cls = env->GetObjectClass(thiz);
@@ -94,7 +108,7 @@ JNIAPI void Java_org_libnge_nge2_NGE2_nativeResetContext(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeInitialize(JNIEnv* env,
 													   jobject thiz )
 {
-	chdir("/sdcard/libnge2");	
+	//chdir("/sdcard/libnge2");
 	s_app->init();
 	nge_print("nge2 init normaly.\n");
 }
@@ -118,21 +132,24 @@ JNIAPI void  Java_org_libnge_nge2_NGE2_nativeFinalize(JNIEnv* env,
 JNIAPI void Java_org_libnge_nge2_NGE2_nativePause(JNIEnv* env,
 												  jobject thiz )
 {
-	sPaused = 1;	
-	s_app->pause();
+	sPaused = 1;
+	if (s_app->pause != NULL)
+		s_app->pause();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeStop(JNIEnv* env,
 												  jobject thiz )
 {
-	s_app->stop();
+	if (s_app->stop != NULL)
+		s_app->stop();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeResume(JNIEnv* env,
 												   jobject thiz )
 {
-	sPaused = 0;	
-	s_app->resume();
+	sPaused = 0;
+	if (s_app->resume != NULL)
+		s_app->resume();
 }
 
 JNIAPI void Java_org_libnge_nge2_NGE2_nativeTouch(JNIEnv* env,

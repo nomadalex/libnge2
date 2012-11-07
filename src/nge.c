@@ -21,9 +21,6 @@ void NGE_RegisterPSPExitCallback(int cb_id) {
 }
 #endif
 
-NotifyCallback _notifyCallback = NULL;
-void* _notifyCookie = NULL;
-
 static char set_ori_default = 0;
 
 void NGE_SetScreenContext(const char* winname,int screen_width,int screen_height,int screen_bpp,int screen_full)
@@ -60,7 +57,7 @@ void NGE_SetOriginalResolution(int width,int height)
 	screen->ori_height = height;
 	screen->rate_w = 1.0f * width/screen->width;
 	screen->rate_h = 1.0f * height/screen->height;
-	set_ori_default = 1; 
+	set_ori_default = 1;
 }
 
 char *NGE_OP_Path = NULL;
@@ -99,18 +96,8 @@ void NGE_Quit()
 		m_dumpMemoryReport();
 #endif
 	}
-
-	_notifyCallback = NULL;
-	_notifyCookie = NULL;
 }
 
-void NGE_RegisterNotifyCallback(NotifyCallback cb, void* pCookie)
-{
-	_notifyCallback = cb;
-	_notifyCookie = pCookie;
-}
-
-#ifdef NGE_WIN
 /* just for export dll symbol */
 void _______fake_CreateMp3Player() {
 	CreateMp3Player();
@@ -121,4 +108,3 @@ void _______fake_CreateWavPlayer() {
 void _______fake_CreateOggPlayer() {
 	CreateOggPlayer();
 }
-#endif

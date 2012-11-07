@@ -74,6 +74,7 @@ typedef struct {
 	int ori_height;
 	float rate_w;
 	float rate_h;
+	char  pathname[256];
 }screen_context_t, *screen_context_p;
 
 typedef struct{
@@ -132,7 +133,9 @@ extern "C"{
 /**
  * 绘制到图片开始函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
  *@param[in] _img 所要绘制到的图片
+ *@param[in] clear 是否清除原有信息,1为清屏,0为不清屏
  *@return 无
+ *@remark 此操作将会使TexBlendEquation改为颜色FUNC_ADD,透明度FUNC_MAX,若有需要更改，请自行修改
  */
 	NGE_API BOOL BeginTarget(image_p _img,uint8_t clear);
 /**
@@ -373,6 +376,24 @@ extern "C"{
 	NGE_API void ResetTexBlend();
 
 /**
+ * 设置当前的混合方程\n
+ * 混合方程的取值可以是\n
+ * FUNC_ADD: 分量相加，最常用\n
+ * FUNC_SUBTRACT: 源分量减去目标分量\n
+ * FUNC_REVERSE_SUBTRACT: 目标分量减去源分量\n
+ * FUNC_MAX: 取分量中较大的那个\n
+ * FUNC_MIN: 取分量中较小的那个\n
+ *@param[in] color_equation 颜色方程,即颜色参与运算的方程
+ *@param[in] alpha_equation 透明度方程,即透明度参与运算的方程
+ */
+	NGE_API void SetTexBlendEquation(int color_equation, int alpha_equation);
+/**
+ *将混合方程恢复为默认方式
+ */
+	NGE_API void ResetTexBlendEquation();
+
+
+/**
  * 在屏幕上画一个点的函数
  *@param[in] x 横坐标
  *@param[in] y 纵坐标
@@ -469,6 +490,64 @@ extern "C"{
  *  清空显示缓存空间。
  */
 	NGE_API void ResetGraphicsCache();
+/**
+ *在BeginTarget和EndTarget之间使用,取得当前target中的像素,截取到一个新创建image中
+ *@param[in] x 横坐标
+ *@param[in] y 纵坐标
+ *@param[in] w 宽
+ *@param[in] h 高
+ *@return image_p 返回一个创建的image_p,注意需要释放这个image_p
+ */
+	NGE_API image_p TargetToImage(int x,int y,int width,int height); 
+
+/*高级用户使用的模式,批处理模式:
+  在BeginScene(Target)/EndScene(Target)之间使用
+  流程大致是:
+  PushMatrix();//保存环境
+  Identity();  //初始化重置
+  Translate/Rotate/Scale
+  DrawImageBatch(Image1,NULL);
+  Identity();  //初始化重置
+  Translate/Rotate/Scale
+  DrawImageBatch(Image2,NULL);
+  PopMatrix();//恢复环境
+*/
+/**
+ * 平移变换
+ *@param[in] x 横坐标
+ *@param[in] y 纵坐标
+ */
+NGE_API void Translate(float x,float y);
+/**
+ * 缩放变换
+ *@param[in] x 缩放比率
+ *@param[in] y 缩放比率
+ */
+NGE_API void Scale(float x,float y);
+/**
+ * 旋转变换
+ *@param[in] angel 旋转角度
+ */
+NGE_API void Rotate(float angle);
+/**
+ * 矩阵重置
+ */
+NGE_API void Identity();
+/**
+ * 保存矩阵
+ */
+NGE_API void PushMatrix();
+/**
+ * 弹出矩阵
+ */
+NGE_API void PopMatrix();
+/**
+ * 批处理画图
+ *@param[in] image image_p图片指针
+ *@param[in] uv_rect uv的坐标rectf(left,top)，(right,bottom),填写NULL说明使用整个图片
+ */
+NGE_API void DrawImageBatch(image_p image,rectf* uv_rect);
+
 
 /**
  *  Internal Use Only

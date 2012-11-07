@@ -36,19 +36,6 @@ static void btn_up_default(int keycode) { }
 static ButtonProc btn_down = btn_down_default;
 static ButtonProc btn_up   = btn_up_default;
 
-static touch_mode = 0;
-static istouched  = 0;
-static screen_context_p screen = NULL;
-
-void EmulateTouchMove(int flag)
-{
-	if(flag == 1)
-		touch_mode  = 1;
-	else
-		touch_mode  = 0;
-}
-
-
 void InitInput(ButtonProc downproc,ButtonProc upproc,int doneflag)
 {
 #ifdef NGE_PSP
@@ -83,6 +70,19 @@ void SetSwapXY(int flag)
 #ifdef NGE_INPUT_MOUSE_SUPPORT
 MouseMoveProc mouse_move_proc = NULL;
 MouseButtonProc mouse_btn_proc = NULL;
+
+static touch_mode = 0;
+static istouched  = 0;
+static screen_context_p screen = NULL;
+
+void EmulateTouchMove(int flag)
+{
+	if(flag == 1)
+		touch_mode  = 1;
+	else
+		touch_mode  = 0;
+}
+
 
 void InitMouse(MouseButtonProc mouse_btn,MouseMoveProc mouse_move)
 {

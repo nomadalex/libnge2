@@ -1,26 +1,30 @@
 #include "libnge2.h"
-#include "hgedistort.h"
+#include "nge_app.h"
+#include "hgeparticle.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
+
 /**
- * nge_test:nge程序:图片扭曲
+ * 测试粒子
  */
+
+#define RES_PATH(path) (path)
+
 //退出标识
 int game_quit = 0;
 //背景图片
-image_p p_bg = NULL;
-//logo图片
-image_p p_logo  = NULL;
-hgeDistortionMesh* mDistortionMesh;
+
+image_p p_par = NULL;
+hgeParticleSystem*	mParticleSys;
+sprite_p mParticle = NULL;
 
 nge_timer* timer;
 //last tick;
 int mlast = 0;
+//dt秒为单位
+float dt = 0;
 
-const int nRows=16;
-const int nCols=16;
-
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 void btn_down(int keycode)
 {
 	switch(keycode)
@@ -42,8 +46,6 @@ void btn_down(int keycode)
     case PSP_BUTTON_SQUARE:
 		break;
 	case PSP_BUTTON_SELECT:
-		//按下选择键退出
-		game_quit = 1;
 		break;
 	case PSP_BUTTON_START:
 		//按下开始键退出
@@ -51,63 +53,91 @@ void btn_down(int keycode)
 		break;
     }
 }
+#endif
 
 void Update()
 {
-	int i, j;
+	//注意,传给；粒子系统update的是秒.所以需要除1000
+	float dt = (float)((timer->get_ticks(timer)-mlast)/1000.0);
 	mlast = timer->get_ticks(timer);
-	for(i=1;i<nRows-1;i++)
-		for(j=1;j<nCols-1;j++)
-		{
-			mDistortionMesh->SetDisplacement(j,i,cosf(mlast/100.0+(i+j)/2)*5,sinf(mlast/100.0+(i+j)/2)*5,HGEDISP_NODE);
-		}
+	mParticleSys->Update(dt);
 }
 
 void DrawScene()
 {
 	BeginScene(1);
-	ImageToScreen(p_bg, 0, 0);
-	mDistortionMesh->Render(20,20);
+	mParticleSys->Render();
 	EndScene();
 }
 
-extern "C"
-int main(int argc, char* argv[])
-{
+int init() {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL
 	NGE_Init(INIT_VIDEO);
 	//初始化按键处理btn_down是按下响应,后面是弹起时的响应，0是让nge处理home消息(直接退出),填1就是让PSP系统处理
 	//home消息,通常填1正常退出（1.50版的自制程序需要填0）
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 	InitInput(btn_down,NULL,1);
-	//最后一个参数是psp swizzle优化，通常填1
-	p_bg = image_load("images/demo0.jpg",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_bg == NULL) {
-		printf("can not open file\n");
+#endif
+	p_par = image_load(RES_PATH("par/particles.png"),DISPLAY_PIXEL_FORMAT_8888,1);
+	if(p_par == NULL) {
+		nge_print("can not open file\n");
 	}
-	p_logo = image_load("images/nge2logo.png",DISPLAY_PIXEL_FORMAT_8888,1);
-	if(p_logo == NULL) {
-		printf("can not open file\n");
-	}
-	//初始化扭曲设置
-	mDistortionMesh = new hgeDistortionMesh(nCols, nRows);
-	mDistortionMesh->SetTexture(p_logo);
-	mDistortionMesh->SetTextureRect(0,0,p_logo->w,p_logo->h);
-	mDistortionMesh->Clear(0xFFFFFFFF);
-	timer = timer_create();
+	//设置sprite子图
+	mParticle = (sprite_p)malloc(sizeof(sprite_t));
+	memset(mParticle,0,sizeof(sprite_t));
+	mParticle->sprite_image = p_par;
+	mParticle->sprite_clip.left= 0.0f;
+	mParticle->sprite_clip.top= 0.0f;
+	mParticle->sprite_clip.right= 32.0f;
+	mParticle->sprite_clip.bottom = 32.0f;
+	mParticle->sprite_center.x = 16.0f;
+	mParticle->sprite_center.y = 16.0f;
+
+	mParticleSys = new hgeParticleSystem(RES_PATH("par/particle1.psi"), mParticle);
+	mParticleSys->MoveTo(480.0f/2, 272.0f/2,0);
+	mParticleSys->Fire();
+	timer = nge_timer_create();
 	timer->start(timer);
-	
-	while ( !game_quit )
-	{
-		ShowFps();
-		InputProc();
-		Update();
-		DrawScene();
-		LimitFps(60);
-	}
-	image_free(p_logo);
-	image_free(p_bg);
-	SAFE_FREE(mDistortionMesh);
-	delete mDistortionMesh;
+
+	return 0;
+}
+
+int mainloop() {
+	if (game_quit)
+		return NGE_APP_QUIT;
+
+	ShowFps();
+#ifdef NGE_INPUT_HAS_PROC
+	InputProc();
+#endif
+	Update();
+	DrawScene();
+	LimitFps(60);
+
+	return NGE_APP_NORMAL;
+}
+
+int fini() {
+	image_free(p_par);
+	p_par = NULL;
+	SAFE_FREE(mParticle);
+	mParticle = NULL;
+	delete mParticleSys;
+	mParticleSys = NULL;
+	nge_timer_free(timer);
 	NGE_Quit();
+	return 0;
+}
+
+static nge_app_t app;
+
+extern "C"
+int main(int argc, char* argv[])
+{
+	nge_init_app(&app);
+	app.init = init;
+	app.mainloop = mainloop;
+	app.fini = fini;
+	nge_register_app(&app);
 	return 0;
 }
