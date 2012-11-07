@@ -47,21 +47,31 @@ function(add_nge_executable nm)
 	  set(LIB_OUTPUT_NAME lib${nm}${CMAKE_RELEASE_POSTFIX})
 	endif()
 
-	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
-	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
+	# execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+	#   "${CMAKE_SOURCE_DIR}/Android/assets"
+	#   "${nm}/assets"
+	#   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+
+	set(app_name "${nm}")
+	set(project_name "${nm}")
+	set(package_name "org.libnge.nge2.${nm}")
+
+	execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_directory
+	  "${CMAKE_SOURCE_DIR}/Android/res"
+	  "${nm}/res"
+	  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
+	  "${nm}/res/values/strings.xml" @ONLY)
 
 	configure_file("${CMAKE_SOURCE_DIR}/Android/default.properties"
 	  "${nm}/default.properties" COPYONLY)
-	set(package_name "org.libnge.nge2.${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/AndroidManifest.xml.in"
 	  "${nm}/AndroidManifest.xml" @ONLY)
-	set(app_name "${nm}")
-	configure_file("${CMAKE_SOURCE_DIR}/Android/strings.xml.in"
-	  "${nm}/res/values/strings.xml" @ONLY)
-	set(project_name "${nm}")
 	configure_file("${CMAKE_SOURCE_DIR}/Android/project_create.sh.in"
 	  "${nm}/project_create.sh" @ONLY)
 
+	copy_coolaudio_android_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
+	copy_nge_android_java_files(${nm} ${CMAKE_CURRENT_BINARY_DIR}/${nm})
 
 	add_custom_command(
 	  TARGET ${nm}
@@ -69,7 +79,6 @@ function(add_nge_executable nm)
 	  COMMAND "${CMAKE_COMMAND}" -E copy
 	  "${LIBRARY_OUTPUT_PATH}/${LIB_OUTPUT_NAME}.so"
 	  "${CMAKE_CURRENT_BINARY_DIR}/${nm}/libs/${ARMEABI_NDK_NAME}/libnge2app-jni.so"
-	  COMMAND "./project_create.sh"
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${nm}"
 	  )
   endif()
@@ -89,7 +98,7 @@ function(copy_res_files target)
   set(files)
 
   if(ANDROID)
-	set(prefix res/)
+	set(prefix Resources/)
   else()
 	set(prefix "")
   endif()
@@ -102,19 +111,7 @@ function(copy_res_files target)
   add_dependencies(${target} ${target}_res)
 endfunction()
 
-if(NOT ANDROID)
-  #demo 3 need pmp mod library.
-  foreach(i 0 1 2 4 6 7 8 15)
-	add_subdirectory(demo${i})
-  endforeach()
-endif()
-
-foreach(i 10 11 12 13 14)
-  add_subdirectory(demo${i})
+# demo6 is gif demo
+foreach(i 10 11 12 13 14 15 16)
+ add_subdirectory(demo${i})
 endforeach()
-
-if(NOT ANDROID)
-  if(UNZIP_FOUND)
-	add_subdirectory(demo9)
-  endif()
-endif()

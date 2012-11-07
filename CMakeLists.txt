@@ -66,8 +66,8 @@ if(${NGE2_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 # Search for C header files in these directories.
-include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(include src)
 
 # common src files
 list(APPEND NGE2_SRCS
@@ -102,6 +102,13 @@ list(APPEND NGE2_SRCS
   )
 list(APPEND NGE2_LIBS ${NGE2_DEP_LIBS} ${UNZIP_LIBRARIES})
 
+if (ANDROID)
+list(APPEND NGE2_SRCS
+#if no need toolskit # the line below
+	src/android/nge_utilskit.c
+	)
+endif()
+
 if(NOT ANDROID)
   list(APPEND NGE2_SRCS
 	src/nge_gif_animation.c
@@ -121,6 +128,11 @@ else()
 	)
 endif()
 
+if(ANDROID)
+  include_directories(and_jni_base)
+  add_library(and_jni_base and_jni_base/nge_android_jni.c)
+endif()
+
 # depends
 include_directories(coolaudio)
 add_subdirectory(coolaudio)
@@ -131,6 +143,10 @@ else()
 endif()
 if(COOLAUDIO_LIBS)
   list(APPEND NGE2_LIBS ${COOLAUDIO_LIBS})
+endif()
+
+if(ANDROID)
+  LIST(APPEND NGE2_LIBS and_jni_base)
 endif()
 
 if(COMPILER_GCC)
@@ -151,7 +167,7 @@ endif()
 if(WIN32)
   list(APPEND NGE2_LIBS ${SDLMAIN_LIBRARY})
 elseif(ANDROID)
-  list(APPEND NGE2_LIBS log GLESv1_CM)
+  list(APPEND NGE2_LIBS log GLESv1_CM GLESv2)
 else()
   list(APPEND NGE2_LIBS g)
   if(NOT PSP)
@@ -166,12 +182,20 @@ endif()
 
 if(ANDROID)
   include(CopyFile)
-  function(copy_nge_android_java_files target dir)
-	set(fromfile "${CMAKE_SOURCE_DIR}/src/android/NGE2.java")
-	set(tofile "${dir}/src/org/libnge/nge2/NGE2.java")
-	copy_file("NGE2.java for ${nm}" ${fromfile} ${tofile})
-	add_custom_target(${target}_nge_java DEPENDS "NGE2.java for ${nm}")
-	add_dependencies(${target} ${target}_nge_java)
+  function(copy_nge_android_java_files app_name dir)
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/NGE2.java"
+	  "${dir}/src/org/libnge/nge2/NGE2.java" COPYONLY)
+
+	set(nge_app_name ${app_name})
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/UnZipFile.java.in"
+	  "${dir}/src/org/libnge/nge2/UnZipFile.java"  @ONLY)
+	set(nge_app_name)
+
+	configure_file(
+	  "${CMAKE_SOURCE_DIR}/src/android/UtilsKit.java"
+	  "${dir}/src/org/libnge/nge2/UtilsKit.java" COPYONLY)
   endfunction()
   set(NGE_ANDROID_JNI_FILE ${CMAKE_SOURCE_DIR}/src/android/nge_jni.cpp)
 endif()
@@ -246,8 +270,10 @@ if(WIN32)
   set_target_properties(nge2 PROPERTIES COMPILE_DEFINITIONS "NGE2_EXPORTS")
 endif()
 
-if(WIN32 OR UNIX OR PSP)
+if(NOT ANDROID AND NOT IPHONE)
+if(WIN32 OR LINUX OR PSP)
   add_our_library(nge2_main STATIC src/nge_main.c)
+endif()
 endif()
 
 if(MSVC)

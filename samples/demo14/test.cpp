@@ -1,18 +1,15 @@
 #include "libnge2.h"
+#include "nge_app.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "nge_app.h"
 
 /**
  * 测试nge2的文件系统
  */
 
-#ifdef ANDROID
-#define RES_PATH(path) ("/sdcard/libnge2/demo14/" path)
-#else
 #define RES_PATH(path) (path)
-#endif
 
 int game_quit = 0;
 
@@ -74,13 +71,6 @@ void btn_up(int keycode)
 }
 #endif
 
-void DrawScene()
-{
-
-	BeginScene(1);
-	EndScene();
-}
-
 void test_ref_handle(ngeRefHandle pkg) {
 	ngeRefHandle h = ngeRefHandleCopy(pkg);
 	ngeRef(pkg);
@@ -98,7 +88,6 @@ int init()
 	char* txt;
 
 	NGE_Init(INIT_VIDEO);
-	//NGE_SetFontEncoding(NGE_ENCODING_UTF_8);
 	ngePackageZipInit();
 
 #ifdef NGE_INPUT_BUTTON_SUPPORT
@@ -135,7 +124,6 @@ int mainloop()
 		return NGE_APP_QUIT;
 
 	InputProc();
-	LimitFps(60);
 
 	return NGE_APP_NORMAL;
 }
@@ -152,9 +140,12 @@ static nge_app_t app;
 extern "C"
 int main(int argc, char* argv[])
 {
+	nge_init_app(&app);
+
 	app.init = init;
 	app.mainloop = mainloop;
 	app.fini = fini;
+
 	nge_register_app(&app);
 	return 0;
 }

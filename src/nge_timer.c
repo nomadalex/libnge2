@@ -16,7 +16,7 @@ static void TM_stop(nge_timer* timer);
 static void TM_pause(nge_timer* timer);
 static void TM_unpause(nge_timer* timer);
 
-nge_timer* timer_create()
+nge_timer* nge_timer_create()
 {
 	nge_timer* timer = (nge_timer*)malloc(sizeof(nge_timer));
 	memset(timer,0,sizeof(nge_timer));
@@ -30,7 +30,7 @@ nge_timer* timer_create()
 	return timer;
 }
 
-void timer_free(nge_timer* timer)
+void nge_timer_free(nge_timer* timer)
 {
 	SAFE_FREE(timer);
 }

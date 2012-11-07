@@ -1,11 +1,16 @@
 #include "libnge2.h"
+#include "nge_app.h"
+
 /**
- * nge_test:Polygons
+ * 测试基本图元
  */
+
+#define RES_PATH(path) (path)
 
 //退出标识
 int game_quit = 0;
 
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 void btn_down(int keycode)
 {
 	switch(keycode)
@@ -38,6 +43,7 @@ void btn_down(int keycode)
 		break;
     }
 }
+#endif
 
 int colors[]={
 	MAKE_RGBA_8888(255,0,0,255),//红
@@ -114,25 +120,54 @@ void DrawScene()
 	EndScene();
 }
 
-extern "C"
-int main(int argc, char* argv[])
+int init()
 {
 	//初始化NGE分为VIDEO,AUDIO，这里是只初始化VIDEO，如果初始化所有用INIT_VIDEO|INIT_AUDIO,或者INIT_ALL
 	NGE_Init(INIT_VIDEO);
+
+#ifdef NGE_INPUT_BUTTON_SUPPORT
 	//初始化按键处理btn_down是按下响应,后面是弹起时的响应，0是让nge处理home消息(直接退出),填1就是让PSP系统处理
 	//home消息,通常填1正常退出（1.50版的自制程序需要填0）
 	InitInput(btn_down,NULL,1);
+#endif
+
 	//设置屏幕颜色为白色
 	SetScreenColor(255,255,255,255);
-	while ( !game_quit )
-	{
-		ShowFps();
-		InputProc();
-		DrawScene();
-		//限制fps为60
-		LimitFps(60);
-	}
+}
+
+int mainloop()
+{
+	if (game_quit)
+		return NGE_APP_QUIT;
+
+	ShowFps();
+
+#ifdef NGE_INPUT_BUTTON_SUPPORT
+	InputProc();
+#endif
+
+	DrawScene();
+	//限制fps为60
+	LimitFps(60);
+
+	return NGE_APP_NORMAL;
+}
+
+int fini()
+{
 	NGE_Quit();
+}
+
+nge_app_t app;
+
+extern "C"
+int main(int argc, char* argv[])
+{
+	nge_init_app(&app);
+	app.init = init;
+	app.mainloop = mainloop;
+	app.fini = fini;
+	nge_register_app(&app);
 	return 0;
 }
 
