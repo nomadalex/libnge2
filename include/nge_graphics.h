@@ -121,7 +121,9 @@ extern "C"{
 /**
  * 绘制到图片开始函数,所有绘制到图片均在BeginTarget,EndTarget之间调用
  *@param[in] _img 所要绘制到的图片
+ *@param[in] clear 是否清除原有信息,1为清屏,0为不清屏
  *@return 无
+ *@remark 此操作将会使TexBlendEquation改为颜色FUNC_ADD,透明度FUNC_MAX,若有需要更改，请自行修改
  */
 	NGE_API BOOL BeginTarget(image_p _img,uint8_t clear);
 /**
@@ -483,7 +485,6 @@ extern "C"{
  *@param[in] w 宽
  *@param[in] h 高
  *@return image_p 返回一个创建的image_p,注意需要释放这个image_p
- *@remark 此操作将会使TexBlendEquation改为颜色FUNC_ADD,透明度FUNC_MAX,若有需要更改，请自行修改
  */
 	NGE_API image_p TargetToImage(int x,int y,int width,int height); 
 
