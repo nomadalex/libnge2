@@ -2,6 +2,7 @@
 #include "nge_app.h"
 
 #include <stdio.h>
+#include <string.h>
 
 /**
  * 测试字体，高级图片，片头动画

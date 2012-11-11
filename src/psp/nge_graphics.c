@@ -271,7 +271,7 @@ void InitGraphics()
 {
 	int i;
 	InitGu();
-	timer = timer_create();
+	timer = nge_timer_create();
 	for (i=0;i<360;i++)
 	{
 		m_sintable[i] = sin(i*DEG2RAD);
@@ -281,7 +281,7 @@ void InitGraphics()
 void FiniGraphics()
 {
 	sceGuTerm();
-	timer_free(timer);
+	nge_timer_free(timer);
 }
 
 void SetTexBlend(int src_blend, int des_blend)
