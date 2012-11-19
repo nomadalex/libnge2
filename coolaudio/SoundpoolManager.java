@@ -11,6 +11,11 @@ package org.libnge.nge2;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import android.media.SoundPool;
 import android.media.AudioManager;
@@ -25,11 +30,11 @@ public class SoundpoolManager
 
 	private class PlayerData {
 		private int id;
-		public bool isDestroy = false;
+		public boolean isDestroy = false;
 		public int loadStatus = 0;
 		public int soundId = -1;
 		public int streamId = -1;
-		public bool isPaused = false;
+		public boolean isPaused = false;
 		public float volume = 1.0f;
 
 		public PlayerData(int id) {
@@ -129,13 +134,13 @@ public class SoundpoolManager
 
 		MyPool pool = getPoolByPlayerId(playerId);
 		SoundPool p = pool.getSoundPool();
-		if (p.streamId != -1) {
+		if (data.streamId != -1) {
 			p.stop(data.streamId);
 		}
 		p.unload(data.soundId);
 		data.isDestroy = true;
 
-		bool canDestroyPool = true;
+		boolean canDestroyPool = true;
 		int idx = playerId % maxSoundPerPool;
 		idx = playerId - idx;
 		for (int i=0; i<maxSoundPerPool; i++) {
@@ -155,12 +160,17 @@ public class SoundpoolManager
 
 		MyPool pool = getPoolByPlayerId(playerId);
 
-		data.soundId = pool.getSoundPool().load(fd, 0, length);
+		data.soundId = pool.getSoundPool().load(fd, 0, length, 10);
 		pool.add(data.soundId, data);
 
 		synchronized(data) {
 			while (data.loadStatus == 0)
-				data.wait();
+				try {
+					data.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 		return data.loadStatus;
@@ -172,12 +182,17 @@ public class SoundpoolManager
 
 		MyPool pool = getPoolByPlayerId(playerId);
 
-		data.soundId = pool.getSoundPool().load(path, 1);
+		data.soundId = pool.getSoundPool().load(path, 10);
 		pool.add(data.soundId, data);
 
 		synchronized(data) {
 			while (data.loadStatus == 0)
-				data.wait();
+				try {
+					data.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 		return data.loadStatus;
@@ -234,7 +249,7 @@ public class SoundpoolManager
 		return lastV;
 	}
 
-	public bool isPaused(int playerId) {
+	public boolean isPaused(int playerId) {
 		PlayerData data = playerList.get(playerId);
 		return data.isPaused;
 	}
