@@ -6,6 +6,7 @@
  *  Copyright  2012  Kun Wang <ifreedom.cn@gmail.com>
  *
  */
+#include "audio_interface.h"
 #include "android_soundpool.h"
 
 #include <stdlib.h>
@@ -15,6 +16,9 @@
 #include "nge_android_jni.h"
 #include "audio_android.h"
 #include "nge_graphics.h"
+#include "nge_timer.h"
+#include "nge_io_file.h"
+#include "wav.h"
 
 static screen_context_p screen = NULL;
 
@@ -110,6 +114,8 @@ typedef struct audio_soundpool
 /* private: */
 	int id;
 	int fd;
+	float length;
+	nge_timer* timer;
 } audio_soundpool_t;
 
 
@@ -122,9 +128,13 @@ typedef struct audio_soundpool
 
 #define DEBUGME() /*LOGI("this is in %s.\n", __FUNCTION__)*/
 
-
 MAKE_METHOD(int, load, (THIS_DEF, const char* filename))
 {
+	int fd;
+	int pos;
+	uint8_t* buf;
+	wav_info_t info;
+
 	int ret = 0;
 	jstring fn;
 	char fullname[256]={0};
@@ -136,6 +146,22 @@ MAKE_METHOD(int, load, (THIS_DEF, const char* filename))
 		close(p->fd);
 		p->fd = 0;
 	}
+
+	fd = io_fopen(filename, IO_RDONLY);
+	if (fd == 0)
+		return -1;
+
+	buf = (uint8_t*)malloc(MIN_WAV_HEADER_SIZE);
+	io_fread(buf, MIN_WAV_HEADER_SIZE, 1, fd);
+	io_fclose(fd);
+
+	pos = 0;
+	if (parse_wav_hdr(buf, MIN_WAV_HEADER_SIZE, &pos, &info) == -1) {
+		free(buf);
+		return -1;
+	}
+	free(buf);
+	p->length = ((float)info.size) / ((float)info.bps / 8.0f * info.rate / 1000.0f * info.channels);
 
 	sprintf(fullname,"%s/%s",screen->pathname,filename);
 	fn = (*env)->NewStringUTF(env, fullname);
@@ -151,8 +177,17 @@ MAKE_METHOD(int, load_buf, (THIS_DEF, const char* buf, int size))
 	int fd[2];
 	jclass jfd;
 
+	int pos;
+	wav_info_t info;
+
 	DEBUGME();
 	GetEnv();
+
+	pos = 0;
+	if (parse_wav_hdr(buf, size, &pos, &info) == -1) {
+		return -1;
+	}
+	p->length = ((float)info.size) / ((float)info.bps / 8.0f * info.rate / 1000.0f * info.channels);
 
 	if (pipe(fd) < 0) {
 		printf("Can not open pipe!\n");
@@ -183,6 +218,9 @@ MAKE_METHOD(int, play, (THIS_DEF, int times, int free_when_stop))
 	GetEnv();
 
 	(*env)->CallVoidMethod(env, managerObj, SP_METHOD(play), p->id, times);
+
+	p->timer->start(p->timer);
+
 	return 0;
 }
 
@@ -201,6 +239,8 @@ MAKE_METHOD(void, pause, (THIS_DEF))
 	GetEnv();
 
 	(*env)->CallVoidMethod(env, managerObj, SP_METHOD(pause), p->id);
+
+	p->timer->pause(p->timer);
 }
 
 MAKE_METHOD(void, resume, (THIS_DEF))
@@ -209,6 +249,8 @@ MAKE_METHOD(void, resume, (THIS_DEF))
 	GetEnv();
 
 	(*env)->CallVoidMethod(env, managerObj, SP_METHOD(resume), p->id);
+
+	p->timer->unpause(p->timer);
 }
 
 MAKE_METHOD(int, stop, (THIS_DEF))
@@ -217,10 +259,14 @@ MAKE_METHOD(int, stop, (THIS_DEF))
 	GetEnv();
 
 	(*env)->CallVoidMethod(env, managerObj, SP_METHOD(stop), p->id);
+
 	if (p->fd) {
 		close(p->fd);
 		p->fd = 0;
 	}
+
+	p->timer->stop(p->timer);
+
 	return 0;
 }
 
@@ -252,9 +298,16 @@ MAKE_METHOD(void, seek, (THIS_DEF, int ms, int flag))
 
 MAKE_METHOD(int, iseof, (THIS_DEF))
 {
+	uint32_t time;
+
 	/* DEBUGME(); */
-	WARN_UN_IMP();
 	/* GetEnv(); */
+
+	if (p->timer->is_started(p->timer) == 0) return FALSE;
+
+	time = p->timer->get_ticks(p->timer);
+	if ((float)time > p->length) return TRUE;
+
 	return FALSE;
 }
 
@@ -275,6 +328,8 @@ MAKE_METHOD(int, destroy, (THIS_DEF))
 	GetEnv();
 
 	(*env)->CallVoidMethod(env, managerObj, SP_METHOD(delete), p->id);
+
+	nge_timer_free(p->timer);
 
 	if (p->fd)
 		close(p->fd);
@@ -306,6 +361,7 @@ audio_play_p android_soundpool_create()
 
 	p->id = (*env)->CallIntMethod(env, managerObj, SP_METHOD(create));
 	p->fd = 0;
+	p->timer = nge_timer_create();
 
 	return (audio_play_p)p;
 }
