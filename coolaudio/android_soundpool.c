@@ -126,7 +126,8 @@ typedef struct audio_soundpool
 #define MAKE_METHOD(return_type,name,args) static return_type _METHOD(name) args
 #define SET_METHOD(name) p->name = (fd_##name) _METHOD(name)
 
-#define DEBUGME() /*LOGI("this is in %s.\n", __FUNCTION__)*/
+#define DEBUGME()
+/* #define DEBUGME() LOGI("this is in %s id : %d.\n", __FUNCTION__, p->id) */
 
 MAKE_METHOD(int, load, (THIS_DEF, const char* filename))
 {
@@ -162,6 +163,8 @@ MAKE_METHOD(int, load, (THIS_DEF, const char* filename))
 	}
 	free(buf);
 	p->length = ((float)info.size) / ((float)info.bps / 8.0f * info.rate / 1000.0f * info.channels);
+
+	/* LOGI("load %s, length %f.\n", filename, p->length); */
 
 	sprintf(fullname,"%s/%s",screen->pathname,filename);
 	fn = (*env)->NewStringUTF(env, fullname);
@@ -301,12 +304,17 @@ MAKE_METHOD(int, iseof, (THIS_DEF))
 	uint32_t time;
 
 	/* DEBUGME(); */
-	/* GetEnv(); */
 
 	if (p->timer->is_started(p->timer) == 0) return FALSE;
 
 	time = p->timer->get_ticks(p->timer);
-	if ((float)time > p->length) return TRUE;
+
+	if ((float)time > p->length) {
+		GetEnv();
+		(*env)->CallVoidMethod(env, managerObj, SP_METHOD(stop), p->id);
+
+		return TRUE;
+	}
 
 	return FALSE;
 }
@@ -341,7 +349,6 @@ audio_play_p android_soundpool_create()
 {
 	DECL_MALLOC_THIS();
 
-	DEBUGME();
 	GetEnv();
 
 	SET_METHOD(load);
@@ -362,6 +369,8 @@ audio_play_p android_soundpool_create()
 	p->id = (*env)->CallIntMethod(env, managerObj, SP_METHOD(create));
 	p->fd = 0;
 	p->timer = nge_timer_create();
+
+	DEBUGME();
 
 	return (audio_play_p)p;
 }
