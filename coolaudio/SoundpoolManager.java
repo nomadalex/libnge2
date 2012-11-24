@@ -23,10 +23,10 @@ import android.util.SparseArray;
 
 public class SoundpoolManager
 {
+	@SuppressWarnings("unused")
 	private static final String TAG = "SoundpoolManager";
 
 	private static final int maxSoundPerPool = 4;
-	private static final int maxPlayCount = 10;
 
 	private class PlayerData {
 		private int id;
@@ -36,7 +36,6 @@ public class SoundpoolManager
 		public int streamId = -1;
 		public boolean isPaused = false;
 		public float volume = 1.0f;
-		public String path = null;
 
 		public PlayerData(int id) {
 			this.id = id;
@@ -50,14 +49,12 @@ public class SoundpoolManager
 			streamId = -1;
 			isPaused = false;
 			volume = 1.0f;
-			path = null;
 		}
 	}
 
 	private class MyPool implements SoundPool.OnLoadCompleteListener {
 		private SparseArray<PlayerData> soundMap = new SparseArray<PlayerData>();
 		private SoundPool pool = null;
-		public int playCount = 0;
 		public int priority = 1;
 
 		public SoundPool getSoundPool() { return pool; }
@@ -67,7 +64,6 @@ public class SoundpoolManager
 		}
 		public void releaseSoundPool() {
 			pool.release();
-			playCount = 0;
 			priority = 1;
 			pool = null;
 		}
@@ -136,7 +132,6 @@ public class SoundpoolManager
 	}
 	public void delete(int playerId) {
 		PlayerData data = playerList.get(playerId);
-		data.path = null;
 		freeList.offer(data);
 
 		MyPool pool = getPoolByPlayerId(playerId);
@@ -181,7 +176,6 @@ public class SoundpoolManager
 
 		MyPool pool = getPoolByPlayerId(playerId);
 
-		data.path = null;
 		data.soundId = pool.getSoundPool().load(fd, 0, length, 10);
 
 		load_wait(data, pool);
@@ -195,8 +189,7 @@ public class SoundpoolManager
 
 		MyPool pool = getPoolByPlayerId(playerId);
 
-		data.path = path;
-		data.soundId = pool.getSoundPool().load(data.path, 10);
+		data.soundId = pool.getSoundPool().load(path, 10);
 
 		load_wait(data, pool);
 
@@ -218,7 +211,6 @@ public class SoundpoolManager
 		} while(data.streamId == 0 && abortCount-- > 0);
 
 		pool.priority++;
-		pool.playCount++;
 	}
 
 	public void pause(int playerId) {
@@ -248,23 +240,6 @@ public class SoundpoolManager
 		MyPool pool = getPoolByPlayerId(playerId);
 
 		pool.getSoundPool().stop(data.streamId);
-
-		if (pool.playCount > maxPlayCount) {
-			pool.releaseSoundPool();
-			pool.initSoundPool();
-
-			int idx = playerId % maxSoundPerPool;
-			idx = playerId - idx;
-			PlayerData td;
-			for (int i=0; i<maxSoundPerPool; i++) {
-				td = playerList.get(idx + i);
-				if (td.path != null) {
-					td.soundId = pool.getSoundPool().load(td.path, 10);
-					load_wait(td, pool);
-				}
-			}
-			SystemClock.sleep(100);
-		}
 	}
 
 	public float setVolume(int playerId, float v) {
