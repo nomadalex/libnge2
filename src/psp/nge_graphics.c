@@ -70,6 +70,14 @@ static uint32_t m_tex_id = 0;
 
 static nge_timer* timer = NULL;
 
+static struct BlendPara {
+	int op;
+	int src;
+	int dest;
+	unsigned int srcFix;
+	unsigned int destFix;
+}blendInfo;
+
 static screen_context_t nge_screen = {
 		"NGE2",
 		SCREEN_WIDTH_PSP,
@@ -220,6 +228,11 @@ static void InitGu(void)
 	// Blending
 	sceGuEnable(GU_BLEND);
 	sceGuBlendFunc(GU_ADD, GU_SRC_ALPHA, GU_ONE_MINUS_SRC_ALPHA, 0, 0);
+	blendInfo.op = GU_ADD;
+	blendInfo.src = GU_SRC_ALPHA;
+	blendInfo.dest = GU_ONE_MINUS_SRC_ALPHA;
+	blendInfo.srcFix = 0;
+	blendInfo.destFix = 0;
 	sceGuTexFunc(GU_TFX_MODULATE,GU_TCC_RGBA);
 	sceGuTexFilter(GU_LINEAR,GU_LINEAR);
 	sceGuDisable(GU_DITHER);
@@ -286,11 +299,6 @@ void FiniGraphics()
 
 void SetTexBlend(int src_blend, int des_blend)
 {
-	//if(src_blend==0&&des_blend==0)
-		//glBlendFunc(BLEND_SRC_ALPHA,BLEND_ONE);
-	//	sceGuBlendFunc(GU_ADD, BLEND_SRC_ALPHA,BLEND_ONE, 0, 0);
-	//else{
-		//glBlendFunc(src_blend,des_blend);
 		int fixSrc = 0;
 		int fixDest = 0;
 		if (src_blend == BLEND_ZERO)
@@ -308,15 +316,32 @@ void SetTexBlend(int src_blend, int des_blend)
 			fixDest = 0x00FFFFFF;
 		}
 
-		//glBlendFunc(src, dest);
-		sceGuBlendFunc(GU_ADD, src_blend, des_blend, fixSrc, fixDest);
-	//}
+		blendInfo.src = src_blend;
+		blendInfo.dest = des_blend;
+		blendInfo.srcFix = fixSrc;
+		blendInfo.destFix = fixDest;
+		sceGuBlendFunc(blendInfo.op, src_blend, des_blend, fixSrc, fixDest);
 }
 
 void ResetTexBlend()
 {
-	//glBlendFunc(BLEND_SRC_ALPHA,BLEND_ONE_MINUS_SRC_ALPHA);
-	sceGuBlendFunc(GU_ADD, BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA, 0, 0);
+	blendInfo.src = GU_SRC_ALPHA;
+	blendInfo.dest = GU_ONE_MINUS_SRC_ALPHA;
+	blendInfo.srcFix = 0;
+	blendInfo.destFix = 0;
+	sceGuBlendFunc(blendInfo.op, BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA, 0, 0);
+}
+
+void SetTexBlendEquation(int color_equation, int alpha_equation) //alpha_equation will be ingnored
+{
+	blendInfo.op = color_equation;
+	sceGuBlendFunc(color_equation, blendInfo.src, blendInfo.dest, blendInfo.srcFix, blendInfo.destFix);
+}
+
+void ResetTexBlendEquation()
+{
+	blendInfo.op = GU_ADD;
+	sceGuBlendFunc(GU_ADD, blendInfo.src, blendInfo.dest, blendInfo.srcFix, blendInfo.destFix);
 }
 
 void BeginScene(uint8_t clear)
@@ -1122,6 +1147,23 @@ void EndTarget(){
 
 	target_image->modified = 1;
 	target_image = NULL;
+}
+
+image_p TargetToImage(int x,int y,int width,int height) {
+	image_p pimage;
+	uint32_t sw, sh, texw;
+	unsigned int offset = getStaticVramOffset();
+	
+	if(target_image == NULL)
+		return;
+	sw = target_image->w;
+	sh = target_image->h;
+	
+	pimage = image_create(width, height, target_image->dtype);
+	texw = pimage->texw;
+	
+	sceGuCopyImage(pimage->mode, x, y, width, height, BUF_WIDTH, (void*)((unsigned int)sceGeEdramGetAddr() + offset), 0, 0, texw, pimage->data);
+	return pimage;
 }
 
 void RealRenderQuad(quadf quad) {

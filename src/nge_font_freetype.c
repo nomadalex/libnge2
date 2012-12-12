@@ -369,7 +369,7 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	uint16_t* value;
 	FT_Glyph glyph;
 	int pen_x = x;
-	int pen_y = y + pf->size;
+	int pen_y = y + (pf->face->size->metrics.ascender >> 6);
 	int i;
 	FT_BitmapGlyph bitmap_glyph;
 	FT_Bitmap* bitmap;

@@ -385,6 +385,7 @@ extern "C"{
  * FUNC_MIN: 取分量中较小的那个\n
  *@param[in] color_equation 颜色方程,即颜色参与运算的方程
  *@param[in] alpha_equation 透明度方程,即透明度参与运算的方程
+ *@remark PSP平台上将忽略alpha_equation参数
  */
 	NGE_API void SetTexBlendEquation(int color_equation, int alpha_equation);
 /**
