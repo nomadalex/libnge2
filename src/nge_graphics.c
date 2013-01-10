@@ -1291,14 +1291,15 @@ void ScreenShot(const char* filename)
 BOOL BeginTarget(image_p _img,uint8_t clear){
     static int cacheid = 0;
     static int ret = 0;
-    //reset to target_clip
-    target_clip = 1;
-    ResetClip();
+
 	if(!_img)
 		return FALSE;
 	BIND_AND_TEST_CACHE(_img);
     target_w = _img->w;
     target_h = _img->h;
+    //reset to target_clip
+    target_clip = 1;
+    ResetClip();
 	//GL_MAX is not define in OPENGLES
     glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
