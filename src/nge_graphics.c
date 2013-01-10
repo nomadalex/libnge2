@@ -81,6 +81,10 @@ static uint8_t tex_ret = 0;
 #define MAX_TEX_CACHE_SIZE 256
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
 GLuint fbo = 0;
+//for target clip
+int    target_clip = 0;
+int    target_w = 0;
+int    target_h = 0;
 // nge_screen *************************
 static screen_context_t nge_screen = {
 	NULL,
@@ -259,17 +263,25 @@ void ResetTexBlendEquation()
 
 void SetClip(int x,int y,int w,int h)
 {
-	float rate_w_ori = 1.0f*nge_screen.width/nge_screen.ori_width; //1/nge_screen.rate_w;
-	float rate_h_ori = 1.0f*nge_screen.height/nge_screen.ori_height; //1/nge_screen.rate_h;
-	glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori*y-rate_h_ori*h),
-		ceil(w*rate_w_ori),ceil(h*rate_h_ori));
+    if(target_clip==0){
+        float rate_w_ori = 1.0f*nge_screen.width/nge_screen.ori_width; //1/nge_screen.rate_w;
+        float rate_h_ori = 1.0f*nge_screen.height/nge_screen.ori_height; //1/nge_screen.rate_h;
+        glScissor(floor(x*rate_w_ori),floor(nge_screen.height-rate_h_ori*y-rate_h_ori*h),ceil(w*rate_w_ori),ceil(h*rate_h_ori));
+    }
+    else{
+        glScissor(x,y,w,h);
+    }
 }
 
 void ResetClip()
 {
-	SetClip(0, 0, nge_screen.ori_width,nge_screen.ori_height);
+    if(target_clip == 0){
+        SetClip(0, 0, nge_screen.ori_width,nge_screen.ori_height);
+    }
+    else{
+        SetClip(0, 0, target_w,target_h);
+    }
 }
-
 
 
 #if defined NGE_LINUX
@@ -815,7 +827,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
 
-//¶¥µãcolorË³ÐòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
+//ï¿½ï¿½ï¿½ï¿½colorË³ï¿½ï¿½Îªï¿½ï¿½Ê±ï¿½ë·½ï¿½ï¿½0->3ï¿½ï¿½ï¿½ï¿½
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -833,13 +845,13 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 	FillRectGrad(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,colors,dtype);
 }
 
-/** Ìî³äÈý½ÇÐÍ(µ¥É«)
- *@param[in] v1 ¶¥µã×ø±êv1
- *@param[in] v2 ¶¥µã×ø±êv2
- *@param[in] v3 ¶¥µã×ø±êv3
- *@param[in] color Ìî³äÉ«
- *@param[in] dtype ÏÔÊ¾Ä£Ê½,Ìî³äÉ«ÒªÓëÖ®Ïà¶ÔÓ¦
- *@return void ,ÎÞ
+/** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½É«)
+ *@param[in] v1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½v1
+ *@param[in] v2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½v2
+ *@param[in] v3 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½v3
+ *@param[in] color ï¿½ï¿½ï¿½ï¿½É«
+ *@param[in] dtype ï¿½ï¿½Ê¾Ä£Ê½,ï¿½ï¿½ï¿½ï¿½É«Òªï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½Ó¦
+ *@return void ,ï¿½ï¿½
  */
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {
@@ -1090,7 +1102,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//ÃªµãµÄÕýÈ·ÐÔ
+	//Ãªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½
 	switch (anchor) {
 	case 0:
 	case ANCHOR_TOP | ANCHOR_LEFT:
@@ -1116,22 +1128,22 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//ÒÆ¶¯Î»ÖÃ
+	//ï¿½Æ¶ï¿½Î»ï¿½ï¿½
 	if ((INVERTED_AXES & transform) != 0) {
 		//////////////////////////////////////////////////////////////////////////
-		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ Ä¿±êÊÇÐÂµÄ×ø±êÒªËãµ½ÀÏµÄÎ»ÖÃÈ¥
+		//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Î»ï¿½ï¿½Æ«ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ãµ½ï¿½Ïµï¿½Î»ï¿½ï¿½È¥
 		switch(transform){
 		case TRANS_ROT90:
 			{
-				//µ÷ÊÔÍ¨¹ý
-				//Æ«ÒÆ(x_dest - (int)(m_pImage->rcentrex - m_pImage->rcentrey)*10/10 - y_src)£¬×îºóÔÚ¼ôµôÊ£ÏÂµÄÖµ(m_pImage->h - y_src - height)
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//Æ«ï¿½ï¿½(x_dest - (int)(m_pImage->rcentrex - m_pImage->rcentrey)*10/10 - y_src)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½Ê£ï¿½Âµï¿½Öµ(m_pImage->h - y_src - height)
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
 			break;
 		case TRANS_ROT270:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
 				if(width == 0){
 					y_dest	= y_dest - (int)(tex->rcentrex + tex->rcentrey)*10/10 + (int)tex->w;
@@ -1142,14 +1154,14 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR_ROT90:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10 - (tex->w - width);
 			}
 			break;
 		case TRANS_MIRROR_ROT270:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
@@ -1157,11 +1169,11 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 		}
 	}else{
 		//////////////////////////////////////////////////////////////////////////
-		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ
+		//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Î»ï¿½ï¿½Æ«ï¿½ï¿½
 		switch(transform){
 		case TRANS_ROT180:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				//if(width != 0){
 				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
 				y_dest	= y_dest - (tex->h - height);
@@ -1170,7 +1182,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR_ROT180:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				// 				if(width != 0){
 				// 					x_dest	= x_dest - ((int)m_pImage->w - (/*x_src + */width));
 				// 				}
@@ -1178,7 +1190,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR:
 			{
-				//µ÷ÊÔÍ¨¹ý
+				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
 				y_dest	= y_dest - (tex->h - height);
 			}
@@ -1187,7 +1199,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//ÃªµãÈ·¶¨½ØÈ¡ÆÁÄ»µÄÎ»ÖÃ
+	//Ãªï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ï¿½Î»ï¿½ï¿½
 	if((INVERTED_AXES & transform) == 0) {
 		if(anchor != ANCHOR_SOLID) {
 			if((anchor & ANCHOR_BOTTOM) != 0) {
@@ -1278,10 +1290,15 @@ void ScreenShot(const char* filename)
 
 BOOL BeginTarget(image_p _img,uint8_t clear){
     static int cacheid = 0;
-	static int ret = 0;
+    static int ret = 0;
+    //reset to target_clip
+    target_clip = 1;
+    ResetClip();
 	if(!_img)
 		return FALSE;
 	BIND_AND_TEST_CACHE(_img);
+    target_w = _img->w;
+    target_h = _img->h;
 	//GL_MAX is not define in OPENGLES
     glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
 #if defined NGE_WIN || defined NGE_LINUX	
@@ -1325,6 +1342,9 @@ void EndTarget(){
 	glMatrixMode(GL_MODELVIEW);
 #endif
     glBlendEquation(GL_FUNC_ADD);
+    //reset to screen clip
+    target_clip = 0;
+    ResetClip();
 }
 
 image_p TargetToImage(int x,int y,int width,int height)
@@ -1341,7 +1361,7 @@ image_p TargetToImage(int x,int y,int width,int height)
 }
 
 
-/*¸ß¼¶ÓÃ»§Ê¹ÓÃµÄÄ£Ê½,Åú´¦ÀíÄ£Ê½*/
+/*ï¿½ß¼ï¿½ï¿½Ã»ï¿½Ê¹ï¿½Ãµï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½*/
 void Translate(float x,float y)
 {
 	glTranslatef(x,y,0);
@@ -1385,7 +1405,7 @@ void DrawImageBatch(image_p tex,rectf* uv_rect)
 	SET_IMAGE_RECT_BY_TEX(tex, 0, 0);
 	AFTER_DRAW_IMAGE();
 }
-/*Åú´¦ÀíÄ£Ê½END*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½END*/
 
 void RealRenderQuad(quadf quad) {
 	BEFORE_DRAW_QUAD();
