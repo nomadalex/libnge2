@@ -73,10 +73,11 @@ static float m_costable[360];
 //fps count
 static uint32_t m_frame = 0;
 static uint32_t m_t0 = 0;
-static int fps_last_ticks = 0;
 static char inited = 0;
 static int cacheid = 0;
 static uint8_t tex_ret = 0;
+
+static nge_timer* fps_timer;
 
 #define MAX_TEX_CACHE_SIZE 256
 GLuint m_texcache[MAX_TEX_CACHE_SIZE];
@@ -348,7 +349,7 @@ makeWindow(const char *name, int x, int y, int width, int height)
 
 void ResetGraphicsCache(void)
 {
-	int i;	
+	int i;
 	tex_cache_fini();
 	tex_cache_init(MAX_TEX_CACHE_SIZE);
 	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
@@ -367,7 +368,6 @@ void nge_graphics_reset(void)
 	// reset for fps------------------
 	m_frame = 0;
 	m_t0 = 0;
-	fps_last_ticks = nge_get_tick();
 	if(inited == 0){
 		inited = 1;
 		tex_cache_init(MAX_TEX_CACHE_SIZE);
@@ -530,7 +530,7 @@ void InitGraphics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 
-	
+
 	nge_graphics_reset();
 
 	nge_log("Init Graphics Ok\n");
@@ -566,7 +566,7 @@ void FiniGraphics()
 	XDestroyWindow(g_dpy, g_win);
 	XCloseDisplay(g_dpy);
 #endif
-    
+
 #if defined NGE_IPHONE
     glDeleteFramebuffers(1, &fbo);
 #endif
@@ -590,15 +590,22 @@ void ShowFps()
 
 void LimitFps(uint32_t limit)
 {
-	int ticks = 0, sleep_ticks = 0;
-	if(limit == 0)
-		limit = 60;
-	ticks = nge_get_tick();
-	sleep_ticks = 1000/limit - (ticks - fps_last_ticks);
-	fps_last_ticks = ticks;
+	uint32_t t;
 
-	if( sleep_ticks > 0 )
-		nge_sleep( sleep_ticks );
+	if (fps_timer == NULL) {
+		fps_timer = nge_timer_create();
+		return;
+	}
+
+	if(limit == 0) limit = 60;
+
+	t = 1000/limit - fps_timer->get_ticks(fps_timer);
+
+	if (t > 0) {
+		nge_sleep(t);
+	}
+
+	fps_timer->start(fps_timer);
 }
 
 #define ROTATE_2D(angle, xcent, ycent)          \
@@ -990,7 +997,7 @@ static inline void TexImage2D(image_p pimg)
 	GetRGBA(quad.v[2].color,tex->dtype,&r,&g,&b,&a);		\
 	COLOR_T_SET( gl_colors[2], r, g, b, a );			\
 	GetRGBA(quad.v[3].color,tex->dtype,&r,&g,&b,&a);		\
-	COLOR_T_SET( gl_colors[3], r, g, b, a )			
+	COLOR_T_SET( gl_colors[3], r, g, b, a )
 
 #define BEFORE_DRAW_QUAD()								\
 	image_p tex = quad.tex;								\
@@ -1302,7 +1309,7 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
     ResetClip();
 	//GL_MAX is not define in OPENGLES
     glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
-#if defined NGE_WIN || defined NGE_LINUX	
+#if defined NGE_WIN || defined NGE_LINUX
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
 	glMatrixMode(GL_PROJECTION);
@@ -1375,7 +1382,7 @@ void Scale(float x,float y)
 
 void Rotate(float angle)
 {
-	glRotatef(angle,0,0,1); 
+	glRotatef(angle,0,0,1);
 }
 
 void Identity()
@@ -1400,7 +1407,7 @@ void DrawImageBatch(image_p tex,rectf* uv_rect)
 		SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
 	}
 	else{
-		SET_TEX_COORD(tex, uv_rect->left, uv_rect->top, uv_rect->left - uv_rect->right, 
+		SET_TEX_COORD(tex, uv_rect->left, uv_rect->top, uv_rect->left - uv_rect->right,
 		                uv_rect->bottom - uv_rect->top, 0, 1, 2, 3);
 	}
 	SET_IMAGE_RECT_BY_TEX(tex, 0, 0);
