@@ -255,6 +255,9 @@ void SetTexBlendEquation(int color_equation, int alpha_equation)
 void ResetTexBlendEquation()
 {
 	int bindingFbo;
+	#ifdef NGE_IPHONE
+		#define	GL_DRAW_FRAMEBUFFER_BINDING_EXT GL_DRAW_FRAMEBUFFER_BINDING_APPLE
+	#endif
 	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &bindingFbo);
 	if(bindingFbo == 0)
 		glBlendEquation(GL_FUNC_ADD);
