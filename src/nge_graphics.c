@@ -855,14 +855,7 @@ inline void FillRectGradEx(rectf rect,int* colors,int dtype)
 	FillRectGrad(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,colors,dtype);
 }
 
-/** ����������(��ɫ)
- *@param[in] v1 ��������v1
- *@param[in] v2 ��������v2
- *@param[in] v3 ��������v3
- *@param[in] color ����ɫ
- *@param[in] dtype ��ʾģʽ,����ɫҪ��֮����Ӧ
- *@return void ,��
- */
+
 inline void FillTri(pointf v1,pointf v2,pointf v3 ,int color,int dtype)
 {
 	float x[3], y[3];
@@ -1021,7 +1014,7 @@ void ImageToScreen(image_p tex,float dx,float dy)
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, 0, 0, 0, 0, 0, 1, 2, 3);
-    //SET_COLOR(tex->mask,tex->dtype);
+    	SET_COLOR(tex->mask,tex->dtype);
 	SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	AFTER_DRAW_IMAGE();
 }
@@ -1030,7 +1023,7 @@ void DrawImage(image_p tex,float sx,float sy,float sw,float sh,float dx,float dy
 {
 	BEFORE_DRAW_IMAGE();
 	SET_TEX_COORD(tex, sx, sy, sw, sh, 0, 1, 2, 3);
-    //SET_COLOR(tex->mask,tex->dtype);
+    	SET_COLOR(tex->mask,tex->dtype);
 	if(dw==0&&dh==0){
 		SET_IMAGE_RECT_BY_TEX(tex, dx, dy);
 	}else{
