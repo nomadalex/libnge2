@@ -257,6 +257,8 @@ void ResetTexBlendEquation()
 	int bindingFbo;
 	#ifdef NGE_IPHONE
 		#define	GL_DRAW_FRAMEBUFFER_BINDING_EXT GL_DRAW_FRAMEBUFFER_BINDING_APPLE
+	#elif defined NGE_ANDROID
+        #define GL_DRAW_FRAMEBUFFER_BINDING_EXT 0x8CA6
 	#endif
 	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &bindingFbo);
 	if(bindingFbo == 0)
