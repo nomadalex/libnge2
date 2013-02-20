@@ -861,7 +861,7 @@ void FillRectEx(rectf rect,int color,int dtype)
 	FillRect(rect.top, rect.left, rect.right-rect.left, rect.bottom-rect.top,color,dtype);
 }
 
-//ï¿½ï¿½ï¿½ï¿½colorË³ï¿½ï¿½Îªï¿½ï¿½Ê±ï¿½ë·½ï¿½ï¿½0->3ï¿½ï¿½ï¿½ï¿½
+//¶¥µãcolorË³ÐòÎªÄæÊ±Õë·½Ïò0->3ÉèÖÃ
 // 0---------------------3
 //  |                   |
 //  |                   |
@@ -1129,7 +1129,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//Ãªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½
+	//ÃªµãµÄÕýÈ·ÐÔ
 	switch (anchor) {
 	case 0:
 	case ANCHOR_TOP | ANCHOR_LEFT:
@@ -1155,22 +1155,22 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//ï¿½Æ¶ï¿½Î»ï¿½ï¿½
+	//ÒÆ¶¯Î»ÖÃ
 	if ((INVERTED_AXES & transform) != 0) {
 		//////////////////////////////////////////////////////////////////////////
-		//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Î»ï¿½ï¿½Æ«ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ãµ½ï¿½Ïµï¿½Î»ï¿½ï¿½È¥
+		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ Ä¿±êÊÇÐÂµÄ×ø±êÒªËãµ½ÀÏµÄÎ»ÖÃÈ¥
 		switch(transform){
 		case TRANS_ROT90:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
-				//Æ«ï¿½ï¿½(x_dest - (int)(m_pImage->rcentrex - m_pImage->rcentrey)*10/10 - y_src)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½Ê£ï¿½Âµï¿½Öµ(m_pImage->h - y_src - height)
+				//µ÷ÊÔÍ¨¹ý
+				//Æ«ÒÆ(x_dest - (int)(m_pImage->rcentrex - m_pImage->rcentrey)*10/10 - y_src)£¬×îºóÔÚ¼ôµôÊ£ÏÂµÄÖµ(m_pImage->h - y_src - height)
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
 			break;
 		case TRANS_ROT270:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
 				if(width == 0){
 					y_dest	= y_dest - (int)(tex->rcentrex + tex->rcentrey)*10/10 + (int)tex->w;
@@ -1181,14 +1181,14 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR_ROT90:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10;
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10 - (tex->w - width);
 			}
 			break;
 		case TRANS_MIRROR_ROT270:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				x_dest	= x_dest - (int)(tex->rcentrex - tex->rcentrey)*10/10 - y_src - (tex->h - y_src - height);
 				y_dest	= y_dest + (int)(tex->rcentrex - tex->rcentrey)*10/10;
 			}
@@ -1196,11 +1196,11 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 		}
 	}else{
 		//////////////////////////////////////////////////////////////////////////
-		//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Î»ï¿½ï¿½Æ«ï¿½ï¿½
+		//¸ß¿í¶È×ø±ê,Î»ÖÃÆ«ÒÆ
 		switch(transform){
 		case TRANS_ROT180:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				//if(width != 0){
 				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
 				y_dest	= y_dest - (tex->h - height);
@@ -1209,7 +1209,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR_ROT180:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				// 				if(width != 0){
 				// 					x_dest	= x_dest - ((int)m_pImage->w - (/*x_src + */width));
 				// 				}
@@ -1217,7 +1217,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 			break;
 		case TRANS_MIRROR:
 			{
-				//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+				//µ÷ÊÔÍ¨¹ý
 				x_dest	= x_dest - ((int)tex->w - (/*x_src + */width));
 				y_dest	= y_dest - (tex->h - height);
 			}
@@ -1226,7 +1226,7 @@ void DrawRegion(image_p tex,int x_src, int y_src, int width, int height, int tra
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//Ãªï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ä»ï¿½ï¿½Î»ï¿½ï¿½
+	//ÃªµãÈ·¶¨½ØÈ¡ÆÁÄ»µÄÎ»ÖÃ
 	if((INVERTED_AXES & transform) == 0) {
 		if(anchor != ANCHOR_SOLID) {
 			if((anchor & ANCHOR_BOTTOM) != 0) {
@@ -1381,7 +1381,7 @@ image_p TargetToImage(int x,int y,int width,int height)
 }
 
 
-/*ï¿½ß¼ï¿½ï¿½Ã»ï¿½Ê¹ï¿½Ãµï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½*/
+/*¸ß¼¶ÓÃ»§Ê¹ÓÃµÄÄ£Ê½,Åú´¦ÀíÄ£Ê½*/
 void Translate(float x,float y)
 {
 	glTranslatef(x,y,0);
@@ -1425,7 +1425,7 @@ void DrawImageBatch(image_p tex,rectf* uv_rect)
 	SET_IMAGE_RECT_BY_TEX(tex, 0, 0);
 	AFTER_DRAW_IMAGE();
 }
-/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½END*/
+/*Åú´¦ÀíÄ£Ê½END*/
 
 void RealRenderQuad(quadf quad) {
 	BEFORE_DRAW_QUAD();
