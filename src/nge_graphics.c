@@ -30,38 +30,73 @@
 #include <string.h>
 #include "nge_graphics.h"
 
-#if defined NGE_IPHONE || defined NGE_ANDROID
-#define NGE_GLES
-#ifdef NGE_IPHONE
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
-#include <OpenGLES/ES2/glext.h>
-#include <OpenGLES/ES2/glext.h>
-
-//this 2 functions implement in ***ViewController.m
-extern void NGE_SetFramebuffer();
-extern void NGE_PresentFramebuffer();
-#else
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#endif
-
-#define glOrtho glOrthof
-#elif defined NGE_WIN || defined NGE_LINUX
+#if defined NGE_WIN || defined NGE_LINUX
 #include <GL/glew.h>
 #include <GL/gl.h>
+#endif
+
+#ifdef NGE_WIN
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 #if defined NGE_LINUX
 #include <X11/Xlib.h>
 #include <GL/glx.h>
+#endif
 
-#else
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#ifdef NGE_IPHONE
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
 #endif
+
+#ifdef NGE_ANDROID
+#include <GLES/gl.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLES/glext.h>
 #endif
+
+#if defined NGE_WIN || defined NGE_LINUX
+/* in glew.h */
+#define GL_DRAW_FRAMEBUFFER_BINDING GL_DRAW_FRAMEBUFFER_BINDING_EXT
+#define GL_FRAMEBUFFER GL_FRAMEBUFFER_EXT
+#define GL_COLOR_ATTACHMENT0 GL_COLOR_ATTACHMENT0_EXT
+
+#define glGenFramebuffers glGenFramebuffersEXT
+#define glDeleteFramebuffers glDeleteFramebuffersEXT
+#define glBindFramebuffer glBindFramebufferEXT
+#define glFramebufferTexture2D glFramebufferTexture2DEXT
+#endif
+
+#if defined NGE_IPHONE || defined NGE_ANDROID
+#define NGE_GLES
+#define glOrtho glOrthof
+#endif
+
+#ifdef NGE_IPHONE
+//this 2 functions implement in ***ViewController.m
+extern void NGE_SetFramebuffer();
+extern void NGE_PresentFramebuffer();
+
+#define	GL_DRAW_FRAMEBUFFER_BINDING GL_DRAW_FRAMEBUFFER_BINDING_APPLE
+#endif
+
+#ifdef NGE_ANDROID
+/* in glext.h */
+#define GL_FUNC_ADD GL_FUNC_ADD_OES
+#define GL_FRAMEBUFFER GL_FRAMEBUFFER_OES
+#define GL_DRAW_FRAMEBUFFER_BINDING GL_FRAMEBUFFER_OES
+#define GL_COLOR_ATTACHMENT0 GL_COLOR_ATTACHMENT0_OES
+
+#define glBlendEquation glBlendEquationOES
+#define glBlendEquationSeparate glBlendEquationSeparateOES
+#define glGenFramebuffers glGenFramebuffersOES
+#define glDeleteFramebuffers glDeleteFramebuffersOES
+#define glBindFramebuffer glBindFramebufferOES
+#define glFramebufferTexture2D glFramebufferTexture2DOES
+#endif
+
+#define GL_MAX 0x8008
 
 static float m_sintable[360];
 static float m_costable[360];
@@ -255,16 +290,11 @@ void SetTexBlendEquation(int color_equation, int alpha_equation)
 void ResetTexBlendEquation()
 {
 	int bindingFbo;
-	#ifdef NGE_IPHONE
-		#define	GL_DRAW_FRAMEBUFFER_BINDING_EXT GL_DRAW_FRAMEBUFFER_BINDING_APPLE
-	#elif defined NGE_ANDROID
-        #define GL_DRAW_FRAMEBUFFER_BINDING_EXT 0x8CA6
-	#endif
-	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING_EXT, &bindingFbo);
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &bindingFbo);
 	if(bindingFbo == 0)
 		glBlendEquation(GL_FUNC_ADD);
 	else
-		glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
+		glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
 }
 
 void SetClip(int x,int y,int w,int h)
@@ -373,22 +403,7 @@ void nge_graphics_reset(void)
 	// reset for fps------------------
 	m_frame = 0;
 	m_t0 = 0;
-	if(inited == 0){
-		inited = 1;
-		tex_cache_init(MAX_TEX_CACHE_SIZE);
-		glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
-		for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
-				tex_cache_add(i,m_texcache[i]);
-				glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		}
-        #if defined NGE_IPHONE || defined NGE_ANDROID
-            glGenFramebuffers(1, &fbo);
-        #endif
-
-	}
-	else{
+	if(inited) {
 		tex_cache_fini();
 		tex_cache_init(MAX_TEX_CACHE_SIZE);
 		glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
@@ -449,10 +464,6 @@ void EnableOpenGL(HWND hWnd, HDC * hDC, HGLRC * hRC)
 	/* create and enable the render context (RC) */
 	*hRC = wglCreateContext( *hDC );
 	wglMakeCurrent( *hDC, *hRC );
-#if defined NGE_WIN || defined NGE_LINUX
-    	glewInit();
-	glGenFramebuffersEXT(1, &fbo);
-#endif
 }
 
 void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
@@ -460,9 +471,6 @@ void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
 	wglMakeCurrent( NULL, NULL );
 	wglDeleteContext( hRC );
 	ReleaseDC( hWnd, hDC );
-#if defined NGE_WIN || defined NGE_LINUX
-	glDeleteFramebuffersEXT(1, &fbo);
-#endif
 }
 
 static HWND hWnd;
@@ -535,9 +543,24 @@ void InitGraphics()
 		m_costable[i] = cos(i*DEG2RAD);
 	}
 
+#if defined NGE_WIN || defined NGE_LINUX
+	glewInit();
+#endif
+
+	tex_cache_init(MAX_TEX_CACHE_SIZE);
+	glGenTextures( MAX_TEX_CACHE_SIZE, &m_texcache[0] );
+	for(i=0;i<MAX_TEX_CACHE_SIZE;i++){
+		tex_cache_add(i,m_texcache[i]);
+		glBindTexture(GL_TEXTURE_2D, m_texcache[i]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+
+	glGenFramebuffers(1, &fbo);
 
 	nge_graphics_reset();
 
+	inited = 1;
 	nge_log("Init Graphics Ok\n");
 }
 
@@ -548,6 +571,9 @@ void FiniGraphics()
 	/* android will destory gl context by itself. */
 	glDeleteTextures(MAX_TEX_CACHE_SIZE,m_texcache);
 #endif
+
+    glDeleteFramebuffers(1, &fbo);
+
 	SAFE_FREE(gl_vectices);
 	gl_vectices = NULL;
 	max_vectices = 0;
@@ -570,10 +596,6 @@ void FiniGraphics()
 	glXDestroyContext(g_dpy, g_ctx);
 	XDestroyWindow(g_dpy, g_win);
 	XCloseDisplay(g_dpy);
-#endif
-
-#if defined NGE_IPHONE
-    glDeleteFramebuffers(1, &fbo);
 #endif
 }
 
@@ -1295,7 +1317,6 @@ void ScreenShot(const char* filename)
 
 BOOL BeginTarget(image_p _img,uint8_t clear){
     static int cacheid = 0;
-    static int ret = 0;
 
 	if(!_img)
 		return FALSE;
@@ -1305,26 +1326,22 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
     //reset to target_clip
     target_clip = 1;
     ResetClip();
-	//GL_MAX is not define in OPENGLES
-    glBlendEquationSeparate(GL_FUNC_ADD, 0x8008/*GL_MAX*/);
-#if defined NGE_WIN || defined NGE_LINUX
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, cacheid, 0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,_img->w,0,_img->h, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glPushAttrib(GL_VIEWPORT_BIT);
-	glViewport(0,0,_img->w, _img->h);
-#elif defined NGE_IPHONE || defined NGE_ANDROID
+    glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, cacheid, 0);
+
     glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,_img->w,0,_img->h, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-	glViewport(0,0,_img->w, _img->h);
+
+#if defined NGE_WIN || defined NGE_LINUX
+	glPushAttrib(GL_VIEWPORT_BIT);
 #endif
+
+	glViewport(0,0,_img->w, _img->h);
+
     if(clear){
         glClearColor( COLOR_T_R(screen_c), COLOR_T_G(screen_c), COLOR_T_B(screen_c), COLOR_T_A(screen_c) );
         glClear( GL_COLOR_BUFFER_BIT);
@@ -1333,20 +1350,17 @@ BOOL BeginTarget(image_p _img,uint8_t clear){
 }
 
 void EndTarget(){
+	glViewport(0,0, nge_screen.width, nge_screen.height);
+
 #if defined NGE_WIN || defined NGE_LINUX
 	glPopAttrib();
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-#elif defined NGE_IPHONE || defined NGE_ANDROID
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
 #endif
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0,nge_screen.ori_width,nge_screen.ori_height,0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
     glBlendEquation(GL_FUNC_ADD);
     //reset to screen clip
     target_clip = 0;
