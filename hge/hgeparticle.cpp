@@ -109,7 +109,11 @@ hgeParticleSystem::hgeParticleSystem(const char *filename, sprite_p sprite)
 	info.sprite=sprite;
 	if(info.sprite->sprite_src_blend == 0)
 		info.sprite->sprite_src_blend = BLEND_SRC_ALPHA;
+	else
+		info.sprite->sprite_src_blend = BLEND_SRC_ALPHA;
 	if(info.sprite->sprite_des_blend == 0)
+		info.sprite->sprite_des_blend = BLEND_ONE_MINUS_SRC_ALPHA;
+	else
 		info.sprite->sprite_des_blend = BLEND_ONE;
 
 	vecLocation.x=vecPrevLocation.x=0.0f;
