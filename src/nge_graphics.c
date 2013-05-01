@@ -617,24 +617,34 @@ void ShowFps()
 
 void LimitFps(uint32_t limit)
 {
-	uint32_t t;
+	static uint32_t current_ticks,target_ticks,frame_count,last_ticks,the_delay;
+	static float rate_ticks;
 
 	if (fps_timer == NULL) {
 		fps_timer = nge_timer_create();
+		fps_timer->start(fps_timer);
+		current_ticks = 0;
+		target_ticks  = 0;
+		last_ticks    = 0;
+		frame_count   = 0;
+		rate_ticks    = 1000.0f/limit;
 		return;
 	}
+	frame_count++;
+	current_ticks = fps_timer->get_ticks(fps_timer);
+	target_ticks = last_ticks + (uint32_t) ((float) frame_count * rate_ticks);
 
-	if(limit == 0) limit = 60;
-
-	t = 1000/limit - fps_timer->get_ticks(fps_timer);
-
-	if (t > 0) {
-		nge_sleep(t);
+	if (current_ticks <= target_ticks) {
+		the_delay = target_ticks - current_ticks;
+		nge_sleep(the_delay);
+	} else {
+		frame_count = 0;
+		last_ticks = fps_timer->get_ticks(fps_timer);
 	}
-
-	fps_timer->start(fps_timer);
+	
 }
 
+ 
 #define ROTATE_2D(angle, xcent, ycent)          \
 	glTranslatef(xcent,ycent,0);                \
 	glRotatef(angle,0,0,1);                     \

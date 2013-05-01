@@ -382,8 +382,20 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 	uint16_t* value;
 	FT_Glyph glyph;
 	int pen_x = x;
-	int pen_y = y + (pf->face->size->metrics.ascender >> 6);
+	int pen_y = y ;
 	int i;
+
+	int char_index;
+	int total_advance;
+	int max_ascent;
+	int max_descent;
+	int advance;
+	int ascent;
+	int descent;
+	FT_Error error;
+	int cur_glyph_code;
+	int last_glyph_code = 0;
+
 	FT_BitmapGlyph bitmap_glyph;
 	FT_Bitmap* bitmap;
 
@@ -396,6 +408,30 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 		pimage->dontswizzle = 1;
 	}
 	pimage->modified =1;
+	
+	
+	total_advance = 0;
+	max_ascent  = 0;
+	max_descent = 0;
+	
+	for (i =0;i<cc;i++) {
+		cur_glyph_code = FT_Get_Char_Index( pf->face, value[i] );//LOOKUP_CHAR(pf, face, str[char_index]);
+
+		last_glyph_code = cur_glyph_code;
+
+		error = freetype2_get_glyph_size(pf, pf->face, cur_glyph_code, &advance, &ascent, &descent);
+		if (error)
+			continue;
+
+		total_advance += advance;
+		if (max_ascent < ascent)
+			max_ascent = ascent;
+		if (max_descent < descent)
+			max_descent = descent;
+	}
+
+	pen_y += max_ascent + max_descent;
+
 	for (i =0;i<cc;i++) {
 		FT_Load_Glyph( pf->face, FT_Get_Char_Index( pf->face, value[i] ), FT_LOAD_DEFAULT );
 		if(pf->flags & FLAGS_FREETYPE_BOLD)
@@ -407,7 +443,7 @@ static void freetype2_drawtext(PFont pfont, image_p pimage, int x, int y,
 		FT_Glyph_To_Bitmap( &glyph, ft_render_mode_normal, 0, 1 );
 		bitmap_glyph = (FT_BitmapGlyph)glyph;
 		bitmap=&bitmap_glyph->bitmap;
-		draw_one_word(pf,bitmap,pimage,pen_x + pf->face->glyph->bitmap_left,pen_y - pf->face->glyph->bitmap_top );
+		draw_one_word(pf,bitmap,pimage,pen_x + pf->face->glyph->bitmap_left,pen_y - pf->face->glyph->bitmap_top-max_descent );
 		pen_x  +=(pf->face->glyph->advance.x+pf->fix_width*72) >> 6  ;
 		FT_Done_Glyph( glyph );
 	}

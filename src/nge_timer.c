@@ -108,13 +108,34 @@ static u64 mTickFrequency = 0;
 #elif defined NGE_WIN
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+/*
+ * Structure used in select() call, taken from the BSD file sys/time.h.
+ */
+struct timeval {
+        long    tv_sec;         /* seconds */
+        long    tv_usec;        /* and microseconds */
+};
+
+int gettimeofday(struct timeval * val, struct timezone * zone)
+{
+	if (val)
+	{
+		LARGE_INTEGER liTime, liFreq;
+		QueryPerformanceFrequency( &liFreq );
+		QueryPerformanceCounter( &liTime );
+		val->tv_sec     = (long)( liTime.QuadPart / liFreq.QuadPart );
+		val->tv_usec    = (long)( liTime.QuadPart * 1000000.0 / liFreq.QuadPart - val->tv_sec * 1000000.0 );
+	}
+	return 0;
+} 
+
 #elif defined NGE_UNIX
 #include <sys/time.h>
 #endif
 
 uint32_t nge_get_tick()
 {
-#if defined NGE_UNIX
+#if defined NGE_UNIX || defined NGE_WIN
 	static struct timeval start;
 	static uint8_t uninited = 1;
 	uint32_t ticks;
@@ -127,10 +148,6 @@ uint32_t nge_get_tick()
 	gettimeofday(&now, NULL);
 	ticks=(now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000;
 	return(ticks);
-#elif defined NGE_WIN
-	DWORD now;
-	now = GetTickCount();
-	return now;
 #elif defined NGE_PSP
 	u64 ticks;
 	uint32_t tick32;
