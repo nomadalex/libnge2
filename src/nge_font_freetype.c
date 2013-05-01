@@ -278,8 +278,12 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				else
 					i = 0;
-				for(; i < width; i++)
-					*(cpbegin32++) = MAKE_RGBA_8888(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				while(i < width) {
+					for(; !(*buf) && i < width; i++, cpbegin32++, buf++) {
+					}
+					for(; (*buf) && i < width; i++, buf++, cpbegin32++)
+						*cpbegin32 = MAKE_RGBA_8888(pf->r, pf->g, pf->b, pf->alpha_table[*buf]);
+				}
 				cpbegin32 += pimage->texw - width;
 				buf += bitmap->width - width;
 			}
@@ -301,8 +305,12 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				else
 					i = 0;
-				for(; i < width; i++)
-					*(cpbegin16++) = MAKE_RGBA_4444(pf->r, pf->g, pf->b, pf->alpha_table[*(buf++)]);
+				while(i < width) {
+					for(; !(*buf) && i < width; i++, cpbegin16++, buf++) {
+					}
+					for(; (*buf) && i < width; i++, buf++, cpbegin16++)
+						*cpbegin16 = MAKE_RGBA_4444(pf->r, pf->g, pf->b, pf->alpha_table[*buf]);
+				}
 				cpbegin16 += pimage->texw - width;
 				buf += bitmap->width - width;
 			}
@@ -324,8 +332,12 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				else
 					i = 0;
-				for(; i < width; i++)
-					*(cpbegin16++) = MAKE_RGBA_5551(pf->r, pf->g, pf->b, (pf->a&(*(buf++)))?255:0);
+				while(i < width) {
+					for(; !(*buf) && i < width; i++, cpbegin16++, buf++) {
+					}
+					for(; (*buf) && i < width; i++, buf++, cpbegin16++)
+						*cpbegin16 = MAKE_RGBA_4444(pf->r, pf->g, pf->b, (pf->a&(*(buf++)))?255:0);
+				}
 				cpbegin16 += pimage->texw - width;
 				buf += bitmap->width - width;
 			}
@@ -347,11 +359,12 @@ static void draw_one_word(PFontFreetype pf,FT_Bitmap* bitmap,image_p pimage,int 
 				}
 				else
 					i = 0;
-				for(; i < width; i++)
-					if(*(buf++))
-						*(cpbegin16++) = MAKE_RGBA_565(pf->r, pf->g, pf->b, 0);
-					else
-						*(cpbegin16++) = 0;
+				while(i < width) {
+					for(; !(*buf) && i < width; i++, cpbegin16++, buf++) {
+					}
+					for(; (*buf) && i < width; i++, buf++, cpbegin16++)
+						*cpbegin16 = MAKE_RGBA_565(pf->r, pf->g, pf->b, 0);
+				}
 				cpbegin16 += pimage->texw - width;
 				buf += bitmap->width - width;
 			}
