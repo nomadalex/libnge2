@@ -105,7 +105,7 @@ image_p image_load_jpg_buf(const char* mbuf,int bsize, int displaymode)
 
 	
 	cinfo.err = jpeg_std_error(&jerr);
-	jpeg_create_decompress(&cinfo);
+	jpeg_create_decompress(&cinfo,JPEG_LIB_VERSION);
 
 	jpeg_mem_src(&cinfo, rawdata, rawsize);
 
