@@ -133,6 +133,7 @@ int init()
 
 	//设置屏幕颜色为白色
 	SetScreenColor(255,255,255,255);
+	return 0;
 }
 
 int mainloop()
@@ -156,6 +157,7 @@ int mainloop()
 int fini()
 {
 	NGE_Quit();
+	reutrn 0;
 }
 
 nge_app_t app;
