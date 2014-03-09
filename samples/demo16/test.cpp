@@ -157,7 +157,7 @@ int mainloop()
 int fini()
 {
 	NGE_Quit();
-	reutrn 0;
+	return 0;
 }
 
 nge_app_t app;
